@@ -1,0 +1,15 @@
+Dear {{ first_name }} {{ last_name }},
+
+
+
+Thank you for participating in the CISA Phishing Subscription Service Con-PCA.
+
+This email is to inform you that your campaign has begun starting {{ start_date }} and will run until {{ end_date }}.
+
+In the interests of security and efficiency please respond to your DHS contact directly with any questions or concerns you may have regarding your service or this report.
+
+
+Respectfully,
+
+
+CISA Continuous Phishing Program Administrator

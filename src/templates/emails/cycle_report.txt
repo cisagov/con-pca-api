@@ -1,0 +1,15 @@
+Dear {{ first_name }} {{ last_name }},
+
+ 
+
+Thank you for participating in the CISA Phishing Subscription Service Con-PCA. A 90 day phishing cycle has completed in your subscription.
+
+Attached is your latest phishing cycle report for your review. A new cycle is automatically started and has already begun.
+
+In the interests of security and efficiency please respond to your DHS contact directly with any questions or concerns you may have regarding your service or this report.
+
+
+Respectfully,
+
+
+CISA Continuous Phishing Program Administrator

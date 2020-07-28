@@ -1,37 +1,49 @@
 ---
-version: "3.7"
-
-# This docker-compose file is used to build and test the container
-
-secrets:
-  quote_txt:
-    file: ./src/secrets/quote.txt
-
-services:
-  example:
-    # Run the container normally
-    build:
-      # VERSION must be specified on the command line:
-      # e.g., --build-arg VERSION=0.0.1
-      context: .
-      dockerfile: Dockerfile
-    image: cisagov/example
-    init: true
-    restart: "no"
-    environment:
-      - ECHO_MESSAGE=Hello World from docker-compose!
-    ports:
-      - target: "8080"
-        published: "8080"
-        protocol: tcp
-        mode: host
-    secrets:
-      - source: quote_txt
-        target: quote.txt
-
-  example-version:
-    # Run the container to collect version information
-    image: cisagov/example
-    init: true
-    restart: "no"
-    command: --version
+  version: "3.5"
+  services:
+    api:
+      build:
+        context: .
+      stdin_open: true
+      tty: true
+      container_name: pca-api
+      hostname: pca-api
+      restart: on-failure
+      links:
+        - mongodb
+      volumes:
+        - ./src:/app
+      env_file:
+        - .env
+      networks:
+        - backend
+      ports:
+        - 8000:80
+        - 8043:443
+        
+    mongodb:
+      container_name: pca-mongodb
+      hostname: mongodb
+      image: "mongo:3.6"
+      # These ports are exposed on the host; 'hostport:containerport'.
+      # You could connect to this server from outside with the *host's*
+      # DNS name or IP address and port 27017 (the left-hand side of the
+      # colon).
+      ports:
+        - "27017:27017"
+      volumes:
+        # - ./etc/docker-entrypoint-initdb.d/001_users.js:/docker-entrypoint-initdb.d/001_users.js
+        - "mongodb:/data/db"
+      env_file:
+        - .env
+      networks:
+        - backend
+  
+  # Host volumes used to store code.
+  volumes:
+    mongodb:
+  
+  networks:
+    backend:
+      name: pca_backend
+  

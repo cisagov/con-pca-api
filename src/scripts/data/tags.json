@@ -1,0 +1,272 @@
+[
+  {
+    "data_source": "{{.URL}}",
+    "description": "A URL which is used to navigate to a web page.",
+    "tag": "<%URL%>",
+    "tag_type": "gophish"
+  },
+  {
+    "data_source": "{{.FirstName}}",
+    "description": "The first name of the email recipient.",
+    "tag": "<%TARGET_FIRST_NAME%>",
+    "tag_type": "gophish"
+  },
+  {
+    "data_source": "{{.LastName}}",
+    "description": "The last name of the email recipient.",
+    "tag": "<%TARGET_LAST_NAME%>",
+    "tag_type": "gophish"
+  },
+  {
+    "data_source": "{{.FirstName}} {{.LastName}}",
+    "description": "The full name (first and last) of the email recipient.",
+    "tag": "<%TARGET_FULL_NAME%>",
+    "tag_type": "gophish"
+  },
+  {
+    "data_source": "{{.Email}}",
+    "description": "The email address of the recipient.",
+    "tag": "<%TARGET_EMAIL%>",
+    "tag_type": "gophish"
+  },
+  {
+    "data_source": "{{.Position}}",
+    "description": "The recipient's job role/position in the organization.",
+    "tag": "<%TARGET_POSITION%>",
+    "tag_type": "gophish"
+  },
+  {
+    "data_source": "{{.From}}",
+    "description": "The name of the spoofed sender.",
+    "tag": "<%FROM%>",
+    "tag_type": "gophish"
+  },
+  {
+    "data_source": "customer_info['name']",
+    "description": "The name of the customer organization.",
+    "tag": "<%CUSTOMER_NAME%>",
+    "tag_type": "con-pca-eval"
+  },
+  {
+    "data_source": "customer_spoof_email(customer_info)",
+    "description": "A spoofed internal email address that appears to come from the customer organization.",
+    "tag": "<%CUSTOMER_EMAIL%>",
+    "tag_type": "con-pca-eval"
+  },
+  {
+    "data_source": "",
+    "description": "A relevant system in the customer organization that relates to the content of the email, i.e., a computer system that needs maintenance.",
+    "tag": "<%CUSTOMER_SYSTEM%>",
+    "tag_type": "con-pca"
+  },
+  {
+    "data_source": "get_full_customer_address(customer_info)",
+    "description": "The customer organization's full address including the building number, street name, suite/building, city, state, and zip code.",
+    "tag": "<%CUSTOMER_ADDRESS_FULL%>",
+    "tag_type": "con-pca-eval"
+  },
+  {
+    "data_source": "customer_info['address_1']",
+    "description": "The customer organization's primary address information.",
+    "tag": "<%CUSTOMER_ADDRESS_1%>",
+    "tag_type": "con-pca-eval"
+  },
+  {
+    "data_source": "customer_info['address_2']",
+    "description": "The customer organization's secondary address information such as unit or suite.",
+    "tag": "<%CUSTOMER_ADDRESS_2%>",
+    "tag_type": "con-pca-eval"
+  },
+  {
+    "data_source": "customer_info['state']",
+    "description": "The state where the customer organization is located.",
+    "tag": "<%CUSTOMER_STATE%>",
+    "tag_type": "con-pca-eval"
+  },
+  {
+    "data_source": "customer_info['city']",
+    "description": "The city where the customer organization is located.",
+    "tag": "<%CUSTOMER_CITY%>",
+    "tag_type": "con-pca-eval"
+  },
+  {
+    "data_source": "customer_info['zip_code']",
+    "description": "The zip code corresponding to the customer organization location.",
+    "tag": "<%CUSTOMER_ZIPCODE%>",
+    "tag_type": "con-pca-eval"
+  },
+  {
+    "data_source": "current_season()",
+    "description": "The time of year. This includes summer (June, July, and August), fall (September, October, and November), winter (December, January, and February), and spring (March, April, and May).",
+    "tag": "<%CURRENT_SEASON%>",
+    "tag_type": "con-pca-eval"
+  },
+  {
+    "data_source": "today.strftime('%B %d, %Y')",
+    "description": "The current date written out in full (i.e. March 4th, 2020).",
+    "tag": "<%CURRENT_DATE_LONG%>",
+    "tag_type": "con-pca-eval"
+  },
+  {
+    "data_source": "today.strftime('%m/%d/%y')",
+    "description": "The current date written out in a shortened format (i.e. 12/27/19).",
+    "tag": "<%CURRENT_DATE_SHORT%>",
+    "tag_type": "con-pca-eval"
+  },
+  {
+    "data_source": "today.strftime('%m')",
+    "description": "The number corresponding to the current month (1-12 for January-December).",
+    "tag": "<%CURRENT_MONTH_NUM%>",
+    "tag_type": "con-pca-eval"
+  },
+  {
+    "data_source": "today.strftime('%B')",
+    "description": "The name of the current month written out fully.",
+    "tag": "<%CURRENT_MONTH_LONG%>",
+    "tag_type": "con-pca-eval"
+  },
+  {
+    "data_source": "today.strftime('%b')",
+    "description": "The name of the current month written out as an abbreviation (i.e. Jan, Feb, Mar, etc.).",
+    "tag": "<%CURRENT_MONTH_SHORT%>",
+    "tag_type": "con-pca-eval"
+  },
+  {
+    "data_source": "today.strftime('%Y')",
+    "description": "The current year written out in full (i.e. 2020).",
+    "tag": "<%CURRENT_YEAR_LONG%>",
+    "tag_type": "con-pca-eval"
+  },
+  {
+    "data_source": "today.strftime('%y')",
+    "description": "The current year written out in a shortened format (i.e. 19 for 2019).",
+    "tag": "<%CURRENT_YEAR_SHORT%>",
+    "tag_type": "con-pca-eval"
+  },
+  {
+    "data_source": "today.strftime('%d')",
+    "description": "The current day of the week.",
+    "tag": "<%CURRENT_DAY%>",
+    "tag_type": "con-pca-eval"
+  },
+  {
+    "data_source": "generate_random_name('Full')",
+    "description": "A made up full name to imitate an employee from the customer organization.",
+    "tag": "<%SPOOF_NAME_FULL%>",
+    "tag_type": "con-pca-eval"
+  },
+  {
+    "data_source": "generate_random_name('Full')",
+    "description": "A made up a name to imitate an employee from the customer organization.",
+    "tag": "<%SPOOF_NAME%>",
+    "tag_type": "con-pca-eval"
+  },
+  {
+    "data_source": "generate_random_name('First')",
+    "description": "A made up first name to imitate an employee from the customer organization.",
+    "tag": "<%SPOOF_NAME_FIRST%>",
+    "tag_type": "con-pca-eval"
+  },
+  {
+    "data_source": "generate_random_name('Full', 'male')",
+    "description": "A made up full name to imitate an employee from the customer organization.",
+    "tag": "<%SPOOF_NAME_FULL_MALE%>",
+    "tag_type": "con-pca-eval"
+  },
+  {
+    "data_source": "generate_random_name('First', 'male')",
+    "description": "A made up first name to imitate an employee from the customer organization.",
+    "tag": "<%SPOOF_NAME_FIRST_MALE%>",
+    "tag_type": "con-pca-eval"
+  },
+  {
+    "data_source": "generate_random_name('Full', 'female')",
+    "description": "A made up full name to imitate an employee from the customer organization.",
+    "tag": "<%SPOOF_NAME_FULL_FEMALE%>",
+    "tag_type": "con-pca-eval"
+  },
+  {
+    "data_source": "generate_random_name('First', 'female')",
+    "description": "A made up first name to imitate an employee from the customer organization.",
+    "tag": "<%SPOOF_NAME_FIRST_FEMALE%>",
+    "tag_type": "con-pca-eval"
+  },
+  {
+    "data_source": "generate_random_name('Last')",
+    "description": "A made up last name to imitate an employee from the customer organization.",
+    "tag": "<%SPOOF_NAME_LAST%>",
+    "tag_type": "con-pca-eval"
+  },
+  {
+    "data_source": "",
+    "description": "An important event that is relevant to the customer organization and the context of the email.",
+    "tag": "<%EVENT%>",
+    "tag_type": "con-pca"
+  },
+  {
+    "data_source": "",
+    "description": "A timeframe for a task or action to be completed by/occur (i.e. within a week, by the end of the quarter, etc.).",
+    "tag": "<%TIMEFRAME%>",
+    "tag_type": "con-pca"
+  },
+  {
+    "data_source": "spoof_domain()",
+    "description": "Creates spoof name of a website to be used in a URL or email address.",
+    "tag": "<%DOMAIN%>",
+    "tag_type": "con-pca-eval"
+  },
+  {
+    "data_source": "customer_info['identifier']",
+    "description": "An abbreviated form of a phrase, such as a company/organization's name (i.e. CISA for Cybersecurity and Infrastructure Security Agency).",
+    "tag": "<%ACRONYM%>",
+    "tag_type": "con-pca-eval"
+  },
+  {
+    "data_source": "",
+    "description": "A short and striking or memorable phrase used to represent an organization.",
+    "tag": "<%SLOGAN%>",
+    "tag_type": "con-pca"
+  },
+  {
+    "data_source": "",
+    "description": "A mark to show that something has been written or agreed by the signer.",
+    "tag": "<%SIGNATURE%>",
+    "tag_type": "con-pca"
+  },
+  {
+    "data_source": "",
+    "description": "The subject matter of the email.",
+    "tag": "<%TOPIC%>",
+    "tag_type": "con-pca"
+  },
+  {
+    "data_source": "",
+    "description": "An identifying number or string that can represent a service case or temporary password.",
+    "tag": "<%TOKEN%>",
+    "tag_type": "con-pca"
+  },
+  {
+    "data_source": "",
+    "description": "An employee program utilized within the customer organization (i.e. a company parking program).",
+    "tag": "<%PROGRAM%>",
+    "tag_type": "con-pca"
+  },
+  {
+    "data_source": "",
+    "description": "The symbol used to represent the customer organization.",
+    "tag": "<%LOGO%>",
+    "tag_type": "con-pca"
+  },
+  {
+    "data_source": "",
+    "description": "The job/position of a spoof employee.",
+    "tag": "<%JOB_ROLE%>",
+    "tag_type": "con-pca"
+  },
+  {
+    "data_source": "",
+    "description": "A number to represent an amount of something.",
+    "tag": "<%NUMBER%>",
+    "tag_type": "con-pca"
+  }
+]

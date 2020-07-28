@@ -2,3 +2,12 @@
 pre-commit
 pytest
 pytest-dockerc
+black
+coverage
+faker
+pytest-django
+pytest-env
+pytest-mock
+pytest-pythonpath
+radon
+
