@@ -1,44 +1,45 @@
 # Standard Python Libraries
+import base64
 from datetime import datetime, timedelta
 import logging
-import base64
 
 # Third-Party Libraries
-# Local Libraries
-# Django Libraries
-from scipy.stats.mstats import gmean
+
+
 from api.manager import CampaignManager
 from api.models.customer_models import CustomerModel, validate_customer
-from api.models.subscription_models import SubscriptionModel, validate_subscription
-from api.models.customer_models import CustomerModel, validate_customer
 from api.models.dhs_models import DHSContactModel, validate_dhs_contact
+from api.models.subscription_models import SubscriptionModel, validate_subscription
 from api.utils.db_utils import get_list, get_single
+from django.views.generic import TemplateView
 
+# Local Libraries
+# Django Libraries
+from reports.utils import (
+    campaign_templates_to_string,
+    format_timedelta,
+    get_closest_cycle_within_day_range,
+    get_cycle_by_date_in_range,
+    get_cycles_breakdown,
+    get_most_successful_campaigns,
+    get_related_subscription_stats,
+    get_reports_to_click,
+    get_statistic_from_group,
+    get_statistic_from_region_group,
+    get_stats_low_med_high_by_level,
+    get_subscription_stats_for_cycle,
+    get_subscription_stats_for_month,
+    get_template_details,
+    pprintItem,
+    ratio_to_percent,
+)
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.views.generic import TemplateView
 
-
-# from . import views
-from reports.utils import (
-    get_subscription_stats_for_cycle,
-    get_subscription_stats_for_month,
-    get_related_subscription_stats,
-    get_cycles_breakdown,
-    get_template_details,
-    get_statistic_from_group,
-    get_reports_to_click,
-    campaign_templates_to_string,
-    get_most_successful_campaigns,
-    get_closest_cycle_within_day_range,
-    ratio_to_percent,
-    format_timedelta,
-    get_statistic_from_region_group,
-    get_stats_low_med_high_by_level,
-    get_cycle_by_date_in_range,
-    pprintItem
-)
+# Local Libraries
+# Django Libraries
+from scipy.stats.mstats import gmean
 
 logger = logging.getLogger(__name__)
 
@@ -54,10 +55,11 @@ class MonthlyReportsView(APIView):
     def getMonthlyStats(self, subscription):
         start_date_param = self.kwargs["start_date"]
         target_report_date = datetime.strptime(
-            start_date_param, '%Y-%m-%dT%H:%M:%S.%f%z')
+            start_date_param, "%Y-%m-%dT%H:%M:%S.%f%z"
+        )
 
         # Get statistics for the specified subscription during the specified cycle
-        
+
         subscription_stats = get_subscription_stats_for_month(
             subscription, target_report_date
         )
@@ -81,27 +83,28 @@ class MonthlyReportsView(APIView):
         )
 
         total = len(subscription["target_email_list"])
-        low_mid_high_bar_data = get_stats_low_med_high_by_level(
-            subscription_stats)
+        low_mid_high_bar_data = get_stats_low_med_high_by_level(subscription_stats)
         zerodefault = [0] * 15
-        low_mid_high_bar_data = low_mid_high_bar_data if low_mid_high_bar_data is not None else zerodefault
-        
-
+        low_mid_high_bar_data = (
+            low_mid_high_bar_data if low_mid_high_bar_data is not None else zerodefault
+        )
 
         metrics = {
             "total_users_targeted": total,
             "number_of_email_sent_overall": sent,
             "number_of_clicked_emails": clicked,
-            "percent_of_clicked_emails": 0 if sent == 0 else round(
-                float(clicked or 0) / float(1 if sent is None else sent), 2
-            ),
+            "percent_of_clicked_emails": 0
+            if sent == 0
+            else round(float(clicked or 0) / float(1 if sent is None else sent), 2),
             "number_of_opened_emails": opened,
             "number_of_phished_users_overall": total,
             "percent_of_phished_users_overall": round(
                 float(clicked or 0) / float(1 if total is None else total), 2
             ),
             "number_of_reports_to_helpdesk": reported,
-            "percent_report_rate": 0 if opened == 0 else round(
+            "percent_report_rate": 0
+            if opened == 0
+            else round(
                 float(reported or 0) / float(1 if opened is None else opened), 2
             ),
             "reports_to_clicks_ratio": get_reports_to_click(subscription_stats),
@@ -111,13 +114,13 @@ class MonthlyReportsView(APIView):
             "avg_time_to_first_report": get_statistic_from_group(
                 subscription_stats, "stats_all", "reported", "average"
             ),
-            "ratio_reports_to_clicks": 0 if clicked == 0 else round(
-                float(reported or 0) /
-                float(1 if clicked is None else clicked), 2
+            "ratio_reports_to_clicks": 0
+            if clicked == 0
+            else round(
+                float(reported or 0) / float(1 if clicked is None else clicked), 2
             ),
             "monthly_report_target_date": target_report_date,
         }
-        
 
         return metrics, subscription_stats
 
@@ -142,13 +145,11 @@ class MonthlyReportsView(APIView):
 
         campaigns = subscription.get("gophish_campaign_list")
         summary = [
-            campaign_manager.get(
-                "summary", campaign_id=campaign.get("campaign_id"))
+            campaign_manager.get("summary", campaign_id=campaign.get("campaign_id"))
             for campaign in campaigns
         ]
 
-        target_count = sum([targets.get("stats").get("total")
-                            for targets in summary])
+        target_count = sum([targets.get("stats").get("total") for targets in summary])
 
         metrics, subscription_stats = self.getMonthlyStats(subscription)
 
@@ -157,8 +158,7 @@ class MonthlyReportsView(APIView):
         )
 
         customer_address_2 = """{}, {} {} USA""".format(
-            customer.get("city"), customer.get(
-                "state"), customer.get("zip_code"),
+            customer.get("city"), customer.get("state"), customer.get("zip_code"),
         )
 
         dhs_contact_name = "{} {}".format(
@@ -191,8 +191,7 @@ class MonthlyReportsView(APIView):
             "end_date": subscription.get("end_date"),
             "target_count": target_count,
             "metrics": metrics,
-            "subscription_stats": subscription_stats 
+            "subscription_stats": subscription_stats,
         }
 
         return Response(context, status=status.HTTP_202_ACCEPTED)
-

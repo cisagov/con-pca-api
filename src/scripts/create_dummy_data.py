@@ -40,6 +40,7 @@ def load_file(data_file):
 # )
 # client = MongoClient(mongo_uri)
 
+
 def create_customers(customers):
     """Create Customers.
 
@@ -70,7 +71,7 @@ def create_customers(customers):
         except Exception as err:
             print(err)
             pass
-    
+
     return created_customer_uuids
 
 
@@ -131,7 +132,7 @@ def create_subscriptions(subscriptions, customer, dhs_contact):
             print(err)
 
         time.sleep(5)
-    
+
     return created_subcription_uuids
 
 
@@ -152,7 +153,9 @@ def create_recommendations(recommendations):
         try:
             resp_json = resp.json()
             created_recommendations_uuid = resp_json["recommendations_uuid"]
-            print("created recommendations_uuid: {}".format(created_recommendations_uuid))
+            print(
+                "created recommendations_uuid: {}".format(created_recommendations_uuid)
+            )
             created_recommendations_uuids.append(created_recommendations_uuid)
         except Exception as err:
             print(err)
@@ -171,7 +174,9 @@ def main():
     print("Step 3/6: Creating DHS Contacts")
     created_dhs_contacts_uuids = create_dhs_contacts(json_data["dhs_contacts_data"])
     print("Step 4/6: Create Recommendations")
-    created_recommendations_uuids = create_recommendations(json_data["recommendations_data"])
+    created_recommendations_uuids = create_recommendations(
+        json_data["recommendations_data"]
+    )
     print("Step 5/6: Create Subscriptions")
 
     if not created_customer_uuids:
@@ -198,7 +203,11 @@ def main():
         except requests.exceptions.HTTPError as err:
             raise err
 
-    created_subcription_uuids = create_subscriptions(json_data["subscription_data"], created_customer_uuids[0], created_dhs_contacts_uuids[0])
+    created_subcription_uuids = create_subscriptions(
+        json_data["subscription_data"],
+        created_customer_uuids[0],
+        created_dhs_contacts_uuids[0],
+    )
 
     print("created subcription_list: {}".format(created_subcription_uuids))
 
@@ -212,7 +221,6 @@ def main():
     print("Add previous data for reporting")
     for sub_id in created_customer_uuids:
         print(sub_id)
-
 
     print("Step 6/6: Writing values to file: {}".format(output_file))
 

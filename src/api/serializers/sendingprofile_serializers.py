@@ -7,6 +7,7 @@ serializing data coming from the db into a request response.
 # Third-Party Libraries
 from rest_framework import serializers
 
+
 class HeaderSerializer(serializers.Serializer):
     key = serializers.CharField()
     value = serializers.CharField()
@@ -43,7 +44,7 @@ class SendingProfilePatchSerializer(serializers.Serializer):
     ignore_cert_errors = serializers.BooleanField(required=False)
     modified_date = serializers.CharField(required=False)
     headers = HeaderSerializer(many=True)
-    
+
 
 class SendingProfilePatchResponseSerializer(serializers.Serializer):
     """

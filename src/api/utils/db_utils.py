@@ -3,16 +3,17 @@
 import asyncio
 import datetime
 import logging
+import os
 import uuid
 
 # Third-Party Libraries
+
 # Models
 from api.models.dhs_models import DHSContactModel
 from api.models.subscription_models import SubscriptionModel
 from api.models.template_models import TemplateModel
 from database.service import Service
 from django.conf import settings
-import os
 
 logger = logging.getLogger(__name__)
 

@@ -20,7 +20,7 @@
       ports:
         - 8000:80
         - 8043:443
-        
+
     mongodb:
       container_name: pca-mongodb
       hostname: mongodb
@@ -38,12 +38,11 @@
         - .env
       networks:
         - backend
-  
+
   # Host volumes used to store code.
   volumes:
     mongodb:
-  
+
   networks:
     backend:
       name: pca_backend
-  

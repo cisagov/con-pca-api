@@ -16,11 +16,11 @@
           "title": "CeO"
         }
       ],
+      "customer_type": "Private",
       "identifier": "BoB",
       "industry": "Basic Chemicals",
       "name": "Bobs Burgers",
       "sector": "Chemical",
-      "customer_type": "Private",
       "state": "California",
       "zip_code": "12345"
     },
@@ -40,9 +40,9 @@
           "title": "The best"
         }
       ],
+      "customer_type": "Private",
       "identifier": "NHL",
       "industry": "Other",
-      "customer_type": "Private",
       "name": "The Ice Rink",
       "sector": "Energy",
       "state": "Idaho",
@@ -51,24 +51,130 @@
   ],
   "dhs_contacts_data": [
     {
+      "active": true,
+      "email": "user@example.com",
       "first_name": "Rand",
       "last_name": "Al'Thor",
-      "title": "string",
-      "office_phone": "555-555-5555",
       "mobile_phone": "555-555-5555",
-      "email": "user@example.com",
       "notes": "string",
-      "active": true
+      "office_phone": "555-555-5555",
+      "title": "string"
     },
     {
+      "active": true,
+      "email": "user@example.com",
       "first_name": "Mat",
       "last_name": "Cauthon",
-      "title": "string",
-      "office_phone": "555-555-5555",
       "mobile_phone": "555-555-5555",
-      "email": "user@example.com",
       "notes": "string",
-      "active": true
+      "office_phone": "555-555-5555",
+      "title": "string"
+    }
+  ],
+  "recommendations_data": [
+    {
+      "appearance": {
+        "grammar": 1,
+        "link_domain": 0,
+        "logo_graphics": 0
+      },
+      "behavior": {
+        "curiosity": 1,
+        "duty_obligation": 0,
+        "fear": 0,
+        "greed": 1
+      },
+      "complexity": 1,
+      "deception_level": 1,
+      "description": "Recommendation with deception level of 1",
+      "name": "Recommendation 1",
+      "relevancy": {
+        "organization": 1,
+        "public_news": 0
+      },
+      "sender": {
+        "authoritative": 0,
+        "external": 1,
+        "internal": 0
+      }
+    },
+    {
+      "appearance": {
+        "grammar": 1,
+        "link_domain": 0,
+        "logo_graphics": 0
+      },
+      "behavior": {
+        "curiosity": 1,
+        "duty_obligation": 0,
+        "fear": 0,
+        "greed": 1
+      },
+      "complexity": 1,
+      "deception_level": 2,
+      "description": "Recommendation with deception level of 2",
+      "name": "Recommendation 2",
+      "relevancy": {
+        "organization": 1,
+        "public_news": 0
+      },
+      "sender": {
+        "authoritative": 0,
+        "external": 1,
+        "internal": 0
+      }
+    },
+    {
+      "appearance": {
+        "grammar": 1,
+        "link_domain": 0,
+        "logo_graphics": 0
+      },
+      "behavior": {
+        "curiosity": 1,
+        "duty_obligation": 0,
+        "fear": 0,
+        "greed": 1
+      },
+      "complexity": 3,
+      "deception_level": 3,
+      "description": "Recommendation with deception level of 3",
+      "name": "Recommendation 3",
+      "relevancy": {
+        "organization": 1,
+        "public_news": 0
+      },
+      "sender": {
+        "authoritative": 0,
+        "external": 1,
+        "internal": 0
+      }
+    },
+    {
+      "appearance": {
+        "grammar": 1,
+        "link_domain": 0,
+        "logo_graphics": 0
+      },
+      "behavior": {
+        "curiosity": 1,
+        "duty_obligation": 0,
+        "fear": 0,
+        "greed": 1
+      },
+      "complexity": 1,
+      "deception_level": 1,
+      "description": "Recommendation with deception level of 1",
+      "name": "Recommendation 4",
+      "relevancy": {
+        "organization": 1,
+        "public_news": 0
+      },
+      "sender": {
+        "authoritative": 0,
+        "external": 1,
+        "internal": 0
+      }
     }
   ],
   "subscription_data": [
@@ -201,115 +307,6 @@
       ],
       "templates_selected_uuid_list": [],
       "url": "https://google.com"
-    }
-
-
-    
-  ],
-  "recommendations_data": [
-    {
-      "name": "Recommendation 1",
-      "description": "Recommendation with deception level of 1",
-      "deception_level": 1,
-      "appearance": {
-        "link_domain": 0,
-        "logo_graphics": 0,
-        "grammar": 1
-      },
-      "sender": {
-        "authoritative": 0,
-        "internal": 0,
-        "external": 1
-      },
-      "relevancy": {
-        "organization": 1,
-        "public_news": 0
-      },
-      "behavior": {
-        "duty_obligation": 0,
-        "fear": 0,
-        "curiosity": 1,
-        "greed": 1
-      },
-      "complexity": 1
-    },
-    {
-      "name": "Recommendation 2",
-      "description": "Recommendation with deception level of 2",
-      "deception_level": 2,
-      "appearance": {
-        "link_domain": 0,
-        "logo_graphics": 0,
-        "grammar": 1
-      },
-      "sender": {
-        "authoritative": 0,
-        "internal": 0,
-        "external": 1
-      },
-      "relevancy": {
-        "organization": 1,
-        "public_news": 0
-      },
-      "behavior": {
-        "duty_obligation": 0,
-        "fear": 0,
-        "curiosity": 1,
-        "greed": 1
-      },
-      "complexity": 1
-    },
-    {
-      "name": "Recommendation 3",
-      "description": "Recommendation with deception level of 3",
-      "deception_level": 3,
-      "appearance": {
-        "link_domain": 0,
-        "logo_graphics": 0,
-        "grammar": 1
-      },
-      "sender": {
-        "authoritative": 0,
-        "internal": 0,
-        "external": 1
-      },
-      "relevancy": {
-        "organization": 1,
-        "public_news": 0
-      },
-      "behavior": {
-        "duty_obligation": 0,
-        "fear": 0,
-        "curiosity": 1,
-        "greed": 1
-      },
-      "complexity": 3
-    },
-    {
-      "name": "Recommendation 4",
-      "description": "Recommendation with deception level of 1",
-      "deception_level": 1,
-      "appearance": {
-        "link_domain": 0,
-        "logo_graphics": 0,
-        "grammar": 1
-      },
-      "sender": {
-        "authoritative": 0,
-        "internal": 0,
-        "external": 1
-      },
-      "relevancy": {
-        "organization": 1,
-        "public_news": 0
-      },
-      "behavior": {
-        "duty_obligation": 0,
-        "fear": 0,
-        "curiosity": 1,
-        "greed": 1
-      },
-      "complexity": 1
     }
   ]
 }

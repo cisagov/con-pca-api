@@ -269,5 +269,3 @@ class GenericRepository(object):
         """
         await self.collection.delete_one({self.uuid_name: uuid})
         return {self.uuid_name: uuid}
-
-    

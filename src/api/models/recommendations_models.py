@@ -3,6 +3,17 @@ Models.
 
 These are not Django Models, there are created using Schematics Models
 """
+# Third-Party Libraries
+
+# Third-Party Libraries
+
+from api.models.template_models import (
+    TemplateAppearanceModel,
+    TemplateBehaviorModel,
+    TemplateRelevancyModel,
+    TemplateSenderModel,
+)
+
 # Local Libraries
 from database.repository.models import Model
 from database.repository.types import (
@@ -11,12 +22,6 @@ from database.repository.types import (
     ModelType,
     StringType,
     UUIDType,
-)
-from api.models.template_models import (
-    TemplateAppearanceModel,
-    TemplateSenderModel,
-    TemplateRelevancyModel,
-    TemplateBehaviorModel,
 )
 
 

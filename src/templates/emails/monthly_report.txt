@@ -1,6 +1,6 @@
 Dear {{ first_name }} {{ last_name }},
 
- 
+
 
 Thank you for participating in the CISA Phishing Subscription Service Con-PCA. Attached is your monthly phishing progress report for your review.
 

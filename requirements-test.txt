@@ -1,13 +1,12 @@
 --requirement requirements.txt
-pre-commit
-pytest
-pytest-dockerc
 black
 coverage
 faker
+pre-commit
+pytest
 pytest-django
+pytest-dockerc
 pytest-env
 pytest-mock
 pytest-pythonpath
 radon
-

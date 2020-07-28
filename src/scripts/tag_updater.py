@@ -167,12 +167,13 @@ old_spoof_name_tags = [
     "[FAKE_NAME]",
 ]
 
-old_event_tags = ["[list relevant weather event]", "[CUSTOMER SPECIFIC EVENT]", "[APPLICABLE EVENT]"]
+old_event_tags = [
+    "[list relevant weather event]",
+    "[CUSTOMER SPECIFIC EVENT]",
+    "[APPLICABLE EVENT]",
+]
 
-old_time_frame_tags = [
-    "[Change time frame as needed]",
-    "[TIMEFRAME]"
-    ]
+old_time_frame_tags = ["[Change time frame as needed]", "[TIMEFRAME]"]
 
 old_domain_tags = [
     "[domain]",

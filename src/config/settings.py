@@ -5,8 +5,7 @@ Here we set all setting needed for djnago apps within this repo.
 """
 # Standard Python Libraries
 import os
-
-from socket import gethostname, gethostbyname
+from socket import gethostbyname, gethostname
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

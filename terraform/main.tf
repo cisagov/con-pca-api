@@ -86,7 +86,7 @@ resource "aws_s3_bucket" "websites" {
   ]
 }
 POLICY
-  
+
   website {
     index_document = "index.html"
   }

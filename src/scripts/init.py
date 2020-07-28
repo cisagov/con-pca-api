@@ -1,12 +1,15 @@
 # Standard Python Libraries
-import os
-import requests
 import json
+import os
 import time
+
+# Third-Party Libraries
+
 
 # Third Party Libraries
 from gophish import Gophish
 from gophish.models import SMTP, Page, Webhook
+import requests
 
 API_KEY = os.environ.get("GP_API_KEY")
 URL = os.environ.get("GP_URL")
@@ -104,7 +107,10 @@ def create_webhook(webhooks):
             continue
         response = API.webhooks.post(
             Webhook(
-                name=webhook["name"], url=webhook["url"], is_active=webhook["is_active"], secret=webhook["secret"]
+                name=webhook["name"],
+                url=webhook["url"],
+                is_active=webhook["is_active"],
+                secret=webhook["secret"],
             )
         )
         print(f"Webhook with id: {response.id} has been created")

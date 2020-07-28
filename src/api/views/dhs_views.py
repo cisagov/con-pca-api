@@ -1,27 +1,27 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-
-from api.serializers.dhs_serializers import (
-    DHSContactGetSerializer,
-    DHSContactPostSerializer,
-    DHSContactPostResponseSerializer,
-    DHSContactQuerySerializer,
-    DHSContactDeleteResponseSerializer,
-    DHSContactPatchSerializer,
-)
-from api.models.dhs_models import DHSContactModel, validate_dhs_contact
-from api.utils.db_utils import (
-    get_list,
-    save_single,
-    delete_single,
-    update_single,
-    get_single,
-)
-
-from drf_yasg.utils import swagger_auto_schema
-
+# Standard Python Libraries
 import logging
+
+# Third-Party Libraries
+from api.models.dhs_models import DHSContactModel, validate_dhs_contact
+from api.serializers.dhs_serializers import (
+    DHSContactDeleteResponseSerializer,
+    DHSContactGetSerializer,
+    DHSContactPatchSerializer,
+    DHSContactPostResponseSerializer,
+    DHSContactPostSerializer,
+    DHSContactQuerySerializer,
+)
+from api.utils.db_utils import (
+    delete_single,
+    get_list,
+    get_single,
+    save_single,
+    update_single,
+)
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 logger = logging.getLogger()
 

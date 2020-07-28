@@ -8,8 +8,8 @@ load and creation of data.
 from datetime import datetime, timedelta
 import json
 import os
-import time
 import random
+import time
 
 # Third-Party Libraries
 import requests
@@ -142,18 +142,14 @@ def main():
 
     customers = []
     try:
-        resp = requests.get(
-            "http://localhost:8000/api/v1/customers/"
-        )
+        resp = requests.get("http://localhost:8000/api/v1/customers/")
         resp.raise_for_status()
         customers = resp.json()
     except requests.exceptions.HTTPError as err:
         raise err
     subscriptions = []
     try:
-        resp = requests.get(
-            "http://localhost:8000/api/v1/subscriptions/"
-        )
+        resp = requests.get("http://localhost:8000/api/v1/subscriptions/")
         resp.raise_for_status()
         subscriptions = resp.json()
     except requests.exceptions.HTTPError as err:
@@ -165,7 +161,7 @@ def main():
     for customer in json_data["customer_data"]:
         reporting_customer_idents.append(customer["identifier"])
     dummy_reporting_customers = []
-    for customer in customers:   
+    for customer in customers:
         if customer["identifier"] in reporting_customer_idents:
             dummy_reporting_customers.append(customer["customer_uuid"])
 
@@ -178,7 +174,6 @@ def main():
     for sub in dummy_reporting_subscriptions:
         target_count += len(sub["target_email_list"])
 
-
     print(target_count)
 
     target_on = 0
@@ -190,17 +185,13 @@ def main():
         for campaign in subscription["gophish_campaign_list"]:
             if campaign["campaign_id"] in active_campaigns:
                 for target in campaign["target_email_list"]:
-                    generate_webhooks_for_target(target,campaign["campaign_id"])
+                    generate_webhooks_for_target(target, campaign["campaign_id"])
                     print(f"{target_on}/{target_count}")
                     target_on += 1
-                
 
     # print(active_campaigns)
     # print("========")
     # print(subscriptions)
-    
-
-    
 
     # print("writing values to file: {}...".format(output_file))
 
@@ -212,7 +203,10 @@ def main():
     #     json.dump(data, outfile, indent=2)
     # print("Finished.....")
 
-def generate_webhooks_for_target(target,campaign_id,start_date=-1,decpection_rate=-1):
+
+def generate_webhooks_for_target(
+    target, campaign_id, start_date=-1, decpection_rate=-1
+):
     if decpection_rate < 0:
         random.seed()
         decpection_rate = random.random()
@@ -220,42 +214,64 @@ def generate_webhooks_for_target(target,campaign_id,start_date=-1,decpection_rat
     if start_date == -1:
         last_event_time = datetime.utcnow()
     end_date = last_event_time + timedelta(days=90)
-    
-    webhooks.append(build_webhook(campaign_id,target["email"],last_event_time,"Email Sent"))
+
+    webhooks.append(
+        build_webhook(campaign_id, target["email"], last_event_time, "Email Sent")
+    )
     if decpection_rate > 0.3 and decpection_rate < 0.95:
-        last_event_time = get_date_in_range(last_event_time,end_date,random.random(),.5)
-        webhooks.append(build_webhook(campaign_id,target["email"],last_event_time,"Email Opened"))
+        last_event_time = get_date_in_range(
+            last_event_time, end_date, random.random(), 0.5
+        )
+        webhooks.append(
+            build_webhook(campaign_id, target["email"], last_event_time, "Email Opened")
+        )
         if decpection_rate > 0.6 and decpection_rate < 0.9:
-            last_event_time = get_date_in_range(last_event_time,end_date,random.random())
-            webhooks.append(build_webhook(campaign_id,target["email"],last_event_time,"Clicked Link"))
+            last_event_time = get_date_in_range(
+                last_event_time, end_date, random.random()
+            )
+            webhooks.append(
+                build_webhook(
+                    campaign_id, target["email"], last_event_time, "Clicked Link"
+                )
+            )
         if decpection_rate > 0.75 and decpection_rate < 0.85:
-            last_event_time = get_date_in_range(last_event_time,end_date,random.random())
-            webhooks.append(build_webhook(campaign_id,target["email"],last_event_time,"Submitted Data"))    
+            last_event_time = get_date_in_range(
+                last_event_time, end_date, random.random()
+            )
+            webhooks.append(
+                build_webhook(
+                    campaign_id, target["email"], last_event_time, "Submitted Data"
+                )
+            )
     if decpection_rate > 0.85:
-        last_event_time = get_date_in_range(last_event_time,end_date,random.random())
-        webhooks.append(build_webhook(campaign_id,target["email"],last_event_time,"Email Reported"))
+        last_event_time = get_date_in_range(last_event_time, end_date, random.random())
+        webhooks.append(
+            build_webhook(
+                campaign_id, target["email"], last_event_time, "Email Reported"
+            )
+        )
 
     for item in webhooks:
         try:
-            resp = requests.post(
-                "http://localhost:8000/api/v1/inboundwebhook/", item
-            )
+            resp = requests.post("http://localhost:8000/api/v1/inboundwebhook/", item)
             resp.raise_for_status()
         except requests.exceptions.HTTPError as err:
             raise err
 
-def build_webhook(camp_id,target_email,time,message):
+
+def build_webhook(camp_id, target_email, time, message):
     return {
-        'campaign_id': camp_id, 
-        'email': target_email, 
-        'time': time.strftime("%Y-%m-%dT%H:%M:%S.%f%z"), 
-        'message': message, 
-        'details': ''
+        "campaign_id": camp_id,
+        "email": target_email,
+        "time": time.strftime("%Y-%m-%dT%H:%M:%S.%f%z"),
+        "message": message,
+        "details": "",
     }
 
-def get_date_in_range(start,end,rand_val,val_mod=1):    
+
+def get_date_in_range(start, end, rand_val, val_mod=1):
     if val_mod > 1:
-        val_mod = 1/val_mod
+        val_mod = 1 / val_mod
     start_time = start
     end_time = end
 

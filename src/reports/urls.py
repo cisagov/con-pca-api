@@ -1,13 +1,7 @@
 # Third-Party Libraries
 from django.conf.urls import url
 from django.urls import include, path
-
-from reports.views import (
-    cycle_view,
-    monthly_view,
-    yearly_view,
-    system_view,
-)
+from reports.views import cycle_view, monthly_view, system_view, yearly_view
 
 urlpatterns = [
     path(
@@ -34,5 +28,5 @@ urlpatterns = [
         "<subscription_uuid>/subscription-stats-page/<start_date>/",
         cycle_view.CycleStatusView.as_view(),
         name="cycle-status",
-    )   
+    ),
 ]

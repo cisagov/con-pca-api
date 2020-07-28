@@ -8,14 +8,11 @@ contacts about reports and subscription updates.
 
 # Standard Python Libraries
 from datetime import datetime
-from pathlib import Path
 from email.mime.image import MIMEImage
 import logging
+from pathlib import Path
 
 # Third-Party Libraries
-from django.conf import settings
-
-import requests
 from api.models.dhs_models import DHSContactModel, validate_dhs_contact
 from api.utils.db_utils import get_single
 from django.conf import settings
@@ -24,7 +21,7 @@ from django.core.files.storage import FileSystemStorage
 from django.core.mail.message import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from notifications.utils import get_notification
-
+import requests
 
 logger = logging.getLogger()
 

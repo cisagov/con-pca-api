@@ -1,45 +1,46 @@
 # Standard Python Libraries
+import base64
 from datetime import datetime, timedelta
 import logging
-import base64
 
 # Third-Party Libraries
-# Local Libraries
-# Django Libraries
-from scipy.stats.mstats import gmean
+
+
 from api.manager import CampaignManager
 from api.models.customer_models import CustomerModel, validate_customer
-from api.models.subscription_models import SubscriptionModel, validate_subscription
-from api.models.customer_models import CustomerModel, validate_customer
 from api.models.dhs_models import DHSContactModel, validate_dhs_contact
+from api.models.subscription_models import SubscriptionModel, validate_subscription
 from api.utils.db_utils import get_list, get_single
+from django.views.generic import TemplateView
 
+# Local Libraries
+# Django Libraries
+from reports.utils import (
+    campaign_templates_to_string,
+    deception_stats_to_graph_format,
+    format_timedelta,
+    get_closest_cycle_within_day_range,
+    get_cycle_by_date_in_range,
+    get_cycles_breakdown,
+    get_most_successful_campaigns,
+    get_related_subscription_stats,
+    get_reports_to_click,
+    get_statistic_from_group,
+    get_statistic_from_region_group,
+    get_stats_low_med_high_by_level,
+    get_subscription_stats_for_cycle,
+    get_subscription_stats_for_month,
+    get_template_details,
+    pprintItem,
+    ratio_to_percent,
+)
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.views.generic import TemplateView
 
-
-# from . import views
-from reports.utils import (
-    get_subscription_stats_for_cycle,
-    get_subscription_stats_for_month,
-    get_related_subscription_stats,
-    get_cycles_breakdown,
-    get_template_details,
-    get_statistic_from_group,
-    get_reports_to_click,
-    campaign_templates_to_string,
-    get_most_successful_campaigns,
-    get_closest_cycle_within_day_range,
-    ratio_to_percent,
-    format_timedelta,
-    get_statistic_from_region_group,
-    get_stats_low_med_high_by_level,
-    get_cycle_by_date_in_range,
-    deception_stats_to_graph_format,
-    pprintItem
-)
+# Local Libraries
+# Django Libraries
+from scipy.stats.mstats import gmean
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +49,6 @@ campaign_manager = CampaignManager()
 
 
 class CycleReportsView(APIView):
-
     def get(self, request, **kwargs):
         """
         Generate the cycle report based off of the provided start date
@@ -56,8 +56,7 @@ class CycleReportsView(APIView):
         # Get Args from url
         subscription_uuid = self.kwargs["subscription_uuid"]
         start_date_param = self.kwargs["start_date"]
-        start_date = datetime.strptime(
-            start_date_param, '%Y-%m-%dT%H:%M:%S.%f%z')
+        start_date = datetime.strptime(start_date_param, "%Y-%m-%dT%H:%M:%S.%f%z")
         # Get targeted subscription and associated customer data
         subscription = get_single(
             subscription_uuid, "subscription", SubscriptionModel, validate_subscription
@@ -116,8 +115,7 @@ class CycleReportsView(APIView):
         }
 
         # Get statistics for the specified subscription during the specified cycle
-        subscription_stats = get_subscription_stats_for_cycle(
-            subscription, start_date)
+        subscription_stats = get_subscription_stats_for_cycle(subscription, start_date)
         region_stats = get_related_subscription_stats(subscription, start_date)
         previous_cycle_stats = get_cycles_breakdown(subscription["cycles"])
 
@@ -174,10 +172,9 @@ class CycleReportsView(APIView):
             ),
             "emails_sent_over_target_count": round(
                 get_statistic_from_group(
-                    subscription_stats, "stats_all", "sent", "count",
-                    zeroIfNone=True
-                ) /
-                len(subscription["target_email_list"]),
+                    subscription_stats, "stats_all", "sent", "count", zeroIfNone=True
+                )
+                / len(subscription["target_email_list"]),
                 0,
             ),
             "customer_clicked_avg": ratio_to_percent(
@@ -306,13 +303,12 @@ class CycleReportsView(APIView):
 
         return Response(context, status=status.HTTP_202_ACCEPTED)
 
-class CycleStatusView(APIView):
 
+class CycleStatusView(APIView):
     def get(self, request, **kwargs):
 
         start_date_param = self.kwargs["start_date"]
-        start_date = datetime.strptime(
-            start_date_param, '%Y-%m-%dT%H:%M:%S.%f%z')
+        start_date = datetime.strptime(start_date_param, "%Y-%m-%dT%H:%M:%S.%f%z")
 
         # Get targeted subscription and associated customer data
         subscription_uuid = self.kwargs["subscription_uuid"]
@@ -321,10 +317,8 @@ class CycleStatusView(APIView):
         )
 
         # Get statistics for the specified subscription during the specified cycle
-        subscription_stats = get_subscription_stats_for_cycle(
-            subscription, start_date)
+        subscription_stats = get_subscription_stats_for_cycle(subscription, start_date)
         get_template_details(subscription_stats["campaign_results"])
-        
 
         context = {
             "avg_time_to_first_click": format_timedelta(
@@ -337,17 +331,14 @@ class CycleStatusView(APIView):
                     subscription_stats, "stats_all", "reported", "average"
                 )
             ),
-            "sent":get_statistic_from_group(
-                    subscription_stats, "stats_all", "sent", "count"
-                ),
-            "target_count":len(subscription["target_email_list"]),
+            "sent": get_statistic_from_group(
+                subscription_stats, "stats_all", "sent", "count"
+            ),
+            "target_count": len(subscription["target_email_list"]),
             "campaign_details": subscription_stats["campaign_results"],
             "aggregate_stats": subscription_stats["stats_all"],
             # "stats": subscription_stats,
-            "levels":deception_stats_to_graph_format(subscription_stats)
-
+            "levels": deception_stats_to_graph_format(subscription_stats),
         }
 
         return Response(context, status=status.HTTP_202_ACCEPTED)
-
-    

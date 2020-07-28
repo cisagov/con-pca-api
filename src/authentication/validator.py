@@ -1,12 +1,14 @@
-#Based on https://github.com/labd/django-cognito-jwt under MIT license
+# Based on https://github.com/labd/django-cognito-jwt under MIT license
+# Standard Python Libraries
 import json
 
-import jwt
-import requests
+# Third-Party Libraries
 from django.conf import settings
 from django.core.cache import cache
 from django.utils.functional import cached_property
+import jwt
 from jwt.algorithms import RSAAlgorithm
+import requests
 
 
 class TokenError(Exception):
@@ -21,9 +23,8 @@ class TokenValidator:
 
     @cached_property
     def pool_url(self):
-        return "https://cognito-idp.%s.amazonaws.com/%s" % (
-            self.aws_region,
-            self.aws_user_pool,
+        return "https://cognito-idp.{}.amazonaws.com/{}".format(
+            self.aws_region, self.aws_user_pool,
         )
 
     @cached_property

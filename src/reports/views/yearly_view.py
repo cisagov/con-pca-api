@@ -1,44 +1,45 @@
 # Standard Python Libraries
+import base64
 from datetime import datetime, timedelta
 import logging
-import base64
 
 # Third-Party Libraries
-# Local Libraries
-# Django Libraries
-from scipy.stats.mstats import gmean
+
+
 from api.manager import CampaignManager
 from api.models.customer_models import CustomerModel, validate_customer
-from api.models.subscription_models import SubscriptionModel, validate_subscription
-from api.models.customer_models import CustomerModel, validate_customer
 from api.models.dhs_models import DHSContactModel, validate_dhs_contact
+from api.models.subscription_models import SubscriptionModel, validate_subscription
 from api.utils.db_utils import get_list, get_single
+from django.views.generic import TemplateView
 
+# Local Libraries
+# Django Libraries
+from reports.utils import (
+    campaign_templates_to_string,
+    format_timedelta,
+    get_closest_cycle_within_day_range,
+    get_cycle_by_date_in_range,
+    get_cycles_breakdown,
+    get_most_successful_campaigns,
+    get_related_subscription_stats,
+    get_reports_to_click,
+    get_statistic_from_group,
+    get_statistic_from_region_group,
+    get_stats_low_med_high_by_level,
+    get_subscription_stats_for_cycle,
+    get_subscription_stats_for_month,
+    get_template_details,
+    pprintItem,
+    ratio_to_percent,
+)
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.views.generic import TemplateView
 
-
-# from . import views
-from reports.utils import (
-    get_subscription_stats_for_cycle,
-    get_subscription_stats_for_month,
-    get_related_subscription_stats,
-    get_cycles_breakdown,
-    get_template_details,
-    get_statistic_from_group,
-    get_reports_to_click,
-    campaign_templates_to_string,
-    get_most_successful_campaigns,
-    get_closest_cycle_within_day_range,
-    ratio_to_percent,
-    format_timedelta,
-    get_statistic_from_region_group,
-    get_stats_low_med_high_by_level,
-    get_cycle_by_date_in_range,
-    pprintItem
-)
+# Local Libraries
+# Django Libraries
+from scipy.stats.mstats import gmean
 
 logger = logging.getLogger(__name__)
 
@@ -71,12 +72,10 @@ class YearlyReportsView(APIView):
         )
         campaigns = subscription.get("gophish_campaign_list")
         summary = [
-            campaign_manager.get(
-                "summary", campaign_id=campaign.get("campaign_id"))
+            campaign_manager.get("summary", campaign_id=campaign.get("campaign_id"))
             for campaign in campaigns
         ]
-        target_count = sum([targets.get("stats").get("total")
-                            for targets in summary])
+        target_count = sum([targets.get("stats").get("total") for targets in summary])
 
         customer_address = """
         {} {},

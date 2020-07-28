@@ -5,14 +5,13 @@ These are Django Rest Framework Serializers. These are used for
 serializing data coming from the db into a request response.
 """
 # Third-Party Libraries
-from rest_framework import serializers
-
 from api.serializers.template_serializers import (
     TemplateAppearanceSerializer,
-    TemplateSenderSerializer,
-    TemplateRelevancySerializer,
     TemplateBehaviorSerializer,
+    TemplateRelevancySerializer,
+    TemplateSenderSerializer,
 )
+from rest_framework import serializers
 
 
 class RecommendationsGetSerializer(serializers.Serializer):

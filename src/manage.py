@@ -1,12 +1,14 @@
 #!/usr/bin/env python
+# Standard Python Libraries
 import os
 import sys
-
 
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
     try:
+        # Third-Party Libraries
         from django.core.management import execute_from_command_line
+
         # if os.environ.get("DEBUG_PTVSD", 0) == 1:
         #     import ptvsd
 

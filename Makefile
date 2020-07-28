@@ -51,7 +51,7 @@ format:
 # target: dummy - initializes init_dummy_data for cpa
 dummy:
 	docker exec -it pca-api python scripts/create_dummy_data.py
-	
+
 # target: dummy_reporting initalizes dummy reporting subscriptions
 dummy_reporting:
 	docker exec -it pca-api python scripts/create_dummy_reporting_data.py
