@@ -1,7 +1,6 @@
 --requirement requirements.txt
 black
 coverage
-faker
 pre-commit
 pytest
 pytest-django
