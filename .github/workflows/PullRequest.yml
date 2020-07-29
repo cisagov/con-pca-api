@@ -1,5 +1,5 @@
 ---
-name: build
+name: Pull Request
 
 on:
   pull_request:
@@ -7,9 +7,10 @@ on:
     types: [apb]
 
 env:
-  IMAGE_NAME: cisagov/example
   PIP_CACHE_DIR: ~/.cache/pip
   PRE_COMMIT_CACHE_DIR: ~/.cache/pre-commit
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
 jobs:
   lint:
@@ -47,6 +48,33 @@ jobs:
         run: pre-commit install-hooks
       - name: Run pre-commit on all files
         run: pre-commit run --all-files
+
+  terraform_plan:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 0.12.28
+
+    - name: Terraform Init
+      working-directory: ./terraform
+      run: terraform init -input=false
+
+    - name: Terraform Validate
+      working-directory: ./terraform
+      run: terraform validate
+
+    - name: Get Tag
+      id: vars
+      run: echo ::set-output name=tag::$(echo ${GITHUB_SHA:0:10})
+
+    - name: Terraform Plan
+      working-directory: ./terraform
+      run: terraform plan -input=false -var="image_tag=${{steps.vars.outputs.tag}}"
+
   # test:
   #   runs-on: ubuntu-latest
   #   needs: [build]
