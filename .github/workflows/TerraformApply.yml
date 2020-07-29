@@ -14,12 +14,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    outputs:
+      tag: ${{ steps.vars.outputs.tag }}
+
     steps:
     - uses: actions/checkout@v2
 
     - name: Get Tag
       id: vars
-      run: echo ::set-output name=tag::$(echo ${GITHUB_REF:10})
+      run: echo ::set-output name=tag::$(echo ${GITHUB_SHA:0:10})
 
     - name: Build Docker Image
       run: docker build -t con-pca-api:${{steps.vars.outputs.tag}} .
@@ -60,14 +63,9 @@ jobs:
       working-directory: ./terraform
       run: terraform validate
 
-
-    - name: Get Tag
-      id: vars
-      run: echo ::set-output name=tag::$(echo ${GITHUB_REF:10})
-
     - name: Terraform plan
       working-directory: ./terraform
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      run: terraform plan -var="image_tag=${{steps.vars.outputs.tag}}"
+      run: terraform plan -var="image_tag=${{needs.build.outputs.tag}}"
