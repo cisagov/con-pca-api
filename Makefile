@@ -12,6 +12,9 @@ all:
 help:
 	@egrep "^# target:" [Mm]akefile
 
+env:
+	cp ./etc/env.dist ./.env
+
 # target: build = build all containers
 build:
 	docker-compose build
