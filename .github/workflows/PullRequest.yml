@@ -49,6 +49,15 @@ jobs:
       - name: Run pre-commit on all files
         run: pre-commit run --all-files
 
+  test_build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build Docker image
+      run: docker build -t con-pca-api .
+
   terraform_plan:
     runs-on: ubuntu-latest
 
