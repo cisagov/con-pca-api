@@ -1,7 +1,13 @@
 # Third-Party Libraries
 from django.conf.urls import url
 from django.urls import include, path
-from reports.views import cycle_view, monthly_view, system_view, yearly_view
+
+from reports.views import (
+    cycle_view,
+    monthly_view,
+    yearly_view,
+    system_view,
+)
 
 urlpatterns = [
     path(

@@ -10,6 +10,9 @@ import logging
 from pathlib import Path
 
 # Third-Party Libraries
+import requests
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
 from api.manager import CampaignManager
 from api.models.dhs_models import DHSContactModel, validate_dhs_contact
 from api.models.subscription_models import SubscriptionModel, validate_subscription
@@ -24,8 +27,6 @@ from api.serializers.reports_serializers import (
 )
 from api.utils.db_utils import get_list, get_single, update_single
 from config import settings
-from django.conf import settings
-from django.core.files.storage import FileSystemStorage
 from django.http import FileResponse
 from drf_yasg.utils import swagger_auto_schema
 from notifications.views import ReportsEmailSender
@@ -34,15 +35,15 @@ from reports.utils import (
     get_cycles_breakdown,
     get_most_successful_campaigns,
     get_related_subscription_stats,
-    get_relevant_recommendations,
     get_reports_to_click,
     get_statistic_from_group,
     get_subscription_stats_for_cycle,
     get_template_details,
+    get_relevant_recommendations,
 )
-import requests
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
 
 logger = logging.getLogger(__name__)
 

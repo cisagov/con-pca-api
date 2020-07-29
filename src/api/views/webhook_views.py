@@ -39,10 +39,9 @@ class IncomingWebhookView(APIView):
     def post(self, request):
         """Post method."""
         data = request.data.copy()
-        logger.info(
+        logger.debug(
             f"webhook post: campaign - {data['campaign_id']} | message - {data['message']}"
         )
-        logger.info(f"webhook data - {data}")
         return self.__handle_webhook_data(data)
 
     def __update_phishing_results(self, webhook_data, phishing_result):

@@ -75,6 +75,12 @@
         }
       }
     </style>
+    <style type="text/css">
+      ul li {
+        background: #cce5ff;
+        margin: 10px;
+      }
+    </style>
   </head>
   <body>
     <div style="">
@@ -264,6 +270,52 @@
                           email is to inform you that your campaign has begun
                           starting {{ start_date }} and will run until {{
                           end_date }}.
+                        </div>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td
+                        align="left"
+                        style="
+                          font-size: 0px;
+                          padding: 10px 25px;
+                          word-break: break-word;
+                        "
+                      >
+                        <div
+                          style="
+                            font-family: helvetica;
+                            font-size: 20px;
+                            line-height: 1;
+                            text-align: left;
+                            color: #1b2352;
+                          "
+                        >
+                          To assist you in differentianting between DHS Con-PCA
+                          phishing exercise emails and actual phishing attempts
+                          please use the following:
+                          <ul>
+                            <li>
+                              All emails coming from the Con-PCA program will
+                              have a custom header DHS-PHISH:{{cycle_uuid}}}.
+                              Please look for this header the value for this
+                              header is unique to your subscription and changes
+                              every 90 days or more frequently.
+                            </li>
+                            <li>
+                              The whois guard for all Con-PCA domains is turned
+                              off. Doing a whois lookup on the actual sender
+                              domain will show the domain owner as DHS.
+                            </li>
+                            <li>
+                              You will be sent an email containing all the
+                              templates used for your subscription. Review the
+                              provided templates to see if the suspected phish
+                              is one of the templates selected for your service
+                              cycle.
+                            </li>
+                          </ul>
                         </div>
                       </td>
                     </tr>

@@ -1,13 +1,10 @@
 """Send Reports Command."""
 # Django Libraries
-# Third-Party Libraries
-
-# Third-Party Libraries
+from django.core.management.base import BaseCommand
 
 # Local Libraries
 from api.models.subscription_models import SubscriptionModel, validate_subscription
 from api.utils.db_utils import get_list
-from django.core.management.base import BaseCommand
 from notifications.views import ReportsEmailSender
 
 

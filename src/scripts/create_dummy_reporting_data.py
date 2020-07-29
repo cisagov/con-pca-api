@@ -8,8 +8,8 @@ load and creation of data.
 from datetime import datetime, timedelta
 import json
 import os
-import random
 import time
+import random
 
 # Third-Party Libraries
 import requests

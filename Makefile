@@ -83,6 +83,7 @@ collectstatic:
 
 # target: build emails - build mjml files to html
 build_emails:
+	@echo "You must run npm install before running this command the first time"
 	npm run build-emails
 
 # target: send emails - send reports emails

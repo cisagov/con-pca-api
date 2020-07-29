@@ -2,22 +2,22 @@
 
 # Standard Python Libraries
 import logging
-import random
 import re
 from typing import Dict
+import random
 
 # Third-Party Libraries
-
 from bs4 import BeautifulSoup
 from django.conf import settings
 from faker import Faker
-
-# GoPhish Libraries
-from gophish import Gophish
-from gophish.models import SMTP, Campaign, Group, Page, Stat, Template, User
 import requests
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+
+# cisagov Libraries
+# GoPhish Libraries
+from gophish import Gophish
+from gophish.models import SMTP, Campaign, Group, Page, Stat, Template, User
 
 logger = logging.getLogger(__name__)
 faker = Faker()

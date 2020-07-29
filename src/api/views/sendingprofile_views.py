@@ -6,7 +6,6 @@ This handles the api for all the Sending Profile urls.
 import logging
 
 # Third-Party Libraries
-
 # Local
 from api.manager import CampaignManager
 from api.serializers.sendingprofile_serializers import (

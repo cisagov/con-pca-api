@@ -1,4 +1,3 @@
-# Third-Party Libraries
 from rest_framework import serializers
 
 

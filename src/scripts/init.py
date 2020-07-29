@@ -1,15 +1,12 @@
 # Standard Python Libraries
-import json
 import os
+import requests
+import json
 import time
-
-# Third-Party Libraries
-
 
 # Third Party Libraries
 from gophish import Gophish
 from gophish.models import SMTP, Page, Webhook
-import requests
 
 API_KEY = os.environ.get("GP_API_KEY")
 URL = os.environ.get("GP_URL")

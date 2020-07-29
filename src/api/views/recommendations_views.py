@@ -7,6 +7,10 @@ This handles the api for all the Template urls.
 import logging
 
 # Third-Party Libraries
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework import status
 
 # Local Libraries
 from api.models.recommendations_models import (
@@ -14,13 +18,13 @@ from api.models.recommendations_models import (
     validate_recommendations,
 )
 from api.serializers.recommendations_serializers import (
-    RecommendationsDeleteResponseSerializer,
     RecommendationsGetSerializer,
-    RecommendationsPatchResponseSerializer,
-    RecommendationsPatchSerializer,
-    RecommendationsPostResponseSerializer,
     RecommendationsPostSerializer,
     RecommendationsQuerySerializer,
+    RecommendationsPatchSerializer,
+    RecommendationsPostResponseSerializer,
+    RecommendationsPatchResponseSerializer,
+    RecommendationsDeleteResponseSerializer,
 )
 from api.utils.db_utils import (
     delete_single,
@@ -30,10 +34,7 @@ from api.utils.db_utils import (
     save_single,
     update_single,
 )
-from drf_yasg.utils import swagger_auto_schema
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.views import APIView
+
 
 logger = logging.getLogger(__name__)
 

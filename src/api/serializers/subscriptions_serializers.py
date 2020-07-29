@@ -141,6 +141,7 @@ class CycleSerializer(serializers.Serializer):
     This is the Cycle serializer used for general reporting.
     """
 
+    cycle_uuid = serializers.CharField(required=False)
     start_date = serializers.DateTimeField()
     end_date = serializers.DateTimeField()
     active = serializers.BooleanField()

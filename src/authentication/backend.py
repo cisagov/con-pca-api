@@ -1,19 +1,18 @@
 # Based on https://github.com/labd/django-cognito-jwt under MIT license
-# Standard Python Libraries
-import hashlib
-import hmac
 import logging
 import time
+import hmac
+import hashlib
 
-# Third-Party Libraries
-from authentication.validator import TokenError, TokenValidator
-from config.settings import LOCAL_API_KEY
 from django.apps import apps as django_apps
 from django.conf import settings
+from config.settings import LOCAL_API_KEY
 from django.utils.encoding import smart_text
 from django.utils.translation import ugettext as _
 from rest_framework import exceptions
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
+
+from authentication.validator import TokenError, TokenValidator
 
 logger = logging.getLogger(__name__)
 

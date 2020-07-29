@@ -1,9 +1,7 @@
-# Standard Python Libraries
-import re
-
-# Third-Party Libraries
-from api.models.template_models import TagModel, validate_tag
 from api.utils import db_utils as db
+from api.models.template_models import TagModel, validate_tag
+
+import re
 
 
 def get_tags():

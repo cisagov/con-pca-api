@@ -5,8 +5,8 @@ These are utils for creating reports.
 """
 # Standard Python Libraries
 from datetime import timedelta
-import pprint
 import statistics
+import pprint
 
 # Third-Party Libraries
 from api.models.customer_models import (
@@ -15,12 +15,12 @@ from api.models.customer_models import (
     validate_customer,
     validate_test,
 )
+from api.models.subscription_models import SubscriptionModel, validate_subscription
+from api.models.template_models import TemplateModel, validate_template
 from api.models.recommendations_models import (
     RecommendationsModel,
     validate_recommendations,
 )
-from api.models.subscription_models import SubscriptionModel, validate_subscription
-from api.models.template_models import TemplateModel, validate_template
 from api.utils.db_utils import get_list, get_single
 
 

@@ -1,14 +1,12 @@
 # Based on https://github.com/labd/django-cognito-jwt under MIT license
-# Standard Python Libraries
 import json
 
-# Third-Party Libraries
+import jwt
+import requests
 from django.conf import settings
 from django.core.cache import cache
 from django.utils.functional import cached_property
-import jwt
 from jwt.algorithms import RSAAlgorithm
-import requests
 
 
 class TokenError(Exception):

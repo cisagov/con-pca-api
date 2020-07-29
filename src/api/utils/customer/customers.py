@@ -1,6 +1,5 @@
-# Third-Party Libraries
-from api.models.customer_models import CustomerModel, validate_customer
 from api.utils import db_utils as db
+from api.models.customer_models import CustomerModel, validate_customer
 
 
 def get_customer(customer_uuid: str):

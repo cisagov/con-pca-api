@@ -1,11 +1,10 @@
-# Third-Party Libraries
 from database.repository.models import Model
 from database.repository.types import (
-    BooleanType,
-    DateTimeType,
-    EmailType,
     StringType,
+    EmailType,
+    BooleanType,
     UUIDType,
+    DateTimeType,
 )
 
 

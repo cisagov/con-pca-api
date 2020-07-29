@@ -8,11 +8,14 @@ contacts about reports and subscription updates.
 
 # Standard Python Libraries
 from datetime import datetime
+from pathlib import Path
 from email.mime.image import MIMEImage
 import logging
-from pathlib import Path
 
 # Third-Party Libraries
+from django.conf import settings
+
+import requests
 from api.models.dhs_models import DHSContactModel, validate_dhs_contact
 from api.utils.db_utils import get_single
 from django.conf import settings
@@ -21,7 +24,7 @@ from django.core.files.storage import FileSystemStorage
 from django.core.mail.message import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from notifications.utils import get_notification
-import requests
+
 
 logger = logging.getLogger()
 
@@ -114,6 +117,8 @@ class SubscriptionNotificationEmailSender:
         """Create Contect Data Method."""
         first_name = self.subscription.get("primary_contact").get("first_name")
         last_name = self.subscription.get("primary_contact").get("last_name")
+        current_cycle = current_cycle = self.subscription.get("cycles")[-1]
+        cycle_uuid = current_cycle.get("cycle_uuid")
 
         logger.info(f'start_date={self.subscription.get("start_date")}')
         # Putting .split on the start and end date because sometimes it comes formatted with a float at the end.
@@ -140,6 +145,7 @@ class SubscriptionNotificationEmailSender:
             "last_name": last_name,
             "start_date": start_date,
             "end_date": end_date,
+            "cycle_uuid": cycle_uuid,
         }
 
     def send(self):

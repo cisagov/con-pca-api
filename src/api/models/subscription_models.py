@@ -187,6 +187,7 @@ class CycleModel(Model):
     in each cycle.
     """
 
+    cycle_uuid = StringType()
     start_date = DateTimeType()
     end_date = DateTimeType()
     active = BooleanType()

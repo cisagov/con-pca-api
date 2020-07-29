@@ -36,8 +36,8 @@ def create_subscription_name(customer: dict):
         names = [x["name"] for x in subscription_list]
         list_tupe = []
         for name in names:
-            int_ind, sub_id = name.split(".")
-            _, sub = int_ind.split("_")
+            int_ind, sub_id = name.rsplit(".", 1)
+            _, sub = int_ind.rsplit("_", 1)
             list_tupe.append((sub, sub_id))
         # now sort tuple list by second element
         list_tupe.sort(key=lambda tup: tup[1])
@@ -91,6 +91,7 @@ def get_subscription_cycles(campaigns, start_date, end_date):
     campaigns_in_cycle = [c["campaign_id"] for c in campaigns]
     return [
         {
+            "cycle_uuid": str(uuid4()),
             "start_date": start_date,
             "end_date": end_date,
             "active": True,
