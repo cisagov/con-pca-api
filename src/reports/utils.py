@@ -725,12 +725,12 @@ def format_timedelta(timedelta):
     ret_val = ""
     if timedelta:
         if timedelta.days:
-            ret_val += f"{timedelta.days} Days "
+            ret_val += f"{timedelta.days} Days, "
         if timedelta.seconds / 3600 > 1:
-            ret_val += f"{int(round(timedelta.seconds/3600,0))} Hours "
+            ret_val += f"{int(round(timedelta.seconds/3600,0))} Hours, "
         if int(timedelta.seconds % 60) != 0:
-            ret_val += f"{int(timedelta.seconds % 60)} Minutes"
-    return ret_val
+            ret_val += f"{int(timedelta.seconds % 60)} Minutes, "
+    return ret_val.rstrip(" ,")
 
 
 def get_reports_to_click(subscription_stats):
