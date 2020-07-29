@@ -27,10 +27,10 @@ jobs:
       run: echo ::set-output name=tag::$(echo ${GITHUB_SHA:0:10})
 
     - name: Build Docker Image
-      run: docker build -t con-pca-api:${{steps.vars.outputs.tag}} .
+      run: docker build -t $IMAGE_NAME:${{steps.vars.outputs.tag}} .
 
     - name: Tag Docker Image
-      run: docker tag con-pca-api:${{steps.vars.outputs.tag}} $ECR_URI:${{steps.vars.outputs.tag}}
+      run: docker tag $IMAGE_NAME:${{steps.vars.outputs.tag}} $ECR_URI:${{steps.vars.outputs.tag}}
 
     - name: ECR Login
       run: aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $ECR_URI
