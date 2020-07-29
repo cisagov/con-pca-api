@@ -1,88 +1,4 @@
-# skeleton-docker 💀🐳 #
-
-[![GitHub Build Status](https://github.com/cisagov/skeleton-docker/workflows/build/badge.svg)](https://github.com/cisagov/skeleton-docker/actions)
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/cisagov/skeleton-docker.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/cisagov/skeleton-docker/alerts/)
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/cisagov/skeleton-docker.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/cisagov/skeleton-docker/context:python)
-
-## Docker Image ##
-
-![MicroBadger Layers](https://img.shields.io/microbadger/layers/cisagov/example.svg)
-![MicroBadger Size](https://img.shields.io/microbadger/image-size/cisagov/example.svg)
-
-This is a docker skeleton project that can be used to quickly get a
-new [cisagov](https://github.com/cisagov) GitHub docker project
-started.  This skeleton project contains [licensing
-information](LICENSE), as well as [pre-commit hooks](https://pre-commit.com)
-and [GitHub Actions](https://github.com/features/actions) configurations
-appropriate for docker containers and the major languages that we use.
-
-## Usage ##
-
-### Install ###
-
-Pull `cisagov/example` from the Docker repository:
-
-    docker pull cisagov/example
-
-Or build `cisagov/example` from source:
-
-    git clone https://github.com/cisagov/skeleton-docker.git
-    cd skeleton-docker
-    docker-compose build --build-arg VERSION=0.0.1
-
-### Run ###
-
-    docker-compose run --rm example
-
-## Ports ##
-
-This container exposes the following ports:
-
-| Port  | Protocol | Service  |
-|-------|----------|----------|
-| 8080  | TCP      | http     |
-
-## Environment Variables ##
-
-| Variable      | Default Value                 | Purpose      |
-|---------------|-------------------------------|--------------|
-| ECHO_MESSAGE  | `Hello World from Dockerfile` | Text to echo |
-
-## Secrets ##
-
-| Filename      | Purpose              |
-|---------------|----------------------|
-| quote.txt     | Secret text to echo  |
-
-## Volumes ##
-
-| Mount point | Purpose        |
-|-------------|----------------|
-| /var/log    | logging output |
-
-## Contributing ##
-
-We welcome contributions!  Please see [here](CONTRIBUTING.md) for
-details.
-
-## License ##
-
-This project is in the worldwide [public domain](LICENSE).
-
-This project is in the public domain within the United States, and
-copyright and related rights in the work worldwide are waived through
-the [CC0 1.0 Universal public domain
-dedication](https://creativecommons.org/publicdomain/zero/1.0/).
-
-All contributions to this project will be released under the CC0
-dedication. By submitting a pull request, you are agreeing to comply
-with this waiver of copyright interest.
-
-
-
-
-
-# Con-PCA Controller
+# Con-PCA API
 
 ## Setup
 
@@ -97,7 +13,7 @@ Required for install:
 ## Additional Suggestions
 
 Here are some additional software to use along with develpment.
-These items are not required for development.
+These items are not required.
 
 <!--Please add addational software information here-->
 
@@ -122,11 +38,11 @@ Make sure you have a github account and access to the correct repo.
 To install project run
 
 ```shell
-git clone git@github.com:cisagov/con-pca.git
-cd con-pca/controller
+git clone git@github.com:cisagov/con-pca-api.git
+cd con-pca-api/
 ```
 
-Use `Makefile` to install and run `controller` services.
+Use `Makefile` to install and run services.
 
 ### Setup and Build
 
@@ -185,35 +101,13 @@ Send sample reports emails
 
 ### Creating and loading random data
 
-Using the makefile command: `make init` you can create data in
+Using the makefile command: `make dummy` you can create data in
 the db and get an output file containing all the id's of the created data.
 This will also create initial data for gophish.
 
 Incase you want to clear out all data in the DB, use: `make db_drop_mongo`
 
 WARNING: This will drop ALL DATA in the connected docker mongodb
-
-### Example
-
-```shell
--> % make db_load_dummy
-python scripts/create_dummy_data.py
-loading dummy json data
-done loading data
-Step 1/3: create templates...
-created tempaltes_list: [u'883e0f1f-2b7a-44e9-a49d-5d9d231fd943', u'0a4ab912-25de-4e9c-bcc7-fb9a88427e36']
-Step 2/3: create targets...
-created target_list: [u'9079a1ad-3ed0-4ee8-a181-57bec0005f5a', u'd504b75a-4331-47a0-bfd7-c2e7c03540fe', u'32f16b48-3eec-4fc9-8dd6-cd07333daa26', u'23cd3a99-192f-4874-999f-2d9aa18b45ed', u'3d625281-e0bf-4d13-a07d-9e83139fc412', u'ee4d6547-4701-4286-ac27-c690625c1c76', u'8f993439-3046-4217-bcea-c771c33cae7f']
-Step 3/3: create subscriptions...
-created subcription_list: [u'd25ae2c4-0f0a-4bf3-a86e-9c4f5950b2ca', u'aef12cdb-bb42-48d4-9a85-345a1f0e9967', u'763daf22-8f9d-4a0a-bc95-12538cd391a5', u'cd71d0ce-b61f-4763-a7d8-c7f01d411b05', u'a34869b0-ebf8-44bb-9b9e-ebd4f12a0b07', u'e494b918-052f-4e78-92a5-034d477b83d0', u'5d2b8b9e-12c9-4f3e-a76d-2a6bf54be5b0', u'1e79bfb1-6ef8-4671-9413-45015263d29f', u'c74cf69d-634d-4f77-a93a-d96c072ea2f9', u'95db5067-a9ac-4865-978d-c6753e39edb8', u'3f4f712a-25cf-4357-98ab-1a33037375fa', u'd83d7ad0-9feb-4471-8705-8af80580fe59', u'3af315cf-30c8-4123-ab37-bdd295325701']
-writting values to file: /.../con-pca/controller/scripts/data/created_dummy_data_2020_04_15_155141.json...
-Finished.....
-```
-
-As seen this will output data files into
-`scripts/data/created_dummy_data_2020_04_15_155141.json.` location and
-will genrate a new file every time it is ran. These files will not be
-checked into github and will remain on a devs system.
 
 ### To access the Django API
 
@@ -230,7 +124,7 @@ Your output will look like:
 ```shell
 -> % make up
 docker-compose up -d
-Creating network "controller_default" with the default driver
+Creating network "pca_backend" with the default driver
 Creating pca-mongodb  ... done
 Creating pca-api      ... done
 ```
@@ -447,7 +341,7 @@ code complexity.
 
 1. Create and activate virtual environment in VS Code [https://code.visualstudio.com/docs/python/environments](https://code.visualstudio.com/docs/python/environments)
 
-2. Configure pytest in VS Code with the `controller` directory as source. [https://code.visualstudio.com/docs/python/testing#_enable-a-test-framework](https://code.visualstudio.com/docs/python/testing#_enable-a-test-framework)
+2. Configure pytest in VS Code. [https://code.visualstudio.com/docs/python/testing#_enable-a-test-framework](https://code.visualstudio.com/docs/python/testing#_enable-a-test-framework)
 
 3. Discover Tests. [https://code.visualstudio.com/docs/python/testing#_test-discovery](https://code.visualstudio.com/docs/python/testing#_test-discovery)
 
