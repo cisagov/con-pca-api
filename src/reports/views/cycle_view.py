@@ -220,6 +220,11 @@ class CycleReportsView(APIView):
                     subscription_stats, "stats_all", "reported", "median"
                 )
             ),
+            "median_time_to_open": format_timedelta(
+                get_statistic_from_group(
+                    subscription_stats, "stats_all", "opened", "median"
+                )
+            ),
             "longest_time_to_open": format_timedelta(
                 get_statistic_from_group(
                     subscription_stats, "stats_all", "opened", "maximum"
