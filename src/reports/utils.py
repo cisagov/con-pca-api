@@ -729,7 +729,7 @@ def format_timedelta(timedelta):
             plural = "s" if timedelta.days != 1 else ""
             ret_val += f"{timedelta.days} day{plural}, "
         if timedelta.seconds / 3600 > 1:
-            plural = "s" if int(round(timedelta.seconds/3600,0)) != 1 else ""
+            plural = "s" if int(round(timedelta.seconds / 3600, 0)) != 1 else ""
             ret_val += f"{int(round(timedelta.seconds/3600,0))} hour{plural}, "
         if int(timedelta.seconds % 60) != 0:
             plural = "s" if int(timedelta.seconds % 60) != 1 else ""
