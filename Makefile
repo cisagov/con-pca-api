@@ -12,6 +12,7 @@ all:
 help:
 	@egrep "^# target:" [Mm]akefile
 
+# target: env = copy env vars to your .env file
 env:
 	cp ./etc/env.dist ./.env
 

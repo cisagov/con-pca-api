@@ -10,12 +10,19 @@ Required for install:
 - [MongoDB](https://docs.mongodb.com/manual/installation/ "MongoDB")
 - [Python3+](https://www.python.org/download/releases/3.0/ "Python3+")
 
+## Prerequisites
+
+Required to run this project:
+
+- [Con-PCA GoPhish](https://github.com/cisagov/con-pca-gophish)
+- [Con-PCA Reports](https://github.com/cisagov/con-pca-reports)
+
 ## Additional Suggestions
 
 Here are some additional software to use along with develpment.
 These items are not required.
 
-<!--Please add addational software information here-->
+<!--Please add additional software information here-->
 
 - [VS Code](https://code.visualstudio.com/ "VS Code")
 - [MongoDB Compass](https://www.mongodb.com/products/compass "MongoDB Compass")
@@ -51,7 +58,7 @@ These files are used as configuration in deployment.
 
 Create your .env file
 
-- `cp etc/env.dist .env`
+- `make env`
 - **Note:** visit `localhost:3333/settings` to get your
 API key. Save it into your `.env` file
 
