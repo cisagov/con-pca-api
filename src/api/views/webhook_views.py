@@ -39,7 +39,7 @@ class IncomingWebhookView(APIView):
     def post(self, request):
         """Post method."""
         data = request.data.copy()
-        logger.debug(
+        logger.info(
             f"webhook post: campaign - {data['campaign_id']} | message - {data['message']}"
         )
         return self.__handle_webhook_data(data)

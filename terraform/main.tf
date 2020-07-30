@@ -142,7 +142,7 @@ locals {
     "WEBHOOK_URL" : "http://${data.aws_lb.public.dns_name}:8000/api/v1/inboundwebhook/"
     "AWS_S3_IMAGE_BUCKET" : "${var.app}-${var.env}-images",
     "DEFAULT_FILE_STORAGE" : "storages.backends.s3boto3.S3Boto3Storage",
-    "WORKERS" : 4,
+    "WORKERS" : 1,
     "COGNITO_DEPLOYMENT_MODE" : "Production",
     "COGNITO_AWS_REGION" : var.region,
     "COGNITO_USER_POOL" : element(tolist(data.aws_cognito_user_pools.users.ids), 0),

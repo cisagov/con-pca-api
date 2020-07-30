@@ -69,10 +69,10 @@ repos:
   #   rev: 5.0.7
   #   hooks:
   #     - id: isort
-  - repo: https://github.com/antonbabenko/pre-commit-terraform.git
-    rev: v1.31.0
-    hooks:
-      - id: terraform_fmt
+  # - repo: https://github.com/antonbabenko/pre-commit-terraform.git
+  #   rev: v1.31.0
+  #   hooks:
+    #   - id: terraform_fmt
       # There are ongoing issues with how this command works. This issue
       # documents the core issue:
       # https://github.com/hashicorp/terraform/issues/21408
