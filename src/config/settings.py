@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_smtp_ssl",
     "django_crontab",
     "corsheaders",
     "storages",
@@ -142,8 +143,21 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Email
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+# Email Settings for EMAIL_BACKEND
+EMAIL_HOST = os.environ.get("SMTP_HOST", "")
+EMAIL_HOST_USER = os.environ.get("SMTP_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("SMTP_PASS")
 SERVER_EMAIL = os.environ.get("SMTP_FROM")
+
+if not DEBUG:
+    # Note: in prod, Port must be 465 to use SSL
+    EMAIL_PORT = 465
+    EMAIL_BACKEND = "django_smtp_ssl.SSLEmailBackend"
+    EMAIL_USE_SSL = True
+else:
+    EMAIL_PORT = os.environ.get("SMTP_PORT", 587)
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    EMAIL_USE_TLS = True
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
@@ -189,13 +203,6 @@ AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME")
 AWS_STORAGE_BUCKET_IMAGES_NAME = os.environ.get("AWS_STORAGE_BUCKET_IMAGES_NAME")
 AWS_S3_REGION_NAME = os.environ.get("AWS_S3_REGION_NAME")
 AWS_S3_FILE_OVERWRITE = False
-
-# Email Settings for EMAIL_BACKEND
-EMAIL_HOST = os.environ.get("SMTP_HOST", "")
-EMAIL_PORT = os.environ.get("SMTP_PORT", 587)
-EMAIL_HOST_USER = os.environ.get("SMTP_USER")
-EMAIL_HOST_PASSWORD = os.environ.get("SMTP_PASS")
-EMAIL_USE_TLS = True
 
 # API Key for running local scripts
 LOCAL_API_KEY = os.environ.get("LOCAL_API_KEY")
