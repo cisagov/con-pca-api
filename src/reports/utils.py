@@ -723,14 +723,18 @@ def ratio_to_percent(ratio, round_val=2):
 
 def format_timedelta(timedelta):
     ret_val = ""
+    plural = ""
     if timedelta:
         if timedelta.days:
-            ret_val += f"{timedelta.days} Days "
+            plural = "s" if timedelta.days != 1 else ""
+            ret_val += f"{timedelta.days} day{plural}, "
         if timedelta.seconds / 3600 > 1:
-            ret_val += f"{int(round(timedelta.seconds/3600,0))} Hours "
+            plural = "s" if int(round(timedelta.seconds / 3600, 0)) != 1 else ""
+            ret_val += f"{int(round(timedelta.seconds/3600,0))} hour{plural}, "
         if int(timedelta.seconds % 60) != 0:
-            ret_val += f"{int(timedelta.seconds % 60)} Minutes"
-    return ret_val
+            plural = "s" if int(timedelta.seconds % 60) != 1 else ""
+            ret_val += f"{int(timedelta.seconds % 60)} minute{plural}, "
+    return ret_val.rstrip(" ,")
 
 
 def get_reports_to_click(subscription_stats):
