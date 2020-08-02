@@ -1,3 +1,4 @@
+{% load tz %}
 <mjml>
   <mj-body>
     <mj-section>
@@ -13,7 +14,7 @@
 
         <mj-text font-size="20px" color="#1B2352" font-family="helvetica">
           Thank you for participating in the CISA Phishing.
-          This email is to inform you that your campaign has been stopped on {{ end_date }}.
+          This email is to inform you that your campaign has been stopped on {% localtime on %}{{ end_date }}{% endlocaltime %} UTC.
 
         </mj-text>
         <mj-text font-size="20px" color="#1B2352" font-family="helvetica">
