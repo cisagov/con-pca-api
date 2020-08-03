@@ -351,9 +351,9 @@ def get_subscription_stats_for_month(subscription, end_date):
     campaign_timeline_summary = []
     campaign_results = []
     for campaign in campaigns_in_cycle:
-        for moment in campaign["timeline"]:
-            if not moment.get("duplicate", None):
-                append_timeline_moment(moment, campaign_timeline_summary)
+        unique_moments = get_unique_moments(campaign["timeline"])
+        for unique_moment in unique_moments:
+            append_timeline_moment(unique_moment, campaign_timeline_summary)
         # filter the timeline moments to only those within the given date range
         filter_campaign_timeline_by_date_range(
             campaign_timeline_summary, start_date, end_date
@@ -397,9 +397,9 @@ def get_subscription_stats_for_cycle(subscription, start_date=None):
     campaign_timeline_summary = []
     campaign_results = []
     for campaign in campaigns_in_cycle:
-        for moment in campaign["timeline"]:
-            if not moment.get("duplicate", None):
-                append_timeline_moment(moment, campaign_timeline_summary)
+        unique_moments = get_unique_moments(campaign["timeline"])
+        for unique_moment in unique_moments:
+            append_timeline_moment(unique_moment, campaign_timeline_summary)
         # Get stats and aggregate of all time differences (all times needed for stats like median when consolidated)
         stats, time_aggregate = generate_campaign_statistics(
             campaign_timeline_summary, active_cycle["override_total_reported"]
@@ -418,6 +418,51 @@ def get_subscription_stats_for_cycle(subscription, start_date=None):
         campaign_timeline_summary = []
 
     return generate_subscription_stat_details(campaign_results, active_cycle)
+
+
+def get_unique_moments(campaign_timeline):
+
+    retVal = []
+    sent_moments = []
+    user_moments = []
+
+    sent_moments[:] = (x for x in campaign_timeline if x["message"] == "Email Sent")
+    user_moments[:] = (x for x in campaign_timeline if x["message"] != "Email Sent")
+
+    # Sort the working timeline by date, first occurence of a moment
+    # will be the one that is used for calculations
+    user_moments.sort(key=get_moment_date)
+
+    # Find the first occurence of a opened/clicked/submitted/reported moment
+
+    for sent_moment in sent_moments:
+        sent_action_moments = []
+        moments_to_get = [
+            "Email Opened",
+            "Clicked Link",
+            "Submitted Data",
+            "Email Reported",
+        ]
+        retVal.append(sent_moment)
+        sent_action_moments = (
+            x for x in user_moments if x["email"] == sent_moment["email"]
+        )
+
+        for action_moment in sent_action_moments:
+            if action_moment["message"] in moments_to_get:
+                retVal.append(action_moment)
+                moments_to_get.remove(action_moment["message"])
+            # user_moments.remove(action_moment)
+
+    return retVal
+
+
+def get_moment_date(moment):
+    return moment["time"]
+
+
+def get_moment_email(moment):
+    return moment["email"]
 
 
 def generate_subscription_stat_details(campaign_results, active_cycle):
