@@ -41,7 +41,7 @@ class ReportsEmailSender:
     def get_attachment(self, subscription_uuid, link, cycle):
         """Get_attachment method."""
         url = f"{settings.REPORTS_API}/api/{link}/{subscription_uuid}/{cycle}/pdf/"
-        resp = requests.get(url, stream=True)
+        resp = requests.get(url, stream=True, verify=False)
         fs = FileSystemStorage("/tmp")
         filename = Path("/tmp/subscription_report.pdf")
         filename.write_bytes(resp.content)
