@@ -11,10 +11,11 @@ from datetime import datetime
 from pathlib import Path
 from email.mime.image import MIMEImage
 import logging
+import pytz
 
 # Third-Party Libraries
 from django.conf import settings
-
+from django.utils import timezone
 import requests
 from api.models.dhs_models import DHSContactModel, validate_dhs_contact
 from api.utils.db_utils import get_single
@@ -138,7 +139,7 @@ class SubscriptionNotificationEmailSender:
             if not isinstance(end_date, datetime):
                 end_date = datetime.strptime(
                     end_date.split(".")[0], "%Y-%m-%dT%H:%M:%S"
-                ).strftime("%d %B, %Y")
+                )
 
         return {
             "first_name": first_name,

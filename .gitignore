@@ -10,3 +10,5 @@ __pycache__
 .env
 rds-combined-ca-bundle.pem
 src/staticfiles
+created_dummy_data_*.json
+node_modules

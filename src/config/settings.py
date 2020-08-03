@@ -149,7 +149,7 @@ EMAIL_HOST_USER = os.environ.get("SMTP_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("SMTP_PASS")
 SERVER_EMAIL = os.environ.get("SMTP_FROM")
 
-if not DEBUG:
+if DEBUG == 0:
     # Note: in prod, Port must be 465 to use SSL
     EMAIL_PORT = 465
     EMAIL_BACKEND = "django_smtp_ssl.SSLEmailBackend"

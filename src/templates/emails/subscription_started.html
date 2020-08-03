@@ -1,3 +1,4 @@
+{% load tz %}
 <!DOCTYPE html>
 <html
   xmlns="http://www.w3.org/1999/xhtml"
@@ -268,8 +269,9 @@
                         >
                           Thank you for participating in the CISA Phishing This
                           email is to inform you that your campaign has begun
-                          starting {{ start_date }} and will run until {{
-                          end_date }}.
+                          starting {% localtime on %}{{ start_date }}{%
+                          endlocaltime %} UTC and will run until {{ end_date }}
+                          UTC.
                         </div>
                       </td>
                     </tr>
