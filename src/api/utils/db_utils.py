@@ -131,6 +131,31 @@ def update_single(uuid, put_data, collection, model, validation_model):
     return document
 
 
+def update_list_single(uuid, field, put_data, collection, model, validation_model):
+    """
+    Update_list_single method.
+
+    This builds $addToSet object for db, updates, then returns.
+
+    Example: uuid="123-123-123", field="timeline", put_data={...data...}, ...
+    """
+    service, loop = __get_service_loop(collection, model, validation_model)
+    updated_timestamp = datetime.datetime.utcnow()
+    current_user = "dev user"
+
+    list_update_object = {field: {"$each": put_data}}
+    update_response = loop.run_until_complete(
+        service.update_list(uuid, list_update_object)
+    )
+    document = loop.run_until_complete(service.get(uuid=uuid))
+    document["last_updated_by"] = current_user
+    document["lub_timestamp"] = updated_timestamp
+    update_response = loop.run_until_complete(service.update(document))
+    if "errors" in update_response:
+        return update_response
+    return document
+
+
 def delete_single(uuid, collection, model, validation_model):
     """
     Delete_single method.

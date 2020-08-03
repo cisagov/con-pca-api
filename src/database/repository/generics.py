@@ -135,6 +135,15 @@ class GenericRepositoryInterface(object):
         """
         return self.repository.update(generic_object)
 
+    def update_list(self, uuid, generic_object):
+        """
+        Update List.
+
+        Takes in uuid, field and list_data and send to repository.
+        Returns objectId of updated document.
+        """
+        return self.repository.update_list(uuid, generic_object)
+
     def delete(self, uuid):
         """
         Delete.
@@ -258,6 +267,18 @@ class GenericRepository(object):
         await self.collection.update_one(
             {self.uuid_name: object[self.uuid_name]}, {"$set": object}
         )
+        return {self.uuid_name: object[self.uuid_name]}
+
+    async def update_list(self, uuid, object):
+        """
+        Update List.
+
+        object to be in the form: {field_name: { $each: list_data }}
+
+        Generic method that can be used to update a
+        single document by a given uuid, field and values.
+        """
+        await self.collection.update({self.uuid_name: uuid}, {"$addToSet": object})
         return {self.uuid_name: object[self.uuid_name]}
 
     async def delete(self, uuid):
