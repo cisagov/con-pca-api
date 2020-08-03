@@ -71,17 +71,24 @@ class CycleReportsView(APIView):
         company = {
             "name": _customer.get("name"),
             "address": f"{_customer.get('address_1')} {_customer.get('address_2')}",
+            "city": _customer.get("city"),
+            "state": _customer.get("state"),
+            "zip_code": _customer.get("zip_code"),
         }
 
         # start_date = subscription["start_date"]
 
         subscription_primary_contact = subscription.get("primary_contact")
 
+        print(_customer)
         customer = {
             "full_name": _customer.get("name"),
             "short_name": _customer.get("identifier"),
             "address_1": _customer.get("address_1"),
             "address_2": _customer.get("address_2"),
+            "city": _customer.get("city"),
+            "state": _customer.get("state"),
+            "zip_code": _customer.get("zip_code"),
             "identifier": _customer.get("identifier"),
             "poc_email": None,
             "vulnerabilty_team_lead_name": None,
