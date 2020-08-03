@@ -147,6 +147,8 @@ def update_list_single(uuid, field, put_data, collection, model, validation_mode
     update_response = loop.run_until_complete(
         service.update_list(uuid, list_update_object)
     )
+    if "errors" in update_response:
+        return update_response
     document = loop.run_until_complete(service.get(uuid=uuid))
     document["last_updated_by"] = current_user
     document["lub_timestamp"] = updated_timestamp
