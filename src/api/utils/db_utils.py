@@ -136,6 +136,8 @@ def update_list_single(uuid, field, put_data, collection, model, validation_mode
     Update_list_single method.
 
     This builds $addToSet object for db, updates, then returns.
+
+    Example: uuid="123-123-123", field="timeline", put_data={...data...}, ...
     """
     service, loop = __get_service_loop(collection, model, validation_model)
     updated_timestamp = datetime.datetime.utcnow()
