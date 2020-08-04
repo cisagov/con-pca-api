@@ -34,17 +34,7 @@ SENDING_PROFILES = [
 LANDING_PAGES = [
     {
         "name": "Phished",
-        "html": """
-        <html>
-            <head>
-            <title>You've been phished!</title>
-            </head>
-            <body>
-            <h1>You've Been Phished!</h1>
-            <p>This is a message from a Gophish campaign</p>
-            </body>
-        </html>
-        """,
+        "html": "",
     },
 ]
 
@@ -94,6 +84,11 @@ def create_landing_page(pages):
         landing_page = API.pages.post(landing_page)
         print(f"Landing page with id: {landing_page.id} has been created")
 
+def readinLandingHtml(path):
+    """
+    read in default landing page template
+    """
+    
 
 def create_webhook(webhooks):
     existing_names = {webhook.name for webhook in API.webhooks.get()}
@@ -192,6 +187,16 @@ def wait_connection():
             print("Django API not yet running. Waiting...")
             time.sleep(5)
 
+def load_default_landing_page():
+    LANDING_PAGES[0]["html"]  = load_file_html("data/landing.html")
+
+def load_file_html(data_file):
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    data_file = os.path.join(current_dir, data_file)
+    with open(data_file, "r") as f:
+        data = f.read()
+    return data
+
 
 def load_file(data_file):
     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -208,6 +213,8 @@ def main():
     print("Step 1/5: Creating Sending Profiles")
     create_sending_profile(SENDING_PROFILES)
     print("Step 2/5: Creating Landing Pages")
+    
+    load_default_landing_page()
     create_landing_page(LANDING_PAGES)
     print("Step 3/5: Create Webhooks")
     create_webhook(WEBHOOKS)
@@ -220,4 +227,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+   main()
