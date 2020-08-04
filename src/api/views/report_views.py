@@ -10,6 +10,7 @@ import logging
 from pathlib import Path
 
 # Third-Party Libraries
+import asyncio
 import requests
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
@@ -43,6 +44,7 @@ from reports.utils import (
 )
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from api.utils.reports import download_pdf
 
 
 logger = logging.getLogger(__name__)
@@ -339,26 +341,29 @@ class YearlyReportsEmailView(APIView):
 # causes some issues when sending accept headers other than application/json
 def monthly_reports_pdf_view(request, subscription_uuid, cycle):
     """Monthly_reports_pdf_view."""
-    filename = "subscription_status_report.pdf"
-    url = f"{settings.REPORTS_API}/api/monthly/{subscription_uuid}/{cycle}/pdf/"
-    fs = FileSystemStorage("/tmp")
-    resp = requests.get(url, stream=True, verify=False)
-    pdf_file = Path(f"/tmp/{filename}")
-    pdf_file.write_bytes(resp.content)
-    return FileResponse(fs.open(filename), as_attachment=True, filename=filename)
+    print(dir(request))
+    print(request.headers)
+    return FileResponse(
+        download_pdf(
+            "monthly",
+            subscription_uuid,
+            cycle,
+            auth_header=request.headers.get("Authorization", None),
+        ),
+        as_attachment=True,
+        filename="monthly_subscription_report.pdf",
+    )
 
 
 # These are as functions rather than classes, because extending the APIView class
 # causes some issues when sending accept headers other than application/json
 def cycle_reports_pdf_view(request, subscription_uuid, cycle):
     """Cycle_reports_pdf_view."""
-    filename = "subscription_cycle_report.pdf"
-    url = f"{settings.REPORTS_API}/api/cycle/{subscription_uuid}/{cycle}/pdf/"
-    fs = FileSystemStorage("/tmp")
-    resp = requests.get(url, stream=True, verify=False)
-    pdf_file = Path(f"/tmp/{filename}")
-    pdf_file.write_bytes(resp.content)
-    return FileResponse(fs.open(filename), as_attachment=True, filename=filename)
+    return FileResponse(
+        download_pdf("cycle", subscription_uuid, cycle),
+        as_attachment=True,
+        filename="cycle_subscription_report.pdf",
+    )
 
 
 # These are as functions rather than classes, because extending the APIView class
@@ -366,10 +371,8 @@ def cycle_reports_pdf_view(request, subscription_uuid, cycle):
 # which for this application/pdf is needed
 def yearly_reports_pdf_view(request, subscription_uuid, cycle):
     """Yearly_reports_pdf_view."""
-    filename = "subscription_yearly_report.pdf"
-    url = f"{settings.REPORTS_API}/api/yearly/{subscription_uuid}/{cycle}/pdf/"
-    fs = FileSystemStorage("/tmp")
-    resp = requests.get(url, stream=True, verify=False)
-    pdf_file = Path(f"/tmp/{filename}")
-    pdf_file.write_bytes(resp.content)
-    return FileResponse(fs.open(filename), as_attachment=True, filename=filename)
+    return FileResponse(
+        download_pdf("yearly", subscription_uuid, cycle),
+        as_attachment=True,
+        filename="yearly_subscription_report.pdf",
+    )
