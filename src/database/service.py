@@ -79,6 +79,16 @@ class Service:
 
         return await self.service.update(to_update)
 
+    async def update_list(self, uuid, to_update, params=None):
+        """
+        Update.
+
+        Given a json object, it wil validate the fields and update a db entrie.
+        This will return the objectID of the updated object
+        """
+
+        return await self.service.update_list(uuid, to_update, params)
+
     async def delete(self, uuid):
         """
         Delete.
