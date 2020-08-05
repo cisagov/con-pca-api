@@ -54,17 +54,17 @@ resource "aws_lb_listener" "browserless" {
 }
 
 resource "aws_security_group" "browserless" {
-  name        = "${var.app}-${var.env}-browserless-alb"
+  name        = module.label.id
   description = "Allow traffic for browserless chrome from alb"
   vpc_id      = data.aws_vpc.vpc.id
 
   ingress {
-    description     = "Allow container port from ALB"
-    from_port       = local.browserless_port
-    to_port         = local.browserless_port
-    protocol        = "tcp"
-    security_groups = ["0.0.0.0/0"]
-    self            = true
+    description = "Allow container port from ALB"
+    from_port   = local.browserless_port
+    to_port     = local.browserless_port
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    self        = true
   }
 
   egress {
@@ -76,7 +76,7 @@ resource "aws_security_group" "browserless" {
   }
 
   tags = {
-    "Name" = "${var.app}-${var.env}-browserless-alb"
+    "Name" = module.label.id
   }
 }
 
