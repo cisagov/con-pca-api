@@ -14,13 +14,6 @@ def download_pdf(report_type, uuid, cycle, auth_header=None):
     if settings.LOCAL_API_KEY and auth_header:
         auth_header = settings.LOCAL_API_KEY
 
-    logging.info(
-        "Downloading PDF From "
-        + f"{settings.REPORTS_ENDPOINT}/reports/{report_type}/{uuid}/{cycle}?reportToken={auth_header}"
-    )
-
-    logging.info("Using browserless chrome " + f"ws://{settings.BROWSERLESS_ENDPOINT}")
-
     response = loop.run_until_complete(
         _download_pdf(report_type, uuid, cycle, auth_header=auth_header)
     )

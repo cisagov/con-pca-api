@@ -22,9 +22,6 @@ class JSONWebTokenAuthentication(BaseAuthentication):
     def authenticate(self, request):
         """Entrypoint for Django Rest Framework"""
         print(settings.COGNITO_DEPLOYMENT_MODE)
-        logging.info(
-            "Authorization Token: " + get_authorization_header(request).decode()
-        )
 
         gp_sign = request.headers.get("X-Gophish-Signature")
         if gp_sign:
@@ -38,7 +35,7 @@ class JSONWebTokenAuthentication(BaseAuthentication):
                 return (user, token)
 
         if settings.COGNITO_DEPLOYMENT_MODE == "Development":
-            print("Using develop authorization")
+            logging.info("Using develop authorization")
             user = {"username": "developer user", "groups": {"develop"}}
             token = "Empty token"
             return (user, token)
@@ -46,7 +43,7 @@ class JSONWebTokenAuthentication(BaseAuthentication):
             settings.LOCAL_API_KEY
             and get_authorization_header(request).decode() == settings.LOCAL_API_KEY
         ):
-            print("Local api authorization")
+            logging.info("Local api authorization")
             user = {"username": "api", "groups": {"develop"}}
             token = "Empty token"
             return (user, token)
@@ -56,7 +53,7 @@ class JSONWebTokenAuthentication(BaseAuthentication):
             and get_authorization_header(request).decode().split(" ")[-1]
             == settings.LOCAL_API_KEY
         ):
-            print("Reports authentication")
+            logging.info("Reports authentication")
             user = {"usuername": "reports", "groups": {"develop"}}
             token = "Empty token"
             return (user, token)
