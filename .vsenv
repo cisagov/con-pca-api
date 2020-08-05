@@ -1,1 +1,64 @@
 PYTHONPATH=src/
+
+# Django
+SECRET_KEY=dbaa1_i7%*3r9-=z-+_mz4r-!qeed@(-a_r(g@k8jo8y3r27%m
+DEBUG=1
+DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1] pca-api
+
+# Celery
+CELERY_BROKER=amqp://rabbitmq:5672
+BASIC_AUTH_USERNAME=admin
+BASIC_AUTH_PASSWORD=test
+
+# MongoDB
+DB_HOST=mongodb
+DB_PORT=27017
+DB_PW=rootpassword
+DB_USER=root
+
+# DB
+MONGO_INITDB_ROOT_PASSWORD=rootpassword
+MONGO_INITDB_ROOT_USERNAME=root
+MONGO_INITDB_DATABASE=pca_data_dev
+
+
+# GoPhish
+GP_URL=http://gophish:3333/
+PHISH_URL=http://gophish:8080/
+WEBHOOK_URL=http://pca-api:8000/api/v1/inboundwebhook/
+GP_API_KEY=af422fbc62a7b207ab5b564384903135422e982a8fb1fb61346266310646ea53
+GP_SMTP_HOST=mailhost.inl.gov:25
+GP_SMTP_FROM=Barry Hansen <barry.hansen@inl.gov>
+GP_SMTP_USER=
+GP_SMTP_PASS=
+
+
+SMTP_HOST=mailhost.inl.gov
+SMTP_PORT=25
+SMTP_FROM=Barry Hansen <barry.hansen@inl.gov>
+SMTP_USER=
+SMTP_PASS=
+
+#AWS SETUP
+AWS_ACCESS_KEY_ID=mock_access_key
+AWS_SECRET_ACCESS_KEY=mock_secret_key
+AWS_DEFAULT_REGION=us-east-1
+AWS_ENDPOINT_URL=http://host.docker.internal:4566
+AWS_S3_EXTERNAL_HOST=localhost
+
+# AWS RESOURCES
+AWS_S3_BUCKET=con-pca-local-bucket
+AWS_S3_IMAGE_BUCKET=con-pca-local-image-bucket
+DEFAULT_FILE_STORAGE=storages.backends.s3boto3.S3Boto3Storage
+
+#DEBUG
+DEBUG_PTVSD=1
+#Cognito
+COGNITO_DEPLOYMENT_MODE=Development
+COGNITO_AWS_REGION=us-east-1
+COGNITO_USER_POOL=us-east-1_IE9ZciRMz
+COGNITO_AUDIENCE=5ecdbkeu25kc07m0ris51kpn88
+LOCAL_API_KEY=randomly_generated_api_key_here
+
+# GUNICORN
+WORKERS=4

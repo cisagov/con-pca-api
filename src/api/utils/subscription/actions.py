@@ -161,8 +161,11 @@ def start_subscription(data=None, subscription_uuid=None):
         }
 
         subscription["email_report_history"].append(email_report)
+        templates_list_email = send_templates_list(sub_levels, subscription, recipient_copy)
+        subscription["email_report_history"].append(templates_list_email)
     except Exception as e:
         logging.exception(e)
+
 
     serialized_data = SubscriptionPatchSerializer(subscription)
     response = db.update_single(
@@ -175,6 +178,36 @@ def start_subscription(data=None, subscription_uuid=None):
 
     return response
 
+def send_templates_list(templates_list,subscription, recipient_copy):
+    """
+    after the templates are personalized concat them all together 
+    and send as a templates used notification to subscription contact
+    """
+    templates_separator = "--------------------------------------------------------------------------------"
+    emailBody = ""
+    for l in templates_list:
+        emailBody += "Template Rated Deception Level:"  + l.key()
+        for p in l["personalized_templates"]:
+            emailBody += p["name"] +"\n"
+            emailBody += p["subject"] + "\n"
+            emailBody += p["data"] +"\n"
+            emailBody += templates_separator +"\n"
+
+    try:
+        
+        email_report = {
+            "report_type": "Templates List",
+            "sent": datetime.now(),
+            "email_to": subscription.get("primary_contact").get("email"),
+            "email_from": settings.SERVER_EMAIL,
+            "bbc": recipient_copy,
+            "manual": False,
+        }
+
+        subscription["email_report_history"].append(email_report)
+        return email_report
+    except Exception as e:
+        logging.exception(e)
 
 def new_subscription_cycle(subscription_uuid):
     """
@@ -310,7 +343,6 @@ def new_subscription_cycle(subscription_uuid):
 def stop_subscription(subscription):
     """
     Stops a given subscription.
-
     Returns updated subscription.
     """
     # Stop Campaigns
@@ -362,7 +394,6 @@ def stop_subscription(subscription):
     logging.info(f"udpated rep={resp}")
 
     return resp
-
 
 def __delete_subscription_user_groups(gophish_campaign_list):
     campaign_manager = CampaignManager()

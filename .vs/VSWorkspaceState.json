@@ -1,0 +1,10 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src\\api",
+    "\\src\\api\\tests",
+    "\\src\\api\\tests\\utils",
+    "\\src\\api\\tests\\utils\\subscription"
+  ],
+  "PreviewInSolutionExplorer": false
+}
