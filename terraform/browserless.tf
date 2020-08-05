@@ -7,8 +7,8 @@ module "label" {
   attributes = []
   delimiter  = "-"
   name       = "browserless"
-  namespace  = var.namespace
-  stage      = var.stage
+  namespace  = var.app
+  stage      = var.env
   tags       = {}
 }
 
