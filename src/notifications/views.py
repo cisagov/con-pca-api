@@ -8,23 +8,19 @@ contacts about reports and subscription updates.
 
 # Standard Python Libraries
 from datetime import datetime
-from pathlib import Path
 from email.mime.image import MIMEImage
 import logging
-import pytz
 
 # Third-Party Libraries
 from django.conf import settings
-from django.utils import timezone
-import requests
 from api.models.dhs_models import DHSContactModel, validate_dhs_contact
 from api.utils.db_utils import get_single
-from django.conf import settings
 from django.contrib.staticfiles.storage import staticfiles_storage
-from django.core.files.storage import FileSystemStorage
 from django.core.mail.message import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from notifications.utils import get_notification
+
+from api.utils.reports import download_pdf
 
 
 logger = logging.getLogger()
@@ -40,12 +36,7 @@ class ReportsEmailSender:
 
     def get_attachment(self, subscription_uuid, link, cycle):
         """Get_attachment method."""
-        url = f"{settings.REPORTS_API}/api/{link}/{subscription_uuid}/{cycle}/pdf/"
-        resp = requests.get(url, stream=True, verify=False)
-        fs = FileSystemStorage("/tmp")
-        filename = Path("/tmp/subscription_report.pdf")
-        filename.write_bytes(resp.content)
-        return fs.open("subscription_report.pdf")
+        return download_pdf(report_type=link, uuid=subscription_uuid, cycle=cycle)
 
     def send(self):
         """Send method."""

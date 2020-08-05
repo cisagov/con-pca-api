@@ -5,15 +5,10 @@ This handles the api for all the Reports urls.
 """
 # Standard Python Libraries
 import datetime
-import io
 import logging
-from pathlib import Path
 
 # Third-Party Libraries
-import asyncio
-import requests
 from django.conf import settings
-from django.core.files.storage import FileSystemStorage
 from api.manager import CampaignManager
 from api.models.dhs_models import DHSContactModel, validate_dhs_contact
 from api.models.subscription_models import SubscriptionModel, validate_subscription
@@ -27,7 +22,6 @@ from api.serializers.reports_serializers import (
     ReportsGetSerializer,
 )
 from api.utils.db_utils import get_list, get_single, update_single
-from config import settings
 from django.http import FileResponse
 from drf_yasg.utils import swagger_auto_schema
 from notifications.views import ReportsEmailSender
@@ -61,7 +55,7 @@ class ReportsView(APIView):
     """
 
     @swagger_auto_schema(
-        responses={"200": ReportsGetSerializer, "400": "Bad Request",},
+        responses={"200": ReportsGetSerializer, "400": "Bad Request"},
         security=[],
         operation_id="Get Subscription Report data",
         operation_description="This fetches a subscription's report data by subscription uuid",
@@ -190,7 +184,7 @@ class MonthlyReportsEmailView(APIView):
     """
 
     @swagger_auto_schema(
-        responses={"200": EmailReportsGetSerializer, "400": "Bad Request",},
+        responses={"200": EmailReportsGetSerializer, "400": "Bad Request"},
         security=[],
         operation_id="Send Email Subscription Report PDF",
         operation_description="This sends a subscription report email by subscription uuid",
@@ -243,7 +237,7 @@ class CycleReportsEmailView(APIView):
     """
 
     @swagger_auto_schema(
-        responses={"200": EmailReportsGetSerializer, "400": "Bad Request",},
+        responses={"200": EmailReportsGetSerializer, "400": "Bad Request"},
         security=[],
         operation_id="Send Email Subscription Report PDF",
         operation_description="This sends a subscription report email by subscription uuid",
@@ -253,8 +247,7 @@ class CycleReportsEmailView(APIView):
         subscription = get_single(
             subscription_uuid, "subscription", SubscriptionModel, validate_subscription
         )
-        message_type = "cycle_report"
-
+        # message_type = "cycle_report"
         # Send email
         # sender = ReportsEmailSender(subscription, message_type)
         # sender.send()
@@ -296,7 +289,7 @@ class YearlyReportsEmailView(APIView):
     """
 
     @swagger_auto_schema(
-        responses={"200": EmailReportsGetSerializer, "400": "Bad Request",},
+        responses={"200": EmailReportsGetSerializer, "400": "Bad Request"},
         security=[],
         operation_id="Send Email Subscription Report PDF",
         operation_description="This sends a subscription report email by subscription uuid",
@@ -360,7 +353,12 @@ def monthly_reports_pdf_view(request, subscription_uuid, cycle):
 def cycle_reports_pdf_view(request, subscription_uuid, cycle):
     """Cycle_reports_pdf_view."""
     return FileResponse(
-        download_pdf("cycle", subscription_uuid, cycle),
+        download_pdf(
+            "cycle",
+            subscription_uuid,
+            cycle,
+            auth_header=request.headers.get("Authorization", None),
+        ),
         as_attachment=True,
         filename="cycle_subscription_report.pdf",
     )
@@ -372,7 +370,12 @@ def cycle_reports_pdf_view(request, subscription_uuid, cycle):
 def yearly_reports_pdf_view(request, subscription_uuid, cycle):
     """Yearly_reports_pdf_view."""
     return FileResponse(
-        download_pdf("yearly", subscription_uuid, cycle),
+        download_pdf(
+            "yearly",
+            subscription_uuid,
+            cycle,
+            auth_header=request.headers.get("Authorization", None),
+        ),
         as_attachment=True,
         filename="yearly_subscription_report.pdf",
     )

@@ -3,21 +3,18 @@ from io import BytesIO
 import pyppeteer
 import asyncio
 
+from django.conf import settings
+
 
 def download_pdf(report_type, uuid, cycle, auth_header=None):
-
-    print(auth_header)
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
-    auth_header = auth_header.split(" ")[-1]
-
-    print(
-        f"http://pca-web:4200/reports/{report_type}/{uuid}/{cycle}?reportToken={auth_header}"
-    )
+    if auth_header:
+        auth_header = auth_header.split(" ")[-1]
 
     response = loop.run_until_complete(
-        _download_pdf(report_type, uuid, cycle, auth_header=auth_header.split(" ")[-1])
+        _download_pdf(report_type, uuid, cycle, auth_header=auth_header)
     )
     buffer = BytesIO()
     buffer.write(response)
@@ -26,14 +23,15 @@ def download_pdf(report_type, uuid, cycle, auth_header=None):
 
 
 async def _download_pdf(report_type, uuid, cycle, auth_header=None):
-    url = "pca-browserless:3000"
-    browser = await pyppeteer.connect(browserWSEndpoint=f"ws://{url}")
+    browser = await pyppeteer.connect(
+        browserWSEndpoint=f"ws://{settings.BROWSERLESS_ENDPOINT}"
+    )
     page = await browser.newPage()
 
     if auth_header:
-        url = f"http://pca-web:4200/reports/{report_type}/{uuid}/{cycle}?reportToken={auth_header}"
+        url = f"{settings.REPORTS_ENDPOINT}/reports/{report_type}/{uuid}/{cycle}?reportToken={auth_header}"
     else:
-        url = f"http://pca-web:4200/reports/{report_type}/{uuid}/{cycle}"
+        url = f"{settings.REPORTS_ENDPOINT}/reports/{report_type}/{uuid}/{cycle}"
 
     await page.goto(
         url, waitUntil="networkidle2",

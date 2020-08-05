@@ -87,7 +87,7 @@ LOGGING = {
     "handlers": {
         "console": {"class": "logging.StreamHandler", "formatter": "verbose"},
     },
-    "root": {"handlers": ["console"], "level": "INFO",},
+    "root": {"handlers": ["console"], "level": "INFO"},
     "loggers": {
         "django": {
             "handlers": ["console"],
@@ -114,7 +114,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, "templates"),],
+        "DIRS": [os.path.join(BASE_DIR, "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -136,9 +136,9 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
 
@@ -189,8 +189,9 @@ REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),
 }
 
-# Reports Service API
-REPORTS_API = os.environ.get("REPORTS_API", "pca-pdf-report:3030")
+# Reports
+REPORTS_ENDPOINT = os.environ.get("REPORTS_ENDPOINT", "pca-web:4200")
+BROWSERLESS_ENDPOINT = os.environ.get("BROWSERLESS_ENDPOINT", "pca-browserless:3000")
 
 # GoPhish
 GP_URL = os.environ.get("GP_URL", "")

@@ -324,7 +324,7 @@ class CycleStatusView(APIView):
     def get(self, request, **kwargs):
 
         start_date_param = self.kwargs["start_date"]
-        start_date = datetime.strptime(start_date_param, "%Y-%m-%dT%H:%M:%S.%fZ")
+        start_date = datetime.strptime(start_date_param, "%Y-%m-%dT%H:%M:%S.%f%z")
 
         # Get targeted subscription and associated customer data
         subscription_uuid = self.kwargs["subscription_uuid"]
