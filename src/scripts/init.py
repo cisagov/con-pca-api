@@ -54,20 +54,23 @@ def create_sending_profile(profiles):
     """
     existing_names = {smtp.name for smtp in API.smtp.get()}
 
-    for profile in profiles:
-        profile_name = profile.get("name")
-        if profile_name in existing_names:
-            print(f"Sending profile, {profile_name}, already exists.. Skipping")
-            continue
-        smtp = SMTP(name=profile_name)
-        smtp.host = profile.get("host")
-        smtp.from_address = profile.get("from_address")
-        smtp.username = profile.get("username")
-        smtp.password = profile.get("password")
-        smtp.interface_type = "SMTP"
-        smtp.ignore_cert_errors = True
-        smtp = API.smtp.post(smtp)
-        print(f"Sending profile with id: {smtp.id} has been created")
+    if len(existing_names) <= 0:
+        for profile in profiles:
+            profile_name = profile.get("name")
+            if profile_name in existing_names:
+                print(f"Sending profile, {profile_name}, already exists.. Skipping")
+                continue
+            smtp = SMTP(name=profile_name)
+            smtp.host = profile.get("host")
+            smtp.from_address = profile.get("from_address")
+            smtp.username = profile.get("username")
+            smtp.password = profile.get("password")
+            smtp.interface_type = "SMTP"
+            smtp.ignore_cert_errors = True
+            smtp = API.smtp.post(smtp)
+            print(f"Sending profile with id: {smtp.id} has been created")
+    else:
+        print(f"Sending profiles already initiated.. Skipping")
 
 
 def create_landing_page(pages):
@@ -75,14 +78,17 @@ def create_landing_page(pages):
     Create a Gophish landing page
     """
     existing_names = {smtp.name for smtp in API.pages.get()}
-    for page in pages:
-        page_name = page.get("name")
-        if page_name in existing_names:
-            print(f"Landing page, {page_name}, already exists.. Skipping")
-            continue
-        landing_page = Page(name=page_name, html=page.get("html"))
-        landing_page = API.pages.post(landing_page)
-        print(f"Landing page with id: {landing_page.id} has been created")
+    if len(existing_names) <= 0:
+        for page in pages:
+            page_name = page.get("name")
+            if page_name in existing_names:
+                print(f"Landing page, {page_name}, already exists.. Skipping")
+                continue
+            landing_page = Page(name=page_name, html=page.get("html"))
+            landing_page = API.pages.post(landing_page)
+            print(f"Landing page with id: {landing_page.id} has been created")
+    else:
+        print(f"Langing Pages already initiated.. Skipping")
 
 def readinLandingHtml(path):
     """
@@ -115,34 +121,38 @@ def create_templates():
             f"{LOCAL_URL}/api/v1/templates", headers=get_headers(), verify=False
         ).json()
     ]
+    if len(existing_names) <= 0:
+        templates = load_file("data/templates.json") + load_file(
+            "data/landing_pages.json"
+        )
 
-    templates = load_file("data/templates.json") + load_file("data/landing_pages.json")
-
-    for template in templates:
-        if not template["name"] in existing_names:
-            template["deception_score"] = template["complexity"]
-            resp = requests.post(
-                f"{LOCAL_URL}/api/v1/templates/",
-                json=template,
-                headers=get_headers(),
-                verify=False,
-            )
-
-            if resp.status_code == 409:
-                print(f"Template, {template['name']}, already exists.. Skipping")
-                continue
-
-            resp.raise_for_status()
-            resp_json = resp.json()
-            if resp_json.get("error"):
-                print(f"Template Creation error: {resp_json}")
-            else:
-                print(
-                    f"Template with uuid: {resp_json['template_uuid']} has been created"
+        for template in templates:
+            if not template["name"] in existing_names:
+                template["deception_score"] = template["complexity"]
+                resp = requests.post(
+                    f"{LOCAL_URL}/api/v1/templates/",
+                    json=template,
+                    headers=get_headers(),
+                    verify=False,
                 )
 
-        else:
-            print(f"Template, {template['name']}, already exists.. Skipping")
+                if resp.status_code == 409:
+                    print(f"Template, {template['name']}, already exists.. Skipping")
+                    continue
+
+                resp.raise_for_status()
+                resp_json = resp.json()
+                if resp_json.get("error"):
+                    print(f"Template Creation error: {resp_json}")
+                else:
+                    print(
+                        f"Template with uuid: {resp_json['template_uuid']} has been created"
+                    )
+
+            else:
+                print(f"Template, {template['name']}, already exists.. Skipping")
+    else:
+        print(f"Templates already initiated.. Skipping")
 
 
 def create_tags():
@@ -153,25 +163,27 @@ def create_tags():
             f"{LOCAL_URL}/api/v1/tags/", headers=get_headers(), verify=False
         ).json()
     ]
-
-    for tag in tags:
-        if tag["tag"] not in existing_tags:
-            resp = requests.post(
-                f"{LOCAL_URL}/api/v1/tags/",
-                json=tag,
-                headers=get_headers(),
-                verify=False,
-            )
-            resp.raise_for_status()
-            resp_json = resp.json()
-            if resp_json.get("error"):
-                print(f"Tag Creation error: {resp_json}")
-            else:
-                print(
-                    f"Tag with uuid {resp_json['tag_definition_uuid']} has been created"
+    if len(existing_tags) <= 0:
+        for tag in tags:
+            if tag["tag"] not in existing_tags:
+                resp = requests.post(
+                    f"{LOCAL_URL}/api/v1/tags/",
+                    json=tag,
+                    headers=get_headers(),
+                    verify=False,
                 )
-        else:
-            print(f"Tag, {tag['tag']}, already exists.. Skipping")
+                resp.raise_for_status()
+                resp_json = resp.json()
+                if resp_json.get("error"):
+                    print(f"Tag Creation error: {resp_json}")
+                else:
+                    print(
+                        f"Tag with uuid {resp_json['tag_definition_uuid']} has been created"
+                    )
+            else:
+                print(f"Tag, {tag['tag']}, already exists.. Skipping")
+    else:
+        print(f"Tags already initiated.. Skipping")
 
 
 def get_headers():
