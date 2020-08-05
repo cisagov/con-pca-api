@@ -269,9 +269,8 @@
                         >
                           Thank you for participating in the CISA Phishing This
                           email is to inform you that your campaign has begun
-                          starting {% localtime on %}{{ start_date }}{%
-                          endlocaltime %} UTC and will run until {{ end_date }}
-                          UTC.
+                          starting {{ start_date|localtime }} UTC and will run
+                          until {{ end_date|localtime }} UTC.
                         </div>
                       </td>
                     </tr>
