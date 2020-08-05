@@ -6,7 +6,6 @@ import hashlib
 
 from django.apps import apps as django_apps
 from django.conf import settings
-from config.settings import LOCAL_API_KEY
 from django.utils.encoding import smart_text
 from django.utils.translation import ugettext as _
 from rest_framework import exceptions
@@ -28,7 +27,7 @@ class JSONWebTokenAuthentication(BaseAuthentication):
         if gp_sign:
             gp_sign = gp_sign.split("=")[-1]
             digest = hmac.new(
-                LOCAL_API_KEY.encode(), request.body, hashlib.sha256
+                settings.LOCAL_API_KEY.encode(), request.body, hashlib.sha256
             ).hexdigest()
             if digest == gp_sign:
                 user = {"username": "gophish", "groups": {"develop"}}
@@ -40,13 +39,22 @@ class JSONWebTokenAuthentication(BaseAuthentication):
             user = {"username": "developer user", "groups": {"develop"}}
             token = "Empty token"
             return (user, token)
-
         if (
-            LOCAL_API_KEY
-            and get_authorization_header(request).decode() == LOCAL_API_KEY
+            settings.LOCAL_API_KEY
+            and get_authorization_header(request).decode() == settings.LOCAL_API_KEY
         ):
             print("Local api authorization")
             user = {"username": "api", "groups": {"develop"}}
+            token = "Empty token"
+            return (user, token)
+
+        if (
+            settings.LOCAL_API_KEY
+            and get_authorization_header(request).decode().split(" ")[-1]
+            == settings.LOCAL_API_KEY
+        ):
+            print("Reports authentication")
+            user = {"usuername": "reports", "groups": {"develop"}}
             token = "Empty token"
             return (user, token)
 
