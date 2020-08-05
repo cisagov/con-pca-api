@@ -9,7 +9,13 @@ from api.serializers import campaign_serializers, webhook_serializers
 from api.serializers.subscriptions_serializers import (
     SubscriptionPatchResponseSerializer,
 )
-from api.utils.db_utils import get_single_subscription_webhook, update_single_webhook
+from api.utils.db_utils import (
+    get_single_subscription_webhook,
+    update_single_webhook,
+    update_single_webhook,
+    update_list_single,
+    update_nested_single,
+)
 from api.utils.generic import format_ztime
 from api.utils.template.templates import update_target_history
 from drf_yasg.utils import swagger_auto_schema
@@ -87,6 +93,11 @@ class IncomingWebhookView(APIView):
                 return True
         return False
 
+    def mark_phishing_results_dirty(self, subscription, campaign):
+        for cycle in subscription["cycles"]:
+            if campaign["campaign_id"] in cycle["campaigns_in_cycle"]:
+                cycle["phish_results_dirty"] = true
+
     def __handle_webhook_data(self, data):
         """
         Handle Webhook Data.
@@ -147,10 +158,8 @@ class IncomingWebhookView(APIView):
 
                 for campaign in subscription["gophish_campaign_list"]:
                     if campaign["campaign_id"] == seralized_data["campaign_id"]:
-                        is_duplicate = self.is_duplicate_timeline_entry(
-                            campaign["timeline"], seralized_data
-                        )
-                        campaign["timeline"].append(
+                        # update timeline
+                        put_data = [
                             {
                                 "email": seralized_data["email"],
                                 "message": seralized_data["message"],
@@ -158,49 +167,61 @@ class IncomingWebhookView(APIView):
                                 "details": seralized_data["details"],
                                 "duplicate": is_duplicate,
                             }
+                        ]
+                        update_list_single(
+                            uuid=subscription["subscription_uuid"],
+                            field="gophish_campaign_list.$.timeline",
+                            put_data=put_data,
+                            collection="subscription",
+                            model=SubscriptionModel,
+                            validation_model=validate_subscription,
+                            params={
+                                "gophish_campaign_list.campaign_id": campaign[
+                                    "campaign_id"
+                                ]
+                            },
                         )
-                        if not is_duplicate:
-                            if campaign["phish_results"] is None:
-                                campaign["phish_results"] = {
-                                    "sent": 0,
-                                    "opened": 0,
-                                    "clicked": 0,
-                                    "submitted": 0,
-                                    "reported": 0,
-                                }
-                            if (
-                                not self.has_corresponding_opened_event(
-                                    campaign["timeline"], seralized_data
+                        # update campaign to be marked as dirty
+                        update_nested_single(
+                            uuid=subscription["subscription_uuid"],
+                            field="gophish_campaign_list.$.phish_results_dirty",
+                            put_data=True,
+                            collection="subscription",
+                            model=SubscriptionModel,
+                            validation_model=validate_subscription,
+                            params={
+                                "gophish_campaign_list.campaign_id": campaign[
+                                    "campaign_id"
+                                ]
+                            },
+                        )
+                        # update cycle to be marked as dirty
+                        for cycle in subscription["cycles"]:
+                            if campaign["campaign_id"] in cycle["campaigns_in_cycle"]:
+                                update_nested_single(
+                                    uuid=subscription["subscription_uuid"],
+                                    field="cycles.$.phish_results_dirty",
+                                    put_data=True,
+                                    collection="subscription",
+                                    model=SubscriptionModel,
+                                    validation_model=validate_subscription,
+                                    params={"cycles.cycle_uuid": cycle["cycle_uuid"]},
                                 )
-                                and seralized_data["message"] != "Email Sent"
-                            ):
-                                # Event found without corresponding opened event, creating opened record
-                                temp_opened_event = {"message": "Email Opened"}
-                                self.__update_phishing_results(
-                                    temp_opened_event, campaign["phish_results"]
-                                )
-                                self.__update_cycle(temp_opened_event, subscription)
-                            self.__update_phishing_results(
-                                data, campaign["phish_results"]
-                            )
-                            self.__update_cycle(data, subscription)
-                        campaign["results"] = gophish_campaign_data["results"]
-                        campaign["status"] = gophish_campaign_data["status"]
-
                 # update target history
                 if campaign_event == "Email Sent":
                     # send campaign info and email gophish_campaign_data, seralized_data
                     update_target_history(campaign, seralized_data)
 
-            updated_response = update_single_webhook(
-                subscription=subscription,
-                collection="subscription",
-                model=SubscriptionModel,
-                validation_model=validate_subscription,
-            )
-            if "errors" in updated_response:
-                return Response(updated_response, status=status.HTTP_400_BAD_REQUEST)
-            serializer = SubscriptionPatchResponseSerializer(updated_response)
-            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+            # updated_response = update_single_webhook(
+            #     subscription=subscription,
+            #     collection="subscription",
+            #     model=SubscriptionModel,
+            #     validation_model=validate_subscription,
+            # )
+            # if "errors" in updated_response:
+            #     return Response(updated_response, status=status.HTTP_400_BAD_REQUEST)
+            # serializer = SubscriptionPatchResponseSerializer(updated_response)
+            # return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+            return Response(status=status.HTTP_202_ACCEPTED)
 
         return Response(status=status.HTTP_200_OK)

@@ -23,7 +23,7 @@ from api.models.recommendations_models import (
     RecommendationsModel,
     validate_recommendations,
 )
-from api.utils.db_utils import get_list, get_single
+from api.utils.db_utils import get_list, get_single, update_nested_single
 
 
 def pprintItem(item):
@@ -517,12 +517,109 @@ def generate_subscription_stat_details(campaign_results, active_cycle):
     }
 
 
+def count_timeline_moments(moments):
+    phishing_result = {
+        "sent": 0,
+        "opened": 0,
+        "clicked": 0,
+        "submitted": 0,
+        "reported": 0,
+    }
+    for moment in moments:
+        if moment["message"] == "Email Sent":
+            phishing_result["sent"] += 1
+        if moment["message"] == "Email Opened":
+            phishing_result["opened"] += 1
+        if moment["message"] == "Clicked Link":
+            phishing_result["clicked"] += 1
+        if moment["message"] == "Submitted Data":
+            phishing_result["submitted"] += 1
+        if moment["message"] == "Email Reported":
+            phishing_result["reported"] += 1
+    return phishing_result
+
+
+def generate_cycle_phish_results(subscription, cycle):
+    cycle_phish_results = {
+        "sent": 0,
+        "opened": 0,
+        "clicked": 0,
+        "submitted": 0,
+        "reported": 0,
+    }
+    print("----------------")
+    pprintItem(subscription)
+    print("----------------")
+    for campaign in subscription["gophish_campaign_list"]:
+        if campaign["campaign_id"] in cycle["campaigns_in_cycle"]:
+            # If campaign timeline is dirty, recalculate the phish results
+            if campaign["phish_results_dirty"]:
+
+                unique_moments = get_unique_moments(campaign["timeline"])
+                phishing_results = count_timeline_moments(unique_moments)
+
+                # Update database with new phish results
+                update_nested_single(
+                    uuid=subscription["subscription_uuid"],
+                    field="gophish_campaign_list.$.phish_results",
+                    put_data=phishing_results,
+                    collection="subscription",
+                    model=SubscriptionModel,
+                    validation_model=validate_subscription,
+                    params={
+                        "gophish_campaign_list.campaign_id": campaign["campaign_id"]
+                    },
+                )
+                #  Mark campaign data as clean
+                update_nested_single(
+                    uuid=subscription["subscription_uuid"],
+                    field="gophish_campaign_list.$.phish_results_dirty",
+                    put_data=False,
+                    collection="subscription",
+                    model=SubscriptionModel,
+                    validation_model=validate_subscription,
+                    params={
+                        "gophish_campaign_list.campaign_id": campaign["campaign_id"]
+                    },
+                )
+                campaign["phish_results"] = phishing_results
+
+            # append campaign results to cycle results
+            for key in campaign["phish_results"]:
+                cycle_phish_results[key] += campaign["phish_results"][key]
+
+    cycle["phish_result"] = cycle_phish_results
+
+    # update the cycle phish results
+    update_nested_single(
+        uuid=subscription["subscription_uuid"],
+        field="cycles.$.phish_results",
+        put_data=cycle_phish_results,
+        collection="subscription",
+        model=SubscriptionModel,
+        validation_model=validate_subscription,
+        params={"cycles.cycle_uuid": cycle["cycle_uuid"]},
+    )
+
+    # Mark cycle data as clean
+    update_nested_single(
+        uuid=subscription["subscription_uuid"],
+        field="cycles.$.phish_results_dirty",
+        put_data=False,
+        collection="subscription",
+        model=SubscriptionModel,
+        validation_model=validate_subscription,
+        params={"cycles.cycle_uuid": cycle["cycle_uuid"]},
+    )
+
+
 def generate_region_stats(subscription_list, cycle_date=None):
     """
     Generate statistics for multiple subscriptions.
 
     Can provide cycle_date to specify a cycle range to use. Given a list of subscriptions, get the phishing results from the cycle value and summarize.
     """
+    print("=====-=-=-=-=-========")
     region_stats = {}
     campaign_count = 0
     cycle_count = 0
@@ -535,8 +632,13 @@ def generate_region_stats(subscription_list, cycle_date=None):
         else:
             target_cycles = subscription["cycles"]
         for target_cycle in target_cycles:
+            pprintItem(target_cycle)
             cycle_count += 1
             campaign_count += len(target_cycle["campaigns_in_cycle"])
+            print(target_cycle["phish_results_dirty"])
+            if target_cycle["phish_results_dirty"]:
+                print("=====-=-=-=-=-========")
+                generate_cycle_phish_results(subscription, target_cycle)
             if not region_stats:
                 region_stats = target_cycle["phish_results"].copy()
             else:
@@ -592,6 +694,7 @@ def get_related_subscription_stats(subscription, start_date):
         "subscription_uuid": 1,
         "cycles": 1,
         "name": 1,
+        "gophish_campaign_list": 1,
     }
     subscription_list = get_list(
         parameters,

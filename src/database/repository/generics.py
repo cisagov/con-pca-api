@@ -144,6 +144,15 @@ class GenericRepositoryInterface(object):
         """
         return self.repository.update_list(uuid, generic_object, params)
 
+    def update_nested(self, uuid, generic_object, params=None):
+        """
+        Update List.
+
+        Takes in uuid, field and list_data and send to repository.
+        Returns objectId of updated document.
+        """
+        return self.repository.update_nested(uuid, generic_object, params)
+
     def delete(self, uuid):
         """
         Delete.
@@ -282,7 +291,21 @@ class GenericRepository(object):
         if params:
             object_params = {**object_params, **params}
 
-        await self.collection.update(object_params, {"$addToSet": object})
+        await self.collection.update_one(object_params, {"$addToSet": object})
+        return {self.uuid_name: uuid}
+
+    async def update_nested(self, uuid, object, params=None):
+        """
+        Update Nested.
+
+        Generic method that can be used to update a
+        single document by a given uuid, field and values.
+        """
+        object_params = {self.uuid_name: uuid}
+        if params:
+            object_params = {**object_params, **params}
+
+        await self.collection.update_one(object_params, {"$set": object})
         return {self.uuid_name: uuid}
 
     async def delete(self, uuid):
