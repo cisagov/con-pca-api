@@ -123,7 +123,7 @@ resource "aws_ecs_service" "browserless" {
   }
 
   network_configuration {
-    subnets          = var.private_subnet_ids
+    subnets          = data.aws_subnet_ids.private.ids
     security_groups  = [aws_security_group.browserless.id]
     assign_public_ip = false
   }
