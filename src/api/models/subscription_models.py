@@ -174,6 +174,7 @@ class GoPhishCampaignsModel(Model):
     status = StringType()
     results = ListType(ModelType(GoPhishResultModel))
     phish_results = ModelType(PhishingResultsModel)
+    phish_results_dirty = BooleanType(default=False)
     groups = ListType(ModelType(GoPhishGroupModel))
     timeline = ListType(ModelType(GoPhishTimelineModel))
     target_email_list = ListType(ModelType(SubscriptionTargetModel))
@@ -193,6 +194,7 @@ class CycleModel(Model):
     active = BooleanType()
     campaigns_in_cycle = ListType(IntType())
     phish_results = ModelType(PhishingResultsModel)
+    phish_results_dirty = BooleanType(default=False)
     override_total_reported = IntType()
 
 

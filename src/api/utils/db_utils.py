@@ -163,12 +163,51 @@ def update_list_single(
     update_response = loop.run_until_complete(
         service.update_list(uuid, list_update_object, params)
     )
+
     if "errors" in update_response:
         return update_response
-    document = loop.run_until_complete(service.get(uuid=uuid))
-    document["last_updated_by"] = current_user
-    document["lub_timestamp"] = updated_timestamp
-    update_response = loop.run_until_complete(service.update(document))
+    return
+
+
+def update_nested_single(
+    uuid, field, put_data, collection, model, validation_model, params=None
+):
+    """
+    Update_list_single method.
+
+    This builds $addToSet object for db, updates, then returns.
+
+    Example: uuid="123-123-123", field="timeline", put_data={...data...}, ...
+    if params!=None:
+        the db will query using extra params
+        {uuid="123-123-123", "gophish_campaign_list.campaign_id": 85}
+        then for a nested set:
+        field="gophish_campaign_list.$.timeline"
+        and put_data = [value1,value2,...]
+
+    Example call:
+        update_list_single(
+            uuid="123-123-123",
+            field="gophish_campaign_list.$.timeline",
+            put_data=[<object>], "subscription", SubscriptionModel,validate_subscription,
+            params={"gophish_campaign_list.campaign_id": 85})
+    """
+    service, loop = __get_service_loop(collection, model, validation_model)
+    updated_timestamp = datetime.datetime.utcnow()
+    current_user = "dev user"
+
+    list_update_object = {field: put_data}
+
+    update_response = loop.run_until_complete(
+        service.update_nested_single(uuid, list_update_object, params)
+    )
+    # if "errors" in update_response:
+    #     return update_response
+    # document = loop.run_until_complete(service.get(uuid=uuid))
+    # document["last_updated_by"] = current_user
+    # document["lub_timestamp"] = updated_timestamp
+    # update_response = loop.run_until_complete(service.update(document))
+    document = ""
     if "errors" in update_response:
         return update_response
     return document

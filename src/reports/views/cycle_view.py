@@ -80,7 +80,6 @@ class CycleReportsView(APIView):
 
         subscription_primary_contact = subscription.get("primary_contact")
 
-        print(_customer)
         customer = {
             "full_name": _customer.get("name"),
             "short_name": _customer.get("identifier"),
@@ -324,7 +323,7 @@ class CycleStatusView(APIView):
     def get(self, request, **kwargs):
 
         start_date_param = self.kwargs["start_date"]
-        start_date = datetime.strptime(start_date_param, "%Y-%m-%dT%H:%M:%SZ")
+        start_date = datetime.strptime(start_date_param, "%Y-%m-%dT%H:%M:%S.%f%z")
 
         # Get targeted subscription and associated customer data
         subscription_uuid = self.kwargs["subscription_uuid"]
