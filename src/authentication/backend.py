@@ -61,7 +61,7 @@ class JSONWebTokenAuthentication(BaseAuthentication):
             token = "Empty token"
             return (user, token)
 
-        logging.INFO("Using JWT Authentication")
+        logging.info("Using JWT Authentication")
 
         jwt_token = self.get_jwt_token(request)
         if jwt_token is None:
