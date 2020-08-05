@@ -128,7 +128,7 @@ resource "random_password" "basic_auth_password" {
 # BROWSERLESS FARGATE
 # ===========================
 resource "aws_lb" "network" {
-  name                             = "${var.app}-${var.env}-browserless-network-lb"
+  name                             = "${var.app}-${var.env}-api-nlb"
   enable_cross_zone_load_balancing = true
   idle_timeout                     = 60
   internal                         = true
