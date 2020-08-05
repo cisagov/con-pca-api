@@ -66,8 +66,8 @@ def get_closest_cycle_within_day_range(subscription, start_date, day_range=90):
 def get_cycle_by_date_in_range(subscription, date):
     """
     Get the cycle that contains the given date
-    """
-    if timezone.is_aware(date) is not None:
+    """    
+    if not timezone.is_aware(date):
         utc = pytz.UTC
         date =  utc.localize(date)
 
