@@ -25,7 +25,8 @@ def download_pdf(report_type, uuid, cycle, auth_header=None):
 
 async def _download_pdf(report_type, uuid, cycle, auth_header=None):
     browser = await pyppeteer.connect(
-        browserWSEndpoint=f"ws://{settings.BROWSERLESS_ENDPOINT}"
+        browserWSEndpoint=f"ws://{settings.BROWSERLESS_ENDPOINT}",
+        ignoreHTTPSErrors=True,
     )
     page = await browser.newPage()
 
