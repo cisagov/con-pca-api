@@ -32,20 +32,7 @@ SENDING_PROFILES = [
 ]
 
 LANDING_PAGES = [
-    {
-        "name": "Phished",
-        "html": """
-        <html>
-            <head>
-            <title>You've been phished!</title>
-            </head>
-            <body>
-            <h1>You've Been Phished!</h1>
-            <p>This is a message from a Gophish campaign</p>
-            </body>
-        </html>
-        """,
-    },
+    {"name": "Phished", "html": "",},
 ]
 
 WEBHOOKS = [
@@ -64,20 +51,23 @@ def create_sending_profile(profiles):
     """
     existing_names = {smtp.name for smtp in API.smtp.get()}
 
-    for profile in profiles:
-        profile_name = profile.get("name")
-        if profile_name in existing_names:
-            print(f"Sending profile, {profile_name}, already exists.. Skipping")
-            continue
-        smtp = SMTP(name=profile_name)
-        smtp.host = profile.get("host")
-        smtp.from_address = profile.get("from_address")
-        smtp.username = profile.get("username")
-        smtp.password = profile.get("password")
-        smtp.interface_type = "SMTP"
-        smtp.ignore_cert_errors = True
-        smtp = API.smtp.post(smtp)
-        print(f"Sending profile with id: {smtp.id} has been created")
+    if len(existing_names) <= 0:
+        for profile in profiles:
+            profile_name = profile.get("name")
+            if profile_name in existing_names:
+                print(f"Sending profile, {profile_name}, already exists.. Skipping")
+                continue
+            smtp = SMTP(name=profile_name)
+            smtp.host = profile.get("host")
+            smtp.from_address = profile.get("from_address")
+            smtp.username = profile.get("username")
+            smtp.password = profile.get("password")
+            smtp.interface_type = "SMTP"
+            smtp.ignore_cert_errors = True
+            smtp = API.smtp.post(smtp)
+            print(f"Sending profile with id: {smtp.id} has been created")
+    else:
+        print(f"Sending profiles already initiated.. Skipping")
 
 
 def create_landing_page(pages):
@@ -85,14 +75,23 @@ def create_landing_page(pages):
     Create a Gophish landing page
     """
     existing_names = {smtp.name for smtp in API.pages.get()}
-    for page in pages:
-        page_name = page.get("name")
-        if page_name in existing_names:
-            print(f"Landing page, {page_name}, already exists.. Skipping")
-            continue
-        landing_page = Page(name=page_name, html=page.get("html"))
-        landing_page = API.pages.post(landing_page)
-        print(f"Landing page with id: {landing_page.id} has been created")
+    if len(existing_names) <= 0:
+        for page in pages:
+            page_name = page.get("name")
+            if page_name in existing_names:
+                print(f"Landing page, {page_name}, already exists.. Skipping")
+                continue
+            landing_page = Page(name=page_name, html=page.get("html"))
+            landing_page = API.pages.post(landing_page)
+            print(f"Landing page with id: {landing_page.id} has been created")
+    else:
+        print(f"Langing Pages already initiated.. Skipping")
+
+
+def readinLandingHtml(path):
+    """
+    read in default landing page template
+    """
 
 
 def create_webhook(webhooks):
@@ -120,34 +119,38 @@ def create_templates():
             f"{LOCAL_URL}/api/v1/templates", headers=get_headers(), verify=False
         ).json()
     ]
+    if len(existing_names) <= 0:
+        templates = load_file("data/templates.json") + load_file(
+            "data/landing_pages.json"
+        )
 
-    templates = load_file("data/templates.json") + load_file("data/landing_pages.json")
-
-    for template in templates:
-        if not template["name"] in existing_names:
-            template["deception_score"] = template["complexity"]
-            resp = requests.post(
-                f"{LOCAL_URL}/api/v1/templates/",
-                json=template,
-                headers=get_headers(),
-                verify=False,
-            )
-
-            if resp.status_code == 409:
-                print(f"Template, {template['name']}, already exists.. Skipping")
-                continue
-
-            resp.raise_for_status()
-            resp_json = resp.json()
-            if resp_json.get("error"):
-                print(f"Template Creation error: {resp_json}")
-            else:
-                print(
-                    f"Template with uuid: {resp_json['template_uuid']} has been created"
+        for template in templates:
+            if not template["name"] in existing_names:
+                template["deception_score"] = template["complexity"]
+                resp = requests.post(
+                    f"{LOCAL_URL}/api/v1/templates/",
+                    json=template,
+                    headers=get_headers(),
+                    verify=False,
                 )
 
-        else:
-            print(f"Template, {template['name']}, already exists.. Skipping")
+                if resp.status_code == 409:
+                    print(f"Template, {template['name']}, already exists.. Skipping")
+                    continue
+
+                resp.raise_for_status()
+                resp_json = resp.json()
+                if resp_json.get("error"):
+                    print(f"Template Creation error: {resp_json}")
+                else:
+                    print(
+                        f"Template with uuid: {resp_json['template_uuid']} has been created"
+                    )
+
+            else:
+                print(f"Template, {template['name']}, already exists.. Skipping")
+    else:
+        print(f"Templates already initiated.. Skipping")
 
 
 def create_tags():
@@ -158,25 +161,27 @@ def create_tags():
             f"{LOCAL_URL}/api/v1/tags/", headers=get_headers(), verify=False
         ).json()
     ]
-
-    for tag in tags:
-        if tag["tag"] not in existing_tags:
-            resp = requests.post(
-                f"{LOCAL_URL}/api/v1/tags/",
-                json=tag,
-                headers=get_headers(),
-                verify=False,
-            )
-            resp.raise_for_status()
-            resp_json = resp.json()
-            if resp_json.get("error"):
-                print(f"Tag Creation error: {resp_json}")
-            else:
-                print(
-                    f"Tag with uuid {resp_json['tag_definition_uuid']} has been created"
+    if len(existing_tags) <= 0:
+        for tag in tags:
+            if tag["tag"] not in existing_tags:
+                resp = requests.post(
+                    f"{LOCAL_URL}/api/v1/tags/",
+                    json=tag,
+                    headers=get_headers(),
+                    verify=False,
                 )
-        else:
-            print(f"Tag, {tag['tag']}, already exists.. Skipping")
+                resp.raise_for_status()
+                resp_json = resp.json()
+                if resp_json.get("error"):
+                    print(f"Tag Creation error: {resp_json}")
+                else:
+                    print(
+                        f"Tag with uuid {resp_json['tag_definition_uuid']} has been created"
+                    )
+            else:
+                print(f"Tag, {tag['tag']}, already exists.. Skipping")
+    else:
+        print(f"Tags already initiated.. Skipping")
 
 
 def get_headers():
@@ -191,6 +196,18 @@ def wait_connection():
         except BaseException:
             print("Django API not yet running. Waiting...")
             time.sleep(5)
+
+
+def load_default_landing_page():
+    LANDING_PAGES[0]["html"] = load_file_html("data/landing.html")
+
+
+def load_file_html(data_file):
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    data_file = os.path.join(current_dir, data_file)
+    with open(data_file, "r") as f:
+        data = f.read()
+    return data
 
 
 def load_file(data_file):
@@ -208,6 +225,8 @@ def main():
     print("Step 1/5: Creating Sending Profiles")
     create_sending_profile(SENDING_PROFILES)
     print("Step 2/5: Creating Landing Pages")
+
+    load_default_landing_page()
     create_landing_page(LANDING_PAGES)
     print("Step 3/5: Create Webhooks")
     create_webhook(WEBHOOKS)

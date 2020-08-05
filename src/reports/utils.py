@@ -8,6 +8,7 @@ from datetime import timedelta
 import statistics
 import pprint
 import pytz
+from django.utils import timezone
 
 # Third-Party Libraries
 from api.models.customer_models import (
@@ -66,8 +67,10 @@ def get_cycle_by_date_in_range(subscription, date):
     """
     Get the cycle that contains the given date
     """
-    utc = pytz.UTC
-    # date = utc.localize(date)
+    if not timezone.is_aware(date):
+        utc = pytz.UTC
+        date = utc.localize(date)
+
     for cycle in subscription["cycles"]:
         if cycle["start_date"] <= date and cycle["end_date"] > date:
             return cycle
