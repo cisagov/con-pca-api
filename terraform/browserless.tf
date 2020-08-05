@@ -118,7 +118,7 @@ resource "aws_ecs_service" "browserless" {
 
   load_balancer {
     target_group_arn = aws_lb_target_group.browserless.arn
-    container_name   = module.label.id
+    container_name   = "pca-browserless"
     container_port   = local.browserless_port
   }
 
