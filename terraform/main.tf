@@ -140,20 +140,6 @@ locals {
   browserless_port = 3000
 }
 
-module "browserless_container" {
-  source    = "github.com/cisagov/fargate-container-def-tf-module"
-  namespace = var.app
-  stage     = var.env
-  name      = "browserless"
-
-  container_name  = "pca-browserless"
-  container_image = "browserless/chrome:latest"
-  container_port  = local.browserless_port
-  region          = var.region
-  log_retention   = 7
-  environment     = { "MAX_CONCURRENT_SESSIONS" : 10 }
-}
-
 module "browserless_fargate" {
   source    = "github.com/cisagov/fargate-service-tf-module"
   namespace = "${var.app}"
@@ -183,7 +169,6 @@ module "browserless_fargate" {
 locals {
   api_container_port     = 80
   api_load_balancer_port = 8043
-  browserless_port       = 3000
 
   environment = {
     "SECRET_KEY" : random_string.django_secret_key.result,
