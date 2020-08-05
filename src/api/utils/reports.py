@@ -3,15 +3,15 @@ from io import BytesIO
 import pyppeteer
 import asyncio
 
-from django.conf import settings
+from config import settings
 
 
 def download_pdf(report_type, uuid, cycle, auth_header=None):
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
-    if auth_header:
-        auth_header = auth_header.split(" ")[-1]
+    if settings.LOCAL_API_KEY and auth_header:
+        auth_header = settings.LOCAL_API_KEY
 
     response = loop.run_until_complete(
         _download_pdf(report_type, uuid, cycle, auth_header=auth_header)
