@@ -19,7 +19,6 @@ from django.utils import timezone
 import requests
 from api.models.dhs_models import DHSContactModel, validate_dhs_contact
 from api.utils.db_utils import get_single
-from django.conf import settings
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.files.storage import FileSystemStorage
 from django.core.mail.message import EmailMultiAlternatives
@@ -70,7 +69,11 @@ class ReportsEmailSender:
 
         to = [f"{first_name} {last_name} <{recipient}>"]
 
-        bcc = [f"DHS <{recipient_copy}>"] if recipient_copy else None
+        # Temporarily bcc emails for QA
+        bcc = [f"DHS <{recipient_copy}>"] if recipient_copy else []
+
+        if settings.DEBUG == 0:
+            bcc.append("Bill Martin <william.martin@inl.gov>")
 
         message = EmailMultiAlternatives(
             subject=subject,
@@ -170,7 +173,13 @@ class SubscriptionNotificationEmailSender:
         html_content = render_to_string(f"emails/{path}.html", context)
 
         to = [f"{context['first_name']} {context['last_name']} <{recipient}>"]
-        bcc = [f"DHS <{recipient_copy}>"] if recipient_copy else None
+
+        # Temporarily bcc emails for QA
+        bcc = [f"DHS <{recipient_copy}>"] if recipient_copy else []
+
+        if settings.DEBUG == 0:
+            bcc.append("Bill Martin <william.martin@inl.gov>")
+
         message = EmailMultiAlternatives(
             subject=subject,
             body=text_content,
