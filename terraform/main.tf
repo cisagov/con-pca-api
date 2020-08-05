@@ -133,11 +133,25 @@ resource "aws_lb" "network" {
   idle_timeout                     = 60
   internal                         = true
   load_balancer_type               = "network"
-  subnets                          = data.aws_subnet_ids.private.id
+  subnets                          = data.aws_subnet_ids.private.ids
 }
 
 locals {
   browserless_port = 3000
+}
+
+module "browserless_container" {
+  source    = "github.com/cisagov/fargate-container-def-tf-module"
+  namespace = var.app
+  stage     = var.env
+  name      = "browserless"
+
+  container_name  = "pca-browserless"
+  container_image = "browserless/chrome:latest"
+  container_port  = local.browserless_port
+  region          = var.region
+  log_retention   = 7
+  environment     = { "MAX_CONCURRENT_SESSIONS" : 10 }
 }
 
 module "browserless_fargate" {
@@ -148,7 +162,7 @@ module "browserless_fargate" {
 
   iam_server_cert_arn   = data.aws_iam_server_certificate.self.arn
   container_port        = local.browserless_port
-  container_definition  = module.container.json
+  container_definition  = module.browserless_container.json
   container_name        = "pca-browserless"
   cpu                   = 512
   memory                = 1024
@@ -221,20 +235,6 @@ module "container" {
   log_retention   = 7
   environment     = local.environment
   secrets         = local.secrets
-}
-
-module "browserless_container" {
-  source    = "github.com/cisagov/fargate-container-def-tf-module"
-  namespace = var.app
-  stage     = var.env
-  name      = "browserless"
-
-  container_name  = "pca-browserless"
-  container_image = "browserless/chrome:latest"
-  container_port  = local.browserless_port
-  region          = var.region
-  log_retention   = 7
-  environment     = { "MAX_CONCURRENT_SESSIONS" : 10 }
 }
 
 module "api" {
