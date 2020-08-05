@@ -125,59 +125,6 @@ resource "random_password" "basic_auth_password" {
 }
 
 # ===========================
-# BROWSERLESS FARGATE
-# ===========================
-resource "aws_lb" "network" {
-  name                             = "${var.app}-${var.env}-api-nlb"
-  enable_cross_zone_load_balancing = true
-  idle_timeout                     = 60
-  internal                         = true
-  load_balancer_type               = "network"
-  subnets                          = data.aws_subnet_ids.private.ids
-}
-
-locals {
-  browserless_port = 3000
-}
-
-module "browserless_container" {
-  source    = "github.com/cisagov/fargate-container-def-tf-module"
-  namespace = var.app
-  stage     = var.env
-  name      = "browserless"
-
-  container_name  = "pca-browserless"
-  container_image = "browserless/chrome:latest"
-  container_port  = local.browserless_port
-  region          = var.region
-  log_retention   = 7
-  environment     = { "MAX_CONCURRENT_SESSIONS" : 10 }
-}
-
-module "browserless_fargate" {
-  source    = "github.com/cisagov/fargate-service-tf-module"
-  namespace = "${var.app}"
-  stage     = "${var.env}"
-  name      = "browserless"
-
-  iam_server_cert_arn   = data.aws_iam_server_certificate.self.arn
-  container_port        = local.browserless_port
-  container_definition  = module.browserless_container.json
-  container_name        = "pca-browserless"
-  cpu                   = 512
-  memory                = 1024
-  vpc_id                = data.aws_vpc.vpc.id
-  health_check_interval = 60
-  health_check_path     = "/"
-  health_check_codes    = "307,202,200,404"
-  load_balancer_arn     = aws_lb.network.arn
-  load_balancer_port    = local.browserless_port
-  desired_count         = 1
-  subnet_ids            = data.aws_subnet_ids.private.ids
-  security_group_ids    = [aws_security_group.api.id]
-}
-
-# ===========================
 # API FARGATE
 # ===========================
 locals {
@@ -301,32 +248,5 @@ resource "aws_security_group" "api" {
 
   tags = {
     "Name" = "${var.app}-${var.env}-api-alb"
-  }
-}
-
-resource "aws_security_group" "browserless" {
-  name        = "${var.app}-${var.env}-browserless-alb"
-  description = "Allow traffic for browserless chrome from alb"
-  vpc_id      = data.aws_vpc.vpc.id
-
-  ingress {
-    description     = "Allow container port from ALB"
-    from_port       = local.browserless_port
-    to_port         = local.browserless_port
-    protocol        = "tcp"
-    security_groups = ["0.0.0.0/0"]
-    self            = true
-  }
-
-  egress {
-    description = "Allow outbound traffic"
-    from_port   = 0
-    to_port     = 0
-    protocol    = -1
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    "Name" = "${var.app}-${var.env}-browserless-alb"
   }
 }
