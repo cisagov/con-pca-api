@@ -4,13 +4,18 @@ from datetime import datetime, timedelta
 import logging
 from uuid import uuid4
 
+from django.conf import settings
+
 # Third-Party Libraries
+from api.models.dhs_models import DHSContactModel, validate_dhs_contact
 from api.models.subscription_models import SubscriptionModel, validate_subscription
 from api.utils import db_utils as db
 from notifications.views import (
     SubscriptionNotificationEmailSender,
     SubscriptionEmailTemplateSender,
 )
+
+from api.utils.template.templates import generate_template_email
 
 logger = logging.getLogger()
 
@@ -77,6 +82,7 @@ def calculate_subscription_start_end_date(start_date):
         start_date = now
 
     end_date = start_date + timedelta(days=90)
+    start_date = start_date + timedelta(minutes=1)
 
     return start_date, end_date
 
@@ -110,30 +116,56 @@ def get_subscription_cycles(campaigns, start_date, end_date):
     ]
 
 
-def send_start_email_templates(subscription, start_date, content):
+def send_start_email_templates(subscription):
     """Send Start Notification.
 
     Args:
         subscription (dict): subscription data
         start_date (datetime): start_date of subscription
     """
-    if start_date <= datetime.now():
-        sender = SubscriptionEmailTemplateSender(subscription)
-        sender.send(content)
+    add_email_report_history(subscription, "Templates List")
+    content = generate_template_email(subscription)
+
+    sender = SubscriptionEmailTemplateSender(subscription)
+    sender.send(content)
 
 
-def send_start_notification(subscription, start_date):
+def send_start_notification(subscription):
     """Send Start Notification.
 
     Args:
         subscription (dict): subscription data
         start_date (datetime): start_date of subscription
     """
-    if start_date <= datetime.now():
-        sender = SubscriptionNotificationEmailSender(
-            subscription, "subscription_started"
-        )
-        sender.send()
+    add_email_report_history(subscription, "Cycle Start Notification")
+    sender = SubscriptionNotificationEmailSender(subscription, "subscription_started")
+    sender.send()
+
+
+def add_email_report_history(subscription, report_type):
+    dhs_contact = db.get_single(
+        subscription.get("dhs_contact_uuid"),
+        "dhs_contact",
+        DHSContactModel,
+        validate_dhs_contact,
+    )
+
+    data = {
+        "report_type": report_type,
+        "sent": datetime.now(),
+        "email_to": subscription.get("primary_contact").get("email"),
+        "email_from": settings.SERVER_EMAIL,
+        "bbc": dhs_contact.get("email") if dhs_contact else None,
+    }
+
+    return db.push_nested_item(
+        uuid=subscription["subscription_uuid"],
+        field="email_report_history",
+        put_data=data,
+        collection="subscription",
+        model=SubscriptionModel,
+        validation_model=validate_subscription,
+    )
 
 
 def send_stop_notification(subscription):

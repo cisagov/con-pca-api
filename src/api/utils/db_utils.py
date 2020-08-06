@@ -131,6 +131,22 @@ def update_single(uuid, put_data, collection, model, validation_model):
     return document
 
 
+def push_nested_item(
+    uuid, field, put_data, collection, model, validation_model, params=None
+):
+    service, loop = __get_service_loop(collection, model, validation_model)
+
+    list_update_object = {field: put_data}
+
+    update_response = loop.run_until_complete(
+        service.push_nested_item(uuid, list_update_object, params)
+    )
+
+    if "errors" in update_response:
+        return update_response
+    return update_response
+
+
 def update_list_single(
     uuid, field, put_data, collection, model, validation_model, params=None
 ):

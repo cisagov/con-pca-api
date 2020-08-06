@@ -78,3 +78,41 @@ def update_target_history(campaign_info, seralized_data):
         db.save_single(targert_hist, "target", TargetHistoryModel, validate_history)
 
     return
+
+
+def get_subscription_templates(subscription):
+    return db.get_list(
+        parameters={
+            "template_uuid": {"$in": subscription.get("templates_selected_uuid_list")}
+        },
+        collection="template",
+        model=TemplateModel,
+        validation_model=validate_template,
+    )
+
+
+def generate_template_email(subscription):
+    """
+    returns email with list of templates used by subscription
+    """
+    templates = get_subscription_templates(subscription)
+
+    templates_separator = "--------------------------------------------------------------------------------\n<br>"
+    body = ""
+    seperator = "\n<br>"
+    for t in templates:
+        deception_level = list(
+            filter(
+                lambda x: x["template_uuid"] == t["template_uuid"],
+                subscription["gophish_campaign_list"],
+            )
+        )[0].get("deception_level")
+
+        body += "\n\nTemplate Name: " + t["name"] + seperator
+        body += "Template Subject: " + t["subject"] + seperator
+        body += "Deception Level:" + str(deception_level) + seperator + seperator
+        body += t["html"]
+        body += templates_separator
+        body += templates_separator
+
+    return body
