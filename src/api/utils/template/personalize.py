@@ -115,9 +115,8 @@ def personalize_template(customer_info, template_data, sub_data, tag_list):
                 cleantext = cleantext.replace(tag["tag"], "")
                 subject = subject.replace(tag["tag"], "")
 
-        template_unique_name = "".join(template["name"].split(" "))
+        template_unique_name = "".join(template["name"].split(" "))        
         cleantext += "\n {{.Tracker}} "
-
         personalized_template_data.append(
             {
                 "template_uuid": template["template_uuid"],
