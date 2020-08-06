@@ -20,8 +20,8 @@ def personalize_template(customer_info, template_data, sub_data, tag_list):
     """
     Personalize Template.
 
-    This takes costomer info, tempalte data and subscription data
-    and genereates custom template text to use in gophosh.
+    This takes customer info, tempalte data and subscription data
+    and genereates custom template text to use in gophish.
     It also fills in GoPhish usable params.
     Below are old replace tags for refrence:
 
@@ -117,7 +117,6 @@ def personalize_template(customer_info, template_data, sub_data, tag_list):
 
         template_unique_name = "".join(template["name"].split(" "))
         cleantext += "\n {{.Tracker}} "
-
         personalized_template_data.append(
             {
                 "template_uuid": template["template_uuid"],

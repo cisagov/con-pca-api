@@ -3,6 +3,7 @@
 .python-version
 __pycache__
 .venv
+.vs
 
 .vscode
 
