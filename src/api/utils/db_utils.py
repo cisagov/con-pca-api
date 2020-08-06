@@ -155,8 +155,6 @@ def update_list_single(
             params={"gophish_campaign_list.campaign_id": 85})
     """
     service, loop = __get_service_loop(collection, model, validation_model)
-    updated_timestamp = datetime.datetime.utcnow()
-    current_user = "dev user"
 
     list_update_object = {field: {"$each": put_data}}
 
@@ -166,7 +164,7 @@ def update_list_single(
 
     if "errors" in update_response:
         return update_response
-    return
+    return update_response
 
 
 def update_nested_single(
@@ -193,24 +191,15 @@ def update_nested_single(
             params={"gophish_campaign_list.campaign_id": 85})
     """
     service, loop = __get_service_loop(collection, model, validation_model)
-    updated_timestamp = datetime.datetime.utcnow()
-    current_user = "dev user"
 
     list_update_object = {field: put_data}
 
     update_response = loop.run_until_complete(
         service.update_nested_single(uuid, list_update_object, params)
     )
-    # if "errors" in update_response:
-    #     return update_response
-    # document = loop.run_until_complete(service.get(uuid=uuid))
-    # document["last_updated_by"] = current_user
-    # document["lub_timestamp"] = updated_timestamp
-    # update_response = loop.run_until_complete(service.update(document))
-    document = ""
     if "errors" in update_response:
         return update_response
-    return document
+    return update_response
 
 
 def delete_single(uuid, collection, model, validation_model):
