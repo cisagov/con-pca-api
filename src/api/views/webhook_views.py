@@ -1,25 +1,35 @@
 """Webhook View."""
 # Standard Python Libraries
 import logging
+from datetime import datetime
 
 # Third-Party Libraries
-from api.manager import CampaignManager
-from api.models.subscription_models import SubscriptionModel, validate_subscription
-from api.serializers import webhook_serializers
-from api.serializers.subscriptions_serializers import (
-    SubscriptionPatchResponseSerializer,
-)
-from api.utils.db_utils import (
-    get_single_subscription_webhook,
-    update_list_single,
-    update_nested_single,
-)
-from api.utils.generic import format_ztime
-from api.utils.template.templates import update_target_history
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from api.manager import CampaignManager
+
+from api.models.subscription_models import SubscriptionModel, validate_subscription
+from api.serializers.subscriptions_serializers import (
+    SubscriptionPatchResponseSerializer,
+)
+from api.serializers import webhook_serializers
+
+from api.utils import webhooks
+from api.utils.generic import format_ztime
+from api.utils.template.templates import update_target_history
+from api.utils.db_utils import (
+    get_single_subscription_webhook,
+    update_nested_single,
+    update_single,
+)
+from api.utils.subscription.subscriptions import (
+    send_start_email_templates,
+    send_start_notification,
+)
+
 
 logger = logging.getLogger(__name__)
 manager = CampaignManager()
@@ -106,86 +116,84 @@ class IncomingWebhookView(APIView):
                 "Submitted Data",
                 "Email Reported",
             ]:
-                for campaign in subscription["gophish_campaign_list"]:
-                    if campaign["campaign_id"] == seralized_data["campaign_id"]:
-                        # update timeline
-                        put_data = [
-                            {
-                                "email": seralized_data["email"],
-                                "message": seralized_data["message"],
-                                "time": format_ztime(seralized_data["time"]),
-                                "details": seralized_data["details"],
-                            }
-                        ]
+                if (
+                    subscription["status"] == "Queued"
+                    and campaign_event == "Email Sent"
+                ):
+                    update_single(
+                        subscription["subscription_uuid"],
+                        {"status": "In Progress"},
+                        "subscription",
+                        SubscriptionModel,
+                        validate_subscription,
+                    )
+                    try:
+                        send_start_notification(subscription)
+                        send_start_email_templates(subscription)
+                    except Exception as e:
+                        logging.exception(e)
 
-                        logging.info(
-                            f"Updating list single {campaign['campaign_id']} with {put_data}"
-                        )
-                        resp = update_list_single(
-                            uuid=subscription["subscription_uuid"],
-                            field="gophish_campaign_list.$.timeline",
-                            put_data=put_data,
-                            collection="subscription",
-                            model=SubscriptionModel,
-                            validation_model=validate_subscription,
-                            params={
-                                "gophish_campaign_list.campaign_id": campaign[
-                                    "campaign_id"
-                                ]
-                            },
-                        )
-                        logging.info(
-                            f"Updated list single response for {campaign['campaign_id']} = {resp}"
+                campaign = list(
+                    filter(
+                        lambda x: x["campaign_id"] == seralized_data["campaign_id"],
+                        subscription["gophish_campaign_list"],
+                    )
+                )[0]
+
+                # If there is not a corresponding opened event to a link being clicked, create one
+                if campaign_event == "Clicked Link":
+                    if not webhooks.check_opened_event(
+                        campaign["timeline"], seralized_data["email"]
+                    ):
+                        webhooks.push_webhook(
+                            subscription_uuid=subscription["subscription_uuid"],
+                            campaign_id=campaign["campaign_id"],
+                            email=seralized_data["email"],
+                            message="Email Opened",
+                            time=datetime.now(),
+                            details=seralized_data["details"],
                         )
 
-                        logging.info(
-                            f"Updating nested signle {campaign['campaign_id']} with True"
-                        )
-                        # update campaign to be marked as dirty
-                        resp = update_nested_single(
+                # Add Timeline Data
+                webhooks.push_webhook(
+                    subscription_uuid=subscription["subscription_uuid"],
+                    campaign_id=campaign["campaign_id"],
+                    email=seralized_data["email"],
+                    message=seralized_data["message"],
+                    time=format_ztime(seralized_data["time"]),
+                    details=seralized_data["details"],
+                )
+
+                # update campaign to be marked as dirty
+                update_nested_single(
+                    uuid=subscription["subscription_uuid"],
+                    field="gophish_campaign_list.$.phish_results_dirty",
+                    put_data=True,
+                    collection="subscription",
+                    model=SubscriptionModel,
+                    validation_model=validate_subscription,
+                    params={
+                        "gophish_campaign_list.campaign_id": campaign["campaign_id"]
+                    },
+                )
+
+                # update cycle to be marked as dirty
+                for cycle in subscription["cycles"]:
+                    if campaign["campaign_id"] in cycle["campaigns_in_cycle"]:
+                        update_nested_single(
                             uuid=subscription["subscription_uuid"],
-                            field="gophish_campaign_list.$.phish_results_dirty",
+                            field="cycles.$.phish_results_dirty",
                             put_data=True,
                             collection="subscription",
                             model=SubscriptionModel,
                             validation_model=validate_subscription,
-                            params={
-                                "gophish_campaign_list.campaign_id": campaign[
-                                    "campaign_id"
-                                ]
-                            },
+                            params={"cycles.cycle_uuid": cycle["cycle_uuid"]},
                         )
-                        logging.info(
-                            f"Updated nest single response for {campaign['campaign_id']} = {resp}"
-                        )
-
-                        # update cycle to be marked as dirty
-                        for cycle in subscription["cycles"]:
-                            if campaign["campaign_id"] in cycle["campaigns_in_cycle"]:
-                                update_nested_single(
-                                    uuid=subscription["subscription_uuid"],
-                                    field="cycles.$.phish_results_dirty",
-                                    put_data=True,
-                                    collection="subscription",
-                                    model=SubscriptionModel,
-                                    validation_model=validate_subscription,
-                                    params={"cycles.cycle_uuid": cycle["cycle_uuid"]},
-                                )
                 # update target history
                 if campaign_event == "Email Sent":
                     # send campaign info and email gophish_campaign_data, seralized_data
                     update_target_history(campaign, seralized_data)
 
-            # updated_response = update_single_webhook(
-            #     subscription=subscription,
-            #     collection="subscription",
-            #     model=SubscriptionModel,
-            #     validation_model=validate_subscription,
-            # )
-            # if "errors" in updated_response:
-            #     return Response(updated_response, status=status.HTTP_400_BAD_REQUEST)
-            # serializer = SubscriptionPatchResponseSerializer(updated_response)
-            # return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
             return Response(status=status.HTTP_202_ACCEPTED)
 
         return Response(status=status.HTTP_200_OK)
