@@ -71,7 +71,7 @@ def customer_spoof_email(customer_info):
     """
     spoof_first_name = names.get_first_name()
     spoof_last_name = names.get_last_name()
-    _, customer_domain = customer_info["contact_list"][0]['email'].split("@")
+    _, customer_domain = customer_info["contact_list"][0]["email"].split("@")
     spoof_email = "{}.{}@{}".format(spoof_first_name, spoof_last_name, customer_domain)
     return spoof_email
 

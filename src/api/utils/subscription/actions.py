@@ -162,11 +162,12 @@ def start_subscription(data=None, subscription_uuid=None):
         }
 
         subscription["email_report_history"].append(email_report)
-        templates_list_email = create_templates_list_content(sub_levels, subscription, recipient_copy)
-        send_start_email_templates(subscription,start_date,templates_list_email)                
+        templates_list_email = create_templates_list_content(
+            sub_levels, subscription, recipient_copy
+        )
+        send_start_email_templates(subscription, start_date, templates_list_email)
     except Exception as e:
         logging.exception(e)
-
 
     serialized_data = SubscriptionPatchSerializer(subscription)
     response = db.update_single(
@@ -179,38 +180,40 @@ def start_subscription(data=None, subscription_uuid=None):
 
     return response
 
-def create_templates_list_content(templates_list,subscription, recipient_copy):
+
+def create_templates_list_content(templates_list, subscription, recipient_copy):
     """
-    after the templates are personalized concat them all together 
+    after the templates are personalized concat them all together
     and send as a templates used notification to subscription contact
     """
     templates_separator = "--------------------------------------------------------------------------------\n<br>"
     emailBody = ""
     seperator = "\n<br>"
     for l in templates_list:
-        emailBody += "\n\nTemplate Rated Deception Level:"  + l + seperator
+        emailBody += "\n\nTemplate Rated Deception Level:" + l + seperator
         emailBody += templates_separator
         emailBody += templates_separator
         for p in templates_list[l]["personalized_templates"]:
-            emailBody += "Template Name: "+ p["name"] + seperator
+            emailBody += "Template Name: " + p["name"] + seperator
             emailBody += "Template Subject: " + p["subject"] + seperator
             emailBody += p["data"] + seperator
             emailBody += templates_separator
 
-    try:        
+    try:
         email_report = {
             "report_type": "Templates List",
             "sent": datetime.now(),
             "email_to": subscription.get("primary_contact").get("email"),
             "email_from": settings.SERVER_EMAIL,
             "bbc": recipient_copy,
-            "manual": False           
+            "manual": False,
         }
         subscription["email_report_history"].append(email_report)
 
         return emailBody
     except Exception as e:
         logging.exception(e)
+
 
 def new_subscription_cycle(subscription_uuid):
     """
@@ -329,8 +332,10 @@ def new_subscription_cycle(subscription_uuid):
                 "manual": False,
             }
         )
-        templates_list_email = create_templates_list_content(sub_levels, subscription, recipient_copy)
-        send_start_email_templates(subscription,start_date,templates_list_email)                
+        templates_list_email = create_templates_list_content(
+            sub_levels, subscription, recipient_copy
+        )
+        send_start_email_templates(subscription, start_date, templates_list_email)
     except Exception as e:
         logging.exception(e)
 
@@ -399,6 +404,7 @@ def stop_subscription(subscription):
     logging.info(f"udpated rep={resp}")
 
     return resp
+
 
 def __delete_subscription_user_groups(gophish_campaign_list):
     campaign_manager = CampaignManager()

@@ -7,7 +7,10 @@ from uuid import uuid4
 # Third-Party Libraries
 from api.models.subscription_models import SubscriptionModel, validate_subscription
 from api.utils import db_utils as db
-from notifications.views import SubscriptionNotificationEmailSender, SubscriptionEmailTemplateSender
+from notifications.views import (
+    SubscriptionNotificationEmailSender,
+    SubscriptionEmailTemplateSender,
+)
 
 logger = logging.getLogger()
 
@@ -105,6 +108,7 @@ def get_subscription_cycles(campaigns, start_date, end_date):
             },
         }
     ]
+
 
 def send_start_email_templates(subscription, start_date, content):
     """Send Start Notification.

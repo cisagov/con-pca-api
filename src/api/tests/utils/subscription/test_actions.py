@@ -1,7 +1,6 @@
 # Third-Party Libraries
 from datetime import datetime
 from api.utils.subscription.actions import send_templates_list
-from api.models.subscription_models import GoPhishCampaignsModel
 from api.tests.models.subscription_models.test_gophish_group_model import (
     gophish_group_model_data,
 )
@@ -38,6 +37,7 @@ gophish_campaigns_model_data = {
     ],
 }
 
+
 def test_template_email():
     start_date = datetime.now()
     end_date = datetime.now()
@@ -70,7 +70,7 @@ def test_template_email():
             "personalized_templates": [],
             "targets": [],
             "deception_level": "low",
-        }
+        },
     }
-    send_templates_list(sub_levels,subscription,"bcctest@example.com")
+    send_templates_list(sub_levels, subscription, "bcctest@example.com")
     return

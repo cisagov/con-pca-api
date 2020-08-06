@@ -100,11 +100,12 @@ class ReportsEmailSender:
         except ConnectionError:
             print("failed to send email for some other reason")
 
+
 class SubscriptionEmailTemplateSender:
     def __init__(self, subscription):
         """Init method."""
         self.subscription = subscription
-        
+
     def send(self, content):
         """Send method."""
         # pull subscription data
@@ -116,7 +117,7 @@ class SubscriptionEmailTemplateSender:
             dhs_contact_uuid, "dhs_contact", DHSContactModel, validate_dhs_contact
         )
         recipient_copy = dhs_contact.get("email") if dhs_contact else None
-        
+
         first_name = self.subscription.get("primary_contact").get("first_name")
         last_name = self.subscription.get("primary_contact").get("last_name")
         to = [f"{first_name} {last_name} <{recipient}>"]
@@ -143,6 +144,7 @@ class SubscriptionEmailTemplateSender:
             print("failed to send email")
         except ConnectionError:
             print("failed to send email for some other reason")
+
 
 class SubscriptionNotificationEmailSender:
     """NotificationEmailSender class."""
