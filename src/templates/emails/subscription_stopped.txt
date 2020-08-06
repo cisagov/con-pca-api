@@ -1,15 +1,13 @@
 Dear {{ first_name }} {{ last_name }},
 
+Thank you for participating in the CISA Phishing. This
+email is to inform you that your campaign has been
+stopped on {{ end_date|localtime }} UTC.
 
-
-Thank you for participating in the CISA Phishing Subscription Service Con-PCA.
-
-This email is to inform you that your campaign has been stopped on {{ end_date }}.
-
-In the interests of security and efficiency please respond to your DHS contact directly with any questions or concerns you may have regarding your service or this notification.
-
+In the interests of security and efficiency, please
+respond to your DHS contact directly with any
+questions or concerns you may have.
 
 Respectfully,
 
-
-CISA Continuous Phishing Program Administrator
+CISA Continuous Phishing Program Adminstrator

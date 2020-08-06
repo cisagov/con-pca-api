@@ -125,12 +125,11 @@ resource "random_password" "basic_auth_password" {
 }
 
 # ===========================
-# FARGATE
+# API FARGATE
 # ===========================
 locals {
   api_container_port     = 80
   api_load_balancer_port = 8043
-  browserless_port       = 3000
 
   environment = {
     "SECRET_KEY" : random_string.django_secret_key.result,
@@ -150,7 +149,7 @@ locals {
     "LOCAL_API_KEY" : random_string.local_api_key.result,
     "MONGO_TYPE" : "DOCUMENTDB",
     "REPORTS_ENDPOINT" : "https://${data.aws_lb.public.dns_name}",
-    "BROWSERLESS_ENDPOINT" : "pca-browserless:3000"
+    "BROWSERLESS_ENDPOINT" : "${aws_lb.network.dns_name}:3000"
   }
 
   secrets = {
@@ -185,20 +184,6 @@ module "container" {
   secrets         = local.secrets
 }
 
-module "browserless_container" {
-  source    = "github.com/cisagov/fargate-container-def-tf-module"
-  namespace = var.app
-  stage     = var.env
-  name      = "browserless"
-
-  container_name  = "pca-browserless"
-  container_image = "browserless/chrome:latest"
-  container_port  = local.browserless_port
-  region          = var.region
-  log_retention   = 7
-  environment     = { "MAX_CONCURRENT_SESSIONS" : 10 }
-}
-
 module "api" {
   source    = "github.com/cisagov/fargate-service-tf-module"
   namespace = "${var.app}"
@@ -207,7 +192,7 @@ module "api" {
 
   iam_server_cert_arn   = data.aws_iam_server_certificate.self.arn
   container_port        = local.api_container_port
-  container_definition  = "[${module.container.json_map},${module.browserless_container.json_map}]"
+  container_definition  = module.container.json
   container_name        = "pca-api"
   cpu                   = 2048
   memory                = 4096
@@ -264,5 +249,4 @@ resource "aws_security_group" "api" {
   tags = {
     "Name" = "${var.app}-${var.env}-api-alb"
   }
-
 }

@@ -8,7 +8,7 @@ on:
 
 env:
   ENVIRONMENT: dev
-  IMAGE_NAME: con-pca-gophish
+  IMAGE_NAME: con-pca-api
   REGION: us-east-1
   PIP_CACHE_DIR: ~/.cache/pip
   PRE_COMMIT_CACHE_DIR: ~/.cache/pre-commit

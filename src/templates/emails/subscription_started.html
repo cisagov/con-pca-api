@@ -16,18 +16,21 @@
       #outlook a {
         padding: 0;
       }
+
       body {
         margin: 0;
         padding: 0;
         -webkit-text-size-adjust: 100%;
         -ms-text-size-adjust: 100%;
       }
+
       table,
       td {
         border-collapse: collapse;
         mso-table-lspace: 0pt;
         mso-table-rspace: 0pt;
       }
+
       img {
         border: 0;
         height: auto;
@@ -36,6 +39,7 @@
         text-decoration: none;
         -ms-interpolation-mode: bicubic;
       }
+
       p {
         display: block;
         margin: 13px 0;
@@ -71,6 +75,7 @@
         table.mj-full-width-mobile {
           width: 100% !important;
         }
+
         td.mj-full-width-mobile {
           width: auto !important;
         }
@@ -78,11 +83,11 @@
     </style>
     <style type="text/css">
       ul li {
-        background: #cce5ff;
         margin: 10px;
       }
     </style>
   </head>
+
   <body>
     <div style="">
       <!--[if mso | IE]>
@@ -269,9 +274,8 @@
                         >
                           Thank you for participating in the CISA Phishing This
                           email is to inform you that your campaign has begun
-                          starting {% localtime on %}{{ start_date }}{%
-                          endlocaltime %} UTC and will run until {{ end_date }}
-                          UTC.
+                          starting {{ start_date|localtime }} UTC and will run
+                          until {{ end_date|localtime }} UTC.
                         </div>
                       </td>
                     </tr>
@@ -300,10 +304,11 @@
                           <ul>
                             <li>
                               All emails coming from the Con-PCA program will
-                              have a custom header DHS-PHISH:{{cycle_uuid}}}.
-                              Please look for this header the value for this
+                              have a custom header:
+                              <br /><br />DHS-PHISH:{{cycle_uuid}}}<br /><br />
+                              Please look for this header. The value for the
                               header is unique to your subscription and changes
-                              every 90 days or more frequently.
+                              each cycle.
                             </li>
                             <li>
                               The whois guard for all Con-PCA domains is turned
