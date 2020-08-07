@@ -10,7 +10,7 @@ from api.models.dhs_models import DHSContactModel, validate_dhs_contact
 from api.models.subscription_models import SubscriptionModel, validate_subscription
 from api.serializers.subscriptions_serializers import SubscriptionPatchSerializer
 from api.utils import db_utils as db
-from api.utils import webhooks
+from api.utils import sending_profile
 from api.utils.customer.customers import get_customer
 from api.utils.subscription.campaigns import generate_campaigns, stop_campaign
 from api.utils.subscription.subscriptions import (
@@ -106,7 +106,7 @@ def start_subscription(data=None, subscription_uuid=None):
     # landing_template_list = get_list({"template_type": "Landing"}, "template", TemplateModel, validate_template)
     landing_page = "Phished"
 
-    # webhooks.deal_with_sending_profiles(subscription)
+    sending_profile.deal_with_sending_profiles(subscription)
 
     subscription["gophish_campaign_list"] = generate_campaigns(
         subscription, landing_page, sub_levels
