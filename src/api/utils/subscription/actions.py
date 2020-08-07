@@ -210,7 +210,7 @@ def deal_with_sending_profiles(subscription):
             headers=new_headers,
         )    
     else:
-        sending_profile = campaign_manager.put_sending_profile(sending_profile_to_clone)
+        campaign_manager.put_sending_profile(sending_profile_to_clone)
 
     subscription["sending_profile_name"] = sending_profile_name
     #clone the sending profile changing the header value
