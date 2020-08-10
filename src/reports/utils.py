@@ -4,7 +4,7 @@ Reporting Utils.
 These are utils for creating reports.
 """
 # Standard Python Libraries
-from datetime import timedelta
+from datetime import timedelta, datetime
 import statistics
 import pprint
 import pytz
@@ -193,38 +193,6 @@ def generate_campaign_statistics(campaign_timeline_summary, reported_override_va
     return stats, time_aggregate
 
 
-def consolidate_campaign_group_stats(campaign_data_list, reported_override_value=-1):
-    """Consolidate a group of campaign results."""
-    consolidated_times = {
-        "sent": [],
-        "opened": [],
-        "clicked": [],
-        "submitted": [],
-        "reported": [],
-    }
-    if not reported_override_value:
-        reported_override_value = -1
-    for campaign in campaign_data_list:
-        for key in campaign["times"]:
-            consolidated_times[key] += campaign["times"][key]
-    consolidated_stats = {}
-    for key in consolidated_times:
-        if reported_override_value >= 0 and key == "reported":
-            consolidated_stats[key] = reported_override_value
-        elif len(consolidated_times[key]) > 0 and key != "sent":
-            consolidated_stats[key] = generate_time_difference_stats(
-                consolidated_times[key]
-            )
-        elif len(consolidated_times[key]) > 0 and key == "sent":
-            consolidated_stats[key] = {"count": len(consolidated_times[key])}
-        else:
-            consolidated_stats[key] = {"count": 0}
-
-    if reported_override_value >= 0:
-        consolidated_stats["reported"] = {"count": reported_override_value}
-    return consolidated_stats
-
-
 def calc_ratios(campaign_stats):
     """
     Calc the ratios for a given list of phishing results.
@@ -292,7 +260,7 @@ def get_clicked_time_period_breakdown(campaign_results):
     clicked_ratios = {}
     for key in time_deltas:
         time_counts[key] = 0
-        clicked_ratios[key] = None
+        clicked_ratios[key] = 0
 
     clicked_count = 0
     for campaign in campaign_results:
@@ -381,7 +349,9 @@ def get_subscription_stats_for_month(subscription, end_date):
         )
         campaign_timeline_summary = []
 
-    return generate_subscription_stat_details(campaign_results, active_cycle)
+    return generate_subscription_stat_details(
+        campaign_results, active_cycle["override_total_reported"]
+    )
 
 
 def get_subscription_stats_for_cycle(subscription, start_date=None):
@@ -423,7 +393,126 @@ def get_subscription_stats_for_cycle(subscription, start_date=None):
         )
         campaign_timeline_summary = []
 
-    return generate_subscription_stat_details(campaign_results, active_cycle)
+    return generate_subscription_stat_details(
+        campaign_results, active_cycle["override_total_reported"]
+    )
+
+
+def get_subscription_stats_for_yearly(
+    subscription, start_date=None, end_date=datetime.now()
+):
+    """
+    Generate statistics for a subscriptions given span, Defaults to the last year if no dates provided.
+
+    Determine the time span using start_date and end_date
+    """
+    # Get the correct cycle based on the provided start_date
+    # active_cycle = get_cycle_by_date_in_range(subscription, start_date)
+
+    # Determine start date if None
+    if not start_date:
+        start_date = end_date - timedelta(days=365.25)
+
+    if not timezone.is_aware(start_date):
+        utc = pytz.UTC
+        start_date = utc.localize(start_date)
+    if not timezone.is_aware(end_date):
+        utc = pytz.UTC
+        end_date = utc.localize(end_date)
+
+    # Get all cycles that havea date that lies within the given time gap
+    cycles_in_year = []
+    campaigns_in_year = []
+    for cycle in subscription["cycles"]:
+        if cycle_in_yearly_timespan(
+            cycle["start_date"], cycle["end_date"], start_date, end_date
+        ):
+            cycles_in_year.append(cycle)
+            for campaign in cycle["campaigns_in_cycle"]:
+                campaigns_in_year.append(campaign)
+
+    pprintItem(campaigns_in_year)
+    print("====")
+    campaigns_no_dupliactes = []
+    for campaign in campaigns_in_year:
+        if campaign not in campaigns_no_dupliactes:
+            campaigns_no_dupliactes.append(campaign)
+
+    campaigns_in_year = campaigns_no_dupliactes
+
+    pprintItem(campaigns_in_year)
+    print("====")
+
+    # Get all the campaigns for the specified cycle from the gophish_campaign_list
+
+    campaigns_in_time_gap = []
+    for campaign in subscription["gophish_campaign_list"]:
+        if campaign["campaign_id"] in campaigns_in_year:
+            campaigns_in_time_gap.append(campaign)
+
+    # Loop through all campaigns in cycle. Check for unique moments, and appending to campaign_timeline_summary
+    campaign_timeline_summary = []
+    campaign_results = []
+    reported_override_val = -1
+    for campaign in campaigns_in_time_gap:
+        unique_moments = get_unique_moments(campaign["timeline"])
+        for unique_moment in unique_moments:
+            append_timeline_moment(unique_moment, campaign_timeline_summary)
+        # Get stats and aggregate of all time differences (all times needed for stats like median when consolidated)
+        reported_override_val = get_override_total_reported_for_campagin(
+            subscription, campaign
+        )
+        stats, time_aggregate = generate_campaign_statistics(
+            campaign_timeline_summary, reported_override_val
+        )
+        campaign_results.append(
+            {
+                "campaign_id": campaign["campaign_id"],
+                "deception_level": campaign["deception_level"],
+                "campaign_stats": stats,
+                "reported_override_val": reported_override_val,
+                "times": time_aggregate,
+                "ratios": calc_ratios(stats),
+                "template_name": campaign["email_template"],
+                "template_uuid": campaign["template_uuid"],
+            }
+        )
+        reported_override_val = -1
+        campaign_timeline_summary = []
+
+    return generate_subscription_stat_details(campaign_results, -1)
+
+
+def get_override_total_reported_for_campagin(subscription, campaign):
+    for cycle in subscription["cycles"]:
+        if campaign["campaign_id"] in cycle["campaigns_in_cycle"]:
+            return cycle["override_total_reported"]
+
+
+def cycle_in_yearly_timespan(cycle_start, cycle_end, yearly_start, yearly_end):
+    # Determine the cycels that lie within a yearly timespan
+    # Three checks needed,
+    # One: the first cycle possible
+    # Two: any cycle directly within the yearly timespan
+    # Three: the last cycle possible on that lies within the yearly timespan
+
+    # Cycles: [-----][-----][-----][-----][-----]
+    # Yearly:  [--------------------------]
+    #            1      2       2     2      3
+
+    # 1
+    if cycle_start < yearly_start and cycle_end > yearly_start:
+        print("Event One")
+        return True
+    # 2
+    if cycle_start > yearly_start and cycle_end < yearly_end:
+        print("Event Two")
+        return True
+    # 3
+    if cycle_start < yearly_end and cycle_end > yearly_end:
+        print("Event Three")
+        return True
+    return False
 
 
 def get_unique_moments(campaign_timeline):
@@ -471,17 +560,30 @@ def get_moment_email(moment):
     return moment["email"]
 
 
-def generate_subscription_stat_details(campaign_results, active_cycle):
+def set_cycle_quarters(cycles):
+    cycles = sorted(cycles, key=lambda cycle: cycle["start_date"])
+    working_cycle_year = cycles[0]["start_date"].year
+    current_quarter = 1
+    # Count the cycle order from the year or try to match up to standard 'quarters'?
+    for cycle in cycles:
+        if cycle["start_date"].year > working_cycle_year:
+            current_quarter = 1
+            working_cycle_year = cycle["start_date"].year
+        cycle["quarter"] = f"{cycle['start_date'].year} - {current_quarter}"
+        current_quarter += 1
+
+
+def generate_subscription_stat_details(campaign_results, over_ride_report_val):
     # generate campaign_group stats based off deception level and oconsolidation of all campaigns
     # All
     consolidated_stats = consolidate_campaign_group_stats(
-        campaign_results, active_cycle["override_total_reported"]
+        campaign_results, over_ride_report_val
     )
 
     consolidated_stats["ratios"] = calc_ratios(consolidated_stats)
 
     reported_override_val = -1
-    if active_cycle["override_total_reported"] >= 0:
+    if over_ride_report_val >= 0:
         reported_override_val = 0
 
     # Low
@@ -515,6 +617,39 @@ def generate_subscription_stat_details(campaign_results, active_cycle):
         "stats_high_deception": high_decp_stats,
         "clicks_over_time": clicks_over_time,
     }
+
+
+def consolidate_campaign_group_stats(campaign_data_list, reported_override_value=-1):
+    """Consolidate a group of campaign results."""
+    consolidated_times = {
+        "sent": [],
+        "opened": [],
+        "clicked": [],
+        "submitted": [],
+        "reported": [],
+    }
+    if not reported_override_value:
+        reported_override_value = -1
+    for campaign in campaign_data_list:
+        for key in campaign["times"]:
+            print()
+            consolidated_times[key] += campaign["times"][key]
+    consolidated_stats = {}
+    for key in consolidated_times:
+        if reported_override_value >= 0 and key == "reported":
+            consolidated_stats[key] = reported_override_value
+        elif len(consolidated_times[key]) > 0 and key != "sent":
+            consolidated_stats[key] = generate_time_difference_stats(
+                consolidated_times[key]
+            )
+        elif len(consolidated_times[key]) > 0 and key == "sent":
+            consolidated_stats[key] = {"count": len(consolidated_times[key])}
+        else:
+            consolidated_stats[key] = {"count": 0}
+
+    if reported_override_value >= 0:
+        consolidated_stats["reported"] = {"count": reported_override_value}
+    return consolidated_stats
 
 
 def count_timeline_moments(moments):
@@ -619,7 +754,6 @@ def generate_region_stats(subscription_list, cycle_date=None):
 
     Can provide cycle_date to specify a cycle range to use. Given a list of subscriptions, get the phishing results from the cycle value and summarize.
     """
-    print("=====-=-=-=-=-========")
     region_stats = {}
     campaign_count = 0
     cycle_count = 0
@@ -632,12 +766,9 @@ def generate_region_stats(subscription_list, cycle_date=None):
         else:
             target_cycles = subscription["cycles"]
         for target_cycle in target_cycles:
-            pprintItem(target_cycle)
             cycle_count += 1
             campaign_count += len(target_cycle["campaigns_in_cycle"])
-            print(target_cycle["phish_results_dirty"])
             if target_cycle["phish_results_dirty"]:
-                print("=====-=-=-=-=-========")
                 generate_cycle_phish_results(subscription, target_cycle)
             if not region_stats:
                 region_stats = target_cycle["phish_results"].copy()
@@ -659,7 +790,7 @@ def generate_region_stats(subscription_list, cycle_date=None):
     return ret_val
 
 
-def get_related_subscription_stats(subscription, start_date):
+def get_related_subscription_stats(subscription, start_date=None):
     """Get base stats for all related subscriptions (national, sector, industry, and customer)."""
     # Get the customer associated with the subscription
     _customer = get_single(
