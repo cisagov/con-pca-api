@@ -25,10 +25,6 @@ from api.utils.db_utils import (
     update_nested_single,
     update_single,
 )
-from api.utils.subscription.subscriptions import (
-    send_start_email_templates,
-    send_start_notification,
-)
 
 
 logger = logging.getLogger(__name__)
