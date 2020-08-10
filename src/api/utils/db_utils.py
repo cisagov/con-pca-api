@@ -39,8 +39,6 @@ def __db_service(collection_name, model, validate_model):
             settings.DB_CONFIG["DB_PORT"],
         )
 
-    logging.info(mongo_uri)
-
     service = Service(
         mongo_uri,
         collection_name=collection_name,
