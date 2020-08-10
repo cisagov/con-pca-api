@@ -119,7 +119,7 @@ def start_subscription(data=None, subscription_uuid=None):
     subscription["end_date"] = end_date.strftime("%Y-%m-%dT%H:%M:%S")
     subscription["status"] = get_subscription_status(start_date)
     subscription["cycles"] = get_subscription_cycles(
-        subscription["gophish_campaign_list"], start_date, end_date
+        subscription["gophish_campaign_list"], start_date, end_date,  new_sending_profile_uuid
     )
 
     if subscription_uuid:
@@ -231,6 +231,7 @@ def new_subscription_cycle(subscription_uuid):
     # subscription["gophish_campaign_list"] = generate_campaigns(
     #     subscription, landing_page, sub_levels
     # )
+    
     selected_templates = []
     for v in sub_levels.values():
         selected_templates.extend(list(v["template_targets"].keys()))
@@ -238,9 +239,11 @@ def new_subscription_cycle(subscription_uuid):
 
     subscription["end_date"] = end_date.strftime("%Y-%m-%dT%H:%M:%S")
     subscription["status"] = get_subscription_status(start_date)
+    new_sending_profile_uuid = sending_profile.deal_with_sending_profiles(subscription)
+    
     subscription["cycles"].append(
         get_subscription_cycles(
-            subscription["gophish_campaign_list"], start_date, end_date
+            subscription["gophish_campaign_list"], start_date, end_date, new_sending_profile_uuid
         )[0]
     )
 
