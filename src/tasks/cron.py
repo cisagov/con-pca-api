@@ -5,10 +5,12 @@ from datetime import datetime, timedelta
 from uuid import uuid4
 import logging
 from tasks import tasks
+import os
 
 
 def execute_tasks():
     # Get all tasks
+    os.chdir("/app")
     logging.info("Getting tasks to execute")
     subscriptions = db.get_list(
         {}, "subscription", SubscriptionModel, validate_subscription
