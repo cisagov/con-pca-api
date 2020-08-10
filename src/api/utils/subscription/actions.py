@@ -138,8 +138,8 @@ def start_subscription(data=None, subscription_uuid=None):
         response["name"] = subscription["name"]
 
     # Schedule client side reports emails
-    tasks = create_scheduled_email_tasks()
-    cycle_task = create_scheduled_cycle_tasks()
+    tasks = create_scheduled_email_tasks(start_date)
+    cycle_task = create_scheduled_cycle_tasks(start_date)
 
     tasks.append(cycle_task)
     subscription["tasks"] = tasks
@@ -253,7 +253,7 @@ def new_subscription_cycle(subscription_uuid):
     )
 
     # Schedule client side reports emails
-    tasks = create_scheduled_email_tasks()
+    tasks = create_scheduled_email_tasks(start_date)
     subscription["tasks"] = tasks
 
     response = db.update_single(

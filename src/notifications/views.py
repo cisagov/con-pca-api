@@ -21,6 +21,7 @@ from django.template.loader import render_to_string
 from notifications.utils import get_notification
 
 from api.utils.reports import download_pdf
+from api.utils.template.templates import get_subscription_templates
 
 
 logger = logging.getLogger()
@@ -101,51 +102,6 @@ class ReportsEmailSender:
             print("failed to send email for some other reason")
 
 
-class SubscriptionEmailTemplateSender:
-    def __init__(self, subscription):
-        """Init method."""
-        self.subscription = subscription
-
-    def send(self, content):
-        """Send method."""
-        # pull subscription data
-        recipient = self.subscription.get("primary_contact").get("email")
-
-        # get to and bcc email addresses
-        dhs_contact_uuid = self.subscription.get("dhs_contact_uuid")
-        dhs_contact = get_single(
-            dhs_contact_uuid, "dhs_contact", DHSContactModel, validate_dhs_contact
-        )
-        recipient_copy = dhs_contact.get("email") if dhs_contact else None
-
-        first_name = self.subscription.get("primary_contact").get("first_name")
-        last_name = self.subscription.get("primary_contact").get("last_name")
-        to = [f"{first_name} {last_name} <{recipient}>"]
-
-        # Temporarily bcc emails for QA
-        bcc = [f"DHS <{recipient_copy}>"] if recipient_copy else []
-
-        if settings.DEBUG == 0:
-            bcc.append("Bill Martin <william.martin@inl.gov>")
-
-        message = EmailMultiAlternatives(
-            subject="Subscription 90 Day Cycle Templates",
-            body=content,
-            from_email=settings.SERVER_EMAIL,
-            to=to,
-            bcc=bcc,
-        )
-
-        # add html body to email
-        message.attach_alternative(content, "text/html")
-        try:
-            message.send(fail_silently=False)
-        except ConnectionRefusedError:
-            print("failed to send email")
-        except ConnectionError:
-            print("failed to send email for some other reason")
-
-
 class SubscriptionNotificationEmailSender:
     """NotificationEmailSender class."""
 
@@ -181,12 +137,15 @@ class SubscriptionNotificationEmailSender:
                     end_date.split(".")[0], "%Y-%m-%dT%H:%M:%S"
                 )
 
+        templates = get_subscription_templates(self.subscription)
+
         return {
             "first_name": first_name,
             "last_name": last_name,
             "start_date": start_date,
             "end_date": end_date,
             "cycle_uuid": cycle_uuid,
+            "templates": templates,
         }
 
     def send(self):

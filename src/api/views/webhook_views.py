@@ -127,11 +127,6 @@ class IncomingWebhookView(APIView):
                         SubscriptionModel,
                         validate_subscription,
                     )
-                    try:
-                        send_start_notification(subscription)
-                        send_start_email_templates(subscription)
-                    except Exception as e:
-                        logging.exception(e)
 
                 campaign = list(
                     filter(
