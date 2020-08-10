@@ -209,7 +209,9 @@ AWS_S3_FILE_OVERWRITE = False
 LOCAL_API_KEY = os.environ.get("LOCAL_API_KEY")
 
 # Execute cron job every hour
-CRONJOBS = [("*/5 * * * *", "tasks.cron.execute_tasks")]
+CRONJOBS = [
+    ("*/5 * * * *", "tasks.cron.execute_tasks", ">> /proc/1/fd/1 2> /proc/1/fd/1")
+]
 CRONTAB_PYTHON_EXECUTABLE = os.environ.get(
     "CRONTAB_PYTHON_EXECUTABLE", "/usr/local/bin/python3"
 )

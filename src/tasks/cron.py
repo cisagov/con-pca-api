@@ -5,10 +5,13 @@ from datetime import datetime, timedelta
 from uuid import uuid4
 import logging
 from tasks import tasks
+import os
 
 
 def execute_tasks():
     # Get all tasks
+    os.chdir("/app")
+    logging.info("Getting tasks to execute")
     subscriptions = db.get_list(
         {}, "subscription", SubscriptionModel, validate_subscription
     )
@@ -44,23 +47,27 @@ def execute_tasks():
                         if new_task:
                             updated_tasks.append(new_task)
 
+                        logging.info(f"Successfully executed task {t}")
+
                     except BaseException as e:
                         t["error"] = str(e)
                     finally:
                         t["executed_date"] = datetime.now()
 
-                logging.info(t)
                 updated_tasks.append(t)
 
-        # Update Database with tasks
-        put_data = SubscriptionPatchSerializer({"tasks": updated_tasks}).data
-        db.update_single(
-            uuid=s["subscription_uuid"],
-            put_data=put_data,
-            collection="subscription",
-            model=SubscriptionModel,
-            validation_model=validate_subscription,
-        )
+            # Update Database with tasks
+            put_data = SubscriptionPatchSerializer({"tasks": updated_tasks}).data
+            db.update_single(
+                uuid=s["subscription_uuid"],
+                put_data=put_data,
+                collection="subscription",
+                model=SubscriptionModel,
+                validation_model=validate_subscription,
+            )
+
+    else:
+        logging.info("No tasks to execute")
 
 
 def execute_task(subscription, message_type):
