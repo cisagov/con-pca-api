@@ -1,5 +1,10 @@
 from notifications.views import ReportsEmailSender
+from api.utils.subscription.subscriptions import send_start_notification
 from api.utils.subscription import actions
+
+
+def start_subscription_email(subscription):
+    send_start_notification(subscription)
 
 
 def start_subscription_cycle(subscription):

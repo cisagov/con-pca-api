@@ -1,12 +1,17 @@
 {% load tz %}
 Dear {{ first_name }} {{ last_name }},
 
-
-
 Thank you for participating in the CISA Phishing This
 email is to inform you that your campaign has begun
 starting {{ start_date|localtime }} UTC and will run
 until {{ end_date|localtime }} UTC.
+
+The following template subjects will be used over the
+duration of this cycle.
+
+{% for template in templates %}
+    {{template.subject}}
+{% endfor %}
 
 To assist you in differentianting between DHS Con-PCA
 phishing exercise emails and actual phishing attempts

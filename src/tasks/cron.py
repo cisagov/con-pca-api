@@ -36,13 +36,14 @@ def execute_tasks():
                         execute_task(s, t["message_type"])
                         t["executed"] = True
                         t["error"] = ""
-                        updated_tasks.append(
-                            get_new_task(
-                                s["subscription_uuid"],
-                                t["scheduled_date"],
-                                t["message_type"],
-                            )
+                        new_task = get_new_task(
+                            s["subscription_uuid"],
+                            t["scheduled_date"],
+                            t["message_type"],
                         )
+                        if new_task:
+                            updated_tasks.append(new_task)
+
                     except BaseException as e:
                         t["error"] = str(e)
                     finally:
@@ -64,6 +65,7 @@ def execute_tasks():
 
 def execute_task(subscription, message_type):
     task = {
+        "start_subscription_email": tasks.start_subscription_email,
         "monthly_report": tasks.email_subscription_monthly,
         "cycle_report": tasks.email_subscription_cycle,
         "yearly_report": tasks.email_subscription_yearly,
@@ -80,9 +82,12 @@ def get_new_task(subscription_uuid, scheduled_date, message_type):
         "start_new_cycle": scheduled_date + timedelta(days=90),
     }.get("message_type")
 
-    return {
-        "task_uuid": uuid4(),
-        "message_type": message_type,
-        "scheduled_date": scheduled_date,
-        "executed": False,
-    }
+    if scheduled_date:
+        return {
+            "task_uuid": uuid4(),
+            "message_type": message_type,
+            "scheduled_date": scheduled_date,
+            "executed": False,
+        }
+
+    return None
