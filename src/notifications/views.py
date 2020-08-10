@@ -22,6 +22,7 @@ from notifications.utils import get_notification
 
 from api.utils.reports import download_pdf
 from api.utils.template.templates import get_subscription_templates
+from api.manager import CampaignManager
 
 
 logger = logging.getLogger()
@@ -112,8 +113,10 @@ class SubscriptionNotificationEmailSender:
 
     def create_context_data(self):
         """Create Contect Data Method."""
-        first_name = self.subscription.get("primary_contact").get("first_name")
-        last_name = self.subscription.get("primary_contact").get("last_name")
+        campaign_manager = CampaignManager()
+
+        first_name = self.subscription.get("primary_contact").get("first_name").title()
+        last_name = self.subscription.get("primary_contact").get("last_name").title()
         current_cycle = current_cycle = self.subscription.get("cycles")[-1]
         cycle_uuid = current_cycle.get("cycle_uuid")
 
@@ -138,6 +141,12 @@ class SubscriptionNotificationEmailSender:
                 )
 
         templates = get_subscription_templates(self.subscription)
+        phishing_email = list(
+            filter(
+                lambda x: x.name == self.subscription.get("sending_profile_name"),
+                campaign_manager.get("sending_profile"),
+            )
+        )[0].from_address
 
         return {
             "first_name": first_name,
@@ -146,6 +155,7 @@ class SubscriptionNotificationEmailSender:
             "end_date": end_date,
             "cycle_uuid": cycle_uuid,
             "templates": templates,
+            "phishing_email": phishing_email,
         }
 
     def send(self):
