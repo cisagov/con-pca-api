@@ -87,12 +87,12 @@ def get_subscription_status(start_date):
         return "Queued"
 
 
-def get_subscription_cycles(campaigns, start_date, end_date):
+def get_subscription_cycles(campaigns, start_date, end_date, new_uuid):
     """Returns cycle data for a subscription."""
     campaigns_in_cycle = [c["campaign_id"] for c in campaigns]
     return [
         {
-            "cycle_uuid": str(uuid4()),
+            "cycle_uuid": new_uuid,
             "start_date": start_date,
             "end_date": end_date,
             "active": True,
