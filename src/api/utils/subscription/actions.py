@@ -106,7 +106,7 @@ def start_subscription(data=None, subscription_uuid=None):
     # landing_template_list = get_list({"template_type": "Landing"}, "template", TemplateModel, validate_template)
     landing_page = "Phished"
 
-    sending_profile.deal_with_sending_profiles(subscription)
+    new_sending_profile_uuid= sending_profile.deal_with_sending_profiles(subscription)
 
     subscription["gophish_campaign_list"] = generate_campaigns(
         subscription, landing_page, sub_levels
