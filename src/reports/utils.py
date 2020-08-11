@@ -632,7 +632,6 @@ def consolidate_campaign_group_stats(campaign_data_list, reported_override_value
         reported_override_value = -1
     for campaign in campaign_data_list:
         for key in campaign["times"]:
-            print()
             consolidated_times[key] += campaign["times"][key]
     consolidated_stats = {}
     for key in consolidated_times:
