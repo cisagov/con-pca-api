@@ -112,8 +112,8 @@ jobs:
       - name: Install Requirements
         run: pip install --upgrade --requirement requirements-test.txt
 
-      # - name: Cyclomatic Complexity
-      #   run: radon cc ./src/ -e *.venv -e *test* -s -o SCORE
+      - name: Cyclomatic Complexity
+        run: radon cc ./src/ -e *.venv -e *test* -s -o SCORE
 
       - name: Pytest/Coverage
         run: |
