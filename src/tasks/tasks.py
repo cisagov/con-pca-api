@@ -12,7 +12,9 @@ def start_subscription_cycle(subscription):
     """
     Create the next subscription cycle
     """
-    actions.new_subscription_cycle(subscription.get("subscription_uuid"))
+    actions.start_subscription(
+        subscription_uuid=subscription.get("subscription_uuid"), new_cycle=True
+    )
     context = {
         "subscription_uuid": subscription.get("subscription_uuid"),
     }
