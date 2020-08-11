@@ -88,34 +88,34 @@ jobs:
       - name: Terraform Plan
         working-directory: ./terraform
         run: terraform plan -input=false -var="image_tag=${{steps.vars.outputs.tag}}" -var="env=$ENVIRONMENT"
-  # test:
-  #   runs-on: ubuntu-latest
-  #   needs: [build]
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: actions/setup-python@v1
-  #       with:
-  #         python-version: 3.8
-  #     - name: Cache pip test requirements
-  #       uses: actions/cache@v1
-  #       with:
-  #         path: ${{ env.PIP_CACHE_DIR }}
-  #         key: "${{ runner.os }}-pip-test-\
-  #           ${{ hashFiles('**/requirements-test.txt') }}"
-  #         restore-keys: |
-  #           ${{ runner.os }}-pip-test-
-  #           ${{ runner.os }}-pip-
-  #     - name: Install dependencies
-  #       run: |
-  #         python -m pip install --upgrade pip
-  #         pip install --upgrade --requirement requirements-test.txt
-  #     - name: Download docker image artifact
-  #       uses: actions/download-artifact@v1
-  #       with:
-  #         name: dist
-  #     - name: Load docker image
-  #       run: docker load < dist/image.tar.gz
-  #     - name: Run tests
-  #       env:
-  #         RELEASE_TAG: ${{ github.event.release.tag_name }}
-  #       run: pytest
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+      - name: Cache pip test requirements
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.PIP_CACHE_DIR }}
+          key: "${{ runner.os }}-pip-test-\
+            ${{ hashFiles('**/requirements-test.txt') }}"
+          restore-keys: |
+            ${{ runner.os }}-pip-test-
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install --upgrade --requirement requirements-test.txt
+
+      - name: Cyclomatic Complexity
+        run: |
+          radon cc ./src/ -e *.venv -e *test* -s -o SCORE
+
+      - name: Pytest/Coverage
+        run: |
+          coverage run --omit *.venv*,*test* -m pytest ./src/ --disable-warnings
+          coverage report
