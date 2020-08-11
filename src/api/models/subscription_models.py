@@ -163,8 +163,6 @@ class GoPhishSmtpModel(Model):
 
     id                 : int64
     name               : string
-    username           : string (optional)
-    password           : string (optional)
     host               : string
     interface_type     : string
     from_address       : string
