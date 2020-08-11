@@ -5,7 +5,7 @@ from django.core.management.base import BaseCommand
 # Local Libraries
 from api.models.subscription_models import SubscriptionModel, validate_subscription
 from api.utils.db_utils import get_list
-from notifications.views import ReportsEmailSender
+from notifications.views import EmailSender
 
 
 class Command(BaseCommand):
@@ -26,5 +26,5 @@ class Command(BaseCommand):
         subscription = subscription_list[0]
 
         message_type = "cycle_report"
-        sender = ReportsEmailSender(subscription, message_type)
+        sender = EmailSender(subscription, message_type)
         sender.send()

@@ -25,7 +25,7 @@ def __db_service(collection_name, model, validate_model):
     Might refactor this into database lib.
     """
     if os.environ.get("MONGO_TYPE", "MONGO") == "DOCUMENTDB":
-        mongo_uri = "mongodb://{}:{}@{}:{}/?ssl=true&ssl_ca_certs=rds-combined-ca-bundle.pem&retryWrites=false".format(
+        mongo_uri = "mongodb://{}:{}@{}:{}/?ssl=true&ssl_ca_certs=/app/rds-combined-ca-bundle.pem&retryWrites=false".format(
             settings.DB_CONFIG["DB_USER"],
             settings.DB_CONFIG["DB_PW"],
             settings.DB_CONFIG["DB_HOST"],

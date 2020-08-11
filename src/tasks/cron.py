@@ -10,7 +10,6 @@ import os
 
 def execute_tasks():
     # Get all tasks
-    os.chdir("/app")
     logging.info("Getting tasks to execute")
     subscriptions = db.get_list(
         {}, "subscription", SubscriptionModel, validate_subscription
@@ -66,8 +65,8 @@ def execute_tasks():
                 validation_model=validate_subscription,
             )
 
-    else:
-        logging.info("No tasks to execute")
+        else:
+            logging.info("No tasks to execute")
 
 
 def execute_task(subscription, message_type):

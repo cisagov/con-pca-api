@@ -24,7 +24,7 @@ from api.serializers.reports_serializers import (
 from api.utils.db_utils import get_list, get_single, update_single
 from django.http import FileResponse
 from drf_yasg.utils import swagger_auto_schema
-from notifications.views import ReportsEmailSender
+from notifications.views import EmailSender
 from reports.utils import (
     campaign_templates_to_string,
     get_cycles_breakdown,
@@ -197,7 +197,7 @@ class MonthlyReportsEmailView(APIView):
         message_type = "monthly_report"
 
         # Send email
-        sender = ReportsEmailSender(subscription, message_type)
+        sender = EmailSender(subscription, message_type)
         sender.send()
 
         dhs_contact_uuid = subscription.get("dhs_contact_uuid")
@@ -247,10 +247,10 @@ class CycleReportsEmailView(APIView):
         subscription = get_single(
             subscription_uuid, "subscription", SubscriptionModel, validate_subscription
         )
-        # message_type = "cycle_report"
+        message_type = "cycle_report"
         # Send email
-        # sender = ReportsEmailSender(subscription, message_type)
-        # sender.send()
+        sender = EmailSender(subscription, message_type)
+        sender.send()
 
         dhs_contact_uuid = subscription.get("dhs_contact_uuid")
         dhs_contact = get_single(
@@ -296,35 +296,37 @@ class YearlyReportsEmailView(APIView):
     )
     def get(self, request, subscription_uuid):
         """Get Method."""
-        # subscription = get_single(
-        #     subscription_uuid, "subscription", SubscriptionModel, validate_subscription
-        # )
-        # message_type = "yearly_report"
+        subscription = get_single(
+            subscription_uuid, "subscription", SubscriptionModel, validate_subscription
+        )
+        message_type = "yearly_report"
         # Send email
-        # sender = ReportsEmailSender(subscription, message_type)
-        # sender.send()
-        # dhs_contact_uuid = subscription.get("dhs_contact_uuid")
-        # dhs_contact = get_single(
-        #     dhs_contact_uuid, "dhs_contact", DHSContactModel, validate_dhs_contact
-        # )
-        # recipient_copy = dhs_contact.get("email") if dhs_contact else None
+        sender = EmailSender(subscription, message_type)
+        sender.send()
+        dhs_contact_uuid = subscription.get("dhs_contact_uuid")
+        dhs_contact = get_single(
+            dhs_contact_uuid, "dhs_contact", DHSContactModel, validate_dhs_contact
+        )
+        recipient_copy = dhs_contact.get("email") if dhs_contact else None
 
-        # subscription["email_report_history"].append({
-        #        "report_type": "Annual Report",
-        #        "sent": datetime.datetime.now(),
-        #        "email_to": subscription.get("primary_contact").get("email"),
-        #        "email_from": settings.SERVER_EMAIL,
-        #        "bbc": recipient_copy,
-        #        "manual": False,
-        #    })
+        subscription["email_report_history"].append(
+            {
+                "report_type": "Annual Report",
+                "sent": datetime.datetime.now(),
+                "email_to": subscription.get("primary_contact").get("email"),
+                "email_from": settings.SERVER_EMAIL,
+                "bbc": recipient_copy,
+                "manual": False,
+            }
+        )
 
-        # update_single(
-        #    subscription_uuid,
-        #    {"email_report_history": subscription["email_report_history"]},
-        #    "subscription",
-        #    SubscriptionModel,
-        #    validate_subscription,
-        # )
+        update_single(
+            subscription_uuid,
+            {"email_report_history": subscription["email_report_history"]},
+            "subscription",
+            SubscriptionModel,
+            validate_subscription,
+        )
 
         serializer = EmailReportsGetSerializer({"subscription_uuid": subscription_uuid})
         return Response(serializer.data)

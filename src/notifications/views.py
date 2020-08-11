@@ -18,7 +18,6 @@ from api.utils.db_utils import get_single
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.mail.message import EmailMultiAlternatives
 from django.template.loader import render_to_string
-from notifications.utils import get_notification
 
 from api.utils.reports import download_pdf
 from api.utils.template.templates import get_subscription_templates
@@ -28,56 +27,46 @@ from api.manager import CampaignManager
 logger = logging.getLogger()
 
 
-class ReportsEmailSender:
-    """ReportsEmailSender class."""
-
+class EmailSender:
     def __init__(self, subscription, message_type):
-        """Init method."""
         self.subscription = subscription
-        self.message_type = message_type
+        self.notification = self.set_notification(message_type)
+        self.attachment = self.get_attachment()
 
-    def get_attachment(self, subscription_uuid, link, cycle):
-        """Get_attachment method."""
-        return download_pdf(report_type=link, uuid=subscription_uuid, cycle=cycle)
+        self.context = self.set_context()
+
+        self.text_content = render_to_string(
+            f"emails/{self.notification['path']}.txt", self.context
+        )
+        self.html_content = render_to_string(
+            f"emails/{self.notification['path']}.html", self.context
+        )
+
+        self.to = self.set_to()
+        self.bcc = self.set_bcc()
+
+    def get_attachment(self):
+        if "report" in self.notification["path"]:
+            current_cycle = self.subscription.get("cycles")[-1]
+            cycle_date = datetime.strftime(
+                current_cycle.get("start_date"), format="%Y-%m-%d"
+            )
+            return download_pdf(
+                report_type=self.notification["link"],
+                uuid=self.subscription["subscription_uuid"],
+                cycle=cycle_date,
+            )
+        return None
 
     def send(self):
-        """Send method."""
-        subject, path, link = get_notification(self.message_type)
-
-        # pull subscription data
-        subscription_uuid = self.subscription.get("subscription_uuid")
-        recipient = self.subscription.get("primary_contact").get("email")
-        dhs_contact_uuid = self.subscription.get("dhs_contact_uuid")
-        dhs_contact = get_single(
-            dhs_contact_uuid, "dhs_contact", DHSContactModel, validate_dhs_contact
-        )
-        recipient_copy = dhs_contact.get("email") if dhs_contact else None
-        first_name = self.subscription.get("primary_contact").get("first_name")
-        last_name = self.subscription.get("primary_contact").get("last_name")
-
-        # pass context to email templates
-        context = {"first_name": first_name, "last_name": last_name}
-
-        text_content = render_to_string(f"emails/{path}.txt", context)
-        html_content = render_to_string(f"emails/{path}.html", context)
-
-        to = [f"{first_name} {last_name} <{recipient}>"]
-
-        # Temporarily bcc emails for QA
-        bcc = [f"DHS <{recipient_copy}>"] if recipient_copy else []
-
-        if settings.DEBUG == 0:
-            bcc.append("Bill Martin <william.martin@inl.gov>")
-
         message = EmailMultiAlternatives(
-            subject=subject,
-            body=text_content,
+            subject=self.notification["subject"],
+            body=self.text_content,
             from_email=settings.SERVER_EMAIL,
-            to=to,
-            bcc=bcc,
+            to=self.to,
+            bcc=self.bcc,
         )
 
-        # pass image files
         image_files = ["cisa_logo.png"]
         for image_file in image_files:
             with staticfiles_storage.open(f"img/{image_file}") as f:
@@ -85,16 +74,13 @@ class ReportsEmailSender:
                 header.add_header("Content-ID", f"<{image_file}>")
                 message.attach(header)
 
-        # add html body to email
-        message.attach_alternative(html_content, "text/html")
+        message.attach_alternative(self.html_content, "text/html")
 
-        # add pdf attachment
-        current_cycle = self.subscription.get("cycles")[-1]
-        cycle_date = datetime.strftime(
-            current_cycle.get("start_date"), format="%Y-%m-%d"
-        )
-        attachment = self.get_attachment(subscription_uuid, link, cycle_date)
-        message.attach("subscription_report.pdf", attachment.read(), "application/pdf")
+        if self.attachment:
+            message.attach(
+                "subscription_report.pdf", self.attachment.read(), "application/pdf"
+            )
+
         try:
             message.send(fail_silently=False)
         except ConnectionRefusedError:
@@ -102,17 +88,7 @@ class ReportsEmailSender:
         except ConnectionError:
             print("failed to send email for some other reason")
 
-
-class SubscriptionNotificationEmailSender:
-    """NotificationEmailSender class."""
-
-    def __init__(self, subscription, notification_type):
-        """Init method."""
-        self.subscription = subscription
-        self.notification_type = notification_type
-
-    def create_context_data(self):
-        """Create Contect Data Method."""
+    def set_context(self):
         campaign_manager = CampaignManager()
 
         first_name = self.subscription.get("primary_contact").get("first_name").title()
@@ -120,7 +96,6 @@ class SubscriptionNotificationEmailSender:
         current_cycle = current_cycle = self.subscription.get("cycles")[-1]
         cycle_uuid = current_cycle.get("cycle_uuid")
 
-        logger.info(f'start_date={self.subscription.get("start_date")}')
         # Putting .split on the start and end date because sometimes it comes formatted with a float at the end.
         if not isinstance(self.subscription.get("start_date"), datetime):
             start_date = datetime.strptime(
@@ -129,7 +104,7 @@ class SubscriptionNotificationEmailSender:
         else:
             start_date = self.subscription.get("start_date")
 
-        if self.notification_type == "subscription_stopped":
+        if self.notification["path"] == "subscription_stopped":
             end_date = datetime.today().strftime("%Y-%m-%dT%H:%M:%S")
         else:
             end_date = self.subscription.get("end_date")
@@ -158,55 +133,52 @@ class SubscriptionNotificationEmailSender:
             "phishing_email": phishing_email,
         }
 
-    def send(self):
-        """Send method."""
-        subject, path, _ = get_notification(self.notification_type)
-
-        # pull subscription data
+    def set_to(self):
         recipient = self.subscription.get("primary_contact").get("email")
+        return [
+            f"{self.context['first_name']} {self.context['last_name']} <{recipient}>"
+        ]
 
-        # get to and bcc email addresses
-        dhs_contact_uuid = self.subscription.get("dhs_contact_uuid")
+    def set_bcc(self):
         dhs_contact = get_single(
-            dhs_contact_uuid, "dhs_contact", DHSContactModel, validate_dhs_contact
-        )
-        recipient_copy = dhs_contact.get("email") if dhs_contact else None
+            self.subscription.get("dhs_contact_uuid"),
+            "dhs_contact",
+            DHSContactModel,
+            validate_dhs_contact,
+        ).get("email")
 
-        print(recipient_copy)
-        # pass context to email templates
-        context = self.create_context_data()
-        text_content = render_to_string(f"emails/{path}.txt", context)
-        html_content = render_to_string(f"emails/{path}.html", context)
-
-        to = [f"{context['first_name']} {context['last_name']} <{recipient}>"]
-
-        # Temporarily bcc emails for QA
-        bcc = [f"DHS <{recipient_copy}>"] if recipient_copy else []
+        bcc = [f"DHS <{dhs_contact}>"] if dhs_contact else []
 
         if settings.DEBUG == 0:
-            bcc.append("Bill Martin <william.martin@inl.gov>")
+            bcc.extend(settings.EXTRA_BCC_EMAILS)
 
-        message = EmailMultiAlternatives(
-            subject=subject,
-            body=text_content,
-            from_email=settings.SERVER_EMAIL,
-            to=to,
-            bcc=bcc,
-        )
+        return bcc
 
-        # pass image files
-        image_files = ["cisa_logo.png"]
-        for image_file in image_files:
-            with staticfiles_storage.open(f"img/{image_file}") as f:
-                header = MIMEImage(f.read())
-                header.add_header("Content-ID", f"<{image_file}>")
-                message.attach(header)
-
-        # add html body to email
-        message.attach_alternative(html_content, "text/html")
-        try:
-            message.send(fail_silently=False)
-        except ConnectionRefusedError:
-            print("failed to send email")
-        except ConnectionError:
-            print("failed to send email for some other reason")
+    def set_notification(self, message_type):
+        return {
+            "monthly_report": {
+                "subject": "DHS CISA Phishing Subscription Status Report",
+                "path": "monthly_report",
+                "link": "monthly",
+            },
+            "cycle_report": {
+                "subject": "DHS CISA Phishing Subscription Cycle Report",
+                "path": "cycle_report",
+                "link": "cycle",
+            },
+            "yearly_report": {
+                "subject": "DHS CISA Phishing Subscription Yearly Report",
+                "path": "yearly_report",
+                "link": "yearly",
+            },
+            "subscription_started": {
+                "subject": "DHS CISA Phishing Subscription Started",
+                "path": "subscription_started",
+                "link": None,
+            },
+            "subscription_stopped": {
+                "subject": "DHS CISA Phishing Subscription Stopped",
+                "path": "subscription_stopped",
+                "link": None,
+            },
+        }.get(message_type)

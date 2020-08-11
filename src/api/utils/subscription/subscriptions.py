@@ -9,7 +9,7 @@ from django.conf import settings
 from api.models.dhs_models import DHSContactModel, validate_dhs_contact
 from api.models.subscription_models import SubscriptionModel, validate_subscription
 from api.utils import db_utils as db
-from notifications.views import SubscriptionNotificationEmailSender
+from notifications.views import EmailSender
 
 
 def get_subscription(subscription_uuid: str):
@@ -116,7 +116,7 @@ def send_start_notification(subscription):
         start_date (datetime): start_date of subscription
     """
     add_email_report_history(subscription, "Cycle Start Notification")
-    sender = SubscriptionNotificationEmailSender(subscription, "subscription_started")
+    sender = EmailSender(subscription, "subscription_started")
     sender.send()
 
 
@@ -152,7 +152,7 @@ def send_stop_notification(subscription):
     Args:
         subscription (dict): subscription data
     """
-    sender = SubscriptionNotificationEmailSender(subscription, "subscription_stopped")
+    sender = EmailSender(subscription, "subscription_stopped")
     sender.send()
 
 
