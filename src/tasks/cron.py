@@ -5,10 +5,13 @@ from datetime import datetime, timedelta
 from uuid import uuid4
 import logging
 from tasks import tasks
+import os
 
 
 def execute_tasks():
     # Get all tasks
+    os.chdir("/app")
+    logging.info("Getting tasks to execute")
     subscriptions = db.get_list(
         {}, "subscription", SubscriptionModel, validate_subscription
     )
@@ -36,34 +39,40 @@ def execute_tasks():
                         execute_task(s, t["message_type"])
                         t["executed"] = True
                         t["error"] = ""
-                        updated_tasks.append(
-                            get_new_task(
-                                s["subscription_uuid"],
-                                t["scheduled_date"],
-                                t["message_type"],
-                            )
+                        new_task = get_new_task(
+                            s["subscription_uuid"],
+                            t["scheduled_date"],
+                            t["message_type"],
                         )
+                        if new_task:
+                            updated_tasks.append(new_task)
+
+                        logging.info(f"Successfully executed task {t}")
+
                     except BaseException as e:
                         t["error"] = str(e)
                     finally:
                         t["executed_date"] = datetime.now()
 
-                logging.info(t)
                 updated_tasks.append(t)
 
-        # Update Database with tasks
-        put_data = SubscriptionPatchSerializer({"tasks": updated_tasks}).data
-        db.update_single(
-            uuid=s["subscription_uuid"],
-            put_data=put_data,
-            collection="subscription",
-            model=SubscriptionModel,
-            validation_model=validate_subscription,
-        )
+            # Update Database with tasks
+            put_data = SubscriptionPatchSerializer({"tasks": updated_tasks}).data
+            db.update_single(
+                uuid=s["subscription_uuid"],
+                put_data=put_data,
+                collection="subscription",
+                model=SubscriptionModel,
+                validation_model=validate_subscription,
+            )
+
+    else:
+        logging.info("No tasks to execute")
 
 
 def execute_task(subscription, message_type):
     task = {
+        "start_subscription_email": tasks.start_subscription_email,
         "monthly_report": tasks.email_subscription_monthly,
         "cycle_report": tasks.email_subscription_cycle,
         "yearly_report": tasks.email_subscription_yearly,
@@ -80,9 +89,12 @@ def get_new_task(subscription_uuid, scheduled_date, message_type):
         "start_new_cycle": scheduled_date + timedelta(days=90),
     }.get("message_type")
 
-    return {
-        "task_uuid": uuid4(),
-        "message_type": message_type,
-        "scheduled_date": scheduled_date,
-        "executed": False,
-    }
+    if scheduled_date:
+        return {
+            "task_uuid": uuid4(),
+            "message_type": message_type,
+            "scheduled_date": scheduled_date,
+            "executed": False,
+        }
+
+    return None
