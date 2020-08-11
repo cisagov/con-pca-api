@@ -7,12 +7,11 @@ import asyncio
 from config import settings
 
 
-def download_pdf(report_type, uuid, cycle, auth_header=None):
+def download_pdf(report_type, uuid, cycle):
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
-    if settings.LOCAL_API_KEY and auth_header:
-        auth_header = settings.LOCAL_API_KEY
+    auth_header = settings.LOCAL_API_KEY if settings.LOCAL_API_KEY else None
 
     response = loop.run_until_complete(
         _download_pdf(report_type, uuid, cycle, auth_header=auth_header)
@@ -40,5 +39,5 @@ async def _download_pdf(report_type, uuid, cycle, auth_header=None):
     )
     await page.emulateMedia("screen")
     pdf_content = await page.pdf({"format": "Letter", "printBackground": True})
-    await page.close()
+    await browser.close()
     return pdf_content

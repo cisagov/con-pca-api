@@ -115,35 +115,8 @@ def send_start_notification(subscription):
         subscription (dict): subscription data
         start_date (datetime): start_date of subscription
     """
-    add_email_report_history(subscription, "Cycle Start Notification")
     sender = EmailSender(subscription, "subscription_started")
     sender.send()
-
-
-def add_email_report_history(subscription, report_type):
-    dhs_contact = db.get_single(
-        subscription.get("dhs_contact_uuid"),
-        "dhs_contact",
-        DHSContactModel,
-        validate_dhs_contact,
-    )
-
-    data = {
-        "report_type": report_type,
-        "sent": datetime.now(),
-        "email_to": subscription.get("primary_contact").get("email"),
-        "email_from": settings.SERVER_EMAIL,
-        "bbc": dhs_contact.get("email") if dhs_contact else None,
-    }
-
-    return db.push_nested_item(
-        uuid=subscription["subscription_uuid"],
-        field="email_report_history",
-        put_data=data,
-        collection="subscription",
-        model=SubscriptionModel,
-        validation_model=validate_subscription,
-    )
 
 
 def send_stop_notification(subscription):

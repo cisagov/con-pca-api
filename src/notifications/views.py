@@ -21,17 +21,19 @@ from django.template.loader import render_to_string
 
 from api.utils.reports import download_pdf
 from api.utils.template.templates import get_subscription_templates
+from api.utils import db_utils as db
 from api.manager import CampaignManager
+from api.models.subscription_models import SubscriptionModel, validate_subscription
 
 
 logger = logging.getLogger()
 
 
 class EmailSender:
-    def __init__(self, subscription, message_type):
+    def __init__(self, subscription, message_type, cycle=None):
         self.subscription = subscription
         self.notification = self.set_notification(message_type)
-        self.attachment = self.get_attachment()
+        self.attachment = self.get_attachment(cycle)
 
         self.context = self.set_context()
 
@@ -43,18 +45,14 @@ class EmailSender:
         )
 
         self.to = self.set_to()
-        self.bcc = self.set_bcc()
+        self.bcc, self.dhs_contact_email = self.set_bcc()
 
-    def get_attachment(self):
+    def get_attachment(self, cycle):
         if "report" in self.notification["path"]:
-            current_cycle = self.subscription.get("cycles")[-1]
-            cycle_date = datetime.strftime(
-                current_cycle.get("start_date"), format="%Y-%m-%d"
-            )
             return download_pdf(
                 report_type=self.notification["link"],
                 uuid=self.subscription["subscription_uuid"],
-                cycle=cycle_date,
+                cycle=cycle,
             )
         return None
 
@@ -83,10 +81,33 @@ class EmailSender:
 
         try:
             message.send(fail_silently=False)
+            self.add_email_report_history()
         except ConnectionRefusedError:
             print("failed to send email")
         except ConnectionError:
             print("failed to send email for some other reason")
+
+    def add_email_report_history(self):
+        data = {
+            "report_type": self.notification["type"],
+            "sent": datetime.now(),
+            "email_to": self.subscription.get("primary_contact").get("email"),
+            "email_from": settings.SERVER_EMAIL,
+            "bcc": self.dhs_contact_email,
+        }
+
+        logging.info(data)
+
+        resp = db.push_nested_item(
+            uuid=self.subscription["subscription_uuid"],
+            field="email_report_history",
+            put_data=data,
+            collection="subscription",
+            model=SubscriptionModel,
+            validation_model=validate_subscription,
+        )
+
+        return resp
 
     def set_context(self):
         campaign_manager = CampaignManager()
@@ -152,7 +173,7 @@ class EmailSender:
         if settings.DEBUG == 0:
             bcc.extend(settings.EXTRA_BCC_EMAILS)
 
-        return bcc
+        return bcc, dhs_contact
 
     def set_notification(self, message_type):
         return {
@@ -160,25 +181,30 @@ class EmailSender:
                 "subject": "DHS CISA Phishing Subscription Status Report",
                 "path": "monthly_report",
                 "link": "monthly",
+                "type": "Monthly",
             },
             "cycle_report": {
                 "subject": "DHS CISA Phishing Subscription Cycle Report",
                 "path": "cycle_report",
                 "link": "cycle",
+                "type": "Cycle",
             },
             "yearly_report": {
                 "subject": "DHS CISA Phishing Subscription Yearly Report",
                 "path": "yearly_report",
                 "link": "yearly",
+                "type": "Yearly",
             },
             "subscription_started": {
                 "subject": "DHS CISA Phishing Subscription Started",
                 "path": "subscription_started",
                 "link": None,
+                "type": "Cycle Start Notification",
             },
             "subscription_stopped": {
                 "subject": "DHS CISA Phishing Subscription Stopped",
                 "path": "subscription_stopped",
                 "link": None,
+                "type": "Cycle Complete",
             },
         }.get(message_type)

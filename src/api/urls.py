@@ -104,18 +104,18 @@ urlpatterns = [
         name="reports_get_pdf_yearly_api",
     ),
     path(
-        "v1/reports/<subscription_uuid>/email/monthly/",
-        report_views.MonthlyReportsEmailView.as_view(),
+        "v1/reports/<subscription_uuid>/email/monthly/<cycle>/",
+        report_views.monthly_report_email_view,
         name="reports_get_pdf_monthly_api",
     ),
     path(
-        "v1/reports/<subscription_uuid>/email/cycle/",
-        report_views.CycleReportsEmailView.as_view(),
+        "v1/reports/<subscription_uuid>/email/cycle/<cycle>/",
+        report_views.cycle_report_email_view,
         name="reports_get_pdf_cycle_api",
     ),
     path(
-        "v1/reports/<subscription_uuid>/email/yearly/",
-        report_views.YearlyReportsEmailView.as_view(),
+        "v1/reports/<subscription_uuid>/email/yearly/<cycle>/",
+        report_views.yearly_report_email_view,
         name="reports_get_pdf_yearly_api",
     ),
     path(
