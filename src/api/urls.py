@@ -16,6 +16,7 @@ from api.views import (
     subscription_views,
     template_views,
     webhook_views,
+    landing_page_views,
 )
 from django.urls import path
 from drf_yasg import openapi
@@ -197,5 +198,20 @@ urlpatterns = [
         "v1/cycleemailreported/<subscription_uuid>/",
         cycle_views.CycleReportedView.as_view(),
         name="cycle_email_report_api",
+    ),
+    path(
+        "v1/landingpages/",
+        landing_page_views.LandingPagesListView.as_view(),
+        name="landing_page_list_api",
+    ),
+    path(
+        "v1/landingpage/<landing_page_uuid>/",
+        landing_page_views.LandingPageView.as_view(),
+        name="landing_page_get_api",
+    ),
+    path(
+        "v1/landingpage/stop/<landing_page_uuid>/",
+        landing_page_views.LandingPageStopView.as_view(),
+        name="landing_page_stop_api",
     ),
 ]
