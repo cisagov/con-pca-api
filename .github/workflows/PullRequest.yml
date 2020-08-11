@@ -106,13 +106,14 @@ jobs:
             ${{ runner.os }}-pip-test-
             ${{ runner.os }}-pip-
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install --upgrade --requirement requirements-test.txt
+      - name: Upgrade Pip
+        run: python -m pip install --upgrade pip
 
-      - name: Cyclomatic Complexity
-        run: radon cc ./src/ -e *.venv -e *test* -s -o SCORE
+      - name: Install Requirements
+        run: pip install --upgrade --requirement requirements-test.txt
+
+      # - name: Cyclomatic Complexity
+      #   run: radon cc ./src/ -e *.venv -e *test* -s -o SCORE
 
       - name: Pytest/Coverage
         run: |
