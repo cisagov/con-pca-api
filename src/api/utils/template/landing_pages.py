@@ -1,11 +1,9 @@
 """Landing Page Utils"""
 # Third-Party Libraries
-from api.models.landing_page_models import (    
-    LandingPageModel,
-    validate_landing_page
-)
+from api.models.landing_page_models import LandingPageModel, validate_landing_page
 from api.utils import db_utils as db
 from api.utils.generic import format_ztime
+
 
 def get_landing_pages():
     """
@@ -20,6 +18,7 @@ def get_landing_pages():
         LandingPageModel,
         validate_landing_page,
     )
+
 
 # def get_subscription_templates(subscription):
 #     return db.get_list(

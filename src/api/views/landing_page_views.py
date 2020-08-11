@@ -9,10 +9,7 @@ import logging
 # Third-Party Libraries
 from api.manager import CampaignManager
 from api.models.subscription_models import SubscriptionModel, validate_subscription
-from api.models.landing_page_models import (
-    LandingPageModel,
-    validate_landing_page    
-)
+from api.models.landing_page_models import LandingPageModel, validate_landing_page
 from api.serializers.landing_page_serializers import (
     LandingPageDeleteResponseSerializer,
     LandingPageGetSerializer,
@@ -21,7 +18,7 @@ from api.serializers.landing_page_serializers import (
     LandingPagePostResponseSerializer,
     LandingPagePostSerializer,
     LandingPageQuerySerializer,
-    LandingPageStopResponseSerializer
+    LandingPageStopResponseSerializer,
 )
 from api.utils.db_utils import (
     delete_single,
@@ -87,7 +84,10 @@ class LandingPagesListView(APIView):
         post_data = request.data.copy()
 
         if exists(
-            {"name": post_data["name"]}, "landing_page", LandingPageModel, validate_landing_page
+            {"name": post_data["name"]},
+            "landing_page",
+            LandingPageModel,
+            validate_landing_page,
         ):
             return Response(
                 {"error": "LandingPage with name already exists"},
@@ -216,6 +216,9 @@ class LandingPageStopView(APIView):
         )
 
         # Generate and return response
-        resp = {"landing_page": updated_landing_page, "subscriptions": updated_subscriptions}
+        resp = {
+            "landing_page": updated_landing_page,
+            "subscriptions": updated_subscriptions,
+        }
         serializer = LandingPageStopResponseSerializer(resp)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)

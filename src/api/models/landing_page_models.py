@@ -18,8 +18,6 @@ from database.repository.types import (
 from api.models.template_models import TemplateImageModel
 
 
-
-
 class LandingPageModel(Model):
     """
     This is the Landing Page Model
@@ -36,7 +34,7 @@ class LandingPageModel(Model):
     retired = BooleanType(default=False)
     retired_description = StringType()
     html = StringType()
-    
+
     # db tracking data added below
     created_by = StringType()
     cb_timestamp = DateTimeType()
@@ -51,4 +49,3 @@ def validate_landing_page(data_object):
     This shows basic validation for the model.
     """
     return LandingPageModel(data_object).validate()
-

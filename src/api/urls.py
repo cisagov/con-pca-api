@@ -16,7 +16,7 @@ from api.views import (
     subscription_views,
     template_views,
     webhook_views,
-    landing_page_views
+    landing_page_views,
 )
 from django.urls import path
 from drf_yasg import openapi

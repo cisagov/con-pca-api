@@ -201,6 +201,7 @@ def wait_connection():
 def load_default_landing_page():
     LANDING_PAGES[0]["html"] = load_file_html("data/landing.html")
 
+
 def load_file_html(data_file):
     current_dir = os.path.dirname(os.path.abspath(__file__))
     data_file = os.path.join(current_dir, data_file)
@@ -225,15 +226,15 @@ def main():
     create_sending_profile(SENDING_PROFILES)
     print("Step 2/5: Creating Landing Pages")
 
-    load_default_landing_page()    
-    create_landing_page(LANDING_PAGES)    
+    load_default_landing_page()
+    create_landing_page(LANDING_PAGES)
     print("Step 3/5: Create Webhooks")
     create_webhook(WEBHOOKS)
     print("Step 4/5: Create Templates")
     create_templates()
     print("Step 5/5: Create Tags")
     create_tags()
-    print("...Con-PCA Initialized...")    
+    print("...Con-PCA Initialized...")
     return 0
 
 

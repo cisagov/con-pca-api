@@ -8,15 +8,10 @@ serializing data coming from the db into a request response.
 from api.serializers.subscriptions_serializers import (
     SubscriptionPatchResponseSerializer,
 )
-from api.serializers.template_serializers import(
-    TemplateImageSerializer
-)
+from api.serializers.template_serializers import TemplateImageSerializer
 from rest_framework import serializers
 
-TEMPLATE_TYPE_CHOICES = (
-    ("Landing", "Landing Page"),
-)
-
+TEMPLATE_TYPE_CHOICES = (("Landing", "Landing Page"),)
 
 
 class LandingPageGetSerializer(serializers.Serializer):
@@ -32,7 +27,7 @@ class LandingPageGetSerializer(serializers.Serializer):
     template_type = serializers.ChoiceField(choices=TEMPLATE_TYPE_CHOICES)
     image_list = TemplateImageSerializer(many=True)
     retired = serializers.BooleanField(default=False)
-    retired_description = serializers.CharField(default="")    
+    retired_description = serializers.CharField(default="")
     html = serializers.CharField()
     # db tracking data added below
     created_by = serializers.CharField(max_length=200)
@@ -47,19 +42,20 @@ class LandingPagePostSerializer(serializers.Serializer):
 
     This is a formats the data coming out of the Db.
     """
+
     landing_page_uuid = serializers.UUIDField()
     gophish_template_id = serializers.IntegerField()
     name = serializers.CharField()
-    template_type = serializers.ChoiceField(choices=TEMPLATE_TYPE_CHOICES)    
-    image_list = TemplateImageSerializer(many=True)    
+    template_type = serializers.ChoiceField(choices=TEMPLATE_TYPE_CHOICES)
+    image_list = TemplateImageSerializer(many=True)
     retired = serializers.BooleanField(default=False)
     retired_description = serializers.CharField(default="")
     subject = serializers.CharField(max_length=200)
-    
+
     html = serializers.CharField()
     topic_list = serializers.ListField()
     # Score data
-    
+
 
 class LandingPagePostResponseSerializer(serializers.Serializer):
     """
@@ -77,17 +73,16 @@ class LandingPagePatchSerializer(serializers.Serializer):
 
     This is a formats the data coming out of the Db.
     """
+
     landing_page_uuid = serializers.UUIDField()
     name = serializers.CharField(required=False)
     template_type = serializers.ChoiceField(
         choices=TEMPLATE_TYPE_CHOICES, required=False
-    )    
-    image_list = TemplateImageSerializer(many=True, required=False)    
+    )
+    image_list = TemplateImageSerializer(many=True, required=False)
     retired = serializers.BooleanField(default=False, required=False)
-    retired_description = serializers.CharField(default="", required=False)      
+    retired_description = serializers.CharField(default="", required=False)
     html = serializers.CharField(required=False)
-    
-    
 
 
 class LandingPagePatchResponseSerializer(serializers.Serializer):
@@ -104,7 +99,7 @@ class LandingPagePatchResponseSerializer(serializers.Serializer):
     image_list = TemplateImageSerializer(many=True)
     retired = serializers.BooleanField(default=False)
     retired_description = serializers.CharField(default="")
-    html = serializers.CharField()    
+    html = serializers.CharField()
     created_by = serializers.CharField(max_length=200)
     cb_timestamp = serializers.DateTimeField()
     last_updated_by = serializers.CharField(max_length=200)
@@ -127,6 +122,7 @@ class LandingPageStopResponseSerializer(serializers.Serializer):
     template = LandingPagePatchResponseSerializer()
     subscriptions = SubscriptionPatchResponseSerializer(many=True)
 
+
 class LandingPageQuerySerializer(serializers.Serializer):
     """
     Serializes templete Query.
@@ -146,5 +142,3 @@ class LandingPageQuerySerializer(serializers.Serializer):
     cb_timestamp = serializers.DateTimeField(required=False)
     last_updated_by = serializers.CharField(required=False)
     lub_timestamp = serializers.DateTimeField(required=False)
-
-
