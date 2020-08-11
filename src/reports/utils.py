@@ -93,8 +93,8 @@ def find_send_timeline_moment(email, timeline_items):
 def add_moment_no_duplicates(moment, result, message_type):
     """Add a timeline moment to the statistical summary, Ignoring duplicates."""
     previous_moment = find_send_timeline_moment(moment["email"], result)
-    if message_type in previous_moment:
-        return  # Do not count duplicates
+    # if message_type in previous_moment:
+    #     return  # Do not count duplicates
     previous_moment[message_type] = moment["time"]
     previous_moment[message_type + "_difference"] = (
         moment["time"] - previous_moment["sent"]
@@ -354,14 +354,20 @@ def get_subscription_stats_for_month(subscription, end_date):
     )
 
 
-def get_subscription_stats_for_cycle(subscription, start_date=None):
+def get_subscription_stats_for_cycle(subscription, cycle_uuid=None):
     """
     Generate statistics for a subscriptions given cycle.
 
     Determine the cycle by the provided start_date.
     """
     # Get the correct cycle based on the provided start_date
-    active_cycle = get_cycle_by_date_in_range(subscription, start_date)
+    # active_cycle = get_cycle_by_date_in_range(subscription, start_date)
+    active_cycle = None
+    for cycle in subscription["cycles"]:
+        if cycle["cycle_uuid"] == cycle_uuid:
+            active_cycle = cycle
+    if not active_cycle:
+        active_cycle = subscription["cycles"][0]
 
     # Get all the campaigns for the specified cycle from the gophish_campaign_list
     campaigns_in_cycle = []
@@ -420,7 +426,7 @@ def get_subscription_stats_for_yearly(
         utc = pytz.UTC
         end_date = utc.localize(end_date)
 
-    # Get all cycles that havea date that lies within the given time gap
+    # Get all cycles that have a date that lies within the given time gap
     cycles_in_year = []
     campaigns_in_year = []
     for cycle in subscription["cycles"]:
@@ -430,9 +436,10 @@ def get_subscription_stats_for_yearly(
             cycles_in_year.append(cycle)
             for campaign in cycle["campaigns_in_cycle"]:
                 campaigns_in_year.append(campaign)
+                if not "campaigns" in cycle:
+                    cycle["campaigns"] = []
+                cycle["campaigns"].append(campaign)
 
-    pprintItem(campaigns_in_year)
-    print("====")
     campaigns_no_dupliactes = []
     for campaign in campaigns_in_year:
         if campaign not in campaigns_no_dupliactes:
@@ -440,20 +447,25 @@ def get_subscription_stats_for_yearly(
 
     campaigns_in_year = campaigns_no_dupliactes
 
-    pprintItem(campaigns_in_year)
-    print("====")
-
     # Get all the campaigns for the specified cycle from the gophish_campaign_list
 
+    # Get the campaign info from the gophish_campaign_list, and store in aggregate array
+    # and hte cycle specific array
     campaigns_in_time_gap = []
     for campaign in subscription["gophish_campaign_list"]:
         if campaign["campaign_id"] in campaigns_in_year:
             campaigns_in_time_gap.append(campaign)
+        for cycle in cycles_in_year:
+            if campaign["campaign_id"] in cycle["campaigns"]:
+                if not "campaign_list" in cycle:
+                    cycle["campaign_list"] = []
+                cycle["campaign_list"].append(campaign)
 
     # Loop through all campaigns in cycle. Check for unique moments, and appending to campaign_timeline_summary
     campaign_timeline_summary = []
     campaign_results = []
     reported_override_val = -1
+    reported_override_val_total = -1
     for campaign in campaigns_in_time_gap:
         unique_moments = get_unique_moments(campaign["timeline"])
         for unique_moment in unique_moments:
@@ -477,10 +489,49 @@ def get_subscription_stats_for_yearly(
                 "template_uuid": campaign["template_uuid"],
             }
         )
+        if reported_override_val != -1:
+            if reported_override_val_total == -1:
+                reported_override_val_total = 0
+            else:
+                reported_override_val_total += reported_override_val
         reported_override_val = -1
         campaign_timeline_summary = []
 
-    return generate_subscription_stat_details(campaign_results, -1)
+    for cycle in cycles_in_year:
+        cycle_timeline_summary = []
+        cycle_results = []
+        for campaign in cycle["campaign_list"]:
+            unique_moments = get_unique_moments(campaign["timeline"])
+            for unique_moment in unique_moments:
+                append_timeline_moment(unique_moment, cycle_timeline_summary)
+            reported_override_val = cycle["override_total_reported"]
+            stats = None
+            stats, time_aggregate = generate_campaign_statistics(
+                cycle_timeline_summary, reported_override_val
+            )
+            cycle_results.append(
+                {
+                    "campaign_id": campaign["campaign_id"],
+                    "deception_level": campaign["deception_level"],
+                    "campaign_stats": stats,
+                    "reported_override_val": reported_override_val,
+                    "times": time_aggregate,
+                    "ratios": calc_ratios(stats),
+                    "template_name": campaign["email_template"],
+                    "template_uuid": campaign["template_uuid"],
+                }
+            )
+            cycle_timeline_summary = []
+        cycle["cycle_results"] = generate_subscription_stat_details(
+            cycle_results, reported_override_val
+        )
+
+    return (
+        generate_subscription_stat_details(
+            campaign_results, reported_override_val_total
+        ),
+        cycles_in_year,
+    )
 
 
 def get_override_total_reported_for_campagin(subscription, campaign):
@@ -574,7 +625,7 @@ def set_cycle_quarters(cycles):
 
 
 def generate_subscription_stat_details(campaign_results, over_ride_report_val):
-    # generate campaign_group stats based off deception level and oconsolidation of all campaigns
+    # generate campaign_group stats based off deception level and consolidation of all campaigns
     # All
     consolidated_stats = consolidate_campaign_group_stats(
         campaign_results, over_ride_report_val
@@ -673,6 +724,12 @@ def count_timeline_moments(moments):
     return phishing_result
 
 
+def update_phish_results(subscription):
+    for cycle in subscription["cycles"]:
+        if cycle["phish_results_dirty"]:
+            generate_cycle_phish_results(subscription, cycle)
+
+
 def generate_cycle_phish_results(subscription, cycle):
     cycle_phish_results = {
         "sent": 0,
@@ -681,9 +738,6 @@ def generate_cycle_phish_results(subscription, cycle):
         "submitted": 0,
         "reported": 0,
     }
-    print("----------------")
-    pprintItem(subscription)
-    print("----------------")
     for campaign in subscription["gophish_campaign_list"]:
         if campaign["campaign_id"] in cycle["campaigns_in_cycle"]:
             # If campaign timeline is dirty, recalculate the phish results
@@ -1231,3 +1285,123 @@ def detail_deception_to_simple(decep_stats, level_name, level_num):
         "opened": decep_stats["opened"]["count"],
         "sent": decep_stats["sent"]["count"],
     }
+
+
+def cycle_stats_to_percentage_trend_graph_data(cycle_stats):
+    clicked_series = []
+    submitted_series = []
+    reported_series = []
+
+    for cycle in cycle_stats:
+        clicked_series.insert(
+            0,
+            {
+                # "name": f"{cycle['start_date'].year} - {cycle['start_date'].month}",
+                "name": cycle["start_date"],
+                "value": cycle["cycle_results"]["stats_all"]["clicked"]["count"],
+            },
+        )
+        submitted_series.insert(
+            0,
+            {
+                # "name": f"{cycle['start_date'].year} - {cycle['start_date'].month}",
+                "name": cycle["start_date"],
+                "value": cycle["cycle_results"]["stats_all"]["submitted"]["count"],
+            },
+        )
+        reported_series.insert(
+            0,
+            {
+                # "name": f"{cycle['start_date'].year} - {cycle['start_date'].month}",
+                "name": cycle["start_date"],
+                "value": cycle["cycle_results"]["stats_all"]["reported"]["count"],
+            },
+        )
+
+    ret_val = [
+        {"name": "Clicked", "series": clicked_series},
+        {"name": "Submitted", "series": submitted_series},
+        {"name": "Reported", "series": reported_series},
+    ]
+    return ret_val
+
+
+def cycle_stats_to_click_rate_vs_report_rate(cycle_stats):
+    low_click_rate = []
+    low_report_rate = []
+    medium_click_rate = []
+    medium_report_rate = []
+    high_click_rate = []
+    high_report_rate = []
+
+    for cycle in cycle_stats:
+        low_click_rate.insert(
+            0,
+            {
+                # "name": f"{cycle['start_date'].year} - {cycle['start_date'].month}",
+                "name": cycle["start_date"],
+                "value": cycle["cycle_results"]["stats_low_deception"]["clicked"][
+                    "count"
+                ],
+            },
+        )
+        low_report_rate.insert(
+            0,
+            {
+                # "name": f"{cycle['start_date'].year} - {cycle['start_date'].month}",
+                "name": cycle["start_date"],
+                "value": cycle["cycle_results"]["stats_low_deception"]["reported"][
+                    "count"
+                ],
+            },
+        )
+        medium_click_rate.insert(
+            0,
+            {
+                # "name": f"{cycle['start_date'].year} - {cycle['start_date'].month}",
+                "name": cycle["start_date"],
+                "value": cycle["cycle_results"]["stats_mid_deception"]["clicked"][
+                    "count"
+                ],
+            },
+        )
+        medium_report_rate.insert(
+            0,
+            {
+                # "name": f"{cycle['start_date'].year} - {cycle['start_date'].month}",
+                "name": cycle["start_date"],
+                "value": cycle["cycle_results"]["stats_mid_deception"]["reported"][
+                    "count"
+                ],
+            },
+        )
+        high_click_rate.insert(
+            0,
+            {
+                # "name": f"{cycle['start_date'].year} - {cycle['start_date'].month}",
+                "name": cycle["start_date"],
+                "value": cycle["cycle_results"]["stats_high_deception"]["clicked"][
+                    "count"
+                ],
+            },
+        )
+        high_report_rate.insert(
+            0,
+            {
+                # "name": f"{cycle['start_date'].year} - {cycle['start_date'].month}",
+                "name": cycle["start_date"],
+                "value": cycle["cycle_results"]["stats_high_deception"]["reported"][
+                    "count"
+                ],
+            },
+        )
+
+    ret_val = [
+        {"name": "L-CR", "series": low_click_rate},
+        {"name": "L-RR", "series": low_report_rate},
+        {"name": "M-CR", "series": medium_click_rate},
+        {"name": "M-RR", "series": medium_report_rate},
+        {"name": "H-CR", "series": high_click_rate},
+        {"name": "H-RR", "series": high_report_rate},
+    ]
+    return ret_val

@@ -39,6 +39,8 @@ from reports.utils import (
     get_stats_low_med_high_by_level,
     get_cycle_by_date_in_range,
     set_cycle_quarters,
+    cycle_stats_to_percentage_trend_graph_data,
+    cycle_stats_to_click_rate_vs_report_rate,
     pprintItem,
 )
 
@@ -99,8 +101,16 @@ class YearlyReportsView(APIView):
         yearly_end_date = yearly_start_date + timedelta(days=365.25)
         # Get subscription stats for the previous year.
         # Provide date values to get_subscription_stats_for_yearly for a different time span
-        subscription_stats = get_subscription_stats_for_yearly(subscription)
+        subscription_stats, cycles_stats = get_subscription_stats_for_yearly(
+            subscription
+        )
         region_stats = get_related_subscription_stats(subscription)
+        percentage_trends_data = cycle_stats_to_percentage_trend_graph_data(
+            cycles_stats
+        )
+        clickrate_vs_reportrate_data = cycle_stats_to_click_rate_vs_report_rate(
+            cycles_stats
+        )
 
         customer_address = """
         {} {},
@@ -145,6 +155,31 @@ class YearlyReportsView(APIView):
                 ),
                 0,
             ),
+            "shortest_time_to_report": format_timedelta(
+                get_statistic_from_group(
+                    subscription_stats, "stats_all", "reported", "minimum"
+                )
+            ),
+            "median_time_to_report": format_timedelta(
+                get_statistic_from_group(
+                    subscription_stats, "stats_all", "reported", "median"
+                )
+            ),
+            "shortest_time_to_open": format_timedelta(
+                get_statistic_from_group(
+                    subscription_stats, "stats_all", "opened", "minimum"
+                )
+            ),
+            "median_time_to_open": format_timedelta(
+                get_statistic_from_group(
+                    subscription_stats, "stats_all", "opened", "median"
+                )
+            ),
+            "longest_time_to_open": format_timedelta(
+                get_statistic_from_group(
+                    subscription_stats, "stats_all", "opened", "maximum"
+                )
+            ),
         }
 
         primary_contact = subscription.get("primary_contact")
@@ -169,6 +204,9 @@ class YearlyReportsView(APIView):
             # Helpers:
             "yearly_report_start_date": yearly_start_date,
             "yearly_report_end_date": yearly_end_date,
+            "cycles": cycles_stats,
+            "percentage_trends_data": percentage_trends_data,
+            "clickrate_vs_reportrate_data": clickrate_vs_reportrate_data,
         }
 
         return Response(context, status=status.HTTP_202_ACCEPTED)

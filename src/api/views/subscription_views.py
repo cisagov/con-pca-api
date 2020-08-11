@@ -20,6 +20,7 @@ from api.serializers.subscriptions_serializers import (
 )
 from api.utils.db_utils import delete_single, get_list, get_single, update_single
 from api.utils.subscription.actions import start_subscription, stop_subscription
+from reports.utils import update_phish_results
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
@@ -120,6 +121,7 @@ class SubscriptionView(APIView):
         )
         if subscription is None:
             return Response(status=status.HTTP_404_NOT_FOUND)
+        update_phish_results(subscription)
         serializer = SubscriptionGetSerializer(subscription)
         return Response(serializer.data)
 

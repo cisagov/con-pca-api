@@ -315,8 +315,10 @@ class CycleReportsView(APIView):
 class CycleStatusView(APIView):
     def get(self, request, **kwargs):
 
-        start_date_param = self.kwargs["start_date"]
-        start_date = datetime.strptime(start_date_param, "%Y-%m-%dT%H:%M:%S.%f%z")
+        # start_date_param = self.kwargs["start_date"]
+        # start_date = datetime.strptime(start_date_param, "%Y-%m-%dT%H:%M:%S.%f%z")
+
+        cycle_uuid = self.kwargs["cycle_uuid"]
 
         # Get targeted subscription and associated customer data
         subscription_uuid = self.kwargs["subscription_uuid"]
@@ -325,7 +327,7 @@ class CycleStatusView(APIView):
         )
 
         # Get statistics for the specified subscription during the specified cycle
-        subscription_stats = get_subscription_stats_for_cycle(subscription, start_date)
+        subscription_stats = get_subscription_stats_for_cycle(subscription, cycle_uuid)
         get_template_details(subscription_stats["campaign_results"])
 
         context = {
