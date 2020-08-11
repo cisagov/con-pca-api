@@ -89,7 +89,7 @@ jobs:
         working-directory: ./terraform
         run: terraform plan -input=false -var="image_tag=${{steps.vars.outputs.tag}}" -var="env=$ENVIRONMENT"
 
-  test:
+  python_tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -112,8 +112,7 @@ jobs:
           pip install --upgrade --requirement requirements-test.txt
 
       - name: Cyclomatic Complexity
-        run: |
-          radon cc ./src/ -e *.venv -e *test* -s -o SCORE
+        run: radon cc ./src/ -e *.venv -e *test* -s -o SCORE
 
       - name: Pytest/Coverage
         run: |
