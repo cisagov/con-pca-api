@@ -226,4 +226,5 @@ def __create_campaign(
             }
         ],
         "target_email_list": targets,
+        "smtp": campaign_serializers.CampaignSmtpSerializer(campaign.smtp).data,
     }

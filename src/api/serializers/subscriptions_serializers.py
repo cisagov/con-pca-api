@@ -171,6 +171,7 @@ class GoPhishCampaignsSerializer(serializers.Serializer):
     groups = GoPhishGroupSerializer(many=True)
     timeline = GoPhishTimelineSerializer(many=True)
     target_email_list = SubscriptionTargetSerializer(many=True, required=False)
+    smtp = GoPhishSmtpSerializer(required=False)
 
 
 class CycleSerializer(serializers.Serializer):
