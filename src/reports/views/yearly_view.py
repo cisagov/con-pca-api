@@ -41,6 +41,7 @@ from reports.utils import (
     set_cycle_quarters,
     cycle_stats_to_percentage_trend_graph_data,
     cycle_stats_to_click_rate_vs_report_rate,
+    determine_trend,
     pprintItem,
 )
 
@@ -111,6 +112,7 @@ class YearlyReportsView(APIView):
         clickrate_vs_reportrate_data = cycle_stats_to_click_rate_vs_report_rate(
             cycles_stats
         )
+        trend = determine_trend(cycles_stats)
 
         customer_address = """
         {} {},
@@ -201,12 +203,12 @@ class YearlyReportsView(APIView):
             "region_stats": region_stats,
             # Metrics
             "metrics": metrics,
-            # Helpers:
             "yearly_report_start_date": yearly_start_date,
             "yearly_report_end_date": yearly_end_date,
             "cycles": cycles_stats,
             "percentage_trends_data": percentage_trends_data,
             "clickrate_vs_reportrate_data": clickrate_vs_reportrate_data,
+            "trend": trend,
         }
 
         return Response(context, status=status.HTTP_202_ACCEPTED)

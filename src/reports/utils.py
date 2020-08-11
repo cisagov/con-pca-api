@@ -1405,3 +1405,20 @@ def cycle_stats_to_click_rate_vs_report_rate(cycle_stats):
         {"name": "H-RR", "series": high_report_rate},
     ]
     return ret_val
+
+
+def determine_trend(cycle_stats):
+    trend = "OneCycle"
+    previous_cycle = None
+    for cycle in cycle_stats:
+        if not previous_cycle:
+            previous_cycle = cycle
+        else:
+            if (
+                previous_cycle["cycle_results"]["stats_all"]["reported"]["count"]
+                > cycle["cycle_results"]["stats_all"]["reported"]["count"]
+            ):
+                trend = "degrading"
+            else:
+                trend = "improving"
+    return trend
