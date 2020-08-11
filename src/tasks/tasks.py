@@ -1,4 +1,4 @@
-from notifications.views import ReportsEmailSender
+from notifications.views import EmailSender
 from api.utils.subscription.subscriptions import send_start_notification
 from api.utils.subscription import actions
 
@@ -23,7 +23,7 @@ def email_subscription_monthly(subscription):
     schedule the next monthly subscription report email
     """
     # Send email
-    sender = ReportsEmailSender(subscription, "monthly_report")
+    sender = EmailSender(subscription, "monthly_report")
     sender.send()
 
     context = {
@@ -38,7 +38,7 @@ def email_subscription_cycle(subscription):
     schedule the next subscription cycle report email
     """
     # Send email
-    sender = ReportsEmailSender(subscription, "cycle_report")
+    sender = EmailSender(subscription, "cycle_report")
     sender.send()
 
     context = {
@@ -53,7 +53,7 @@ def email_subscription_yearly(subscription):
     schedule the next yearly subscription report email
     """
     # Send email
-    sender = ReportsEmailSender(subscription, "yearly_report")
+    sender = EmailSender(subscription, "yearly_report")
     sender.send()
 
     context = {
