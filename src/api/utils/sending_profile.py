@@ -7,6 +7,7 @@ campaign_manager = CampaignManager()
 def deal_with_sending_profiles(subscription):
     sending_profiles = campaign_manager.get("sending_profile")
     sending_profile_name = subscription["sending_profile_name"]
+    new_uuid = str(uuid.uuid4())
 
     sending_profile = next(
         iter([p for p in sending_profiles if p.name == sending_profile_name]), None
@@ -22,24 +23,25 @@ def deal_with_sending_profiles(subscription):
 
         # If sending profile already exists, update existing profile
         if existing_sending_profile:
-            update_existing_sending_profile(existing_sending_profile)
+            update_existing_sending_profile(existing_sending_profile, new_uuid)
         # Otherwise Create new profile
         else:
-            create_new_sending_profile(sending_profile_name, sending_profile)
+            create_new_sending_profile(sending_profile_name, sending_profile, new_uuid)
     # If sending profile unchanged, update header
     else:
-        update_existing_sending_profile(sending_profile)
+        update_existing_sending_profile(sending_profile, new_uuid)
 
     subscription["sending_profile_name"] = sending_profile_name
+    return new_uuid
 
 
-def update_existing_sending_profile(sending_profile):
-    set_sending_profile_headers(sending_profile)
+def update_existing_sending_profile(sending_profile, new_uuid):
+    set_sending_profile_headers(sending_profile, new_uuid)
     campaign_manager.put_sending_profile(sending_profile)
 
 
-def create_new_sending_profile(name, sending_profile):
-    set_sending_profile_headers(sending_profile)
+def create_new_sending_profile(name, sending_profile, new_uuid):
+    set_sending_profile_headers(sending_profile, new_uuid)
     campaign_manager.create(
         "sending_profile",
         name=name,
@@ -53,8 +55,8 @@ def create_new_sending_profile(name, sending_profile):
     )
 
 
-def set_sending_profile_headers(sending_profile):
-    new_header = {"key": "DHS-PHISH", "value": str(uuid.uuid4())}
+def set_sending_profile_headers(sending_profile, new_uuid):
+    new_header = {"key": "DHS-PHISH", "value": new_uuid}
 
     if not sending_profile.headers:
         sending_profile.headers = [new_header]
