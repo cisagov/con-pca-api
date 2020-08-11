@@ -134,7 +134,6 @@ def start_subscription(data=None, subscription_uuid=None):
             validate_subscription,
         )
     else:
-        subscription["email_report_history"] = []
         response = db.save_single(
             subscription, "subscription", SubscriptionModel, validate_subscription
         )
@@ -301,23 +300,6 @@ def stop_subscription(subscription):
         send_stop_notification(subscription)
     except Exception as e:
         logging.exception(e)
-
-    dhs_contact_uuid = subscription.get("dhs_contact_uuid")
-    dhs_contact = db.get_single(
-        dhs_contact_uuid, "dhs_contact", DHSContactModel, validate_dhs_contact
-    )
-    recipient_copy = dhs_contact.get("email") if dhs_contact else None
-
-    email_report = {
-        "report_type": "Cycle Complete",
-        "sent": datetime.now(),
-        "email_to": subscription.get("primary_contact").get("email"),
-        "email_from": settings.SERVER_EMAIL,
-        "bbc": recipient_copy,
-        "manual": False,
-    }
-
-    subscription["email_report_history"].append(email_report)
 
     resp = db.update_single(
         uuid=subscription["subscription_uuid"],
