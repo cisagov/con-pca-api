@@ -13,6 +13,8 @@ from api.models.subscription_models import SubscriptionModel, validate_subscript
 from api.models.customer_models import CustomerModel, validate_customer
 from api.models.dhs_models import DHSContactModel, validate_dhs_contact
 from api.utils.db_utils import get_list, get_single
+import pytz
+from django.utils import timezone
 
 from rest_framework import status
 from rest_framework.response import Response
@@ -22,8 +24,7 @@ from django.views.generic import TemplateView
 
 # from . import views
 from reports.utils import (
-    get_subscription_stats_for_cycle,
-    get_subscription_stats_for_month,
+    get_subscription_stats_for_yearly,
     get_related_subscription_stats,
     get_cycles_breakdown,
     get_template_details,
@@ -37,6 +38,7 @@ from reports.utils import (
     get_statistic_from_region_group,
     get_stats_low_med_high_by_level,
     get_cycle_by_date_in_range,
+    set_cycle_quarters,
     pprintItem,
 )
 
@@ -52,7 +54,13 @@ class YearlyReportsView(APIView):
     """
 
     def get(self, request, **kwargs):
+        for i in kwargs:
+            pprintItem(i)
         subscription_uuid = self.kwargs["subscription_uuid"]
+        start_date_param = self.kwargs["start_date"]
+        print(start_date_param)
+        start_date = datetime.strptime(start_date_param, "%Y-%m-%dT%H:%M:%S.%f%z")
+        print(start_date)
         subscription = get_single(
             subscription_uuid, "subscription", SubscriptionModel, validate_subscription
         )
@@ -74,7 +82,25 @@ class YearlyReportsView(APIView):
             campaign_manager.get("summary", campaign_id=campaign.get("campaign_id"))
             for campaign in campaigns
         ]
+
+        cycles = subscription["cycles"]
+        set_cycle_quarters(cycles)
+
         target_count = sum([targets.get("stats").get("total") for targets in summary])
+
+        if not start_date:
+            yearly_start_date = datetime.now()
+            yearly_start_date -= timedelta(days=365.25)
+        else:
+            if not timezone.is_aware(start_date):
+                utc = pytz.UTC
+                start_date = utc.localize(start_date)
+            yearly_start_date = start_date - timedelta(days=365.25)
+        yearly_end_date = yearly_start_date + timedelta(days=365.25)
+        # Get subscription stats for the previous year.
+        # Provide date values to get_subscription_stats_for_yearly for a different time span
+        subscription_stats = get_subscription_stats_for_yearly(subscription)
+        region_stats = get_related_subscription_stats(subscription)
 
         customer_address = """
         {} {},
@@ -90,20 +116,59 @@ class YearlyReportsView(APIView):
             dhs_contact.get("first_name"), dhs_contact.get("last_name")
         )
 
+        metrics = {
+            "total_users_targeted": len(subscription["target_email_list"]),
+            "number_of_email_sent_overall": get_statistic_from_group(
+                subscription_stats, "stats_all", "sent", "count"
+            ),
+            "customer_clicked_avg": ratio_to_percent(
+                get_statistic_from_region_group(
+                    region_stats, "customer", "clicked_ratio"
+                ),
+                0,
+            ),
+            "national_clicked_avg": ratio_to_percent(
+                get_statistic_from_region_group(
+                    region_stats, "national", "clicked_ratio"
+                ),
+                0,
+            ),
+            "industry_clicked_avg": ratio_to_percent(
+                get_statistic_from_region_group(
+                    region_stats, "industry", "clicked_ratio"
+                ),
+                0,
+            ),
+            "sector_clicked_avg": ratio_to_percent(
+                get_statistic_from_region_group(
+                    region_stats, "sector", "clicked_ratio"
+                ),
+                0,
+            ),
+        }
+
+        primary_contact = subscription.get("primary_contact")
         context = {
             # Customer info
-            "customer_name": customer.get("name"),
+            "customer": customer,
             "customer_identifier": customer.get("identifier"),
             "customer_address": customer_address,
             # DHS contact info
-            "dhs_contact_name": dhs_contact_name,
-            "dhs_contact_email": dhs_contact.get("email"),
-            "dhs_contact_mobile_phone": dhs_contact.get("office_phone"),
-            "dhs_contact_office_phone": dhs_contact.get("mobile_phone"),
+            "DHS_contact": dhs_contact,
             # Subscription info
             "start_date": subscription.get("start_date"),
             "end_date": subscription.get("end_date"),
             "target_count": target_count,
+            "cycles": cycles,
+            "primary_contact": primary_contact,
+            "primary_contact_email": primary_contact.get("email"),
+            "subscription_stats": subscription_stats,
+            "region_stats": region_stats,
+            # Metrics
+            "metrics": metrics,
+            # Helpers:
+            "yearly_report_start_date": yearly_start_date,
+            "yearly_report_end_date": yearly_end_date,
         }
 
         return Response(context, status=status.HTTP_202_ACCEPTED)

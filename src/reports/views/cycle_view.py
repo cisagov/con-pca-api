@@ -38,6 +38,7 @@ from reports.utils import (
     get_stats_low_med_high_by_level,
     get_cycle_by_date_in_range,
     deception_stats_to_graph_format,
+    set_cycle_quarters,
     pprintItem,
 )
 
@@ -94,15 +95,7 @@ class CycleReportsView(APIView):
             "vulnerabilty_team_lead_email": None,
         }
         cycles = subscription["cycles"]
-        cycles = sorted(cycles, key=lambda cycle: cycle["start_date"])
-        working_cycle_year = cycles[0]["start_date"].year
-        current_quarter = 1
-        # Count the cycle order from the year or try to match up to standard 'quarters'?
-        for cycle in cycles:
-            if cycle["start_date"].year > working_cycle_year:
-                current_quarter = 1
-            cycle["quarter"] = f"{cycle['start_date'].year} - {current_quarter}"
-            current_quarter += 1
+        set_cycle_quarters(cycles)
 
         current_cycle = ""
         for cycle in subscription["cycles"]:

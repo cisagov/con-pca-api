@@ -43,6 +43,7 @@ from reports.utils import (
     append_timeline_moment,
     calc_ratios,
     get_gov_group_stats,
+    get_unique_moments,
     pprintItem,
 )
 
@@ -87,9 +88,12 @@ class SystemReportsView(APIView):
         all_stats = []
 
         for timeline in _timeline_list:
-            for moment in timeline:
-                if not moment["duplicate"]:
-                    append_timeline_moment(moment, timeline_item_summary)
+            # for moment in timeline:
+            #     if not moment["duplicate"]:
+            #         append_timeline_moment(moment, timeline_item_summary)
+            unique_moments = get_unique_moments(timeline)
+            for unique_moment in unique_moments:
+                append_timeline_moment(unique_moment, timeline_item_summary)
             stats, time_aggregate = generate_campaign_statistics(timeline_item_summary)
             all_stats.append(
                 {"campaign_stats": stats, "times": time_aggregate,}
@@ -139,9 +143,8 @@ class SystemReportsView(APIView):
             "click_rate_across_all_customers": consolidated_stats["ratios"][
                 "clicked_ratio"
             ],
-            "average_time_to_click_all_customers": consolidated_stats["clicked"][
-                "average"
-            ],
+            "average_time_to_click_all_customers": consolidated_stats
+            # ["clicked"]["average"],
         }
 
         return Response(context, status=status.HTTP_202_ACCEPTED)
