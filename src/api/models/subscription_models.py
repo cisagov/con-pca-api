@@ -30,7 +30,7 @@ class SubscriptionEmailHistoryModel(Model):
     sent = DateTimeType()
     email_to = EmailType(required=True)
     email_from = StringType()
-    bbc = EmailType(required=True)
+    bcc = EmailType(required=True)
     manual = BooleanType(default=False)
 
 
@@ -244,7 +244,9 @@ class SubscriptionModel(Model):
     archived = BooleanType(default=False)
     manually_stopped = BooleanType(default=False)
     cycles = ListType(ModelType(CycleModel))
-    email_report_history = ListType(ModelType(SubscriptionEmailHistoryModel))
+    email_report_history = ListType(
+        ModelType(SubscriptionEmailHistoryModel), default=[]
+    )
     # db data tracking added below
     created_by = StringType()
     cb_timestamp = DateTimeType()

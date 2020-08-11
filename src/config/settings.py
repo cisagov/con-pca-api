@@ -149,6 +149,10 @@ EMAIL_HOST_USER = os.environ.get("SMTP_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("SMTP_PASS")
 SERVER_EMAIL = os.environ.get("SMTP_FROM")
 
+EXTRA_BCC_EMAILS = os.environ.get("EXTRA_BCC_EMAILS", [])
+if EXTRA_BCC_EMAILS:
+    EXTRA_BCC_EMAILS = EXTRA_BCC_EMAILS.split(",")
+
 if DEBUG == 0:
     # Note: in prod, Port must be 465 to use SSL
     EMAIL_PORT = 465
@@ -209,7 +213,9 @@ AWS_S3_FILE_OVERWRITE = False
 LOCAL_API_KEY = os.environ.get("LOCAL_API_KEY")
 
 # Execute cron job every hour
-CRONJOBS = [("0 * * * *", "tasks.cron.execute_tasks")]
+CRONJOBS = [
+    ("*/5 * * * *", "tasks.cron.execute_tasks", ">> /proc/1/fd/1 2> /proc/1/fd/1")
+]
 CRONTAB_PYTHON_EXECUTABLE = os.environ.get(
     "CRONTAB_PYTHON_EXECUTABLE", "/usr/local/bin/python3"
 )

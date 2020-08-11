@@ -1,7 +1,6 @@
 """Subscription Utils."""
 # Standard Python Libraries
 from datetime import datetime, timedelta
-import logging
 from uuid import uuid4
 
 from django.conf import settings
@@ -10,14 +9,7 @@ from django.conf import settings
 from api.models.dhs_models import DHSContactModel, validate_dhs_contact
 from api.models.subscription_models import SubscriptionModel, validate_subscription
 from api.utils import db_utils as db
-from notifications.views import (
-    SubscriptionNotificationEmailSender,
-    SubscriptionEmailTemplateSender,
-)
-
-from api.utils.template.templates import generate_template_email
-
-logger = logging.getLogger()
+from notifications.views import EmailSender
 
 
 def get_subscription(subscription_uuid: str):
@@ -95,12 +87,12 @@ def get_subscription_status(start_date):
         return "Queued"
 
 
-def get_subscription_cycles(campaigns, start_date, end_date):
+def get_subscription_cycles(campaigns, start_date, end_date, new_uuid):
     """Returns cycle data for a subscription."""
     campaigns_in_cycle = [c["campaign_id"] for c in campaigns]
     return [
         {
-            "cycle_uuid": str(uuid4()),
+            "cycle_uuid": new_uuid,
             "start_date": start_date,
             "end_date": end_date,
             "active": True,
@@ -116,20 +108,6 @@ def get_subscription_cycles(campaigns, start_date, end_date):
     ]
 
 
-def send_start_email_templates(subscription):
-    """Send Start Notification.
-
-    Args:
-        subscription (dict): subscription data
-        start_date (datetime): start_date of subscription
-    """
-    add_email_report_history(subscription, "Templates List")
-    content = generate_template_email(subscription)
-
-    sender = SubscriptionEmailTemplateSender(subscription)
-    sender.send(content)
-
-
 def send_start_notification(subscription):
     """Send Start Notification.
 
@@ -137,35 +115,8 @@ def send_start_notification(subscription):
         subscription (dict): subscription data
         start_date (datetime): start_date of subscription
     """
-    add_email_report_history(subscription, "Cycle Start Notification")
-    sender = SubscriptionNotificationEmailSender(subscription, "subscription_started")
+    sender = EmailSender(subscription, "subscription_started")
     sender.send()
-
-
-def add_email_report_history(subscription, report_type):
-    dhs_contact = db.get_single(
-        subscription.get("dhs_contact_uuid"),
-        "dhs_contact",
-        DHSContactModel,
-        validate_dhs_contact,
-    )
-
-    data = {
-        "report_type": report_type,
-        "sent": datetime.now(),
-        "email_to": subscription.get("primary_contact").get("email"),
-        "email_from": settings.SERVER_EMAIL,
-        "bbc": dhs_contact.get("email") if dhs_contact else None,
-    }
-
-    return db.push_nested_item(
-        uuid=subscription["subscription_uuid"],
-        field="email_report_history",
-        put_data=data,
-        collection="subscription",
-        model=SubscriptionModel,
-        validation_model=validate_subscription,
-    )
 
 
 def send_stop_notification(subscription):
@@ -174,20 +125,21 @@ def send_stop_notification(subscription):
     Args:
         subscription (dict): subscription data
     """
-    sender = SubscriptionNotificationEmailSender(subscription, "subscription_stopped")
+    sender = EmailSender(subscription, "subscription_stopped")
     sender.send()
 
 
-def create_scheduled_email_tasks():
+def create_scheduled_email_tasks(start_date):
     """Create Scheduled Email Tasks.
 
     Returns:
         list: list of tasks and message types
     """
     message_types = {
-        "monthly_report": datetime.utcnow() + timedelta(days=30),
-        "cycle_report": datetime.utcnow() + timedelta(days=90),
-        "yearly_report": datetime.utcnow() + timedelta(days=365),
+        "start_subscription_email": start_date - timedelta(minutes=5),
+        "monthly_report": start_date + timedelta(days=30),
+        "cycle_report": start_date + timedelta(days=90),
+        "yearly_report": start_date + timedelta(days=365),
     }
 
     context = []
@@ -204,8 +156,8 @@ def create_scheduled_email_tasks():
     return context
 
 
-def create_scheduled_cycle_tasks():
-    send_date = datetime.utcnow() + timedelta(days=90)
+def create_scheduled_cycle_tasks(start_date):
+    send_date = start_date + timedelta(days=90)
 
     return {
         "task_uuid": uuid4(),

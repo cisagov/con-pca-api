@@ -16,6 +16,7 @@ from api.views import (
     subscription_views,
     template_views,
     webhook_views,
+    landing_page_views,
 )
 from django.urls import path
 from drf_yasg import openapi
@@ -103,18 +104,18 @@ urlpatterns = [
         name="reports_get_pdf_yearly_api",
     ),
     path(
-        "v1/reports/<subscription_uuid>/email/monthly/",
-        report_views.MonthlyReportsEmailView.as_view(),
+        "v1/reports/<subscription_uuid>/email/monthly/<cycle>/",
+        report_views.monthly_report_email_view,
         name="reports_get_pdf_monthly_api",
     ),
     path(
-        "v1/reports/<subscription_uuid>/email/cycle/",
-        report_views.CycleReportsEmailView.as_view(),
+        "v1/reports/<subscription_uuid>/email/cycle/<cycle>/",
+        report_views.cycle_report_email_view,
         name="reports_get_pdf_cycle_api",
     ),
     path(
-        "v1/reports/<subscription_uuid>/email/yearly/",
-        report_views.YearlyReportsEmailView.as_view(),
+        "v1/reports/<subscription_uuid>/email/yearly/<cycle>/",
+        report_views.yearly_report_email_view,
         name="reports_get_pdf_yearly_api",
     ),
     path(
@@ -197,5 +198,20 @@ urlpatterns = [
         "v1/cycleemailreported/<subscription_uuid>/",
         cycle_views.CycleReportedView.as_view(),
         name="cycle_email_report_api",
+    ),
+    path(
+        "v1/landingpages/",
+        landing_page_views.LandingPagesListView.as_view(),
+        name="landing_page_list_api",
+    ),
+    path(
+        "v1/landingpage/<landing_page_uuid>/",
+        landing_page_views.LandingPageView.as_view(),
+        name="landing_page_get_api",
+    ),
+    path(
+        "v1/landingpage/stop/<landing_page_uuid>/",
+        landing_page_views.LandingPageStopView.as_view(),
+        name="landing_page_stop_api",
     ),
 ]

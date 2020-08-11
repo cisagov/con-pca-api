@@ -60,7 +60,7 @@ Create your .env file
 
 - `make env`
 - **Note:** visit `localhost:3333/settings` to get your
-API key. Save it into your `.env` file
+  API key. Save it into your `.env` file
 
 Build containers
 
@@ -324,36 +324,35 @@ pip install -r test_requirements.txt
 - [black](https://pypi.org/project/black/) - Uniform styling.
 
 - [coverage](https://coverage.readthedocs.io/en/coverage-5.1/) -
-Calculates code coverage from tests.
+  Calculates code coverage from tests.
 
 - [pytest](https://docs.pytest.org/en/latest/) - Easier to use
-testing framework.
+  testing framework.
 
 - [pytest-django](https://pytest-django.readthedocs.io/en/latest/) -
-Library to better integrate pytest with Django
+  Library to better integrate pytest with Django
 
 - [pytest-env](https://github.com/MobileDynasty/pytest-env) - Allows
-environment variables to be put in pytest.ini for loading.
+  environment variables to be put in pytest.ini for loading.
 
 - [pytest-mock](https://github.com/pytest-dev/pytest-mock/) - Mock
-integration with pytest.
+  integration with pytest.
 
 - [pytest-pythonpath](https://pypi.org/project/pytest-pythonpath/) -
-Allows additional python paths to be defined in pytest.ini.
+  Allows additional python paths to be defined in pytest.ini.
 
 - [radon](https://radon.readthedocs.io/en/latest/) - Calculates
-code complexity.
+  code complexity.
 
 ### Setting up VS Code
 
 1. Create and activate virtual environment in VS Code [https://code.visualstudio.com/docs/python/environments](https://code.visualstudio.com/docs/python/environments)
 
-2. Configure pytest in VS Code. [https://code.visualstudio.com/docs/python/testing#_enable-a-test-framework](https://code.visualstudio.com/docs/python/testing#_enable-a-test-framework)
+2. Configure pytest in VS Code. [https://code.visualstudio.com/docs/python/testing#\_enable-a-test-framework](https://code.visualstudio.com/docs/python/testing#_enable-a-test-framework)
 
-3. Discover Tests. [https://code.visualstudio.com/docs/python/testing#_test-discovery](https://code.visualstudio.com/docs/python/testing#_test-discovery)
+3. Discover Tests. [https://code.visualstudio.com/docs/python/testing#\_test-discovery](https://code.visualstudio.com/docs/python/testing#_test-discovery)
 
-4. Run Tests. [https://code.visualstudio.com/docs/python/testing#_run-tests](https://code.visualstudio.com/docs/python/testing#_run-tests)
-
+4. Run Tests. [https://code.visualstudio.com/docs/python/testing#\_run-tests](https://code.visualstudio.com/docs/python/testing#_run-tests)
 
 ### Pytest / Coverage
 

@@ -15,9 +15,9 @@ then
     python manage.py runserver 0.0.0.0:8000
 else
     echo "Setup Cron"
+    echo "$(env ; crontab -l)" | crontab -
     python manage.py crontab add
     service cron start
-    env >> /etc/environment
 
     echo "Serve using WSGI"
     gunicorn --workers=$WORKERS --bind=0.0.0.0:8000 config.wsgi

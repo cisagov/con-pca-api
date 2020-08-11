@@ -20,7 +20,7 @@ class SubscriptionEmailHistorySerializer(serializers.Serializer):
     sent = serializers.DateTimeField()
     email_to = serializers.EmailField()
     email_from = serializers.CharField(max_length=255)
-    bbc = serializers.EmailField()
+    bcc = serializers.EmailField(default=None)
     manual = serializers.BooleanField(default=False)
 
 

@@ -149,7 +149,8 @@ locals {
     "LOCAL_API_KEY" : random_string.local_api_key.result,
     "MONGO_TYPE" : "DOCUMENTDB",
     "REPORTS_ENDPOINT" : "https://${data.aws_lb.public.dns_name}",
-    "BROWSERLESS_ENDPOINT" : "${aws_lb.network.dns_name}:3000"
+    "BROWSERLESS_ENDPOINT" : "${aws_lb.network.dns_name}:3000",
+    "EXTRA_BCC_EMAILS": "william.martin@inl.gov"
   }
 
   secrets = {
