@@ -115,7 +115,9 @@ class CycleReportsView(APIView):
         }
 
         # Get statistics for the specified subscription during the specified cycle
-        subscription_stats = get_subscription_stats_for_cycle(subscription, start_date)
+        subscription_stats = get_subscription_stats_for_cycle(
+            subscription, current_cycle["cycle_uuid"]
+        )
         region_stats = get_related_subscription_stats(subscription, start_date)
         previous_cycle_stats = get_cycles_breakdown(subscription["cycles"])
 

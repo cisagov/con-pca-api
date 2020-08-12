@@ -129,7 +129,8 @@ class MonthlyReportsView(APIView):
             else round(
                 float(reported or 0) / float(1 if clicked is None else clicked), 2
             ),
-            "monthly_report_target_date": target_report_date,
+            "start_date": active_cycle["start_date"],
+            "end_date": active_cycle["end_date"],
             "target_count": target_count,
         }
 
