@@ -18,7 +18,13 @@ from api.serializers.subscriptions_serializers import (
     SubscriptionPostResponseSerializer,
     SubscriptionPostSerializer,
 )
-from api.utils.db_utils import delete_single, get_list, get_single, update_single
+from api.utils.db_utils import (
+    delete_single,
+    get_list,
+    get_single,
+    update_single,
+    update_email_template_cache,
+)
 from api.utils.subscription.actions import start_subscription, stop_subscription
 from reports.utils import update_phish_results
 from drf_yasg import openapi
@@ -305,3 +311,33 @@ class SubscriptionRestartView(APIView):
         # Return updated subscription
         serializer = SubscriptionPatchResponseSerializer(created_response)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+
+
+class SubscriptionTargetCacheView(APIView):
+    """
+    """
+
+    @swagger_auto_schema(
+        request_body=SubscriptionPostSerializer,
+        responses={"200": SubscriptionGetSerializer, "400": "Bad Request"},
+        security=[],
+        operation_id="update the subscription target cache",
+        operation_description="zThis handles the API for the update target cache",
+    )
+    def post(self, request, subscription_uuid):
+        """
+        If the campaign is currently running then save the target cache but leave the
+        template_target alone.
+        else
+            copy the target_cache
+        """
+        logger.debug(
+            "update subscription_uuid target cache {}".format(subscription_uuid)
+        )
+        target_update_data = request.data.copy()
+        try:
+            update_email_template_cache(subscription_uuid, target_update_data)
+        except ValueError:
+            return Response(ValueError, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response("OK", status=status.HTTP_202_ACCEPTED)

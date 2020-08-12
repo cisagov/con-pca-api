@@ -6,6 +6,8 @@ import logging
 import uuid
 
 # Third-Party Libraries
+import pymongo
+
 # Models
 from api.models.dhs_models import DHSContactModel
 from api.models.subscription_models import SubscriptionModel
@@ -24,6 +26,19 @@ def __db_service(collection_name, model, validate_model):
     This is a method for handling db connection in api.
     Might refactor this into database lib.
     """
+    mongo_uri = get_mongo_uri()
+
+    service = Service(
+        mongo_uri,
+        collection_name=collection_name,
+        model=model,
+        model_validation=validate_model,
+    )
+
+    return service
+
+
+def get_mongo_uri():
     if os.environ.get("MONGO_TYPE", "MONGO") == "DOCUMENTDB":
         mongo_uri = "mongodb://{}:{}@{}:{}/?ssl=true&ssl_ca_certs=/app/rds-combined-ca-bundle.pem&retryWrites=false".format(
             settings.DB_CONFIG["DB_USER"],
@@ -38,15 +53,7 @@ def __db_service(collection_name, model, validate_model):
             settings.DB_CONFIG["DB_HOST"],
             settings.DB_CONFIG["DB_PORT"],
         )
-
-    service = Service(
-        mongo_uri,
-        collection_name=collection_name,
-        model=model,
-        model_validation=validate_model,
-    )
-
-    return service
+    return mongo_uri
 
 
 def __get_service_loop(collection, model, validation_model):
@@ -262,3 +269,13 @@ def exists(parameters, collection, model, validation_model):
     if document_list:
         return True
     return False
+
+
+def update_email_template_cache(subscription_uuid, template_cache_value):
+    db_url = get_mongo_uri()
+    client = pymongo.MongoClient(db_url)
+    db = client["pca_data_dev"]
+    collection = db["subscription"]
+    sub_query = {"subscription_uuid": subscription_uuid}
+    newvalues = {"$set": {"target_email_list_cached_copy": template_cache_value}}
+    collection.update_one(sub_query, newvalues, upsert=True)

@@ -253,7 +253,7 @@ class CampaignManager:
                     break
                 else:
                     position += 1
-                if position == len(group_names) - 1:
+                if position >= len(group_names) - 1:
                     group_name_not_found = False
 
         target_group = Group(name=group_name, targets=users)
