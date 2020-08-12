@@ -9,6 +9,7 @@ from api.manager import CampaignManager
 from api.serializers import campaign_serializers
 from api.utils.generic import format_ztime
 from api.utils.subscription.targets import assign_targets
+from django.conf import settings
 
 logger = logging.getLogger()
 
@@ -179,12 +180,12 @@ def __create_campaign(
 
     campaign_name = f"{base_name}.{template['name']}.{campaign_start.strftime('%Y-%m-%d')}.{campaign_end.strftime('%Y-%m-%d')}"
 
-    sending_profile_name = subscription.get("sending_profile_name")
+    sending_profile = __create_campaign_smtp(campaign_name, template["from_address"])
 
     campaign = campaign_manager.create(
         "campaign",
         campaign_name=campaign_name,
-        smtp_name=sending_profile_name,
+        smtp_name=sending_profile.name,
         page_name=landing_page,
         user_group=target_group,
         email_template=created_template,
@@ -228,3 +229,28 @@ def __create_campaign(
         "target_email_list": targets,
         "smtp": campaign_serializers.CampaignSmtpSerializer(campaign.smtp).data,
     }
+
+
+def __create_campaign_smtp(campaign_name, template_from_address):
+    """[summary]
+
+    Args:
+        campaign_name (String): Generated name for campaign in gophish
+        template_from_address (String): Tempate From address
+
+    Returns:
+        SMTP[object]: returning newly created sending profile from gophish
+    """
+    campaign_sending_profile = campaign_manager.create(
+        "sending_profile",
+        name=campaign_name,
+        username=settings.EMAIL_HOST_USER,
+        password=settings.EMAIL_HOST_PASSWORD,
+        host=settings.EMAIL_HOST,
+        interface_type="SMTP",
+        from_address=template_from_address,
+        ignore_cert_errors=True,
+        headers=[],
+    )
+
+    return campaign_sending_profile
