@@ -141,6 +141,46 @@ class PhishingResultsModel(Model):
     reported = IntType()
 
 
+class SendingHeaderModel(Model):
+    """
+    This is the Sending Profile Header Model.
+
+    This hold the smtp profile headers
+
+    key                 : string
+    value               : string
+    """
+
+    key = StringType()
+    value = StringType()
+
+
+class GoPhishSmtpModel(Model):
+    """
+    This is the GoPhish SMTP Model.
+
+    This hold the smtp profile for each campaign.
+
+    id                 : int64
+    name               : string
+    host               : string
+    interface_type     : string
+    from_address       : string
+    ignore_cert_errors : boolean (default:false)
+    modified_date      : string(datetime)
+    headers            : array({key: string, value: string}) (optional)
+    """
+
+    id = IntType()
+    name = StringType()
+    host = StringType()
+    interface_type = StringType()
+    from_address = StringType()
+    ignore_cert_errors = BooleanType()
+    modified_date = DateTimeType()
+    headers = ListType(ModelType(SendingHeaderModel), default=[])
+
+
 class GoPhishCampaignsModel(Model):
     """
     This is the GoPhish Campaigns Model.
@@ -158,6 +198,7 @@ class GoPhishCampaignsModel(Model):
     results             : []Result
     groups              : []Group
     timeline            : []Event
+    smtp                : STMP
     """
 
     campaign_id = IntType()
@@ -178,6 +219,7 @@ class GoPhishCampaignsModel(Model):
     groups = ListType(ModelType(GoPhishGroupModel))
     timeline = ListType(ModelType(GoPhishTimelineModel))
     target_email_list = ListType(ModelType(SubscriptionTargetModel))
+    smtp = ModelType(GoPhishSmtpModel)
 
 
 class CycleModel(Model):
