@@ -13,6 +13,8 @@ from api.models.subscription_models import SubscriptionModel, validate_subscript
 from api.models.customer_models import CustomerModel, validate_customer
 from api.models.dhs_models import DHSContactModel, validate_dhs_contact
 from api.utils.db_utils import get_list, get_single
+from django.utils import timezone
+import pytz
 
 from rest_framework import status
 from rest_framework.response import Response
@@ -99,6 +101,17 @@ class MonthlyReportsView(APIView):
             low_mid_high_bar_data if low_mid_high_bar_data is not None else zerodefault
         )
 
+        display_end_date = active_cycle["end_date"]
+        date_now = datetime.now()
+        if not timezone.is_aware(date_now):
+            utc = pytz.UTC
+            date_now = utc.localize(date_now)
+        if not timezone.is_aware(display_end_date):
+            utc = pytz.UTC
+            display_end_date = utc.localize(display_end_date)
+        if display_end_date > date_now:
+            display_end_date = date_now
+
         metrics = {
             "total_users_targeted": total,
             "number_of_email_sent_overall": sent,
@@ -130,7 +143,7 @@ class MonthlyReportsView(APIView):
                 float(reported or 0) / float(1 if clicked is None else clicked), 2
             ),
             "start_date": active_cycle["start_date"],
-            "end_date": active_cycle["end_date"],
+            "end_date": display_end_date,
             "target_count": target_count,
         }
 
