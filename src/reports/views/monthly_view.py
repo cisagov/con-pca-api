@@ -62,6 +62,17 @@ class MonthlyReportsView(APIView):
         subscription_stats = get_subscription_stats_for_month(
             subscription, target_report_date
         )
+
+        active_cycle = get_cycle_by_date_in_range(subscription, target_report_date)
+        active_campaigns = []
+        for campaign in subscription["gophish_campaign_list"]:
+            if campaign["campaign_id"] in active_cycle["campaigns_in_cycle"]:
+                active_campaigns.append(campaign)
+
+        target_count = 0
+        for campaign in active_campaigns:
+            target_count += len(campaign["target_email_list"])
+
         # subscription_stats = get_subscription_stats_for_cycle(
         #     subscription, start_date
         # )
@@ -119,6 +130,7 @@ class MonthlyReportsView(APIView):
                 float(reported or 0) / float(1 if clicked is None else clicked), 2
             ),
             "monthly_report_target_date": target_report_date,
+            "target_count": target_count,
         }
 
         return metrics, subscription_stats
@@ -143,12 +155,12 @@ class MonthlyReportsView(APIView):
         )
 
         campaigns = subscription.get("gophish_campaign_list")
-        summary = [
-            campaign_manager.get("summary", campaign_id=campaign.get("campaign_id"))
-            for campaign in campaigns
-        ]
+        # summary = [
+        #     campaign_manager.get("summary", campaign_id=campaign.get("campaign_id"))
+        #     for campaign in campaigns
+        # ]
 
-        target_count = sum([targets.get("stats").get("total") for targets in summary])
+        # target_count = campaign_manager.get("summary", campaign_id=campaign.get("campaign_id"))
 
         metrics, subscription_stats = self.getMonthlyStats(subscription)
 
@@ -188,7 +200,7 @@ class MonthlyReportsView(APIView):
             # Subscription info
             "start_date": subscription.get("start_date"),
             "end_date": subscription.get("end_date"),
-            "target_count": target_count,
+            "target_count": metrics["target_count"],
             "metrics": metrics,
             "subscription_stats": subscription_stats,
         }

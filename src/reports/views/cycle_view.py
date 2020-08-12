@@ -98,10 +98,11 @@ class CycleReportsView(APIView):
         cycles = subscription["cycles"]
         set_cycle_quarters(cycles)
 
-        current_cycle = ""
+        current_cycle = None
         for cycle in subscription["cycles"]:
             if cycle["start_date"] == start_date:
                 current_cycle = cycle
+                break
             else:
                 current_cycle = get_closest_cycle_within_day_range(
                     subscription, start_date
@@ -320,8 +321,10 @@ class CycleReportsView(APIView):
 class CycleStatusView(APIView):
     def get(self, request, **kwargs):
 
-        start_date_param = self.kwargs["start_date"]
-        start_date = datetime.strptime(start_date_param, "%Y-%m-%dT%H:%M:%S.%f%z")
+        # start_date_param = self.kwargs["start_date"]
+        # start_date = datetime.strptime(start_date_param, "%Y-%m-%dT%H:%M:%S.%f%z")
+
+        cycle_uuid = self.kwargs["cycle_uuid"]
 
         # Get targeted subscription and associated customer data
         subscription_uuid = self.kwargs["subscription_uuid"]
@@ -330,7 +333,7 @@ class CycleStatusView(APIView):
         )
 
         # Get statistics for the specified subscription during the specified cycle
-        subscription_stats = get_subscription_stats_for_cycle(subscription, start_date)
+        subscription_stats = get_subscription_stats_for_cycle(subscription, cycle_uuid)
         get_template_details(subscription_stats["campaign_results"])
 
         context = {

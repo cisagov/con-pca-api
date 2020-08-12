@@ -81,7 +81,7 @@ def calculate_subscription_start_end_date(start_date):
 
 def get_subscription_status(start_date):
     """Returns status for subscription based upon start date."""
-    if start_date <= datetime.now():
+    if start_date <= (datetime.now() + timedelta(minutes=1)):
         return "In Progress"
     else:
         return "Queued"
