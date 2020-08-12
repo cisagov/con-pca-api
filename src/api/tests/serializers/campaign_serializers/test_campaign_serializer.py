@@ -18,6 +18,7 @@ def test_creation():
         "results": [],
         "groups": [],
         "timeline": [],
+        "smtp": None,
     }
     serializer = CampaignSerializer(data=data)
     assert isinstance(serializer, CampaignSerializer)
@@ -37,6 +38,7 @@ def test_serializer_missing_name_field():
         "results": [],
         "groups": [],
         "timeline": [],
+        "smtp": None,
     }
     serializer = CampaignSerializer(data=data)
     assert serializer.is_valid() is False
