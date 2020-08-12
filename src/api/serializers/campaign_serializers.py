@@ -166,4 +166,4 @@ class CampaignSerializer(serializers.Serializer):
     results = CampaignResultSerializer(many=True)
     groups = CampaignGroupSerializer(many=True)
     timeline = CampaignEventSerializer(many=True)
-    smtp = CampaignSmtpSerializer()
+    smtp = CampaignSmtpSerializer(required=False)
