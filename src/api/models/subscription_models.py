@@ -269,6 +269,7 @@ class SubscriptionModel(Model):
     tasks = ListType(ModelType(ScheduledTaskModel))
     name = StringType()
     url = StringType()
+    target_domain = StringType()
     keywords = StringType()
     start_date = DateTimeType()
     # commented out fields for now are unused for the time
