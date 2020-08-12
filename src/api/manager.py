@@ -238,23 +238,6 @@ class CampaignManager:
             )
             for target in target_list
         ]
-        group_names = self.gp_api.groups.get()
-        group_name_not_found = True
-        original_group_name = group_name
-        incrementer = 0
-        position = 0
-        while group_name_not_found:
-            for group in group_names:
-                if group.name == group_name:
-                    group_name = f"{original_group_name}.{incrementer}"
-                    incrementer += 1
-                    group_name_not_found = True
-                    position = 0
-                    break
-                else:
-                    position += 1
-                if position == len(group_names) - 1:
-                    group_name_not_found = False
 
         target_group = Group(name=group_name, targets=users)
 
