@@ -69,12 +69,19 @@ def get_cycle_by_date_in_range(subscription, date):
     """
     Get the cycle that contains the given date
     """
+    utc = pytz.UTC
     if not timezone.is_aware(date):
-        utc = pytz.UTC
         date = utc.localize(date)
 
     for cycle in subscription["cycles"]:
-        if cycle["start_date"] <= date and cycle["end_date"] > date:
+        start_date = cycle["start_date"]
+        end_date = cycle["end_date"]
+        if not timezone.is_aware(start_date):
+            start_date = utc.localize(start_date)
+        if not timezone.is_aware(end_date):
+            end_date = utc.localize(end_date)
+
+        if start_date < date and end_date >= date:
             return cycle
     return subscription["cycles"][0]
 
@@ -331,9 +338,9 @@ def get_subscription_stats_for_month(subscription, end_date):
         for unique_moment in unique_moments:
             append_timeline_moment(unique_moment, campaign_timeline_summary)
         # filter the timeline moments to only those within the given date range
-        filter_campaign_timeline_by_date_range(
-            campaign_timeline_summary, start_date, active_cycle["end_date"]
-        )
+        # filter_campaign_timeline_by_date_range(
+        #     campaign_timeline_summary, start_date, active_cycle["end_date"]
+        # )
         # Get stats and aggregate of all time differences (all times needed for stats like median when consolidated)
         stats, time_aggregate = generate_campaign_statistics(
             campaign_timeline_summary, active_cycle["override_total_reported"]
@@ -818,8 +825,8 @@ def generate_region_stats(subscription_list, cycle_date=None):
             cycle_to_add = get_closest_cycle_within_day_range(subscription, cycle_date)
             if cycle_to_add:
                 target_cycles.append(cycle_to_add)
-        else:
-            target_cycles = subscription["cycles"]
+        # else:
+        #     target_cycles = subscription["cycles"]
         for target_cycle in target_cycles:
             cycle_count += 1
             campaign_count += len(target_cycle["campaigns_in_cycle"])
