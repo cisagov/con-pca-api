@@ -97,10 +97,11 @@ class CycleReportsView(APIView):
         cycles = subscription["cycles"]
         set_cycle_quarters(cycles)
 
-        current_cycle = ""
+        current_cycle = None
         for cycle in subscription["cycles"]:
             if cycle["start_date"] == start_date:
                 current_cycle = cycle
+                break
             else:
                 current_cycle = get_closest_cycle_within_day_range(
                     subscription, start_date

@@ -81,15 +81,16 @@ class YearlyReportsView(APIView):
             validate_dhs_contact,
         )
         campaigns = subscription.get("gophish_campaign_list")
-        summary = [
-            campaign_manager.get("summary", campaign_id=campaign.get("campaign_id"))
-            for campaign in campaigns
-        ]
+        # summary = [
+        #     campaign_manager.get("summary", campaign_id=campaign.get("campaign_id"))
+        #     for campaign in campaigns
+        # ]
 
         cycles = subscription["cycles"]
         set_cycle_quarters(cycles)
 
-        target_count = sum([targets.get("stats").get("total") for targets in summary])
+        # target_count = sum([targets.get("stats").get("total") for targets in summary])
+        target_count = len(subscription["target_email_list"])
 
         if not start_date:
             yearly_start_date = datetime.now()

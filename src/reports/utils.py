@@ -40,6 +40,7 @@ def get_closest_cycle_within_day_range(subscription, start_date, day_range=90):
     """
     # set initial closest value to the difference between the first cycle and supplied start date
     maximum_date_differnce = timedelta(days=day_range)
+    closest_cycle = None
     closest_val = abs(start_date - subscription["cycles"][0]["start_date"])
     # If the initial cycle is within the maximum_data_difference, set it as the cycle before checking others
     if closest_val < maximum_date_differnce:
@@ -53,7 +54,8 @@ def get_closest_cycle_within_day_range(subscription, start_date, day_range=90):
         ):
             closest_cycle = cycle
             closest_val = cycle_start_difference
-
+    if closest_cycle == None:
+        return None
     if closest_cycle:
         return closest_cycle
     else:
@@ -330,7 +332,7 @@ def get_subscription_stats_for_month(subscription, end_date):
             append_timeline_moment(unique_moment, campaign_timeline_summary)
         # filter the timeline moments to only those within the given date range
         filter_campaign_timeline_by_date_range(
-            campaign_timeline_summary, start_date, end_date
+            campaign_timeline_summary, start_date, active_cycle["end_date"]
         )
         # Get stats and aggregate of all time differences (all times needed for stats like median when consolidated)
         stats, time_aggregate = generate_campaign_statistics(
@@ -813,9 +815,9 @@ def generate_region_stats(subscription_list, cycle_date=None):
     for subscription in subscription_list:
         target_cycles = []
         if cycle_date:
-            target_cycles.append(
-                get_closest_cycle_within_day_range(subscription, cycle_date)
-            )
+            cycle_to_add = get_closest_cycle_within_day_range(subscription, cycle_date)
+            if cycle_to_add:
+                target_cycles.append(cycle_to_add)
         else:
             target_cycles = subscription["cycles"]
         for target_cycle in target_cycles:
