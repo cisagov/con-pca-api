@@ -9,6 +9,9 @@ from api.manager import CampaignManager
 from api.serializers import campaign_serializers
 from api.utils.generic import format_ztime
 from api.utils.subscription.targets import assign_targets
+from api.utils.db_utils import get_single
+from api.models.dhs_models import DHSContactModel, validate_dhs_contact
+from api.serializers.dhs_serializers import DHSContactGetSerializer
 
 logger = logging.getLogger()
 
@@ -159,6 +162,8 @@ def __create_campaign(
     """
     base_name = f"{subscription['name']}.{deception_level}.{index}"
 
+    dhs_contact_uuid = subscription["dhs_contact_uuid"]
+
     created_template = campaign_manager.generate_email_template(
         name=f"{base_name}.{template['name']}",
         template=template["data"],
@@ -191,6 +196,7 @@ def __create_campaign(
         template["from_address"],
         cycle_uuid,
         subscription["sending_profile_name"],
+        dhs_contact_uuid,
     )
 
     campaign = campaign_manager.create(
@@ -243,7 +249,11 @@ def __create_campaign(
 
 
 def __create_campaign_smtp(
-    campaign_name, template_from_address, cycle_uuid, subscription_sending_profile_name
+    campaign_name,
+    template_from_address,
+    cycle_uuid,
+    subscription_sending_profile_name,
+    dhs_contact_uuid,
 ):
     """[summary]
 
@@ -262,7 +272,7 @@ def __create_campaign_smtp(
         None,
     )
 
-    __set_smtp_headers(sending_profile, cycle_uuid)
+    __set_smtp_headers(sending_profile, cycle_uuid, dhs_contact_uuid)
 
     sp_from = sending_profile.from_address.split("<")[-1].replace(">", "")
     from_address = f"{template_from_address.split('<')[0]} <{sp_from}>"
@@ -280,11 +290,30 @@ def __create_campaign_smtp(
     )
 
 
-def __set_smtp_headers(sending_profile, cycle_uuid):
+def __set_smtp_headers(sending_profile, cycle_uuid, dhs_contact_uuid):
+    """Set SMTP headers.
+
+    This will set up headers: X-Gophish-Contact Header and  DHS-PHISH Header.
+
+    Args:
+        sending_profile (object): SMTP object
+        cycle_uuid (string): Cycle uuid
+        dhs_contact_uuid (string): dhs uuid
+    """
+    # Create X-Gophish-Contact Header
+    dhs_contact = get_single(
+        dhs_contact_uuid, "dhs_contact", DHSContactModel, validate_dhs_contact
+    )
+    dhs_contact_data = DHSContactGetSerializer(dhs_contact).data
+    gophish_dhs_contact_header = {
+        "key": "X-Gophish-Contact",
+        "value": dhs_contact_data["email"],
+    }
+    # Set DHS-PHISH Header
     new_header = {"key": "DHS-PHISH", "value": cycle_uuid}
 
     if not sending_profile.headers:
-        sending_profile.headers = [new_header]
+        sending_profile.headers = [new_header, gophish_dhs_contact_header]
         return
 
     # check if header exists
@@ -293,8 +322,21 @@ def __set_smtp_headers(sending_profile, cycle_uuid):
     if not exists:
         sending_profile.headers.append(new_header)
 
+    sending_profile.headers.append(gophish_dhs_contact_header)
+
 
 def __check_dhs_phish_header(sending_profile, cycle_uuid):
+    """Check DHS Phish Header
+
+    Check if there is already a dhs header and update if one is found.
+
+    Args:
+        sending_profile (object): SMTP object
+        cycle_uuid (string): cycle_uuid
+
+    Returns:
+        bool: if header exists and updated
+    """
     for header in sending_profile.headers:
         if header["key"] == "DHS-PHISH":
             header["value"] = cycle_uuid
