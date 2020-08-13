@@ -109,6 +109,44 @@ class PhishingResultsSerializer(serializers.Serializer):
     reported = serializers.IntegerField(default=0)
 
 
+class SendingHeaderSerializer(serializers.Serializer):
+    """
+    This is the Sending Profile Header Model.
+
+    This hold the smtp profile headers
+    key                 : string
+    value               : string
+    """
+
+    key = serializers.CharField(max_length=255)
+    value = serializers.CharField(max_length=255)
+
+
+class GoPhishSmtpSerializer(serializers.Serializer):
+    """
+    This is the GoPhish SMTP Serializer.
+
+    This hold the smtp profile info for each campaign.
+    id                 : int64
+    name               : string
+    host               : string
+    interface_type     : string
+    from_address       : string
+    ignore_cert_errors : boolean (default:false)
+    modified_date      : string(datetime)
+    headers            : array({key: string, value: string}) (optional)
+    """
+
+    id = serializers.IntegerField(default=0)
+    name = serializers.CharField(max_length=255)
+    host = serializers.CharField(max_length=255)
+    interface_type = serializers.CharField(max_length=255)
+    from_address = serializers.CharField(max_length=255)
+    ignore_cert_errors = serializers.BooleanField()
+    modified_date = serializers.DateTimeField()
+    headers = SendingHeaderSerializer(many=True, required=False)
+
+
 class GoPhishCampaignsSerializer(serializers.Serializer):
     """
     This is the GoPhishCampaigns Serializer.
@@ -133,6 +171,7 @@ class GoPhishCampaignsSerializer(serializers.Serializer):
     groups = GoPhishGroupSerializer(many=True)
     timeline = GoPhishTimelineSerializer(many=True)
     target_email_list = SubscriptionTargetSerializer(many=True, required=False)
+    smtp = GoPhishSmtpSerializer(required=False)
 
 
 class CycleSerializer(serializers.Serializer):
@@ -187,6 +226,7 @@ class SubscriptionGetSerializer(serializers.Serializer):
     customer_uuid = serializers.UUIDField()
     name = serializers.CharField(required=True, max_length=100)
     url = serializers.CharField(required=True, max_length=100)
+    target_domain = serializers.CharField(required=False)
     keywords = serializers.CharField(max_length=100)
     start_date = serializers.DateTimeField()
     end_date = serializers.DateTimeField(required=False)
@@ -261,6 +301,7 @@ class SubscriptionPatchSerializer(serializers.Serializer):
 
     customer_uuid = serializers.UUIDField(required=False)
     name = serializers.CharField(required=False, max_length=100)
+    target_domain = serializers.CharField(required=False)
     url = serializers.CharField(required=False, max_length=100)
     keywords = serializers.CharField(required=False, max_length=100)
     start_date = serializers.DateTimeField(required=False)
@@ -294,6 +335,7 @@ class SubscriptionPatchResponseSerializer(serializers.Serializer):
     customer_uuid = serializers.UUIDField()
     name = serializers.CharField(required=True, max_length=100)
     url = serializers.CharField(required=False, max_length=100)
+    target_domain = serializers.CharField(required=False)
     keywords = serializers.CharField(max_length=100)
     start_date = serializers.DateTimeField()
     end_date = serializers.DateTimeField()
@@ -335,6 +377,7 @@ class SubscriptionQuerySerializer(serializers.Serializer):
     customer_uuid = serializers.UUIDField()
     name = serializers.CharField(required=True, max_length=100)
     url = serializers.CharField(required=True, max_length=100)
+    target_domain = serializers.CharField(required=False)
     keywords = serializers.CharField(max_length=100)
     start_date = serializers.DateTimeField()
     end_date = serializers.DateTimeField(required=False)

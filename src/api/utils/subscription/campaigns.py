@@ -9,13 +9,16 @@ from api.manager import CampaignManager
 from api.serializers import campaign_serializers
 from api.utils.generic import format_ztime
 from api.utils.subscription.targets import assign_targets
+from api.utils.db_utils import get_single
+from api.models.dhs_models import DHSContactModel, validate_dhs_contact
+from api.serializers.dhs_serializers import DHSContactGetSerializer
 
 logger = logging.getLogger()
 
 campaign_manager = CampaignManager()
 
 
-def generate_campaigns(subscription, landing_page, sub_levels):
+def generate_campaigns(subscription, landing_page, sub_levels, cycle_uuid):
     """Generate_campaigns.
 
     Args:
@@ -31,13 +34,13 @@ def generate_campaigns(subscription, landing_page, sub_levels):
         # Assign targets to templates in each group
         sub_levels[k] = assign_targets(sub_levels[k])
         gophish_campaigns.extend(
-            create_campaign(subscription, sub_levels[k], landing_page)
+            create_campaign(subscription, sub_levels[k], landing_page, cycle_uuid)
         )
 
     return gophish_campaigns
 
 
-def create_campaign(subscription, sub_level, landing_page):
+def create_campaign(subscription, sub_level, landing_page, cycle_uuid):
     """Create campaign.
 
     Args:
@@ -94,6 +97,7 @@ def create_campaign(subscription, sub_level, landing_page):
                 start_date=sub_level["start_date"],
                 deception_level=sub_level["deception_level"],
                 index=index,
+                cycle_uuid=cycle_uuid,
             )
         )
 
@@ -132,6 +136,11 @@ def stop_campaign(campaign):
     except Exception as e:
         logging.exception(e)
 
+    try:
+        campaign_manager.delete("sending_profile", smtp_id=campaign["smtp"]["id"])
+    except Exception as e:
+        logging.exception(e)
+
     return campaign
 
 
@@ -144,6 +153,7 @@ def __create_campaign(
     start_date,
     deception_level,
     index,
+    cycle_uuid,
 ):
     """
     Create and Save Campaigns.
@@ -151,6 +161,8 @@ def __create_campaign(
     This method handles the creation of each campain with given template, target group, and data.
     """
     base_name = f"{subscription['name']}.{deception_level}.{index}"
+
+    dhs_contact_uuid = subscription["dhs_contact_uuid"]
 
     created_template = campaign_manager.generate_email_template(
         name=f"{base_name}.{template['name']}",
@@ -179,12 +191,18 @@ def __create_campaign(
 
     campaign_name = f"{base_name}.{template['name']}.{campaign_start.strftime('%Y-%m-%d')}.{campaign_end.strftime('%Y-%m-%d')}"
 
-    sending_profile_name = subscription.get("sending_profile_name")
+    sending_profile = __create_campaign_smtp(
+        campaign_name,
+        template["from_address"],
+        cycle_uuid,
+        subscription["sending_profile_name"],
+        dhs_contact_uuid,
+    )
 
     campaign = campaign_manager.create(
         "campaign",
         campaign_name=campaign_name,
-        smtp_name=sending_profile_name,
+        smtp_name=sending_profile.name,
         page_name=landing_page,
         user_group=target_group,
         email_template=created_template,
@@ -226,4 +244,101 @@ def __create_campaign(
             }
         ],
         "target_email_list": targets,
+        "smtp": campaign_serializers.CampaignSmtpSerializer(campaign.smtp).data,
     }
+
+
+def __create_campaign_smtp(
+    campaign_name,
+    template_from_address,
+    cycle_uuid,
+    subscription_sending_profile_name,
+    dhs_contact_uuid,
+):
+    """[summary]
+
+    Args:
+        campaign_name (String): Generated name for campaign in gophish
+        template_from_address (String): Tempate From address
+
+    Returns:
+        SMTP[object]: returning newly created sending profile from gophish
+    """
+    sending_profiles = campaign_manager.get("sending_profile")
+    sending_profile = next(
+        iter(
+            [p for p in sending_profiles if p.name == subscription_sending_profile_name]
+        ),
+        None,
+    )
+
+    __set_smtp_headers(sending_profile, cycle_uuid, dhs_contact_uuid)
+
+    sp_from = sending_profile.from_address.split("<")[-1].replace(">", "")
+    from_address = f"{template_from_address.split('<')[0]} <{sp_from}>"
+
+    return campaign_manager.create(
+        "sending_profile",
+        name=campaign_name,
+        username=sending_profile.username,
+        password=sending_profile.password,
+        host=sending_profile.host,
+        interface_type=sending_profile.interface_type,
+        from_address=from_address,
+        ignore_cert_errors=sending_profile.ignore_cert_errors,
+        headers=sending_profile.headers,
+    )
+
+
+def __set_smtp_headers(sending_profile, cycle_uuid, dhs_contact_uuid):
+    """Set SMTP headers.
+
+    This will set up headers: X-Gophish-Contact Header and  DHS-PHISH Header.
+
+    Args:
+        sending_profile (object): SMTP object
+        cycle_uuid (string): Cycle uuid
+        dhs_contact_uuid (string): dhs uuid
+    """
+    # Create X-Gophish-Contact Header
+    dhs_contact = get_single(
+        dhs_contact_uuid, "dhs_contact", DHSContactModel, validate_dhs_contact
+    )
+    dhs_contact_data = DHSContactGetSerializer(dhs_contact).data
+    gophish_dhs_contact_header = {
+        "key": "X-Gophish-Contact",
+        "value": dhs_contact_data["email"],
+    }
+    # Set DHS-PHISH Header
+    new_header = {"key": "DHS-PHISH", "value": cycle_uuid}
+
+    if not sending_profile.headers:
+        sending_profile.headers = [new_header, gophish_dhs_contact_header]
+        return
+
+    # check if header exists
+    exists = __check_dhs_phish_header(sending_profile, new_header["value"])
+
+    if not exists:
+        sending_profile.headers.append(new_header)
+
+    sending_profile.headers.append(gophish_dhs_contact_header)
+
+
+def __check_dhs_phish_header(sending_profile, cycle_uuid):
+    """Check DHS Phish Header
+
+    Check if there is already a dhs header and update if one is found.
+
+    Args:
+        sending_profile (object): SMTP object
+        cycle_uuid (string): cycle_uuid
+
+    Returns:
+        bool: if header exists and updated
+    """
+    for header in sending_profile.headers:
+        if header["key"] == "DHS-PHISH":
+            header["value"] = cycle_uuid
+            return True
+    return False

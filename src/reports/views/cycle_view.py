@@ -12,7 +12,12 @@ from api.models.customer_models import CustomerModel, validate_customer
 from api.models.subscription_models import SubscriptionModel, validate_subscription
 from api.models.customer_models import CustomerModel, validate_customer
 from api.models.dhs_models import DHSContactModel, validate_dhs_contact
+from api.models.recommendations_models import (
+    RecommendationsModel,
+    validate_recommendations,
+)
 from api.utils.db_utils import get_list, get_single
+from reports.utils import get_relevant_recommendations
 
 from rest_framework import status
 from rest_framework.response import Response
@@ -114,7 +119,9 @@ class CycleReportsView(APIView):
         }
 
         # Get statistics for the specified subscription during the specified cycle
-        subscription_stats = get_subscription_stats_for_cycle(subscription, start_date)
+        subscription_stats = get_subscription_stats_for_cycle(
+            subscription, current_cycle["cycle_uuid"]
+        )
         region_stats = get_related_subscription_stats(subscription, start_date)
         previous_cycle_stats = get_cycles_breakdown(subscription["cycles"])
 
@@ -291,6 +298,17 @@ class CycleReportsView(APIView):
             ]
         )
 
+        # Get recommendations for campaign
+        recommendation_uuids = get_relevant_recommendations(subscription_stats)
+
+        _recomendations = get_list(
+            None, "recommendations", RecommendationsModel, validate_recommendations,
+        )
+        recomendations = []
+        for rec in _recomendations:
+            if rec["recommendations_uuid"] in recommendation_uuids:
+                recomendations.append(rec)
+
         context = {}
         context["dhs_contact_name"] = dhs_contact_name
         context["subscription_uuid"] = subscription_uuid
@@ -309,6 +327,7 @@ class CycleReportsView(APIView):
         context["subscription_stats"] = subscription_stats
         context["click_time_vs_report_time"] = click_time_vs_report_time
         context["templates_by_group"] = templates_by_group
+        context["recommendations"] = recomendations
 
         return Response(context, status=status.HTTP_202_ACCEPTED)
 

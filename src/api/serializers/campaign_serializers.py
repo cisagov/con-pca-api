@@ -94,6 +94,45 @@ class CampaignEventSerializer(serializers.Serializer):
     details = serializers.CharField()
 
 
+class CampaignSendingHeaderSerializer(serializers.Serializer):
+    """
+    This is the Sending Profile Header Model.
+
+    This hold the smtp profile headers
+    key                 : string
+    value               : string
+    """
+
+    key = serializers.CharField(max_length=255)
+    value = serializers.CharField(max_length=255)
+
+
+class CampaignSmtpSerializer(serializers.Serializer):
+    """
+    Campaign SMTP Serializer.
+
+    This is the data returned from Gophish's Campaigns API
+
+    id                 : int64
+    name               : string
+    host               : string
+    interface_type     : string
+    from_address       : string
+    ignore_cert_errors : boolean (default:false)
+    modified_date      : string(datetime)
+    headers            : array({key: string, value: string}) (optional)
+    """
+
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(max_length=500)
+    host = serializers.CharField(max_length=255)
+    interface_type = serializers.CharField(max_length=255)
+    from_address = serializers.CharField(max_length=255)
+    ignore_cert_errors = serializers.BooleanField()
+    modified_date = serializers.DateTimeField()
+    headers = CampaignSendingHeaderSerializer(many=True, required=False)
+
+
 class CampaignSerializer(serializers.Serializer):
     """
     Campaign Serializer.
@@ -127,3 +166,4 @@ class CampaignSerializer(serializers.Serializer):
     results = CampaignResultSerializer(many=True)
     groups = CampaignGroupSerializer(many=True)
     timeline = CampaignEventSerializer(many=True)
+    smtp = CampaignSmtpSerializer(required=False)

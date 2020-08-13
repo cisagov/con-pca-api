@@ -2,13 +2,13 @@
 
 # Standard Python Libraries
 import logging
+import uuid
 
 # Third-Party Libraries
 from api.manager import CampaignManager
 from api.models.subscription_models import SubscriptionModel, validate_subscription
 from api.serializers.subscriptions_serializers import SubscriptionPatchSerializer
 from api.utils import db_utils as db
-from api.utils import sending_profile
 from api.utils.customer.customers import get_customer
 from api.utils.subscription.campaigns import generate_campaigns, stop_campaign
 from api.utils.subscription.subscriptions import (
@@ -107,9 +107,10 @@ def start_subscription(data=None, subscription_uuid=None, new_cycle=False):
     # landing_template_list = get_list({"template_type": "Landing"}, "template", TemplateModel, validate_template)
     landing_page = "Phished"
 
-    new_sending_profile_uuid = sending_profile.deal_with_sending_profiles(subscription)
-
-    new_gophish_campaigns = generate_campaigns(subscription, landing_page, sub_levels)
+    cycle_uuid = str(uuid.uuid4())
+    new_gophish_campaigns = generate_campaigns(
+        subscription, landing_page, sub_levels, cycle_uuid
+    )
     if "gophish_campaign_list" not in subscription:
         subscription["gophish_campaign_list"] = []
     subscription["gophish_campaign_list"].extend(new_gophish_campaigns)
@@ -125,7 +126,7 @@ def start_subscription(data=None, subscription_uuid=None, new_cycle=False):
         subscription["cycles"] = []
     subscription["cycles"].append(
         get_subscription_cycles(
-            new_gophish_campaigns, start_date, end_date, new_sending_profile_uuid,
+            new_gophish_campaigns, start_date, end_date, cycle_uuid,
         )[0]
     )
 
