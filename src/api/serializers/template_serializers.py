@@ -86,6 +86,7 @@ class TemplateGetSerializer(serializers.Serializer):
     gophish_template_id = serializers.IntegerField()
     name = serializers.CharField()
     template_type = serializers.ChoiceField(choices=TEMPLATE_TYPE_CHOICES)
+    landing_page_uuid = serializers.UUIDField()
     deception_score = serializers.IntegerField()
     descriptive_words = serializers.CharField()
     description = serializers.CharField()
@@ -120,6 +121,7 @@ class TemplatePostSerializer(serializers.Serializer):
     gophish_template_id = serializers.IntegerField()
     name = serializers.CharField()
     template_type = serializers.ChoiceField(choices=TEMPLATE_TYPE_CHOICES)
+    landing_page_uuid = serializers.UUIDField()
     deception_score = serializers.IntegerField()
     descriptive_words = serializers.CharField()
     description = serializers.CharField()
@@ -160,6 +162,7 @@ class TemplatePatchSerializer(serializers.Serializer):
     template_type = serializers.ChoiceField(
         choices=TEMPLATE_TYPE_CHOICES, required=False
     )
+    landing_page_uuid = serializers.UUIDField(required=False)
     deception_score = serializers.IntegerField(required=False)
     descriptive_words = serializers.CharField(required=False)
     description = serializers.CharField(required=False)
@@ -190,6 +193,7 @@ class TemplatePatchResponseSerializer(serializers.Serializer):
     gophish_template_id = serializers.IntegerField()
     name = serializers.CharField()
     template_type = serializers.ChoiceField(choices=TEMPLATE_TYPE_CHOICES)
+    landing_page_uuid = serializers.UUIDField()
     deception_score = serializers.IntegerField()
     descriptive_words = serializers.CharField()
     description = serializers.CharField()
