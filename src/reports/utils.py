@@ -562,15 +562,12 @@ def cycle_in_yearly_timespan(cycle_start, cycle_end, yearly_start, yearly_end):
 
     # 1
     if cycle_start < yearly_start and cycle_end > yearly_start:
-        print("Event One")
         return True
     # 2
     if cycle_start > yearly_start and cycle_end < yearly_end:
-        print("Event Two")
         return True
     # 3
     if cycle_start < yearly_end and cycle_end > yearly_end:
-        print("Event Three")
         return True
     return False
 
