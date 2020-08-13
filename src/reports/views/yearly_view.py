@@ -12,9 +12,14 @@ from api.models.customer_models import CustomerModel, validate_customer
 from api.models.subscription_models import SubscriptionModel, validate_subscription
 from api.models.customer_models import CustomerModel, validate_customer
 from api.models.dhs_models import DHSContactModel, validate_dhs_contact
+from api.models.recommendations_models import (
+    RecommendationsModel,
+    validate_recommendations,
+)
 from api.utils.db_utils import get_list, get_single
 import pytz
 from django.utils import timezone
+from reports.utils import get_relevant_recommendations
 
 from rest_framework import status
 from rest_framework.response import Response
@@ -184,6 +189,16 @@ class YearlyReportsView(APIView):
                 )
             ),
         }
+        get_template_details(subscription_stats["campaign_results"])
+        recommendation_uuids = get_relevant_recommendations(subscription_stats)
+
+        _recomendations = get_list(
+            None, "recommendations", RecommendationsModel, validate_recommendations,
+        )
+        recomendations = []
+        for rec in _recomendations:
+            if rec["recommendations_uuid"] in recommendation_uuids:
+                recomendations.append(rec)
 
         primary_contact = subscription.get("primary_contact")
         context = {
@@ -210,6 +225,7 @@ class YearlyReportsView(APIView):
             "percentage_trends_data": percentage_trends_data,
             "clickrate_vs_reportrate_data": clickrate_vs_reportrate_data,
             "trend": trend,
+            "recommendations": recomendations,
         }
 
         return Response(context, status=status.HTTP_202_ACCEPTED)

@@ -1,7 +1,6 @@
 # Third-Party Libraries
 from django.conf.urls import url
 from django.urls import include, path
-
 from reports.views import (
     cycle_view,
     monthly_view,
