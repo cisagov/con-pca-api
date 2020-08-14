@@ -58,19 +58,46 @@ class SendingProfilesListView(APIView):
     )
     def post(self, request):
         sp = request.data.copy()
-        sending_profile = campaign_manager.create(
-            "sending_profile",
-            name=sp.get("name"),
-            username=sp.get("username"),
-            password=sp.get("password"),
-            host=sp.get("host"),
-            interface_type=sp.get("interface_type"),
-            from_address=sp.get("from_address"),
-            ignore_cert_errors=sp.get("ignore_cert_errors"),
-            headers=sp.get("headers"),
-        )
+        # http://localhost:3333/api/util/send_test_email
+        if request.query_params["testEmail"]:
+            test_email = request.query_params["testEmail"]
+            test_send = self.build_test_smtp(sp, test_email)
+            test_response = campaign_manager.send_test_email(test_send)
+            return Response(test_response)
+        else:
+            sending_profile = campaign_manager.create(
+                "sending_profile",
+                name=sp.get("name"),
+                username=sp.get("username"),
+                password=sp.get("password"),
+                host=sp.get("host"),
+                interface_type=sp.get("interface_type"),
+                from_address=sp.get("from_address"),
+                ignore_cert_errors=sp.get("ignore_cert_errors"),
+                headers=sp.get("headers"),
+            )
+
         serializer = SendingProfileSerializer(sending_profile)
         return Response(serializer.data)
+
+    def build_test_smtp(self, sp, email):
+        smpt_test = {
+            "template": {},
+            "first_name": "test",
+            "last_name": "test",
+            "email": email,
+            "position": "tester",
+            "url": "",
+            "smtp": {
+                "from_address": sp.get("from_address"),
+                "host": sp.get("host"),
+                "username": sp.get("username"),
+                "password": sp.get("password"),
+                "ignore_cert_errors": sp.get("ignore_cert_errors"),
+                "headers": sp.get("headers"),
+            },
+        }
+        return smpt_test
 
 
 class SendingProfileView(APIView):

@@ -3,6 +3,7 @@
 # Standard Python Libraries
 import logging
 import re
+import json
 from typing import Dict
 import random
 
@@ -350,6 +351,27 @@ class CampaignManager:
         else:
             status = None
         return status
+
+    def send_test_email(self, test_string):
+        try:
+            # sending post request and saving response as response object
+            r = requests.post(
+                url=settings.GP_URL + "api/util/send_test_email",
+                json=test_string,
+                headers={
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer {}".format(settings.GP_API_KEY),
+                },
+            )
+            # extracting response text
+            return json.loads(r.text)
+        except Exception as e:
+            # Just print(e) is cleaner and more likely what you want,
+            # but if you insist on printing message specifically whenever possible...
+            if hasattr(e, "message"):
+                return e.message
+            else:
+                return e
 
     # Other Methods
     def complete_campaign(self, campaign_id: int):
