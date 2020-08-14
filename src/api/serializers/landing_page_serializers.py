@@ -77,6 +77,7 @@ class LandingPagePatchSerializer(serializers.Serializer):
     """
 
     landing_page_uuid = serializers.UUIDField()
+    gophish_template_id = serializers.IntegerField(required=False)
     name = serializers.CharField(required=False)
     template_type = serializers.ChoiceField(
         choices=TEMPLATE_TYPE_CHOICES, required=False

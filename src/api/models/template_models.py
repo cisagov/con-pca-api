@@ -93,6 +93,7 @@ class TemplateModel(Model):
     subject [string]
     text [string]
     topic [list] [string]
+    landing_page_uuid
     appearance [TemplateAppearanceModel]
     sender [TemplateSenderModel]
     relevancy [TemplateRelevancyModel]

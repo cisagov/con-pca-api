@@ -27,6 +27,7 @@ from api.utils.db_utils import (
     get_single,
     save_single,
     update_single,
+    clear_and_set_default,
 )
 from api.utils.subscription.actions import stop_subscription
 from api.utils.tag.tags import check_tag_format
@@ -59,8 +60,11 @@ class LandingPagesListView(APIView):
         """Get method."""
         serializer = LandingPageQuerySerializer(request.GET.dict())
         parameters = serializer.data
+
         if not parameters:
             parameters = request.data.copy()
+
+        parameters.pop("is_default_template")
         landing_page_list = get_list(
             parameters, "landing_page", LandingPageModel, validate_landing_page
         )
@@ -111,6 +115,27 @@ class LandingPageView(APIView):
     This handles the API for the Get a LandingPage with landing_page_uuid.
     """
 
+    def landing_page_in_gophish(self, landingpage):
+        existing_pages = campaign_manager.get_landing_page(None)
+        exists_already = False
+        landingpage_id = 0
+        for page in existing_pages:
+            if page.name == landingpage.get("name"):
+                landingpage_id = page.id
+                exists_already = True
+
+        if exists_already:
+            rlanding_page = campaign_manager.modify_landing_page(
+                landingpage, landingpage_id
+            )
+        else:
+            rlanding_page = campaign_manager.create(
+                "landing_page",
+                name=landingpage.get("name"),
+                template=landingpage.get("html"),
+            )
+        return rlanding_page
+
     @swagger_auto_schema(
         responses={"200": LandingPageGetSerializer, "400": "Bad Request"},
         security=[],
@@ -140,10 +165,28 @@ class LandingPageView(APIView):
         """Patch method."""
         logger.debug("patch landing_page_uuid {}".format(landing_page_uuid))
         put_data = request.data.copy()
+
         serialized_data = LandingPagePatchSerializer(put_data)
+        landingpagewithGoPhishId = self.landing_page_in_gophish(serialized_data.data)
+
+        # I would really like to transactionalize these two together but don't see
+        # an easy way
+        if serialized_data.data["is_default_template"]:
+            self.set_default_template(landing_page_uuid)
+
+        # this really seems like there should be a better way.
+        update_put_value = {
+            "landing_page_uuid": landing_page_uuid,
+            "name": serialized_data.data["name"],
+            "is_default_template": serialized_data.data["is_default_template"],
+            "retired": serialized_data.data["retired"],
+            "retired_description": serialized_data.data["retired_description"],
+            "html": serialized_data.data["html"],
+            "gophish_template_id": landingpagewithGoPhishId.id,
+        }
         updated_response = update_single(
             uuid=landing_page_uuid,
-            put_data=serialized_data.data,
+            put_data=update_put_value,
             collection="landing_page",
             model=LandingPageModel,
             validation_model=validate_landing_page,
@@ -172,6 +215,9 @@ class LandingPageView(APIView):
             return Response(delete_response, status=status.HTTP_400_BAD_REQUEST)
         serializer = LandingPageDeleteResponseSerializer(delete_response)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def set_default_template(self, landing_page_uuid):
+        clear_and_set_default(landing_page_uuid)
 
 
 class LandingPageStopView(APIView):

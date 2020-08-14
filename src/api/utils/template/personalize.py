@@ -130,6 +130,11 @@ def personalize_template(customer_info, template_data, sub_data, tag_list):
 
         template_unique_name = "".join(template["name"].split(" "))
         cleantext += "\n {{.Tracker}} "
+
+        landing_page_uuid = ""
+        if "landing_page_uuid" in template:
+            landing_page_uuid = template["landing_page_uuid"]
+
         personalized_template_data.append(
             {
                 "template_uuid": template["template_uuid"],
@@ -137,6 +142,7 @@ def personalize_template(customer_info, template_data, sub_data, tag_list):
                 "name": template_unique_name,
                 "from_address": from_address,
                 "subject": subject,
+                "landing_page_uuid": landing_page_uuid,
             }
         )
 

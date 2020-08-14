@@ -260,7 +260,6 @@ class SubscriptionsTemplateListView(APIView):
 class SubscriptionStopView(APIView):
     """
     This is the SubscriptionStopView APIView.
-
     This handles the API to stop a Subscription using subscription_uuid.
     """
 
@@ -287,7 +286,6 @@ class SubscriptionStopView(APIView):
 class SubscriptionRestartView(APIView):
     """
     This is the SubscriptionRestartView APIView.
-
     This handles the API to restart a Subscription
     """
 
@@ -298,12 +296,11 @@ class SubscriptionRestartView(APIView):
         operation_description="Endpoint for manually restart a subscription",
     )
     def get(self, request, subscription_uuid):
-        """Get Method for Restart Subscription.
-
+        """
+        Get Method for Restart Subscription.
         Args:
             request (object): http request object
             subscription_uuid (string): subscription_uuid string
-
         Returns:
             object: http Response object.
         """

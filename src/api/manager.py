@@ -159,6 +159,13 @@ class CampaignManager:
         else:
             return "method not found"
 
+    def modify(self, method, **kwargs):
+        """Modify Method."""
+        if method == "landing_page":
+            return self.modify_landing_page(kwargs.get("page_id", None))
+        else:
+            return "method not found"
+
     # Create methods
     def generate_campaign(
         self,
@@ -224,8 +231,30 @@ class CampaignManager:
 
     def generate_landing_page(self, name: str, template: str):
         """Generate Landing Page."""
-        landing_page = Page(name=name, html=template)
+        landing_page = Page(
+            name=name, html=template, capture_credentials=False, capture_passwords=False
+        )
         return self.gp_api.pages.post(landing_page)
+
+    def modify_landing_page(self, landing_page, id):
+        """Modify Landing Page."""
+        if id > 0:
+            try:
+                tmp_page = Page(
+                    id=id,
+                    name=landing_page["name"],
+                    html=landing_page["html"],
+                    capture_credentials=False,  # by the way we don't care what anyone sends us we will never capture credentials
+                    capture_passwords=False,  # ditto as above
+                    redirect_url="",
+                )
+                return self.gp_api.pages.put(tmp_page)
+            except ValueError:
+                logger.error(ValueError)
+                status = None
+        else:
+            status = None
+        return status
 
     def generate_user_group(self, group_name: str = None, target_list: Dict = None):
         """Generate User Group."""

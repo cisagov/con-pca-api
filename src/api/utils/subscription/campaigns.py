@@ -9,8 +9,9 @@ from api.manager import CampaignManager
 from api.serializers import campaign_serializers
 from api.utils.generic import format_ztime
 from api.utils.subscription.targets import assign_targets
-from api.utils.db_utils import get_single
+from api.utils import db_utils as db
 from api.models.dhs_models import DHSContactModel, validate_dhs_contact
+from api.models.landing_page_models import LandingPageModel, validate_landing_page
 from api.serializers.dhs_serializers import DHSContactGetSerializer
 
 logger = logging.getLogger()
@@ -87,11 +88,22 @@ def create_campaign(subscription, sub_level, landing_page, cycle_uuid):
             )
         )[0]
 
+        landing_page_name = landing_page
+        if "landing_page_uuid" in template:
+            landing_page_list = db.get_list(
+                {"landing_page_uuid": template["landing_page_uuid"]},
+                "landing_page",
+                LandingPageModel,
+                validate_landing_page,
+            )
+            if landing_page_list:
+                landing_page_name = landing_page_list[0]["name"]
+
         gophish_campaigns.append(
             __create_campaign(
                 subscription=subscription,
                 target_group=target_group,
-                landing_page=landing_page,
+                landing_page=landing_page_name,
                 template=template,
                 targets=sub_level["template_targets"][k],
                 start_date=sub_level["start_date"],
@@ -301,7 +313,7 @@ def __set_smtp_headers(sending_profile, cycle_uuid, dhs_contact_uuid):
         dhs_contact_uuid (string): dhs uuid
     """
     # Create X-Gophish-Contact Header
-    dhs_contact = get_single(
+    dhs_contact = db.get_single(
         dhs_contact_uuid, "dhs_contact", DHSContactModel, validate_dhs_contact
     )
     dhs_contact_data = DHSContactGetSerializer(dhs_contact).data

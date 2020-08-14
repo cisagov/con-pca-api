@@ -7,6 +7,7 @@ import uuid
 # Third-Party Libraries
 from api.manager import CampaignManager
 from api.models.subscription_models import SubscriptionModel, validate_subscription
+from api.models.landing_page_models import LandingPageModel, validate_landing_page
 from api.serializers.subscriptions_serializers import SubscriptionPatchSerializer
 from api.utils import db_utils as db
 from api.utils.customer.customers import get_customer
@@ -104,8 +105,15 @@ def start_subscription(data=None, subscription_uuid=None, new_cycle=False):
 
     # Get all Landing pages or default
     # This is currently selecting the default page on creation.
-    # landing_template_list = get_list({"template_type": "Landing"}, "template", TemplateModel, validate_template)
     landing_page = "Phished"
+    parameters = {}
+    parameters["is_default_template"] = True
+    landing_pages = db.get_list(
+        parameters, "landing_page", LandingPageModel, validate_landing_page
+    )
+    for page in landing_pages:
+        if page["is_default_template"]:
+            landing_page = page["name"]
 
     cycle_uuid = str(uuid.uuid4())
     new_gophish_campaigns = generate_campaigns(
