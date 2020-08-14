@@ -281,6 +281,7 @@ class SubscriptionModel(Model):
     dhs_contact_uuid = UUIDType()
     status = StringType()
     target_email_list = ListType(ModelType(SubscriptionTargetModel))
+    target_email_list_cached_copy = ListType(ModelType(SubscriptionTargetModel))
     templates_selected_uuid_list = ListType(StringType)
     sending_profile_name = StringType()
     active = BooleanType()

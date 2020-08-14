@@ -31,6 +31,7 @@ class LandingPageModel(Model):
     name = StringType()
     template_type = StringType()
     image_list = ListType(ModelType(TemplateImageModel))
+    is_default_template = BooleanType(default=False)
     retired = BooleanType(default=False)
     retired_description = StringType()
     html = StringType()

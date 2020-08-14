@@ -26,6 +26,7 @@ class LandingPageGetSerializer(serializers.Serializer):
     name = serializers.CharField()
     template_type = serializers.ChoiceField(choices=TEMPLATE_TYPE_CHOICES)
     image_list = TemplateImageSerializer(many=True)
+    is_default_template = serializers.BooleanField(default=False)
     retired = serializers.BooleanField(default=False)
     retired_description = serializers.CharField(default="")
     html = serializers.CharField()
@@ -48,6 +49,7 @@ class LandingPagePostSerializer(serializers.Serializer):
     name = serializers.CharField()
     template_type = serializers.ChoiceField(choices=TEMPLATE_TYPE_CHOICES)
     image_list = TemplateImageSerializer(many=True)
+    is_default_template = serializers.BooleanField(default=False)
     retired = serializers.BooleanField(default=False)
     retired_description = serializers.CharField(default="")
     subject = serializers.CharField(max_length=200)
@@ -75,11 +77,13 @@ class LandingPagePatchSerializer(serializers.Serializer):
     """
 
     landing_page_uuid = serializers.UUIDField()
+    gophish_template_id = serializers.IntegerField(required=False)
     name = serializers.CharField(required=False)
     template_type = serializers.ChoiceField(
         choices=TEMPLATE_TYPE_CHOICES, required=False
     )
     image_list = TemplateImageSerializer(many=True, required=False)
+    is_default_template = serializers.BooleanField(default=False, required=False)
     retired = serializers.BooleanField(default=False, required=False)
     retired_description = serializers.CharField(default="", required=False)
     html = serializers.CharField(required=False)
@@ -97,6 +101,7 @@ class LandingPagePatchResponseSerializer(serializers.Serializer):
     name = serializers.CharField()
     template_type = serializers.ChoiceField(choices=TEMPLATE_TYPE_CHOICES)
     image_list = TemplateImageSerializer(many=True)
+    is_default_template = serializers.BooleanField(default=False)
     retired = serializers.BooleanField(default=False)
     retired_description = serializers.CharField(default="")
     html = serializers.CharField()
@@ -135,6 +140,7 @@ class LandingPageQuerySerializer(serializers.Serializer):
     template_type = serializers.ChoiceField(
         choices=TEMPLATE_TYPE_CHOICES, required=False
     )
+    is_default_template = serializers.BooleanField(default=False)
     retired = serializers.BooleanField(default=False)
     retired_description = serializers.CharField(required=False)
     html = serializers.CharField(required=False)

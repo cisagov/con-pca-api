@@ -18,7 +18,12 @@ from api.serializers.subscriptions_serializers import (
     SubscriptionPostResponseSerializer,
     SubscriptionPostSerializer,
 )
-from api.utils.db_utils import delete_single, get_list, get_single, update_single
+from api.utils.db_utils import (
+    delete_single,
+    get_list,
+    get_single,
+    update_single,
+)
 from api.utils.subscription.actions import start_subscription, stop_subscription
 from reports.utils import update_phish_results
 from drf_yasg import openapi
@@ -254,7 +259,6 @@ class SubscriptionsTemplateListView(APIView):
 class SubscriptionStopView(APIView):
     """
     This is the SubscriptionStopView APIView.
-
     This handles the API to stop a Subscription using subscription_uuid.
     """
 
@@ -281,7 +285,6 @@ class SubscriptionStopView(APIView):
 class SubscriptionRestartView(APIView):
     """
     This is the SubscriptionRestartView APIView.
-
     This handles the API to restart a Subscription
     """
 
@@ -292,16 +295,53 @@ class SubscriptionRestartView(APIView):
         operation_description="Endpoint for manually restart a subscription",
     )
     def get(self, request, subscription_uuid):
-        """Get Method for Restart Subscription.
-
+        """
+        Get Method for Restart Subscription.
         Args:
             request (object): http request object
             subscription_uuid (string): subscription_uuid string
-
         Returns:
             object: http Response object.
         """
         created_response = start_subscription(subscription_uuid=subscription_uuid)
         # Return updated subscription
         serializer = SubscriptionPatchResponseSerializer(created_response)
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+
+
+class SubscriptionTargetCacheView(APIView):
+    """
+    """
+
+    @swagger_auto_schema(
+        request_body=SubscriptionPostSerializer,
+        responses={"200": SubscriptionGetSerializer, "400": "Bad Request"},
+        security=[],
+        operation_id="update the subscription target cache",
+        operation_description="zThis handles the API for the update target cache",
+    )
+    def post(self, request, subscription_uuid):
+        """
+        If the campaign is currently running then save the target cache but leave the
+        template_target alone.
+        else
+            copy the target_cache
+        """
+        logger.debug(
+            "update subscription_uuid target cache {}".format(subscription_uuid)
+        )
+        target_update_data = request.data.copy()
+
+        resp = update_single(
+            uuid=subscription_uuid,
+            put_data={"target_email_list_cached_copy": target_update_data},
+            collection="subscription",
+            model=SubscriptionModel,
+            validation_model=validate_subscription,
+        )
+
+        if "errors" in resp:
+            return Response(resp, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = SubscriptionPatchResponseSerializer(resp)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)

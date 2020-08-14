@@ -84,6 +84,11 @@ urlpatterns = [
         name="subscription_restart_api",
     ),
     path(
+        "v1/subscription/targetcache/<subscription_uuid>/",
+        subscription_views.SubscriptionTargetCacheView.as_view(),
+        name="subscription_update_target_cache_api",
+    ),
+    path(
         "v1/reports/<subscription_uuid>/",
         report_views.ReportsView.as_view(),
         name="reports_get_api",

@@ -199,6 +199,10 @@ class GenericRepository(object):
         """
         client = AsyncIOMotorClient(db_url, io_loop=asyncio.get_event_loop())
         self.db = client["pca_data_dev"]
+        # self.db.set_profiling_level(0)
+        # uncomment this statement on to see all the query to
+        # the db in the log
+        self.db.set_profiling_level(2, -1)
         self.collection_name = collection_name
         self.collection = self.db.get_collection(
             self.collection_name, codec_options=CodecOptions(tz_aware=True)

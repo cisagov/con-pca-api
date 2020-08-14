@@ -235,6 +235,9 @@ class SubscriptionGetSerializer(serializers.Serializer):
     dhs_contact_uuid = serializers.UUIDField(required=False)
     status = serializers.CharField(max_length=100)
     target_email_list = SubscriptionTargetSerializer(many=True)
+    target_email_list_cached_copy = SubscriptionTargetSerializer(
+        many=True, required=False
+    )
     templates_selected_uuid_list = serializers.ListField(required=False)
     sending_profile_name = serializers.CharField(required=False)
     active = serializers.BooleanField()
@@ -268,6 +271,7 @@ class SubscriptionPostSerializer(serializers.Serializer):
     dhs_contact_uuid = serializers.UUIDField(required=False)
     status = serializers.CharField(max_length=100)
     target_email_list = SubscriptionTargetSerializer(many=True)
+    target_email_list_cached_copy = SubscriptionTargetSerializer(many=True)
     tasks = SubscriptionTasksSerializer(many=True, required=False)
     templates_selected_uuid_list = serializers.ListField()
     sending_profile_name = serializers.CharField()
@@ -307,6 +311,9 @@ class SubscriptionPatchSerializer(serializers.Serializer):
     dhs_contact_uuid = serializers.UUIDField(required=False)
     status = serializers.CharField(required=False, max_length=100)
     target_email_list = SubscriptionTargetSerializer(required=False, many=True)
+    target_email_list_cached_copy = SubscriptionTargetSerializer(
+        required=False, many=True
+    )
     tasks = SubscriptionTasksSerializer(many=True, required=False)
     templates_selected_uuid_list = serializers.ListField(required=False)
     sending_profile_name = serializers.CharField(required=False)
@@ -337,6 +344,7 @@ class SubscriptionPatchResponseSerializer(serializers.Serializer):
     dhs_contact_uuid = serializers.UUIDField(required=False)
     status = serializers.CharField(max_length=100)
     target_email_list = SubscriptionTargetSerializer(many=True)
+    target_email_list_cached_copy = SubscriptionTargetSerializer(many=True)
     tasks = SubscriptionTasksSerializer(many=True, required=False)
     templates_selected_uuid_list = serializers.ListField(required=False)
     sending_profile_name = serializers.CharField(required=False)
