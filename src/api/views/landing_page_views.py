@@ -27,10 +27,9 @@ from api.utils.db_utils import (
     get_single,
     save_single,
     update_single,
-    clear_and_set_default,
 )
+from api.utils.landing_pages import clear_and_set_default
 from api.utils.subscription.actions import stop_subscription
-from api.utils.tag.tags import check_tag_format
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.response import Response
@@ -98,6 +97,12 @@ class LandingPagesListView(APIView):
                 status=status.HTTP_409_CONFLICT,
             )
 
+        landing_page = campaign_manager.create(
+            "landing_page", name=post_data["name"], template=post_data["html"]
+        )
+
+        post_data["gophish_template_id"] = landing_page.id
+
         created_response = save_single(
             post_data, "landing_page", LandingPageModel, validate_landing_page
         )
@@ -114,27 +119,6 @@ class LandingPageView(APIView):
 
     This handles the API for the Get a LandingPage with landing_page_uuid.
     """
-
-    def landing_page_in_gophish(self, landingpage):
-        existing_pages = campaign_manager.get_landing_page(None)
-        exists_already = False
-        landingpage_id = 0
-        for page in existing_pages:
-            if page.name == landingpage.get("name"):
-                landingpage_id = page.id
-                exists_already = True
-
-        if exists_already:
-            rlanding_page = campaign_manager.modify_landing_page(
-                landingpage, landingpage_id
-            )
-        else:
-            rlanding_page = campaign_manager.create(
-                "landing_page",
-                name=landingpage.get("name"),
-                template=landingpage.get("html"),
-            )
-        return rlanding_page
 
     @swagger_auto_schema(
         responses={"200": LandingPageGetSerializer, "400": "Bad Request"},
@@ -166,23 +150,30 @@ class LandingPageView(APIView):
         logger.debug("patch landing_page_uuid {}".format(landing_page_uuid))
         put_data = request.data.copy()
 
-        serialized_data = LandingPagePatchSerializer(put_data)
-        landingpagewithGoPhishId = self.landing_page_in_gophish(serialized_data.data)
+        data = LandingPagePatchSerializer(put_data).data
 
-        # I would really like to transactionalize these two together but don't see
-        # an easy way
-        if serialized_data.data["is_default_template"]:
+        landing_page = get_single(
+            landing_page_uuid, "landing_page", LandingPageModel, validate_landing_page
+        )
+
+        campaign_manager.put(
+            "landing_page",
+            gp_id=landing_page["gophish_template_id"],
+            name=data["name"],
+            html=data["html"],
+        )
+
+        if data["is_default_template"]:
             self.set_default_template(landing_page_uuid)
 
         # this really seems like there should be a better way.
         update_put_value = {
             "landing_page_uuid": landing_page_uuid,
-            "name": serialized_data.data["name"],
-            "is_default_template": serialized_data.data["is_default_template"],
-            "retired": serialized_data.data["retired"],
-            "retired_description": serialized_data.data["retired_description"],
-            "html": serialized_data.data["html"],
-            "gophish_template_id": landingpagewithGoPhishId.id,
+            "name": data["name"],
+            "is_default_template": data["is_default_template"],
+            "retired": data["retired"],
+            "retired_description": data["retired_description"],
+            "html": data["html"],
         }
         updated_response = update_single(
             uuid=landing_page_uuid,

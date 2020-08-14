@@ -17,7 +17,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 # cisagov Libraries
 # GoPhish Libraries
 from gophish import Gophish
-from gophish.models import SMTP, Campaign, Group, Page, Stat, Template, User
+from gophish.models import SMTP, Campaign, Group, Page, Template, User
 
 logger = logging.getLogger(__name__)
 faker = Faker()
@@ -159,10 +159,12 @@ class CampaignManager:
         else:
             return "method not found"
 
-    def modify(self, method, **kwargs):
+    def put(self, method, **kwargs):
         """Modify Method."""
         if method == "landing_page":
-            return self.modify_landing_page(kwargs.get("page_id", None))
+            return self.put_landing_page(
+                kwargs.get("gp_id"), kwargs.get("name"), kwargs.get("html")
+            )
         else:
             return "method not found"
 
@@ -236,25 +238,10 @@ class CampaignManager:
         )
         return self.gp_api.pages.post(landing_page)
 
-    def modify_landing_page(self, landing_page, id):
+    def put_landing_page(self, gp_id, name, html):
         """Modify Landing Page."""
-        if id > 0:
-            try:
-                tmp_page = Page(
-                    id=id,
-                    name=landing_page["name"],
-                    html=landing_page["html"],
-                    capture_credentials=False,  # by the way we don't care what anyone sends us we will never capture credentials
-                    capture_passwords=False,  # ditto as above
-                    redirect_url="",
-                )
-                return self.gp_api.pages.put(tmp_page)
-            except ValueError:
-                logger.error(ValueError)
-                status = None
-        else:
-            status = None
-        return status
+        landing_page = Page(id=gp_id, name=name, html=html)
+        return self.gp_api.pages.put(landing_page)
 
     def generate_user_group(self, group_name: str = None, target_list: Dict = None):
         """Generate User Group."""
@@ -358,7 +345,7 @@ class CampaignManager:
         if group_id:
             try:
                 status = self.gp_api.groups.delete(group_id=group_id)
-            except:
+            except Exception:
                 status = None
         else:
             status = None

@@ -86,7 +86,7 @@ class TemplateGetSerializer(serializers.Serializer):
     gophish_template_id = serializers.IntegerField()
     name = serializers.CharField()
     template_type = serializers.ChoiceField(choices=TEMPLATE_TYPE_CHOICES)
-    landing_page_uuid = serializers.UUIDField()
+    landing_page_uuid = serializers.UUIDField(default=None)
     deception_score = serializers.IntegerField()
     descriptive_words = serializers.CharField()
     description = serializers.CharField()

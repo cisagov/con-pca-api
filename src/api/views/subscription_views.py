@@ -23,7 +23,6 @@ from api.utils.db_utils import (
     get_list,
     get_single,
     update_single,
-    update_email_template_cache,
 )
 from api.utils.subscription.actions import start_subscription, stop_subscription
 from reports.utils import update_phish_results
@@ -332,9 +331,17 @@ class SubscriptionTargetCacheView(APIView):
             "update subscription_uuid target cache {}".format(subscription_uuid)
         )
         target_update_data = request.data.copy()
-        try:
-            update_email_template_cache(subscription_uuid, target_update_data)
-        except ValueError:
-            return Response(ValueError, status=status.HTTP_400_BAD_REQUEST)
 
-        return Response("OK", status=status.HTTP_202_ACCEPTED)
+        resp = update_single(
+            uuid=subscription_uuid,
+            put_data={"target_email_list_cached_copy": target_update_data},
+            collection="subscription",
+            model=SubscriptionModel,
+            validation_model=validate_subscription,
+        )
+
+        if "errors" in resp:
+            return Response(resp, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = SubscriptionPatchResponseSerializer(resp)
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
