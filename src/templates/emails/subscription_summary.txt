@@ -1,0 +1,68 @@
+{% load tz %}
+Dear {{ first_name }} {{ last_name }},
+
+Thank you for participating in the CISA Phishing This
+email is to provide a detailed Summary of your campaign.
+
+Campaign Summary:
+
+Cycle Start Date: {{ start_date|localtime }} UTC
+
+Cycle End Date: {{ end_date|localtime }} UTC
+
+Emails signed up: {{ email_count }} Email(s)
+
+The following email template Subjects and From Addresses will be used over the
+duration of this cycle:
+
+Subjects:
+
+{% for template in templates %}
+    {{template.subject}}
+{% endfor %}
+
+From Addresses:
+
+{% for smtp in campaign_smpts %}
+    {{smtp.from_address}}
+{% endfor %}
+
+The Con-CPA Lead assigned to this cycle is:
+    Name: {{ dhs_contact.first_name }} {{ dhs_contact.last_name }}
+    Title: {{ dhs_contact.title }}
+    Email: {{ dhs_contact.email }}
+    Office: {{ dhs_contact.email }} Mobile: {{ mobile_phone }}
+
+To assist you in differentianting between DHS Con-PCA
+phishing exercise emails and actual phishing attempts
+please use the following:
+
+    All phishing emails from the Con-PCA program will
+    come from the email addresses listed above.
+
+    This will be the sending email for the current cycle,
+    but different display names will be used based upon
+    the email template. This email address may change between
+    cycles.
+
+    All emails coming from the Con-PCA program will
+    have a custom headers:
+
+    DHS-PHISH:{{cycle_uuid}}}
+    X-Gophish-Contact:{{dhs_contact.email}}}
+
+    Please look for these headers. The value for the
+    header is unique to your subscription and changes
+    each cycle.
+
+    The whois guard for all Con-PCA domains is turned
+    off. Doing a whois lookup on the actual sender
+    domain will show the domain owner as DHS.
+
+In the interests of security and efficiency, please
+respond to your DHS contact directly with any
+questions or concerns you may have
+
+Respectfully,
+
+CISA Continuous Phishing Program Adminstrator
