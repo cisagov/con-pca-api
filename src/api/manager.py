@@ -3,6 +3,7 @@
 # Standard Python Libraries
 import logging
 import re
+import json
 from typing import Dict
 import random
 
@@ -222,13 +223,18 @@ class CampaignManager:
     def put_sending_profile(self, sp):
         return self.gp_api.smtp.put(smtp=sp)
 
-    def generate_email_template(self, name: str, template: str, subject: str):
+    def generate_email_template(
+        self, name: str, template: str, subject: str, text=None
+    ):
         """Generate Email Templates."""
         existing_names = {email.name for email in self.gp_api.templates.get()}
         if name in existing_names:
             logger.info("Template, {}, already exists.. skipping".format(name))
             return
         email_template = Template(name=name, subject=subject, html=template)
+        if text is not None:
+            email_template.text = text
+
         return self.gp_api.templates.post(email_template)
 
     def generate_landing_page(self, name: str, template: str):
@@ -350,6 +356,23 @@ class CampaignManager:
         else:
             status = None
         return status
+
+    def send_test_email(self, test_string):
+        try:
+            # sending post request and saving response as response object
+            url = settings.GP_URL + "api/util/send_test_email"
+            headers = {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer {}".format(settings.GP_API_KEY),
+            }
+            r = requests.post(url=url, json=test_string, headers=headers,)
+            # extracting response text
+            return json.loads(r.text)
+        except Exception as e:
+            if hasattr(e, "message"):
+                return e.message
+            else:
+                return e
 
     # Other Methods
     def complete_campaign(self, campaign_id: int):
