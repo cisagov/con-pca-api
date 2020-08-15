@@ -119,6 +119,17 @@ def send_start_notification(subscription):
     sender.send()
 
 
+def send_summary(subscription):
+    """Send Start Notification.
+
+    Args:
+        subscription (dict): subscription data
+        start_date (datetime): start_date of subscription
+    """
+    sender = EmailSender(subscription, "subscription_summary")
+    sender.send()
+
+
 def send_stop_notification(subscription):
     """Send Stop Notification.
 
@@ -137,6 +148,7 @@ def create_scheduled_email_tasks(start_date):
     """
     message_types = {
         "start_subscription_email": start_date - timedelta(minutes=5),
+        "subscription_summary": start_date - timedelta(minutes=6),
         "monthly_report": start_date + timedelta(days=30),
         "cycle_report": start_date + timedelta(days=90),
         "yearly_report": start_date + timedelta(days=365),
