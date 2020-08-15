@@ -46,6 +46,12 @@ class EmailSender:
 
         self.to = self.set_to()
         self.bcc, self.dhs_contact_email = self.set_bcc()
+        self.dhs_contact = get_single(
+            self.subscription.get("dhs_contact_uuid"),
+            "dhs_contact",
+            DHSContactModel,
+            validate_dhs_contact,
+        )
 
     def get_attachment(self, cycle):
         if "report" in self.notification["path"]:
@@ -144,6 +150,13 @@ class EmailSender:
             )
         )[0].from_address
 
+        campaign_smpts = []
+
+        for campaign in self.subscription.get("gophish_campaign_list"):
+            campaign_smpts.append(campaign["smtp"])
+
+        email_count = len(self.subscription.get("target_email_list"))
+
         return {
             "first_name": first_name,
             "last_name": last_name,
@@ -152,6 +165,9 @@ class EmailSender:
             "cycle_uuid": cycle_uuid,
             "templates": templates,
             "phishing_email": phishing_email,
+            "campaign_smpts": campaign_smpts,
+            "email_count": email_count,
+            "dhs_contact": self.dhs_contact,
         }
 
     def set_to(self):
@@ -161,12 +177,7 @@ class EmailSender:
         ]
 
     def set_bcc(self):
-        dhs_contact = get_single(
-            self.subscription.get("dhs_contact_uuid"),
-            "dhs_contact",
-            DHSContactModel,
-            validate_dhs_contact,
-        ).get("email")
+        dhs_contact = self.dhs_contact.get("email")
 
         bcc = [f"DHS <{dhs_contact}>"] if dhs_contact else []
 
@@ -206,5 +217,11 @@ class EmailSender:
                 "path": "subscription_stopped",
                 "link": None,
                 "type": "Cycle Complete",
+            },
+            "subscription_summary": {
+                "subject": "DHS CISA Phishing Subscription Summry",
+                "path": "subscription_summary",
+                "link": None,
+                "type": "Cycle Summary Notification",
             },
         }.get(message_type)
