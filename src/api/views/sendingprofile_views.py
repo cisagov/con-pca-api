@@ -67,6 +67,7 @@ class SendingProfilesListView(APIView):
             # build the template
             # send the test
             # tear the template down
+            # not sure on the clean up
             try:
                 campaign_manager.generate_email_template(
                     sp.get("name") + "_test", sp.get("html"), sp.get("subject")
