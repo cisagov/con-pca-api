@@ -361,10 +361,13 @@ class CampaignManager:
         try:
             # sending post request and saving response as response object
             url = settings.GP_URL + "api/util/send_test_email"
+            logger.info(url)
             headers = {
                 "Content-Type": "application/json",
                 "Authorization": "Bearer {}".format(settings.GP_API_KEY),
             }
+            logger.info(settings.GP_API_KEY)
+            logger.info(headers)
             r = requests.post(url=url, json=test_string, headers=headers,)
             # extracting response text
             return json.loads(r.text)
