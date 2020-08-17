@@ -1,15 +1,11 @@
 from notifications.views import EmailSender
-from api.utils.subscription.subscriptions import send_start_notification, send_summary
+from api.utils.subscription.subscriptions import send_start_notification
 from api.utils.subscription import actions
 from datetime import datetime
 
 
 def start_subscription_email(subscription):
     send_start_notification(subscription)
-
-
-def subscription_summary_email(subscription):
-    send_summary(subscription)
 
 
 def start_subscription_cycle(subscription):

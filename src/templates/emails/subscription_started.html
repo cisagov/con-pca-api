@@ -234,7 +234,8 @@
                           Thank you for participating in the CISA Phishing This
                           email is to inform you that your campaign has begun
                           starting {{ start_date|localtime }} UTC and will run
-                          until {{ end_date|localtime }} UTC.
+                          until {{ end_date|localtime }} UTC. Total Targets
+                          enrolled: {{ email_count }}
                         </div>
                       </td>
                     </tr>
@@ -302,7 +303,10 @@
                             <li>
                               All emails coming from the Con-PCA program will
                               have a custom header:
-                              <br /><br />DHS-PHISH:{{cycle_uuid}}}<br /><br />
+                              <br /><br />DHS-PHISH:{{cycle_uuid}}<br /><br />
+                              <!--
+                                <br /><br />X-Gophish-Contact:{{dhs_contact.email}}<br /><br />
+                               -->
                               Please look for this header. The value for the
                               header is unique to your subscription and changes
                               each cycle.
