@@ -125,6 +125,21 @@ resource "random_password" "basic_auth_password" {
 }
 
 # ===========================
+# BROWSERLESS
+# ===========================
+module "browserless" {
+  source    = "github.com/cisagov/fargate-browserless-tf-module"
+  region    = var.region
+  namespace = var.app
+  stage     = var.env
+  name      = "browserless"
+
+  vpc_id     = data.aws_vpc.vpc.id
+  subnet_ids = data.aws_subnet_ids.private.ids
+  lb_port    = 3000
+}
+
+# ===========================
 # API FARGATE
 # ===========================
 locals {
@@ -149,8 +164,8 @@ locals {
     "LOCAL_API_KEY" : random_string.local_api_key.result,
     "MONGO_TYPE" : "DOCUMENTDB",
     "REPORTS_ENDPOINT" : "https://${data.aws_lb.public.dns_name}",
-    "BROWSERLESS_ENDPOINT" : "${aws_lb.network.dns_name}:3000",
-    "EXTRA_BCC_EMAILS": "william.martin@inl.gov"
+    "BROWSERLESS_ENDPOINT" : module.browserless.lb_dns_name,
+    "EXTRA_BCC_EMAILS" : "william.martin@inl.gov"
   }
 
   secrets = {
