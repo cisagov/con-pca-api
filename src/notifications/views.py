@@ -24,6 +24,7 @@ from api.utils.template.templates import get_subscription_templates
 from api.utils import db_utils as db
 from api.manager import CampaignManager
 from api.models.subscription_models import SubscriptionModel, validate_subscription
+from api.utils.aws_utils import SES
 
 
 logger = logging.getLogger()
@@ -64,6 +65,17 @@ class EmailSender:
         return None
 
     def send(self):
+        try:
+            if settings.USE_SES:
+                self._send_ses()
+            else:
+                self._send_django()
+
+            self.add_email_report_history()
+        except Exception as e:
+            logging.exception(e)
+
+    def _send_django(self):
         message = EmailMultiAlternatives(
             subject=self.notification["subject"],
             body=self.text_content,
@@ -86,13 +98,28 @@ class EmailSender:
                 "subscription_report.pdf", self.attachment.read(), "application/pdf"
             )
 
-        try:
-            message.send(fail_silently=False)
-            self.add_email_report_history()
-        except ConnectionRefusedError:
-            print("failed to send email")
-        except ConnectionError:
-            print("failed to send email for some other reason")
+        message.send(fail_silently=False)
+
+    def _send_ses(self):
+        ses = SES()
+
+        if self.attachment:
+            binary_attachments = [
+                {"filename": "subscription_report.pdf", "data": self.attachment.read()}
+            ]
+        else:
+            binary_attachments = None
+
+        ses.send_message(
+            sender=settings.SERVER_EMAIL,
+            to=self.to,
+            subject=self.notification["subject"],
+            bcc=self.bcc,
+            text=self.text_content,
+            html=self.html_content,
+            attachments=["img/cisa_logo.png"],
+            binary_attachments=binary_attachments,
+        )
 
     def add_email_report_history(self):
         data = {

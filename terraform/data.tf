@@ -53,7 +53,7 @@ data "aws_ssm_parameter" "gp_smtp_user" {
 }
 
 data "aws_ssm_parameter" "smtp_from" {
-  name = "/${var.env}/${var.app}/mailgun/smtp_from"
+  name = "/${var.env}/${var.app}/ses/smtp_from"
 }
 
 data "aws_ssm_parameter" "smtp_host" {
@@ -78,6 +78,10 @@ data "aws_cognito_user_pools" "users" {
 
 data "aws_ssm_parameter" "client_id" {
   name = "/${var.env}/${var.app}/cognito/client/id"
+}
+
+data "aws_ssm_parameter" "ses_assume_role_arn" {
+  name = "/${var.env}/${var.app}/ses/assume_role_arn"
 }
 
 data "aws_iam_server_certificate" "self" {

@@ -148,6 +148,8 @@ EMAIL_HOST = os.environ.get("SMTP_HOST", "")
 EMAIL_HOST_USER = os.environ.get("SMTP_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("SMTP_PASS")
 SERVER_EMAIL = os.environ.get("SMTP_FROM")
+SES_ASSUME_ROLE_ARN = os.environ.get("SES_ASSUME_ROLE_ARN")
+USE_SES = int(os.environ.get("USE_SES", default=0))
 
 EXTRA_BCC_EMAILS = os.environ.get("EXTRA_BCC_EMAILS", [])
 if EXTRA_BCC_EMAILS:

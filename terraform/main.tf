@@ -141,7 +141,8 @@ locals {
     "MONGO_TYPE" : "DOCUMENTDB",
     "REPORTS_ENDPOINT" : "https://${data.aws_lb.public.dns_name}",
     "BROWSERLESS_ENDPOINT" : module.browserless.lb_dns_name,
-    "EXTRA_BCC_EMAILS" : "william.martin@inl.gov"
+    "EXTRA_BCC_EMAILS" : "william.martin@inl.gov",
+    "USE_SES" : 1
   }
 
   secrets = {
@@ -157,7 +158,8 @@ locals {
     "SMTP_PASS" : data.aws_ssm_parameter.smtp_pass.arn,
     "SMTP_FROM" : data.aws_ssm_parameter.smtp_from.arn,
     "SMTP_USER" : data.aws_ssm_parameter.smtp_user.arn,
-    "COGNITO_AUDIENCE" : data.aws_ssm_parameter.client_id.arn
+    "COGNITO_AUDIENCE" : data.aws_ssm_parameter.client_id.arn,
+    "SES_ASSUME_ROLE_ARN" : data.aws_ssm_parameter.ses_assume_role_arn.arn
   }
 }
 
@@ -178,12 +180,24 @@ module "container" {
 
 data "aws_iam_policy_document" "api" {
   statement {
+    effect = "Allow"
     actions = [
       "s3:*"
     ]
 
     resources = [
       "*"
+    ]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "sts:AssumeRole"
+    ]
+
+    resources = [
+      data.aws_ssm_parameter.ses_assume_role_arn.value
     ]
   }
 }
