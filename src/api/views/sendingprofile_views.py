@@ -73,26 +73,6 @@ class SendingProfilesListView(APIView):
         serializer = SendingProfileSerializer(sending_profile)
         return Response(serializer.data)
 
-    def build_test_smtp(self, sp):
-        smtp = sp.get("smtp")
-        smtp_test = {
-            "template": {"name": sp.get("template")},
-            "first_name": sp.get("first_name"),
-            "last_name": sp.get("last_name"),
-            "email": sp.get("email"),
-            "position": sp.get("position"),
-            "url": "",
-            "smtp": {
-                "from_address": smtp.get("from_address"),
-                "host": smtp.get("host"),
-                "username": smtp.get("username"),
-                "password": smtp.get("password"),
-                "ignore_cert_errors": smtp.get("ignore_cert_errors"),
-                "headers": smtp.get("headers"),
-            },
-        }
-        return smtp_test
-
 
 class SendingProfileView(APIView):
     """

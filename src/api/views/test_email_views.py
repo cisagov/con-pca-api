@@ -4,6 +4,7 @@ Testing Email Views.
 """
 # Standard Python Libraries
 import logging
+import json
 
 # Third-Party Libraries
 # Local
@@ -53,7 +54,7 @@ class SendingTestEmailsView(APIView):
             logger.info("in the try if and about to check for template")
             if sp.get("template").get("name"):
                 tmp_template = sp.get("template")
-                template_response = campaign_manager.generate_email_template(
+                campaign_manager.generate_email_template(
                     tmp_template.get("name") + "_test",
                     tmp_template.get("html"),
                     tmp_template.get("subject"),
@@ -97,5 +98,5 @@ class SendingTestEmailsView(APIView):
             },
         }
         logger.info("returning smtp")
-        logger.info(smtp_test)
+        logger.info(json.dumps(smtp_test))
         return smtp_test
