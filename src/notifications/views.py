@@ -166,9 +166,7 @@ class EmailSender:
             "cycle_uuid": cycle_uuid,
             "templates": templates,
             "phishing_email": phishing_email,
-            "campaign_smpts": campaign_smpts,
             "email_count": email_count,
-            "dhs_contact": self.dhs_contact,
         }
 
     def set_to(self):
@@ -218,11 +216,5 @@ class EmailSender:
                 "path": "subscription_stopped",
                 "link": None,
                 "type": "Cycle Complete",
-            },
-            "subscription_summary": {
-                "subject": "DHS CISA Phishing Subscription Summry",
-                "path": "subscription_summary",
-                "link": None,
-                "type": "Cycle Summary Notification",
             },
         }.get(message_type)

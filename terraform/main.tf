@@ -69,30 +69,6 @@ module "s3_images" {
   sse_algorithm = "AES256"
 }
 
-resource "aws_s3_bucket" "websites" {
-  bucket = "${var.app}-${var.env}-websites"
-  acl    = "public-read"
-  policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "Public",
-      "Effect": "Allow",
-      "Principal": "*",
-      "Action": "s3:GetObject",
-      "Resource": "arn:aws:s3:::${var.app}-${var.env}-websites/*"
-    }
-  ]
-}
-POLICY
-
-  website {
-    index_document = "index.html"
-  }
-}
-
-
 # ===========================
 # APP CREDENTIALS
 # ===========================
@@ -200,6 +176,18 @@ module "container" {
   secrets         = local.secrets
 }
 
+data "aws_iam_policy_document" "api" {
+  statement {
+    actions = [
+      "s3:*"
+    ]
+
+    resources = [
+      "*"
+    ]
+  }
+}
+
 module "api" {
   source    = "github.com/cisagov/fargate-service-tf-module"
   namespace = "${var.app}"
@@ -216,6 +204,7 @@ module "api" {
   health_check_interval = 60
   health_check_path     = "/"
   health_check_codes    = "307,202,200,404"
+  iam_policy_document   = data.aws_iam_policy_document.api.json
   load_balancer_arn     = data.aws_lb.public.arn
   load_balancer_port    = local.api_load_balancer_port
   desired_count         = 1

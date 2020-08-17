@@ -71,7 +71,6 @@ def execute_tasks():
 def execute_task(subscription, message_type):
     task = {
         "start_subscription_email": tasks.start_subscription_email,
-        "subscription_summary": tasks.subscription_summary_email,
         "monthly_report": tasks.email_subscription_monthly,
         "cycle_report": tasks.email_subscription_cycle,
         "yearly_report": tasks.email_subscription_yearly,
