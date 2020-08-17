@@ -129,6 +129,7 @@ resource "random_password" "basic_auth_password" {
 # ===========================
 module "browserless" {
   source    = "github.com/cisagov/fargate-browserless-tf-module"
+  region    = var.region
   namespace = var.app
   stage     = var.env
   name      = "browserless"
