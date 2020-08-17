@@ -58,46 +58,24 @@ class SendingProfilesListView(APIView):
     )
     def post(self, request):
         sp = request.data.copy()
-        # TODO: this started out really simple just send an email
-        # but then the next task was fix the email templates ...
-        # long story short it needs refactored to it's own view
-
-        # http://localhost:3333/api/util/send_test_email
-        if request.query_params["testEmail"]:
-            # build the template
-            # send the test
-            # tear the template down
-            # not sure on the clean up
-            try:
-                campaign_manager.generate_email_template(
-                    sp.get("name") + "_test", sp.get("html"), sp.get("subject")
-                )
-
-                test_send = self.build_test_smtp(sp)
-                test_response = campaign_manager.send_test_email(test_send)
-            finally:
-                campaign_manager.delete_email_template(sp.get("name") + "_test")
-
-            return Response(test_response)
-        else:
-            sending_profile = campaign_manager.create(
-                "sending_profile",
-                name=sp.get("name"),
-                username=sp.get("username"),
-                password=sp.get("password"),
-                host=sp.get("host"),
-                interface_type=sp.get("interface_type"),
-                from_address=sp.get("from_address"),
-                ignore_cert_errors=sp.get("ignore_cert_errors"),
-                headers=sp.get("headers"),
-            )
+        sending_profile = campaign_manager.create(
+            "sending_profile",
+            name=sp.get("name"),
+            username=sp.get("username"),
+            password=sp.get("password"),
+            host=sp.get("host"),
+            interface_type=sp.get("interface_type"),
+            from_address=sp.get("from_address"),
+            ignore_cert_errors=sp.get("ignore_cert_errors"),
+            headers=sp.get("headers"),
+        )
 
         serializer = SendingProfileSerializer(sending_profile)
         return Response(serializer.data)
 
     def build_test_smtp(self, sp):
         smtp = sp.get("smtp")
-        smpt_test = {
+        smtp_test = {
             "template": {"name": sp.get("template")},
             "first_name": sp.get("first_name"),
             "last_name": sp.get("last_name"),
@@ -113,7 +91,7 @@ class SendingProfilesListView(APIView):
                 "headers": smtp.get("headers"),
             },
         }
-        return smpt_test
+        return smtp_test
 
 
 class SendingProfileView(APIView):
