@@ -202,7 +202,6 @@ class GenericRepository(object):
         # self.db.set_profiling_level(0)
         # uncomment this statement on to see all the query to
         # the db in the log
-        self.db.set_profiling_level(2, -1)
         self.collection_name = collection_name
         self.collection = self.db.get_collection(
             self.collection_name, codec_options=CodecOptions(tz_aware=True)
