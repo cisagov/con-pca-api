@@ -43,11 +43,14 @@ class SendingTestEmailsView(APIView):
         operation_description="This handles the API for the Update Sending Profile with uuid.",
     )
     def post(self, request):
+        logger.info("starting the post")
         sp = request.data.copy()
+        logger.info(sp)
         # build the template
         # send the test
         # tear the template down
         try:
+            logger.info("in the try if and about to check for template")
             if sp.get("template").get("name"):
                 tmp_template = sp.get("template")
                 template_response = campaign_manager.generate_email_template(
@@ -56,6 +59,8 @@ class SendingTestEmailsView(APIView):
                     tmp_template.get("subject"),
                     tmp_template.get("text"),
                 )
+            else:
+                logger.info("name check came back false(Taking default)")
 
             test_send = self.build_test_smtp(sp)
             test_response = campaign_manager.send_test_email(test_send)
@@ -66,6 +71,7 @@ class SendingTestEmailsView(APIView):
         return Response(test_response)
 
     def build_test_smtp(self, sp):
+        logger.info("attempting to get the smtp")
         smtp = sp.get("smtp")
         if sp.get("template").get("name"):
             template = sp.get("template")
@@ -73,7 +79,8 @@ class SendingTestEmailsView(APIView):
         else:
             template = {"name": sp.get("template").get("name")}
 
-        smpt_test = {
+        logger.info("attempting to to build the smtp _test object")
+        smtp_test = {
             "template": template,
             "first_name": sp.get("first_name"),
             "last_name": sp.get("last_name"),
@@ -89,4 +96,6 @@ class SendingTestEmailsView(APIView):
                 "headers": smtp.get("headers"),
             },
         }
-        return smpt_test
+        logger.info("returning smtp")
+        logger.info(smtp_test)
+        return smtp_test
