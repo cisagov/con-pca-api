@@ -368,7 +368,7 @@ class CampaignManager:
             }
             logger.info(settings.GP_API_KEY)
             logger.info(headers)
-            r = requests.post(url=url, json=test_string, headers=headers,)
+            r = requests.post(url=url, json=test_string, headers=headers, verify=False)
             # extracting response text
             return json.loads(r.text)
         except Exception as e:
