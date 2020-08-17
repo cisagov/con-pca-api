@@ -136,6 +136,7 @@ module "browserless" {
 
   vpc_id     = data.aws_vpc.vpc.id
   subnet_ids = data.aws_subnet_ids.private.ids
+  lb_port    = 3000
 }
 
 # ===========================
