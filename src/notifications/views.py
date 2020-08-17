@@ -35,6 +35,13 @@ class EmailSender:
         self.notification = self.set_notification(message_type)
         self.attachment = self.get_attachment(cycle)
 
+        self.dhs_contact = get_single(
+            self.subscription.get("dhs_contact_uuid"),
+            "dhs_contact",
+            DHSContactModel,
+            validate_dhs_contact,
+        )
+
         self.context = self.set_context()
 
         self.text_content = render_to_string(
@@ -45,13 +52,7 @@ class EmailSender:
         )
 
         self.to = self.set_to()
-        self.bcc, self.dhs_contact_email = self.set_bcc()
-        self.dhs_contact = get_single(
-            self.subscription.get("dhs_contact_uuid"),
-            "dhs_contact",
-            DHSContactModel,
-            validate_dhs_contact,
-        )
+        self.bcc = self.set_bcc()
 
     def get_attachment(self, cycle):
         if "report" in self.notification["path"]:
@@ -99,7 +100,7 @@ class EmailSender:
             "sent": datetime.now(),
             "email_to": self.subscription.get("primary_contact").get("email"),
             "email_from": settings.SERVER_EMAIL,
-            "bcc": self.dhs_contact_email,
+            "bcc": self.dhs_contact.get("email"),
         }
 
         logging.info(data)
@@ -184,7 +185,7 @@ class EmailSender:
         if settings.DEBUG == 0:
             bcc.extend(settings.EXTRA_BCC_EMAILS)
 
-        return bcc, dhs_contact
+        return bcc
 
     def set_notification(self, message_type):
         return {
