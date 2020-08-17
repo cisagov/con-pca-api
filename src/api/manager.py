@@ -372,6 +372,7 @@ class CampaignManager:
             # extracting response text
             return json.loads(r.text)
         except Exception as e:
+            logger.error(e)
             if hasattr(e, "message"):
                 return e.message
             else:
