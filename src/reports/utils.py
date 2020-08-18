@@ -1255,15 +1255,22 @@ def get_relevant_recommendations(subscription_stats):
     recommendations_set = set(recommendations_list[0])
     templates_set = set([template[2] for template in sorted_templates][0])
 
-    recommendations_uuid = []
+    recommendations_uuid = {}
     for matching_key in recommendations_set.intersection(templates_set):
         for index, recommendation in enumerate(recommendations_list):
-            if recommendation.get(matching_key) == sorted_templates[index][2].get(
-                matching_key
-            ):
-                recommendations_uuid.append(recommendation.get("recommendations_uuid"))
-
-    return recommendations_uuid
+            for sorted_template in sorted_templates:
+                if recommendation.get(matching_key) == sorted_template[2].get(
+                    matching_key
+                ):
+                    tmp_uuid = recommendation.get("recommendations_uuid")
+                    if tmp_uuid in recommendations_uuid:
+                        recommendations_uuid[tmp_uuid] += 1
+                    else:
+                        recommendations_uuid[tmp_uuid] = 1
+    sorted_recommendations_uuid = sorted(
+        recommendations_uuid, key=lambda x: x[1], reverse=True
+    )
+    return sorted_recommendations_uuid
 
 
 def deception_stats_to_graph_format(stats):
