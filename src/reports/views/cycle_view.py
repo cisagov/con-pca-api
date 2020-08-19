@@ -38,6 +38,7 @@ from reports.utils import (
     get_most_successful_campaigns,
     get_closest_cycle_within_day_range,
     ratio_to_percent,
+    ratio_to_percent_zero_default,
     format_timedelta,
     get_statistic_from_region_group,
     get_stats_low_med_high_by_level,
@@ -188,25 +189,25 @@ class CycleReportsView(APIView):
                 / len(subscription["target_email_list"]),
                 0,
             ),
-            "customer_clicked_avg": ratio_to_percent(
+            "customer_clicked_avg": ratio_to_percent_zero_default(
                 get_statistic_from_region_group(
                     region_stats, "customer", "clicked_ratio"
                 ),
                 0,
             ),
-            "national_clicked_avg": ratio_to_percent(
+            "national_clicked_avg": ratio_to_percent_zero_default(
                 get_statistic_from_region_group(
                     region_stats, "national", "clicked_ratio"
                 ),
                 0,
             ),
-            "industry_clicked_avg": ratio_to_percent(
+            "industry_clicked_avg": ratio_to_percent_zero_default(
                 get_statistic_from_region_group(
                     region_stats, "industry", "clicked_ratio"
                 ),
                 0,
             ),
-            "sector_clicked_avg": ratio_to_percent(
+            "sector_clicked_avg": ratio_to_percent_zero_default(
                 get_statistic_from_region_group(
                     region_stats, "sector", "clicked_ratio"
                 ),

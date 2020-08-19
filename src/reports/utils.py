@@ -1065,6 +1065,13 @@ def ratio_to_percent(ratio, round_val=2):
         return "N/A"
 
 
+def ratio_to_percent_zero_default(ratio, round_val=2):
+    if ratio:
+        return "{:.{prec}f}".format(ratio * 100, prec=round_val)
+    else:
+        return 0
+
+
 def format_timedelta(timedelta):
     ret_val = ""
     plural = ""
