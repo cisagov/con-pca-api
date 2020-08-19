@@ -20,6 +20,8 @@ parser.add_argument(
     "--jsonfile", help="File to output json to", default="templates.json"
 )
 
+parser.add_argument("--landing", help="Landing Page UUID")
+
 args = parser.parse_args()
 
 headers = {"Authorization": f"Bearer {args.token}"}
@@ -45,6 +47,8 @@ for new_template in new_templates:
         filter(lambda x: x["name"] == new_template["name"], old_templates)
     )
 
+    new_template["landing_page_uuid"] = args.landing
+
     if old_template:
         old_template = old_template[0]
         resp = requests.patch(
@@ -53,6 +57,7 @@ for new_template in new_templates:
             verify=False,
             json=new_template,
         )
+
         changes += 1
 
     else:
