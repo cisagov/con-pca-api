@@ -142,7 +142,8 @@ locals {
     "REPORTS_ENDPOINT" : "https://${data.aws_lb.public.dns_name}",
     "BROWSERLESS_ENDPOINT" : module.browserless.lb_dns_name,
     "EXTRA_BCC_EMAILS" : "william.martin@inl.gov",
-    "USE_SES" : 1
+    "USE_SES" : 1,
+    "TASKS_CRONTAB": "* * * * *"
   }
 
   secrets = {
