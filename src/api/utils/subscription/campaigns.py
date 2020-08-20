@@ -288,12 +288,10 @@ def __create_campaign_smtp(
 
     sp_from = sending_profile.from_address.split("<")[-1].replace(">", "")
     template_from_split = template_from_address.split("<")
-    custome_smtp_from = (
-        template_from_split[1].replace(">", "").split("@")[0]
-        + "@"
-        + sp_from.split("@")[1]
-    )
-    from_address = f"{template_from_split[0]} <{custome_smtp_from}>"
+    sp_from_domian = sp_from.split("@")[1]
+    tempalte_sender = template_from_split[1].replace(">", "").split("@")[0]
+    custom_smtp_from = f"{tempalte_sender}@{sp_from_domian}"
+    from_address = f"{template_from_split[0]} <{custom_smtp_from}>"
 
     return campaign_manager.create(
         "sending_profile",
