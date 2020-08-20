@@ -50,11 +50,15 @@ class SendingTestEmailsView(APIView):
         # build the template
         # send the test
         # tear the template down
+        sent_template = None
         try:
             logger.info("in the try if and about to check for template")
             if sp.get("template").get("name"):
                 tmp_template = sp.get("template")
-                campaign_manager.generate_email_template(
+                tmp_template["html"] = str(tmp_template["html"]).replace(
+                    "<%URL%>", "{{.URL}}"
+                )
+                sent_template = campaign_manager.generate_email_template(
                     tmp_template.get("name") + "_test",
                     tmp_template.get("html"),
                     tmp_template.get("subject"),
@@ -67,9 +71,14 @@ class SendingTestEmailsView(APIView):
             test_response = campaign_manager.send_test_email(test_send)
         finally:
             logger.info("finished the email test send")
-            # campaign_manager.delete_email_template(sp.get("name")+"_test")
+            if sent_template:
+                logger.info(sent_template)
+                campaign_manager.delete_email_template(sent_template.id)
 
         return Response(test_response)
+
+    # def cleanup(self, template_name)
+    #     """get all the templates find the one with the name we have and delete it by id"""
 
     def build_test_smtp(self, sp):
         logger.info("attempting to get the smtp")
@@ -87,7 +96,7 @@ class SendingTestEmailsView(APIView):
             "last_name": sp.get("last_name"),
             "email": sp.get("email"),
             "position": sp.get("position"),
-            "url": "",
+            "url": "https://www.google.com",
             "smtp": {
                 "from_address": smtp.get("from_address"),
                 "host": smtp.get("host"),
