@@ -286,12 +286,25 @@ def __create_campaign_smtp(
 
     __set_smtp_headers(sending_profile, cycle_uuid, dhs_contact_uuid)
 
-    sp_from = sending_profile.from_address.split("<")[-1].replace(">", "")
-    template_from_split = template_from_address.split("<")
-    sp_from_domian = sp_from.split("@")[1]
-    tempalte_sender = template_from_split[1].replace(">", "").split("@")[0]
-    custom_smtp_from = f"{tempalte_sender}@{sp_from_domian}"
-    from_address = f"{template_from_split[0]} <{custom_smtp_from}>"
+    # Get template display name
+    if "<" in template_from_address:
+        template_display = template_from_address.split("<")[0].strip()
+    else:
+        template_display = None
+
+    # Get template sender
+    template_sender = template_from_address.split("<")[-1].split("@")[0]
+
+    # Get sending profile domain
+    sp_domain = (
+        sending_profile.from_address.split("<")[-1].split("@")[1].replace(">", "")
+    )
+
+    # Generate from address
+    if template_display:
+        from_address = f"{template_display} <{template_sender}@{sp_domain}>"
+    else:
+        from_address = f"{template_sender}@{sp_domain}"
 
     return campaign_manager.create(
         "sending_profile",
