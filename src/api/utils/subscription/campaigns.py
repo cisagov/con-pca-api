@@ -287,7 +287,13 @@ def __create_campaign_smtp(
     __set_smtp_headers(sending_profile, cycle_uuid, dhs_contact_uuid)
 
     sp_from = sending_profile.from_address.split("<")[-1].replace(">", "")
-    from_address = f"{template_from_address.split('<')[0]} <{sp_from}>"
+    template_from_split = template_from_address.split("<")
+    custome_smtp_from = (
+        template_from_split[1].replace(">", "").split("@")[0]
+        + "@"
+        + sp_from.split("@")[1]
+    )
+    from_address = f"{template_from_split[0]} <{custome_smtp_from}>"
 
     return campaign_manager.create(
         "sending_profile",
