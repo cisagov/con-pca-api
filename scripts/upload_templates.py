@@ -30,6 +30,8 @@ headers = {"Authorization": f"Bearer {args.token}"}
 # Get templates from environment to upload to
 resp = requests.get(f"{args.url}/api/v1/templates/", headers=headers, verify=False)
 
+print(resp)
+
 old_templates = resp.json()
 
 with open(args.jsonfile, "r") as f:
@@ -68,6 +70,11 @@ for new_template in new_templates:
             json=new_template,
         )
         additions += 1
+
+    if resp.status_code not in (202, 200):
+        print(resp.text)
+        print(f"{old_template=}")
+        print(f"{new_template=}")
 
 print(f"Total Changes = {changes}")
 print(f"Total Additions = {additions}")
