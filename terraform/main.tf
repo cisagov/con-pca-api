@@ -50,16 +50,9 @@ module "documentdb" {
 #=================================================
 #  S3
 #=================================================
-module "s3_images" {
-  source                  = "github.com/cloudposse/terraform-aws-s3-bucket"
-  namespace               = "${var.app}"
-  stage                   = "${var.env}"
-  name                    = "images"
-  acl                     = "public-read"
-  sse_algorithm           = "AES256"
-  block_public_policy     = false
-  restrict_public_buckets = false
-
+resource "aws_s3_bucket" "images" {
+  bucket = "${var.app}-${var.env}-template-images"
+  acl    = "public-read"
   policy = <<POLICY
 {
   "Version": "2012-10-17",
@@ -69,12 +62,13 @@ module "s3_images" {
       "Effect": "Allow",
       "Principal": "*",
       "Action": "s3:GetObject",
-      "Resource": "arn:aws:s3:::${var.app}-${var.env}-websites/*"
+      "Resource": "arn:aws:s3:::${var.app}-${var.env}-template-images/*"
     }
   ]
 }
 POLICY
 }
+
 
 # ===========================
 # APP CREDENTIALS
@@ -138,7 +132,7 @@ locals {
     "GP_URL" : "https://${data.aws_lb.public.dns_name}:3333/"
     "PHISH_URL" : "http://${data.aws_lb.public.dns_name}/"
     "WEBHOOK_URL" : "http://${data.aws_lb.public.dns_name}:8000/api/v1/inboundwebhook/"
-    "AWS_S3_IMAGE_BUCKET" : module.s3_images.bucket_id,
+    "AWS_S3_IMAGE_BUCKET" : aws_s3_bucket.images.id,
     "DEFAULT_FILE_STORAGE" : "storages.backends.s3boto3.S3Boto3Storage",
     "WORKERS" : 4,
     "COGNITO_DEPLOYMENT_MODE" : "Production",
