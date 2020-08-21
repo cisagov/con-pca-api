@@ -13,11 +13,6 @@ resource "aws_ssm_parameter" "docdb_username" {
   description = "The username for document db"
   type        = "SecureString"
   value       = random_string.docdb_username.result
-
-  tags = {
-    environment = "${var.env}"
-    app         = "${var.app}"
-  }
 }
 
 resource "random_password" "docdb_password" {
@@ -31,11 +26,6 @@ resource "aws_ssm_parameter" "docdb_password" {
   description = "The password for document db"
   type        = "SecureString"
   value       = random_password.docdb_password.result
-
-  tags = {
-    environment = "${var.env}"
-    app         = "${var.app}"
-  }
 }
 
 
@@ -61,12 +51,29 @@ module "documentdb" {
 #  S3
 #=================================================
 module "s3_images" {
-  source        = "github.com/cloudposse/terraform-aws-s3-bucket"
-  namespace     = "${var.app}"
-  stage         = "${var.env}"
-  name          = "images"
-  acl           = "public-read"
-  sse_algorithm = "AES256"
+  source                  = "github.com/cloudposse/terraform-aws-s3-bucket"
+  namespace               = "${var.app}"
+  stage                   = "${var.env}"
+  name                    = "images"
+  acl                     = "public-read"
+  sse_algorithm           = "AES256"
+  block_public_policy     = false
+  restrict_public_buckets = false
+
+  policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Public",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::${var.app}-${var.env}-websites/*"
+    }
+  ]
+}
+POLICY
 }
 
 # ===========================
@@ -131,7 +138,7 @@ locals {
     "GP_URL" : "https://${data.aws_lb.public.dns_name}:3333/"
     "PHISH_URL" : "http://${data.aws_lb.public.dns_name}/"
     "WEBHOOK_URL" : "http://${data.aws_lb.public.dns_name}:8000/api/v1/inboundwebhook/"
-    "AWS_S3_IMAGE_BUCKET" : "${var.app}-${var.env}-images",
+    "AWS_S3_IMAGE_BUCKET" : module.s3_images.bucket_id,
     "DEFAULT_FILE_STORAGE" : "storages.backends.s3boto3.S3Boto3Storage",
     "WORKERS" : 4,
     "COGNITO_DEPLOYMENT_MODE" : "Production",
@@ -143,7 +150,7 @@ locals {
     "BROWSERLESS_ENDPOINT" : module.browserless.lb_dns_name,
     "EXTRA_BCC_EMAILS" : "william.martin@inl.gov",
     "USE_SES" : 1,
-    "TASKS_CRONTAB": "* * * * *"
+    "TASKS_CRONTAB" : "* * * * *"
   }
 
   secrets = {
