@@ -40,8 +40,8 @@ module "documentdb" {
   master_username         = random_string.docdb_username.result
   master_password         = random_password.docdb_password.result
   instance_class          = "db.r5.large"
-  vpc_id                  = data.aws_vpc.vpc.id
-  subnet_ids              = data.aws_subnet_ids.public.ids
+  vpc_id                  = var.vpc_id
+  subnet_ids              = var.public_subnet_ids
   allowed_cidr_blocks     = ["0.0.0.0/0"]
   allowed_security_groups = [aws_security_group.api.id]
   skip_final_snapshot     = true
@@ -111,8 +111,8 @@ module "browserless" {
   stage     = var.env
   name      = "browserless"
 
-  vpc_id     = data.aws_vpc.vpc.id
-  subnet_ids = data.aws_subnet_ids.private.ids
+  vpc_id     = var.vpc_id
+  subnet_ids = var.private_subnet_ids
   lb_port    = 3000
 }
 
@@ -216,7 +216,7 @@ module "api" {
   container_name        = "pca-api"
   cpu                   = 2048
   memory                = 4096
-  vpc_id                = data.aws_vpc.vpc.id
+  vpc_id                = var.vpc_id
   health_check_interval = 60
   health_check_path     = "/"
   health_check_codes    = "307,202,200,404"
@@ -224,7 +224,7 @@ module "api" {
   load_balancer_arn     = data.aws_lb.public.arn
   load_balancer_port    = local.api_load_balancer_port
   desired_count         = 1
-  subnet_ids            = data.aws_subnet_ids.private.ids
+  subnet_ids            = var.private_subnet_ids
   security_group_ids    = [aws_security_group.api.id]
 }
 
@@ -248,7 +248,7 @@ resource "aws_lb_listener" "api_http" {
 resource "aws_security_group" "api" {
   name        = "${var.app}-${var.env}-api-alb"
   description = "Allow traffic for api from alb"
-  vpc_id      = data.aws_vpc.vpc.id
+  vpc_id      = var.vpc_id
 
   ingress {
     description     = "Allow container port from ALB"
