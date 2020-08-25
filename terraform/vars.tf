@@ -29,3 +29,7 @@ variable "image_repo" {
 variable "image_tag" {
   type = string
 }
+
+variable "domain_name" {
+  type = string
+}

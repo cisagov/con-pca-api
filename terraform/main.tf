@@ -210,7 +210,7 @@ module "api" {
   stage     = "${var.env}"
   name      = "api"
 
-  iam_server_cert_arn   = data.aws_iam_server_certificate.self.arn
+  https_cert_arn        = data.aws_acm_certificate.cert.arn
   container_port        = local.api_container_port
   container_definition  = module.container.json
   container_name        = "pca-api"

@@ -15,3 +15,5 @@ public_subnet_ids = [
 ]
 
 image_repo = "780016325729.dkr.ecr.us-east-1.amazonaws.com/con-pca-api"
+
+domain_name = "con-pca.dev.inltesting.xyz"

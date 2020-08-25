@@ -58,6 +58,6 @@ data "aws_ssm_parameter" "ses_assume_role_arn" {
   name = "/${var.env}/${var.app}/ses/assume_role_arn"
 }
 
-data "aws_iam_server_certificate" "self" {
-  name = "${var.app}-${var.env}-alb"
+data "aws_acm_certificate" "cert" {
+  domain = var.domain_name
 }
