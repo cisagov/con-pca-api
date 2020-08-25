@@ -41,7 +41,7 @@ module "documentdb" {
   master_password         = random_password.docdb_password.result
   instance_class          = "db.r5.large"
   vpc_id                  = var.vpc_id
-  subnet_ids              = data.aws_subnet_ids.public.ids
+  subnet_ids              = var.public_subnet_ids
   allowed_cidr_blocks     = ["0.0.0.0/0"]
   allowed_security_groups = [aws_security_group.api.id]
   skip_final_snapshot     = true
