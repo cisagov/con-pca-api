@@ -3,18 +3,15 @@ variable "env" {
 }
 
 variable "app" {
-  type    = string
-  default = "con-pca"
+  type = string
 }
 
 variable "region" {
-  type    = string
-  default = "us-east-1"
+  type = string
 }
 
 variable "image_repo" {
-  type    = string
-  default = "780016325729.dkr.ecr.us-east-1.amazonaws.com/con-pca-api"
+  type = string
 }
 
 variable "image_tag" {
