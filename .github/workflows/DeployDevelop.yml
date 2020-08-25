@@ -61,7 +61,9 @@ jobs:
 
       - name: Terraform Workspace
         working-directory: ./terraform
-        run: terraform worksapce new dev
+        run: |
+          terraform workspace select $ENVIRONMENT
+          terraform workspace show
 
       - name: Terraform validation
         working-directory: ./terraform
@@ -69,7 +71,7 @@ jobs:
 
       - name: Terraform plan
         working-directory: ./terraform
-        run: terraform plan -input=false -var="image_tag=${{needs.build.outputs.tag}}"
+        run: terraform plan -input=false -var="image_tag=${{needs.build.outputs.tag}}" -var-file ./vars/$ENVIRONMENT.tfvars
       # - name: Terraform Apply
       #   working-directory: ./terraform
       #   run: terraform apply -auto-approve -input=false -var="image_tag=${{needs.build.outputs.tag}}"
