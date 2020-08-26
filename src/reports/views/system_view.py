@@ -143,7 +143,8 @@ class SystemReportsView(APIView):
             "click_rate_across_all_customers": consolidated_stats["ratios"][
                 "clicked_ratio"
             ],
-            "average_time_to_click_all_customers": consolidated_stats
+            "average_time_to_click_all_customers": consolidated_stats["clicked"],
+            "avgTimeToClick": format_timedelta(consolidated_stats["clicked"]["average"])
             # ["clicked"]["average"],
         }
 

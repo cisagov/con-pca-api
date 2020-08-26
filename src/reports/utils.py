@@ -744,45 +744,46 @@ def generate_cycle_phish_results(subscription, cycle):
         "submitted": 0,
         "reported": 0,
     }
-    for campaign in subscription["gophish_campaign_list"]:
-        if campaign["campaign_id"] in cycle["campaigns_in_cycle"]:
-            # If campaign timeline is dirty, recalculate the phish results
-            if campaign["phish_results_dirty"]:
+    if subscription["gophish_campaign_list"]:
+        for campaign in subscription["gophish_campaign_list"]:
+            if campaign["campaign_id"] in cycle["campaigns_in_cycle"]:
+                # If campaign timeline is dirty, recalculate the phish results
+                if campaign["phish_results_dirty"]:
 
-                unique_moments = get_unique_moments(campaign["timeline"])
-                phishing_results = count_timeline_moments(unique_moments)
+                    unique_moments = get_unique_moments(campaign["timeline"])
+                    phishing_results = count_timeline_moments(unique_moments)
 
-                # Update database with new phish results
-                update_nested_single(
-                    uuid=subscription["subscription_uuid"],
-                    field="gophish_campaign_list.$.phish_results",
-                    put_data=phishing_results,
-                    collection="subscription",
-                    model=SubscriptionModel,
-                    validation_model=validate_subscription,
-                    params={
-                        "gophish_campaign_list.campaign_id": campaign["campaign_id"]
-                    },
-                )
-                #  Mark campaign data as clean
-                update_nested_single(
-                    uuid=subscription["subscription_uuid"],
-                    field="gophish_campaign_list.$.phish_results_dirty",
-                    put_data=False,
-                    collection="subscription",
-                    model=SubscriptionModel,
-                    validation_model=validate_subscription,
-                    params={
-                        "gophish_campaign_list.campaign_id": campaign["campaign_id"]
-                    },
-                )
-                campaign["phish_results"] = phishing_results
+                    # Update database with new phish results
+                    update_nested_single(
+                        uuid=subscription["subscription_uuid"],
+                        field="gophish_campaign_list.$.phish_results",
+                        put_data=phishing_results,
+                        collection="subscription",
+                        model=SubscriptionModel,
+                        validation_model=validate_subscription,
+                        params={
+                            "gophish_campaign_list.campaign_id": campaign["campaign_id"]
+                        },
+                    )
+                    #  Mark campaign data as clean
+                    update_nested_single(
+                        uuid=subscription["subscription_uuid"],
+                        field="gophish_campaign_list.$.phish_results_dirty",
+                        put_data=False,
+                        collection="subscription",
+                        model=SubscriptionModel,
+                        validation_model=validate_subscription,
+                        params={
+                            "gophish_campaign_list.campaign_id": campaign["campaign_id"]
+                        },
+                    )
+                    campaign["phish_results"] = phishing_results
 
-            # append campaign results to cycle results
-            for key in campaign["phish_results"]:
-                cycle_phish_results[key] += campaign["phish_results"][key]
+                # append campaign results to cycle results
+                for key in campaign["phish_results"]:
+                    cycle_phish_results[key] += campaign["phish_results"][key]
 
-    cycle["phish_result"] = cycle_phish_results
+        cycle["phish_result"] = cycle_phish_results
 
     # update the cycle phish results
     update_nested_single(
@@ -822,8 +823,8 @@ def generate_region_stats(subscription_list, cycle_date=None):
             cycle_to_add = get_closest_cycle_within_day_range(subscription, cycle_date)
             if cycle_to_add:
                 target_cycles.append(cycle_to_add)
-        # else:
-        #     target_cycles = subscription["cycles"]
+        else:
+            target_cycles = subscription["cycles"]
         for target_cycle in target_cycles:
             cycle_count += 1
             campaign_count += len(target_cycle["campaigns_in_cycle"])
@@ -956,21 +957,19 @@ def get_gov_group_stats():
         if cust["customer_type"] == "Private":
             private_customer_uuids.append(cust["customer_uuid"])
 
-    parameters = {
-        "active": True,
-    }
-    subscription_fields = {
-        "customer_uuid": 1,
-        "subscription_uuid": 1,
-        "cycles": 1,
-        "name": 1,
-    }
+    parameters = {}
+    # subscription_fields = {
+    #     "customer_uuid": 1,
+    #     "subscription_uuid": 1,
+    #     "cycles": 1,
+    #     "name": 1,
+    # }
     subscription_list = get_list(
         parameters,
         "subscription",
         SubscriptionModel,
         validate_subscription,
-        subscription_fields,
+        # subscription_fields,
     )
 
     fed_subscriptions = []
