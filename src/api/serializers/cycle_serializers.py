@@ -26,7 +26,7 @@ class CycleEmailReportedListSerializer(serializers.Serializer):
 
     This is a formats the list of Cycle Email Reports.
     """
-
+    cycle_uuid = serializers.CharField()
     start_date = serializers.DateTimeField(required=True)
     end_date = serializers.DateTimeField(required=True)
     email_list = CycleEmailReportedSerializer(many=True)

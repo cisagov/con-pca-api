@@ -70,7 +70,6 @@ class SubscriptionsListView(APIView):
     def get(self, request):
         """Get method."""
         parameters = {"archived": {"$in": [False, None]}}
-
         archivedParm = request.GET.get("archived")
         if archivedParm:
             if archivedParm.lower() == "true":

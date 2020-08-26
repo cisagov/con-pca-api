@@ -54,6 +54,7 @@ def get_reported_emails(subscription):
             "end_date": c["end_date"],
             "email_list": emails_reported_per_cycle,
             "override_total_reported": c["override_total_reported"],
+            "cycle_uuid": c["cycle_uuid"]
         }
         master_list.append(cycle_reported_emails)
 
@@ -190,16 +191,17 @@ def override_total_reported(subscription, cycle_data_override):
 
 def get_cycle(subscription, cycle_data_override):
     """Get Cycle."""
-    cycle_start = cycle_data_override["start_date"].split("T")[0]
-    cycle_end = cycle_data_override["end_date"].split("T")[0]
-    cycle = next(
-        (
-            cycle
-            for cycle in subscription["cycles"]
-            if cycle["start_date"].strftime("%Y-%m-%d") == cycle_start
-            and cycle["end_date"].strftime("%Y-%m-%d") == cycle_end
-        ),
-        None,
-    )
-
-    return cycle
+    # cycle_start = cycle_data_override["start_date"].split("T")[0]
+    # cycle_end = cycle_data_override["end_date"].split("T")[0]
+    # cycle = next(
+    #     (
+    #         cycle
+    #         for cycle in subscription["cycles"]
+    #         if cycle["start_date"].strftime("%Y-%m-%d") == cycle_start
+    #         and cycle["end_date"].strftime("%Y-%m-%d") == cycle_end
+    #     ),
+    #     None,
+    # )
+    for cycle in subscription["cycles"]:
+        if cycle["cycle_uuid"] == cycle_data_override["cycle_uuid"]:
+            return cycle

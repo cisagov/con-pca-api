@@ -7,12 +7,10 @@ if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
     try:
         from django.core.management import execute_from_command_line
-
-        # if os.environ.get("DEBUG_PTVSD", 0) == 1:
-        #     import ptvsd
-
-        #     ptvsd.enable_attach(address=("0.0.0.0", 5678))
-        #     print("NOT Attached remote debugger")
+        if os.environ.get("DEBUG_PTVSD", 0):
+            import ptvsd
+            ptvsd.enable_attach(address=("0.0.0.0", 5678))
+            print("NOT Attached remote debugger")
     except ImportError as exc:
         raise ImportError(
             "Couldn't import Django. Are you sure it's installed and "
