@@ -20,6 +20,7 @@ services:
     ports:
       - 8000:80
       - 8043:443
+      - 5678:5678
 
   mongodb:
     container_name: pca-mongodb

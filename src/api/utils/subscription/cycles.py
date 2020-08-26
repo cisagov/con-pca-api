@@ -54,6 +54,7 @@ def get_reported_emails(subscription):
             "end_date": c["end_date"],
             "email_list": emails_reported_per_cycle,
             "override_total_reported": c["override_total_reported"],
+            "cycle_uuid": c["cycle_uuid"]
         }
         master_list.append(cycle_reported_emails)
 
