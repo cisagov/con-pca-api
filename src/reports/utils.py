@@ -8,6 +8,7 @@ from datetime import timedelta, datetime
 import statistics
 import pprint
 import pytz
+import math
 from django.utils import timezone
 
 # Third-Party Libraries
@@ -275,17 +276,19 @@ def get_clicked_time_period_breakdown(campaign_results):
     for campaign in campaign_results:
         if "clicked" in campaign["times"]:
             for moment in campaign["times"]["clicked"]:
+                clicked_count += 1
                 for key in time_deltas:
                     if moment < time_deltas[key][0]:
-                        clicked_count += 1
                         time_counts[key] += 1
                         break
 
     last_key = None
     if clicked_count:
-        for i, key in enumerate(time_counts, 0):
+        for i, key in enumerate(time_deltas, 0):
             if not last_key:
                 last_key = key
+                if time_counts[key] > 0:
+                    clicked_ratios[key] = time_counts[key] / clicked_count
             else:
                 time_counts[key] += time_counts[last_key]
                 clicked_ratios[key] = time_counts[key] / clicked_count
@@ -1076,16 +1079,21 @@ def ratio_to_percent_zero_default(ratio, round_val=2):
 def format_timedelta(timedelta):
     ret_val = ""
     plural = ""
+    secondsLeftAfterHours = timedelta.seconds
     if timedelta:
         if timedelta.days:
             plural = "s" if timedelta.days != 1 else ""
             ret_val += f"{timedelta.days} day{plural}, "
-        if timedelta.seconds / 3600 > 1:
-            plural = "s" if int(round(timedelta.seconds / 3600, 0)) != 1 else ""
-            ret_val += f"{int(round(timedelta.seconds/3600,0))} hour{plural}, "
-        if int(timedelta.seconds % 60) != 0:
-            plural = "s" if int(timedelta.seconds % 60) != 1 else ""
-            ret_val += f"{int(timedelta.seconds % 60)} minute{plural}, "
+            plural = ""
+        if timedelta.seconds / 3600 >= 1:
+            hours = int(math.floor(timedelta.seconds/3600))
+            plural = "s" if hours > 1 else ""
+            ret_val += f"{hours} hour{plural}, "
+            secondsLeftAfterHours = timedelta.seconds - (hours * 3600)
+            plural = ""
+        if secondsLeftAfterHours != 0:
+            plural = "s" if timedelta.seconds >= 120  else ""
+            ret_val += f"{int(secondsLeftAfterHours / 60)} minute{plural}, "
     return ret_val.rstrip(" ,")
 
 
