@@ -1078,9 +1078,9 @@ def ratio_to_percent_zero_default(ratio, round_val=2):
 
 def format_timedelta(timedelta):
     ret_val = ""
-    plural = ""
-    secondsLeftAfterHours = timedelta.seconds
+    plural = ""    
     if timedelta:
+        secondsLeftAfterHours = timedelta.seconds
         if timedelta.days:
             plural = "s" if timedelta.days != 1 else ""
             ret_val += f"{timedelta.days} day{plural}, "
@@ -1451,3 +1451,28 @@ def determine_trend(cycle_stats):
             else:
                 trend = "improving"
     return trend
+
+def get_yearly_start_dates(subscription, target_date):
+    # target_cycle = get_cycle_by_date_in_range(subscription,target_date)
+    for cycle in subscription["cycles"]:
+        if cycle["start_date"] == target_date:
+            target_cycle = cycle
+    if target_cycle:
+        end_date = target_cycle["end_date"]
+        earliest_date = end_date - timedelta(days=365.25)
+        cycles_in_range = []
+        for cycle in subscription["cycles"]:
+            if cycle["end_date"] > earliest_date and cycle["start_date"] < end_date:
+                cycles_in_range.append(cycle)
+        start_date = end_date
+        for cycle in cycles_in_range:
+            if cycle["start_date"] < start_date:
+                start_date = cycle["start_date"]
+        
+    if not start_date:
+        start_date = ""
+    if not end_date:
+        end_date = ""
+
+    return (start_date, end_date) 
+

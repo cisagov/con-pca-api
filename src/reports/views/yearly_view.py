@@ -47,6 +47,7 @@ from reports.utils import (
     cycle_stats_to_percentage_trend_graph_data,
     cycle_stats_to_click_rate_vs_report_rate,
     determine_trend,
+    get_yearly_start_dates,
     pprintItem,
 )
 
@@ -66,9 +67,7 @@ class YearlyReportsView(APIView):
             pprintItem(i)
         subscription_uuid = self.kwargs["subscription_uuid"]
         start_date_param = self.kwargs["start_date"]
-        print(start_date_param)
         start_date = datetime.strptime(start_date_param, "%Y-%m-%dT%H:%M:%S.%f%z")
-        print(start_date)
         subscription = get_single(
             subscription_uuid, "subscription", SubscriptionModel, validate_subscription
         )
@@ -97,15 +96,9 @@ class YearlyReportsView(APIView):
         # target_count = sum([targets.get("stats").get("total") for targets in summary])
         target_count = len(subscription["target_email_list"])
 
-        if not start_date:
-            yearly_start_date = datetime.now()
-            yearly_start_date -= timedelta(days=365.25)
-        else:
-            if not timezone.is_aware(start_date):
-                utc = pytz.UTC
-                start_date = utc.localize(start_date)
-            yearly_start_date = start_date - timedelta(days=365.25)
-        yearly_end_date = yearly_start_date + timedelta(days=365.25)
+        yearly_start_date, yearly_end_date = get_yearly_start_dates(subscription,start_date)
+
+
         # Get subscription stats for the previous year.
         # Provide date values to get_subscription_stats_for_yearly for a different time span
         subscription_stats, cycles_stats = get_subscription_stats_for_yearly(
