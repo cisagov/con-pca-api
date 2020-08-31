@@ -823,6 +823,8 @@ def generate_region_stats(subscription_list, cycle_date=None):
             cycle_to_add = get_closest_cycle_within_day_range(subscription, cycle_date)
             if cycle_to_add:
                 target_cycles.append(cycle_to_add)
+            else:
+                continue
         else:
             target_cycles = subscription["cycles"]
         for target_cycle in target_cycles:
