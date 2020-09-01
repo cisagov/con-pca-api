@@ -6,6 +6,7 @@ These are utils for creating reports.
 # Standard Python Libraries
 from datetime import timedelta, datetime
 import statistics
+import logging
 import pprint
 import pytz
 import math
@@ -55,7 +56,7 @@ def get_closest_cycle_within_day_range(subscription, start_date, day_range=90):
         ):
             closest_cycle = cycle
             closest_val = cycle_start_difference
-    if closest_cycle == None:
+    if not closest_cycle:
         return None
     if closest_cycle:
         return closest_cycle
@@ -326,7 +327,7 @@ def get_subscription_stats_for_month(subscription, end_date):
     # Get the correct cycle based on the provided start_date
     active_cycle = get_cycle_by_date_in_range(subscription, end_date)
 
-    start_date = active_cycle["start_date"]
+    # start_date = active_cycle["start_date"]
     # Get all the campaigns for the specified cycle from the gophish_campaign_list
     campaigns_in_cycle = []
     for campaign in subscription["gophish_campaign_list"]:
@@ -448,7 +449,7 @@ def get_subscription_stats_for_yearly(
             cycles_in_year.append(cycle)
             for campaign in cycle["campaigns_in_cycle"]:
                 campaigns_in_year.append(campaign)
-                if not "campaigns" in cycle:
+                if "campaigns" not in cycle:
                     cycle["campaigns"] = []
                 cycle["campaigns"].append(campaign)
 
@@ -469,7 +470,7 @@ def get_subscription_stats_for_yearly(
             campaigns_in_time_gap.append(campaign)
         for cycle in cycles_in_year:
             if campaign["campaign_id"] in cycle["campaigns"]:
-                if not "campaign_list" in cycle:
+                if "campaign_list" not in cycle:
                     cycle["campaign_list"] = []
                 cycle["campaign_list"].append(campaign)
 
@@ -936,12 +937,12 @@ def get_related_subscription_stats(subscription, start_date=None):
 def get_gov_group_stats():
     """Get base stats for all related subscriptions (national, sector, industry, and customer)."""
 
-    fields = {
-        "customer_uuid": 1,
-        "sector": 1,
-        "industry": 1,
-        "customer_type": 1,
-    }
+    # fields = {
+    #     "customer_uuid": 1,
+    #     "sector": 1,
+    #     "industry": 1,
+    #     "customer_type": 1,
+    # }
     customers = get_list({}, "customer", CustomerModel, validate_customer)
 
     fed_customer_uuids = []
@@ -1054,8 +1055,8 @@ def get_statistic_from_region_group(region_stats, group, stat):
     if stat in ("sent", "opened", "clicked", "submitted", "reported"):
         try:
             return region_stats[group]["consolidated_values"][stat]
-        except:
-            print("Get stats from group failure")
+        except Exception:
+            logging.info("Get stats from group failure")
     try:
         return region_stats[group][stat]
     except Exception:
@@ -1078,7 +1079,7 @@ def ratio_to_percent_zero_default(ratio, round_val=2):
 
 def format_timedelta(timedelta):
     ret_val = ""
-    plural = ""    
+    plural = ""
     if timedelta:
         secondsLeftAfterHours = timedelta.seconds
         if timedelta.days:
@@ -1086,13 +1087,13 @@ def format_timedelta(timedelta):
             ret_val += f"{timedelta.days} day{plural}, "
             plural = ""
         if timedelta.seconds / 3600 >= 1:
-            hours = int(math.floor(timedelta.seconds/3600))
+            hours = int(math.floor(timedelta.seconds / 3600))
             plural = "s" if hours > 1 else ""
             ret_val += f"{hours} hour{plural}, "
             secondsLeftAfterHours = timedelta.seconds - (hours * 3600)
             plural = ""
         if secondsLeftAfterHours != 0:
-            plural = "s" if timedelta.seconds >= 120  else ""
+            plural = "s" if timedelta.seconds >= 120 else ""
             ret_val += f"{int(secondsLeftAfterHours / 60)} minute{plural}, "
     return ret_val.rstrip(" ,")
 
@@ -1104,7 +1105,7 @@ def get_reports_to_click(subscription_stats):
             subscription_stats["stats_all"]["reported"]["count"]
             / subscription_stats["stats_all"]["clicked"]["count"]
         )
-    except:
+    except Exception:
         return None
 
 
@@ -1166,8 +1167,8 @@ def get_template_details(campaign_results):
     for camp in campaign_results:
         try:
             total_sent += camp["campaign_stats"]["sent"]["count"]
-        except:
-            pass
+        except Exception as e:
+            logging.exception(e)
 
     percent_of_camps = 0
     for camp in campaign_results:
@@ -1176,7 +1177,7 @@ def get_template_details(campaign_results):
                 camp["campaign_stats"]["sent"]["count"] / total_sent
             )
             camp["campaign_stats"]["percent_of_campaigns"] = percent_of_camps
-        except:
+        except Exception:
             camp["campaign_stats"]["percent_of_campaigns"] = 0
 
     # Possible large performance hit here. Break out repository to use built in mongo $in functionallity to fix
@@ -1452,6 +1453,7 @@ def determine_trend(cycle_stats):
                 trend = "improving"
     return trend
 
+
 def get_yearly_start_dates(subscription, target_date):
     # target_cycle = get_cycle_by_date_in_range(subscription,target_date)
     for cycle in subscription["cycles"]:
@@ -1468,11 +1470,10 @@ def get_yearly_start_dates(subscription, target_date):
         for cycle in cycles_in_range:
             if cycle["start_date"] < start_date:
                 start_date = cycle["start_date"]
-        
+
     if not start_date:
         start_date = ""
     if not end_date:
         end_date = ""
 
-    return (start_date, end_date) 
-
+    return (start_date, end_date)

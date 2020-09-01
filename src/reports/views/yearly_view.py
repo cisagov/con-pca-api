@@ -96,8 +96,9 @@ class YearlyReportsView(APIView):
         # target_count = sum([targets.get("stats").get("total") for targets in summary])
         target_count = len(subscription["target_email_list"])
 
-        yearly_start_date, yearly_end_date = get_yearly_start_dates(subscription,start_date)
-
+        yearly_start_date, yearly_end_date = get_yearly_start_dates(
+            subscription, start_date
+        )
 
         # Get subscription stats for the previous year.
         # Provide date values to get_subscription_stats_for_yearly for a different time span

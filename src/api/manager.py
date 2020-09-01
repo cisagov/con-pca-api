@@ -96,7 +96,7 @@ class CampaignManager:
 
     def __init__(self):
         """Init."""
-        self.gp_api = Gophish(settings.GP_API_KEY, host=settings.GP_URL, verify=False)
+        self.gp_api = Gophish(settings.GP_API_KEY, host=settings.GP_URL)
 
     def create(self, method, **kwargs):
         """Create Method."""
@@ -366,9 +366,7 @@ class CampaignManager:
                 "Content-Type": "application/json",
                 "Authorization": "Bearer {}".format(settings.GP_API_KEY),
             }
-            logger.info(settings.GP_API_KEY)
-            logger.info(headers)
-            r = requests.post(url=url, json=test_string, headers=headers, verify=False)
+            r = requests.post(url=url, json=test_string, headers=headers)
             # extracting response text
             return json.loads(r.text)
         except Exception as e:

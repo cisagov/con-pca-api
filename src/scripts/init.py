@@ -10,7 +10,7 @@ from gophish.models import SMTP, Page, Webhook
 
 API_KEY = os.environ.get("GP_API_KEY")
 URL = os.environ.get("GP_URL")
-API = Gophish(API_KEY, host=URL, verify=False)
+API = Gophish(API_KEY, host=URL)
 LOCAL_URL = "http://localhost:8000"
 
 
@@ -116,7 +116,7 @@ def create_templates():
     existing_names = [
         t["name"]
         for t in requests.get(
-            f"{LOCAL_URL}/api/v1/templates", headers=get_headers(), verify=False
+            f"{LOCAL_URL}/api/v1/templates", headers=get_headers()
         ).json()
     ]
     if len(existing_names) <= 0:
@@ -131,7 +131,6 @@ def create_templates():
                     f"{LOCAL_URL}/api/v1/templates/",
                     json=template,
                     headers=get_headers(),
-                    verify=False,
                 )
 
                 if resp.status_code == 409:
@@ -157,18 +156,13 @@ def create_tags():
     tags = load_file("data/tags.json")
     existing_tags = [
         t["tag"]
-        for t in requests.get(
-            f"{LOCAL_URL}/api/v1/tags/", headers=get_headers(), verify=False
-        ).json()
+        for t in requests.get(f"{LOCAL_URL}/api/v1/tags/", headers=get_headers()).json()
     ]
     if len(existing_tags) <= 0:
         for tag in tags:
             if tag["tag"] not in existing_tags:
                 resp = requests.post(
-                    f"{LOCAL_URL}/api/v1/tags/",
-                    json=tag,
-                    headers=get_headers(),
-                    verify=False,
+                    f"{LOCAL_URL}/api/v1/tags/", json=tag, headers=get_headers()
                 )
                 resp.raise_for_status()
                 resp_json = resp.json()
@@ -191,7 +185,7 @@ def get_headers():
 def wait_connection():
     for i in range(1, 15):
         try:
-            requests.get(f"{LOCAL_URL}/", headers=get_headers(), verify=False)
+            requests.get(f"{LOCAL_URL}/", headers=get_headers())
             break
         except BaseException:
             print("Django API not yet running. Waiting...")

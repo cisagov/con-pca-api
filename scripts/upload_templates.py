@@ -28,7 +28,7 @@ headers = {"Authorization": f"Bearer {args.token}"}
 
 
 # Get templates from environment to upload to
-resp = requests.get(f"{args.url}/api/v1/templates/", headers=headers, verify=False)
+resp = requests.get(f"{args.url}/api/v1/templates/", headers=headers)
 
 print(resp)
 
@@ -56,7 +56,6 @@ for new_template in new_templates:
         resp = requests.patch(
             f"{args.url}/api/v1/template/{old_template['template_uuid']}/",
             headers=headers,
-            verify=False,
             json=new_template,
         )
 
@@ -64,10 +63,7 @@ for new_template in new_templates:
 
     else:
         resp = requests.post(
-            f"{args.url}/api/v1/templates/",
-            headers=headers,
-            verify=False,
-            json=new_template,
+            f"{args.url}/api/v1/templates/", headers=headers, json=new_template,
         )
         additions += 1
 
