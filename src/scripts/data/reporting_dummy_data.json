@@ -137,8 +137,7 @@
       "gophish_campaign_list": [],
       "keywords": "Serach terms keywords identifier",
       "name": "changme2",
-      "primary_contact": 
-      {
+      "primary_contact": {
         "active": true,
         "email": "ChemSpecialtyProd@example.com",
         "first_name": "Chem",
@@ -151,6 +150,7 @@
       "sending_profile_name": "REPORTING",
       "start_date": "2021-03-10T09:30:25",
       "status": "Waiting on SRF",
+      "target_domain": "@example.com",
       "target_email_list": [
         {
           "email": "Email.Test0@example.com",
@@ -1355,7 +1355,6 @@
           "position": "manager"
         }
       ],
-      "target_domain": "@example.com",
       "templates_selected_uuid_list": [],
       "url": "https://google.com"
     }
