@@ -126,12 +126,12 @@ locals {
   environment = {
     "SECRET_KEY" : random_string.django_secret_key.result,
     "DEBUG" : 0,
-    "DJANGO_ALLOWED_HOSTS" : "localhost 127.0.0.1 [::1] ${data.aws_lb.public.dns_name}",
+    "DJANGO_ALLOWED_HOSTS" : "localhost 127.0.0.1 [::1] ${data.aws_lb.public.dns_name} ${var.domain_name}",
     "DB_HOST" : module.documentdb.endpoint,
     "DB_PORT" : 27017,
-    "GP_URL" : "https://${data.aws_lb.public.dns_name}:3333/"
-    "PHISH_URL" : "http://${data.aws_lb.public.dns_name}/"
-    "WEBHOOK_URL" : "http://${data.aws_lb.public.dns_name}:8000/api/v1/inboundwebhook/"
+    "GP_URL" : "https://${var.domain_name}:3333/"
+    "PHISH_URL" : "http://${var.domain_name}/"
+    "WEBHOOK_URL" : "http://${var.domain_name}:8000/api/v1/inboundwebhook/"
     "AWS_S3_IMAGE_BUCKET" : aws_s3_bucket.images.id,
     "DEFAULT_FILE_STORAGE" : "storages.backends.s3boto3.S3Boto3Storage",
     "WORKERS" : 4,
@@ -140,7 +140,7 @@ locals {
     "COGNITO_USER_POOL" : element(tolist(data.aws_cognito_user_pools.users.ids), 0),
     "LOCAL_API_KEY" : random_string.local_api_key.result,
     "MONGO_TYPE" : "DOCUMENTDB",
-    "REPORTS_ENDPOINT" : "https://${data.aws_lb.public.dns_name}",
+    "REPORTS_ENDPOINT" : "https://${var.domain_name}",
     "BROWSERLESS_ENDPOINT" : module.browserless.lb_dns_name,
     "EXTRA_BCC_EMAILS" : "william.martin@inl.gov",
     "USE_SES" : 1,
