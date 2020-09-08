@@ -1265,13 +1265,18 @@ def get_relevant_recommendations(subscription_stats):
         (i.get("template_uuid"), i.get("ratios"), i.get("template_details"))
         for i in subscription_stats.get("campaign_results")
     ]
+    if not template_performance:
+        return None
+
     # Sort the top five performing templates from high to low open ratio
     sorted_templates = sorted(template_performance, key=lambda x: x[0], reverse=True)[
         :5
     ]
     recommendations_set = set(recommendations_list[0])
-    templates_set = set([template[2] for template in sorted_templates][0])
-
+    try:
+        templates_set = set([template[2] for template in sorted_templates][0])
+    except:
+        return None
     recommendations_uuid = {}
     for matching_key in recommendations_set.intersection(templates_set):
         for index, recommendation in enumerate(recommendations_list):
