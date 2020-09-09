@@ -1,7 +1,6 @@
 # Standard Python Libraries
 import logging
 import os
-from urllib.parse import urlparse
 import uuid
 from django.conf import settings
 
@@ -31,17 +30,7 @@ class S3(AWS):
         key = f"{uuid.uuid4().hex}.png"
         logger.info(f"data={data} bucket={self.image_bucket} key={key}")
         self.client.upload_fileobj(data, self.image_bucket, key)
-
-        # Replace the url for local stack container location with local host
-        # Required so that docker containers can communincate with one another but still allow
-        # the tester to retreive the image on there local machine
-        if self.endpoint_url:
-            parsed_url = urlparse(self.endpoint_url)
-            external_host = os.environ.get("AWS_S3_EXTERNAL_HOST", "localhost")
-            host = f"{parsed_url.scheme}://{external_host}:{parsed_url.port}"
-        else:
-            host = "https://s3.amazonaws.com"
-
+        host = "https://s3.amazonaws.com"
         url = f"{host}/{self.image_bucket}/{key}"
 
         return key, self.image_bucket, url
