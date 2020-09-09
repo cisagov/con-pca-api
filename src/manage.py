@@ -11,7 +11,7 @@ if __name__ == "__main__":
         if os.environ.get("DEBUG_PTVSD", 0):
             import ptvsd
 
-            ptvsd.enable_attach(address=("0.0.0.0", 5678))
+            # ptvsd.enable_attach(address=("0.0.0.0", 5678))
             print("NOT Attached remote debugger")
     except ImportError as exc:
         raise ImportError(

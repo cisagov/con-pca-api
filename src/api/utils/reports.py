@@ -35,13 +35,14 @@ async def _download_pdf(report_type, uuid, cycle, auth_header=None):
         url = f"{settings.REPORTS_ENDPOINT}/reports/{report_type}/{uuid}/{cycle}"
 
     await page.goto(
-        url, waitUntil="networkidle2",
+        url, waitUntil="networkidle0",
     )
     await page.emulateMedia("screen")
-    if report_type == "yearly":
-        await page.waitForSelector('.last-yearly-graph')
-    elif report_type == "cycle":
-        await page.waitForSelector('.last-cycle-graph')
+    await page.waitFor(2000)
+    # if report_type == "yearly":
+    #     await page.waitForSelector('.last-yearly-graph')
+    # elif report_type == "cycle":
+    #     await page.waitForSelector('.last-cycle-graph')
     
     pdf_content = await page.pdf({"format": "Letter", "printBackground": True})
     await browser.close()
