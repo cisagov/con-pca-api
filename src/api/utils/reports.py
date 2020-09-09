@@ -35,9 +35,13 @@ async def _download_pdf(report_type, uuid, cycle, auth_header=None):
         url = f"{settings.REPORTS_ENDPOINT}/reports/{report_type}/{uuid}/{cycle}"
 
     await page.goto(
-        url, waitUntil="networkidle2",
+        url, waitUntil="networkidle0",
     )
+
     await page.emulateMedia("screen")
+    await page.waitForSelector("#bluePhishLogo")
+    await page.waitFor(1500)
+
     pdf_content = await page.pdf({"format": "Letter", "printBackground": True})
     await browser.close()
     return pdf_content
