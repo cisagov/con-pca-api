@@ -66,7 +66,7 @@ db_drop_mongo:
 
 # target: coverage - runs pytests against code and generates coverage html
 coverage:
-	coverage run --omit *.venv*,*test* -m pytest ./src/ --disable-warnings
+	coverage run --omit *.venv*,*test* -m pytest ./tests/ --disable-warnings
 	coverage html
 
 # target: cc - calculates cyclomatic complexity
