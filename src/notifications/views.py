@@ -151,6 +151,8 @@ class EmailSender:
         current_cycle = current_cycle = self.subscription.get("cycles")[-1]
         cycle_uuid = current_cycle.get("cycle_uuid")
 
+        dhs_contact = self.dhs_contact
+
         # Putting .split on the start and end date because sometimes it comes formatted with a float at the end.
         if not isinstance(self.subscription.get("start_date"), datetime):
             start_date = datetime.strptime(
@@ -194,6 +196,7 @@ class EmailSender:
             "templates": templates,
             "phishing_email": phishing_email,
             "email_count": email_count,
+            "dhs_contact": dhs_contact,
         }
 
     def set_to(self):
