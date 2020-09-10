@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 import logging
 
 # Third-Party Libraries
+from bs4 import BeautifulSoup
 from api.manager import CampaignManager
 from api.serializers import campaign_serializers
 from api.utils.generic import format_ztime
@@ -180,6 +181,7 @@ def __create_campaign(
     created_template = campaign_manager.generate_email_template(
         name=f"{base_name}.{template['name']}",
         template=template["data"],
+        text=BeautifulSoup(template["data"], "html.parser").get_text(),
         subject=template["subject"],
     )
     if not created_template:

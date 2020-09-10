@@ -1,7 +1,6 @@
 # Standard Python Libraries
 import logging
 import os
-from urllib.parse import urlparse
 import uuid
 from django.conf import settings
 
@@ -31,6 +30,7 @@ class S3(AWS):
         key = f"{uuid.uuid4().hex}.png"
         logger.info(f"data={data} bucket={self.image_bucket} key={key}")
         self.client.upload_fileobj(data, self.image_bucket, key)
+<<<<<<< HEAD
 
 
         host = "https://s3.amazonaws.com"
@@ -45,6 +45,9 @@ class S3(AWS):
         # else:
         #     host = "https://s3.amazonaws.com"
 
+=======
+        host = "https://s3.amazonaws.com"
+>>>>>>> develop
         url = f"{host}/{self.image_bucket}/{key}"
 
         return key, self.image_bucket, url
