@@ -211,6 +211,11 @@ urlpatterns = [
         name="landing_page_list_api",
     ),
     path(
+        "v1/landingpages/<with_default>/",
+        landing_page_views.LandingPagesListView.as_view(),
+        name="landing_page_list_api",
+    ),
+    path(
         "v1/landingpage/<landing_page_uuid>/",
         landing_page_views.LandingPageView.as_view(),
         name="landing_page_get_api",
