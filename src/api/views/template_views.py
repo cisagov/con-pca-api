@@ -148,9 +148,9 @@ class TemplateView(APIView):
         """Patch method."""
         logger.debug("patch template_uuid {}".format(template_uuid))
         put_data = request.data.copy()
+        if put_data['landing_page_uuid'] == "0" or not put_data['landing_page_uuid']:
+            put_data['landing_page_uuid'] = None
         serialized_data = TemplatePatchSerializer(put_data)
-        if serialized_data.data['landing_page_uuid'] == "0" or not serialized_data.data['landing_page_uuid']:
-            serialized_data.data['landing_page_uuid'] = None
         updated_response = update_single(
             uuid=template_uuid,
             put_data=serialized_data.data,

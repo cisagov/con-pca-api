@@ -32,15 +32,18 @@ class S3(AWS):
         logger.info(f"data={data} bucket={self.image_bucket} key={key}")
         self.client.upload_fileobj(data, self.image_bucket, key)
 
+
+        host = "https://s3.amazonaws.com"
+
         # Replace the url for local stack container location with local host
         # Required so that docker containers can communincate with one another but still allow
         # the tester to retreive the image on there local machine
-        if self.endpoint_url:
-            parsed_url = urlparse(self.endpoint_url)
-            external_host = os.environ.get("AWS_S3_EXTERNAL_HOST", "localhost")
-            host = f"{parsed_url.scheme}://{external_host}:{parsed_url.port}"
-        else:
-            host = "https://s3.amazonaws.com"
+        # if self.endpoint_url:
+        #     parsed_url = urlparse(self.endpoint_url)
+        #     external_host = os.environ.get("AWS_S3_EXTERNAL_HOST", "localhost")
+        #     host = f"{parsed_url.scheme}://{external_host}:{parsed_url.port}"
+        # else:
+        #     host = "https://s3.amazonaws.com"
 
         url = f"{host}/{self.image_bucket}/{key}"
 
