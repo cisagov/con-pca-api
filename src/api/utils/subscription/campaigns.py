@@ -14,6 +14,7 @@ from api.utils import db_utils as db
 from api.models.dhs_models import DHSContactModel, validate_dhs_contact
 from api.models.landing_page_models import LandingPageModel, validate_landing_page
 from api.serializers.dhs_serializers import DHSContactGetSerializer
+from api.utils.subscription.static import CAMPAIGN_MINUTES
 
 logger = logging.getLogger()
 
@@ -201,7 +202,7 @@ def __create_campaign(
         )
 
     campaign_start = start_date
-    campaign_end = start_date + timedelta(days=60)
+    campaign_end = start_date + timedelta(minutes=CAMPAIGN_MINUTES)
 
     campaign_name = f"{base_name}.{template['name']}.{campaign_start.strftime('%Y-%m-%d')}.{campaign_end.strftime('%Y-%m-%d')}"
 
