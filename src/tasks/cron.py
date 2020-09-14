@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from uuid import uuid4
 import logging
 from tasks import tasks
+from api.utils.subscription.static import YEARLY_MINUTES, MONTHLY_MINUTES, CYCLE_MINUTES
 
 
 def execute_tasks():
@@ -81,10 +82,10 @@ def execute_task(subscription, message_type):
 
 def get_new_task(subscription_uuid, scheduled_date, message_type):
     scheduled_date = {
-        "monthly_report": scheduled_date + timedelta(days=30),
-        "cycle_report": scheduled_date + timedelta(days=60),
-        "yearly_report": scheduled_date + timedelta(days=365),
-        "start_new_cycle": scheduled_date + timedelta(days=90),
+        "monthly_report": scheduled_date + timedelta(minutes=MONTHLY_MINUTES),
+        "cycle_report": scheduled_date + timedelta(minutes=CYCLE_MINUTES),
+        "yearly_report": scheduled_date + timedelta(minutes=YEARLY_MINUTES),
+        "start_new_cycle": scheduled_date + timedelta(minutes=CYCLE_MINUTES),
     }.get("message_type")
 
     if scheduled_date:

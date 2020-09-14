@@ -10,6 +10,7 @@ from api.models.dhs_models import DHSContactModel, validate_dhs_contact
 from api.models.subscription_models import SubscriptionModel, validate_subscription
 from api.utils import db_utils as db
 from notifications.views import EmailSender
+from api.utils.subscription.static import CYCLE_MINUTES, MONTHLY_MINUTES, YEARLY_MINUTES
 
 
 def get_subscription(subscription_uuid: str):
@@ -73,7 +74,7 @@ def calculate_subscription_start_end_date(start_date):
     else:
         start_date = now
 
-    end_date = start_date + timedelta(days=90)
+    end_date = start_date + timedelta(minutes=CYCLE_MINUTES)
     start_date = start_date + timedelta(minutes=1)
 
     return start_date, end_date
@@ -137,9 +138,9 @@ def create_scheduled_email_tasks(start_date):
     """
     message_types = {
         "start_subscription_email": start_date - timedelta(minutes=5),
-        "monthly_report": start_date + timedelta(days=30),
-        "cycle_report": start_date + timedelta(days=90),
-        "yearly_report": start_date + timedelta(days=365),
+        "monthly_report": start_date + timedelta(minutes=MONTHLY_MINUTES),
+        "cycle_report": start_date + timedelta(minutes=CYCLE_MINUTES),
+        "yearly_report": start_date + timedelta(minutes=YEARLY_MINUTES),
     }
 
     context = []
@@ -157,7 +158,7 @@ def create_scheduled_email_tasks(start_date):
 
 
 def create_scheduled_cycle_tasks(start_date):
-    send_date = start_date + timedelta(days=90)
+    send_date = start_date + timedelta(minutes=CYCLE_MINUTES)
 
     return {
         "task_uuid": uuid4(),
