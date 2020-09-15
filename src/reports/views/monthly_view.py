@@ -53,19 +53,154 @@ class MonthlyReportsView(APIView):
     Monthly reports
     """
 
+    def getTemplateClickedIndicators(self, subscription_stats):
+        key_vals = {
+            "grammar" : { "0": 0, "1": 0, "2": 0 },
+            "link_domain" : { "0": 0, "1": 0 },
+            "logo_graphics" : { "0": 0 ,"1": 0 },
+            "external" : { "0": 0 ,"1": 0 },
+            "internal" : { "0": 0 , "1": 0, "2": 0 },
+            "authoritative" : { "0": 0 ,"1": 0, "2": 0 },
+            "organization" : { "0": 0 ,"1": 0 },
+            "public_news" : { "0": 0 ,"1": 0 },
+            "curiosity" : { "0": 0 ,"1": 0 },
+            "duty_obligation" : { "0": 0 ,"1": 0 },
+            "fear" : { "0": 0 ,"1": 0 },
+            "greed" : { "0": 0 ,"1": 0 },            
+        }
+
+        for campaign in subscription_stats["campaign_results"]:
+            if "clicked" in campaign["campaign_stats"]:
+                apperance = campaign["template_details"]["appearance"]
+                behavior = campaign["template_details"]["behavior"]
+                relvancy = campaign["template_details"]["relevancy"]
+                sender = campaign["template_details"]["sender"]
+                all_identifiers = { **apperance, **behavior, **relvancy, **sender }
+                for identifier in key_vals:
+                    for val in key_vals[identifier].keys():
+                        if all_identifiers[identifier] == int(val):
+                            key_vals[identifier][val] += campaign["campaign_stats"]["clicked"]["count"]
+
+        subscription_stats["indicator_breakdown"] = key_vals
+        self.__format_indicator_breakdown(subscription_stats)
+            
+    def __format_indicator_breakdown(self, subscription_stats):
+        key_vals = {
+            "grammar" : { 
+                "name": "Apperance & Grammar",
+                "0": "Poor", 
+                "1": "Decent", 
+                "2": "Proper" },
+            "link_domain" : {
+                "name": "Link Domain",
+                "0": "Fake", 
+                "1": "Spoofed / Hidden"},
+            "logo_graphics" : { 
+                "name": "Logo / Graphics",
+                "0":  "Fake / None",
+                "1": "Sppofed / HTML"},
+            "external" : { 
+                "name": "Sender External",
+                "0": "Fake / NA", 
+                "1": "Spoofed"},
+            "internal" : { 
+                "name": "Internal",
+                "0": "Fake / NA", 
+                "1": "Unknown Spoofed", 
+                "2": "Known Spoofed" },
+            "authoritative" : { 
+                "name": "Authoritative",
+                "0": "None",
+                "1": "Corprate / Local", 
+                "2": "Federal / State" },
+            "organization" : { 
+                "name": "Relevancy Orginization",
+                "0": "No" ,
+                "1": "Yes" },
+            "public_news" : { 
+                "name": "Public News",
+                "0": "No" ,
+                "1": "Yes" },
+            "curiosity" : {
+                "name": "Curiosity",
+                "0":  "Yes",
+                "1": "No" },
+            "duty_obligation" : { 
+                "name": "Duty or Obligation",
+                "0": "Yes" ,
+                "1": "No" },
+            "fear" : { 
+                "name": "Fear",
+                "0": "Yes" ,
+                "1": "No" },
+            "greed" : { 
+                "name": "Greed",
+                "0": "Yes" ,
+                "1": "No" },            
+        }
+        # Flatten out indicators
+        flat_indicators = {}
+        for indicator in subscription_stats["indicator_breakdown"]:
+            for level in subscription_stats["indicator_breakdown"][indicator]:
+                level_val = subscription_stats["indicator_breakdown"][indicator][level]
+                flat_indicators[indicator + "-" + level] = level_val
+        # Sort indicators
+        sorted_flat_indicators = sorted(flat_indicators.items(), key=lambda kv: kv[1])
+        # Get proper name and format output
+        indicator_formatted = []
+        rank = 0
+        previous_val = None
+        for indicator in sorted_flat_indicators:
+            key_and_level = indicator[0].split("-")
+            key = key_and_level[0]
+            level = key_and_level[1]            
+            formated_val = indicator[1]            
+            formated_name = key_vals[key]["name"]
+            formated_level = key_vals[key][level]
+            if previous_val is None:
+                previous_val = formated_val
+            else:
+                if previous_val != formated_val:
+                    rank += 1
+                previous_val = formated_val
+            percent = 0
+            if subscription_stats["stats_all"]["clicked"]["count"] > 0:
+                percent = formated_val / subscription_stats["stats_all"]["clicked"]["count"]
+            indicator_formatted.insert(0,{
+                "name": formated_name,
+                "level": formated_level,
+                "value": formated_val, 
+                "percent": percent,
+                "rank": rank })
+        subscription_stats["indicator_ranking"] = indicator_formatted
+
+
     def getMonthlyStats(self, subscription):
         start_date_param = self.kwargs["start_date"]
         target_report_date = datetime.strptime(
             start_date_param, "%Y-%m-%dT%H:%M:%S.%f%z"
         )
+        cycle_uuid = None
+        if "cycle_uuid" in self.kwargs:
+            cycle_uuid = self.kwargs["cycle_uuid"]
 
         # Get statistics for the specified subscription during the specified cycle
 
         subscription_stats = get_subscription_stats_for_month(
-            subscription, target_report_date
+            subscription, target_report_date, cycle_uuid
         )
+        get_template_details(subscription_stats["campaign_results"])
+        self.getTemplateClickedIndicators(subscription_stats)
 
-        active_cycle = get_cycle_by_date_in_range(subscription, target_report_date)
+        # Get the correct cycle based on the provided start_date
+        if cycle_uuid:
+            active_cycle = subscription["cycles"][0]
+            for cycle in subscription["cycles"]:
+                if cycle["cycle_uuid"] == cycle_uuid:
+                    active_cycle = cycle
+        else:
+            active_cycle = get_cycle_by_date_in_range(subscription, end_date)
+
         active_campaigns = []
         for campaign in subscription["gophish_campaign_list"]:
             if campaign["campaign_id"] in active_cycle["campaigns_in_cycle"]:

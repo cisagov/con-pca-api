@@ -15,6 +15,11 @@ urlpatterns = [
         name="monthly-reports-page",
     ),
     path(
+        "<subscription_uuid>/monthly/<start_date>/<cycle_uuid>/",
+        monthly_view.MonthlyReportsView.as_view(),
+        name="monthly-reports-page",
+    ),
+    path(
         "<subscription_uuid>/cycle/<start_date>/",
         cycle_view.CycleReportsView.as_view(),
         name="cycle-reports-page",
