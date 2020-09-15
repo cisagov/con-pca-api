@@ -185,7 +185,7 @@ def monthly_report_email_view(request, subscription_uuid, cycle, cycle_uuid=None
 def monthly_reports_pdf_view(request, subscription_uuid, cycle, cycle_uuid=None):
     """Monthly_reports_pdf_view."""
     return FileResponse(
-        download_pdf("monthly", subscription_uuid, cycle,cycle_uuid),
+        download_pdf("monthly", subscription_uuid, cycle, cycle_uuid),
         as_attachment=True,
         filename="monthly_subscription_report.pdf",
     )

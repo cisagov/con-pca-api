@@ -61,7 +61,7 @@ class EmailSender:
                 report_type=self.notification["link"],
                 uuid=self.subscription["subscription_uuid"],
                 cycle=cycle,
-                cycle_uuid=self.cycle_uuid
+                cycle_uuid=self.cycle_uuid,
             )
         return None
 

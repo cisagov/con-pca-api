@@ -62,7 +62,7 @@ class LandingPagesListView(APIView):
 
         with_default = False
         if request.query_params:
-            if request.query_params['with_default']:
+            if request.query_params["with_default"]:
                 with_default = True
 
         if not parameters:
@@ -74,12 +74,12 @@ class LandingPagesListView(APIView):
         )
         default_landing_page = LandingPageModel()
         for landing_page in landing_page_list:
-            if landing_page['is_default_template']:
+            if landing_page["is_default_template"]:
                 default_landing_page = landing_page.copy()
                 break
 
-        default_landing_page['name'] = "(System Default)" + default_landing_page['name']
-        default_landing_page['landing_page_uuid'] = 0
+        default_landing_page["name"] = "(System Default)" + default_landing_page["name"]
+        default_landing_page["landing_page_uuid"] = 0
         if with_default:
             landing_page_list.append(default_landing_page)
         serializer = LandingPageGetSerializer(landing_page_list, many=True)
