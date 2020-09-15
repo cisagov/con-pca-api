@@ -92,14 +92,15 @@ def create_campaign(subscription, sub_level, landing_page, cycle_uuid):
 
         landing_page_name = landing_page
         if "landing_page_uuid" in template:
-            landing_page_list = db.get_list(
-                {"landing_page_uuid": template["landing_page_uuid"]},
-                "landing_page",
-                LandingPageModel,
-                validate_landing_page,
-            )
-            if landing_page_list:
-                landing_page_name = landing_page_list[0]["name"]
+            if template["landing_page_uuid"]: #Check to make sure landing page uuid is not null
+                landing_page_list = db.get_list(
+                    {"landing_page_uuid": template["landing_page_uuid"]},
+                    "landing_page",
+                    LandingPageModel,
+                    validate_landing_page,
+                )
+                if landing_page_list:
+                    landing_page_name = landing_page_list[0]["name"]
 
         gophish_campaigns.append(
             __create_campaign(
