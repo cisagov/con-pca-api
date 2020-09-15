@@ -174,18 +174,18 @@ class ReportsView(APIView):
         return Response(serializer.data)
 
 
-def monthly_report_email_view(request, subscription_uuid, cycle):
+def monthly_report_email_view(request, subscription_uuid, cycle, cycle_uuid=None):
     subscription = get_subscription(subscription_uuid)
-    sender = EmailSender(subscription, "monthly_report", cycle)
+    sender = EmailSender(subscription, "monthly_report", cycle, cycle_uuid)
     sender.send()
     serializer = EmailReportsGetSerializer({"subscription_uuid": subscription_uuid})
     return JsonResponse(serializer.data)
 
 
-def monthly_reports_pdf_view(request, subscription_uuid, cycle):
+def monthly_reports_pdf_view(request, subscription_uuid, cycle, cycle_uuid=None):
     """Monthly_reports_pdf_view."""
     return FileResponse(
-        download_pdf("monthly", subscription_uuid, cycle,),
+        download_pdf("monthly", subscription_uuid, cycle,cycle_uuid),
         as_attachment=True,
         filename="monthly_subscription_report.pdf",
     )

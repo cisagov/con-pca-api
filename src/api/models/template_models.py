@@ -108,7 +108,7 @@ class TemplateModel(Model):
     # User Creataed
     name = StringType()
     template_type = StringType()
-    landing_page_uuid = UUIDType()
+    landing_page_uuid = UUIDType(required=False)
     deception_score = IntType()
     descriptive_words = StringType()
     description = StringType()
