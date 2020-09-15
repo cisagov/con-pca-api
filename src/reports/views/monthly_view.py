@@ -55,18 +55,18 @@ class MonthlyReportsView(APIView):
 
     def getTemplateClickedIndicators(self, subscription_stats):
         key_vals = {
-            "grammar" : { "0": 0, "1": 0, "2": 0 },
-            "link_domain" : { "0": 0, "1": 0 },
-            "logo_graphics" : { "0": 0 ,"1": 0 },
-            "external" : { "0": 0 ,"1": 0 },
-            "internal" : { "0": 0 , "1": 0, "2": 0 },
-            "authoritative" : { "0": 0 ,"1": 0, "2": 0 },
-            "organization" : { "0": 0 ,"1": 0 },
-            "public_news" : { "0": 0 ,"1": 0 },
-            "curiosity" : { "0": 0 ,"1": 0 },
-            "duty_obligation" : { "0": 0 ,"1": 0 },
-            "fear" : { "0": 0 ,"1": 0 },
-            "greed" : { "0": 0 ,"1": 0 },            
+            "grammar": {"0": 0, "1": 0, "2": 0},
+            "link_domain": {"0": 0, "1": 0},
+            "logo_graphics": {"0": 0, "1": 0},
+            "external": {"0": 0, "1": 0},
+            "internal": {"0": 0, "1": 0, "2": 0},
+            "authoritative": {"0": 0, "1": 0, "2": 0},
+            "organization": {"0": 0, "1": 0},
+            "public_news": {"0": 0, "1": 0},
+            "curiosity": {"0": 0, "1": 0},
+            "duty_obligation": {"0": 0, "1": 0},
+            "fear": {"0": 0, "1": 0},
+            "greed": {"0": 0, "1": 0},
         }
 
         for campaign in subscription_stats["campaign_results"]:
@@ -75,68 +75,54 @@ class MonthlyReportsView(APIView):
                 behavior = campaign["template_details"]["behavior"]
                 relvancy = campaign["template_details"]["relevancy"]
                 sender = campaign["template_details"]["sender"]
-                all_identifiers = { **apperance, **behavior, **relvancy, **sender }
+                all_identifiers = {**apperance, **behavior, **relvancy, **sender}
                 for identifier in key_vals:
                     for val in key_vals[identifier].keys():
                         if all_identifiers[identifier] == int(val):
-                            key_vals[identifier][val] += campaign["campaign_stats"]["clicked"]["count"]
+                            key_vals[identifier][val] += campaign["campaign_stats"][
+                                "clicked"
+                            ]["count"]
 
         subscription_stats["indicator_breakdown"] = key_vals
         self.__format_indicator_breakdown(subscription_stats)
-            
+
     def __format_indicator_breakdown(self, subscription_stats):
         key_vals = {
-            "grammar" : { 
+            "grammar": {
                 "name": "Apperance & Grammar",
-                "0": "Poor", 
-                "1": "Decent", 
-                "2": "Proper" },
-            "link_domain" : {
+                "0": "Poor",
+                "1": "Decent",
+                "2": "Proper",
+            },
+            "link_domain": {
                 "name": "Link Domain",
-                "0": "Fake", 
-                "1": "Spoofed / Hidden"},
-            "logo_graphics" : { 
+                "0": "Fake",
+                "1": "Spoofed / Hidden",
+            },
+            "logo_graphics": {
                 "name": "Logo / Graphics",
-                "0":  "Fake / None",
-                "1": "Sppofed / HTML"},
-            "external" : { 
-                "name": "Sender External",
-                "0": "Fake / NA", 
-                "1": "Spoofed"},
-            "internal" : { 
+                "0": "Fake / None",
+                "1": "Sppofed / HTML",
+            },
+            "external": {"name": "Sender External", "0": "Fake / NA", "1": "Spoofed"},
+            "internal": {
                 "name": "Internal",
-                "0": "Fake / NA", 
-                "1": "Unknown Spoofed", 
-                "2": "Known Spoofed" },
-            "authoritative" : { 
+                "0": "Fake / NA",
+                "1": "Unknown Spoofed",
+                "2": "Known Spoofed",
+            },
+            "authoritative": {
                 "name": "Authoritative",
                 "0": "None",
-                "1": "Corprate / Local", 
-                "2": "Federal / State" },
-            "organization" : { 
-                "name": "Relevancy Orginization",
-                "0": "No" ,
-                "1": "Yes" },
-            "public_news" : { 
-                "name": "Public News",
-                "0": "No" ,
-                "1": "Yes" },
-            "curiosity" : {
-                "name": "Curiosity",
-                "0":  "Yes",
-                "1": "No" },
-            "duty_obligation" : { 
-                "name": "Duty or Obligation",
-                "0": "Yes" ,
-                "1": "No" },
-            "fear" : { 
-                "name": "Fear",
-                "0": "Yes" ,
-                "1": "No" },
-            "greed" : { 
-                "name": "Greed",
-                "0": "Yes" ,
-                "1": "No" },            
+                "1": "Corprate / Local",
+                "2": "Federal / State",
+            },
+            "organization": {"name": "Relevancy Orginization", "0": "No", "1": "Yes"},
+            "public_news": {"name": "Public News", "0": "No", "1": "Yes"},
+            "curiosity": {"name": "Curiosity", "0": "Yes", "1": "No"},
+            "duty_obligation": {"name": "Duty or Obligation", "0": "Yes", "1": "No"},
+            "fear": {"name": "Fear", "0": "Yes", "1": "No"},
+            "greed": {"name": "Greed", "0": "Yes", "1": "No"},
         }
         # Flatten out indicators
         flat_indicators = {}
@@ -153,8 +139,8 @@ class MonthlyReportsView(APIView):
         for indicator in sorted_flat_indicators:
             key_and_level = indicator[0].split("-")
             key = key_and_level[0]
-            level = key_and_level[1]            
-            formated_val = indicator[1]            
+            level = key_and_level[1]
+            formated_val = indicator[1]
             formated_name = key_vals[key]["name"]
             formated_level = key_vals[key][level]
             if previous_val is None:
@@ -165,15 +151,20 @@ class MonthlyReportsView(APIView):
                 previous_val = formated_val
             percent = 0
             if subscription_stats["stats_all"]["clicked"]["count"] > 0:
-                percent = formated_val / subscription_stats["stats_all"]["clicked"]["count"]
-            indicator_formatted.insert(0,{
-                "name": formated_name,
-                "level": formated_level,
-                "value": formated_val, 
-                "percent": percent,
-                "rank": rank })
+                percent = (
+                    formated_val / subscription_stats["stats_all"]["clicked"]["count"]
+                )
+            indicator_formatted.insert(
+                0,
+                {
+                    "name": formated_name,
+                    "level": formated_level,
+                    "value": formated_val,
+                    "percent": percent,
+                    "rank": rank,
+                },
+            )
         subscription_stats["indicator_ranking"] = indicator_formatted
-
 
     def getMonthlyStats(self, subscription):
         start_date_param = self.kwargs["start_date"]
