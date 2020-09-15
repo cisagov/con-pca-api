@@ -6,21 +6,20 @@ import uuid
 
 # Third-Party Libraries
 from api.manager import CampaignManager
-from api.models.subscription_models import SubscriptionModel, validate_subscription
 from api.models.landing_page_models import LandingPageModel, validate_landing_page
-from api.serializers.subscriptions_serializers import SubscriptionPatchSerializer
 from api.utils import db_utils as db
 from api.utils.customer.customers import get_customer
 from api.utils.subscription.campaigns import generate_campaigns, stop_campaign
 from api.utils.subscription.subscriptions import (
     calculate_subscription_start_end_date,
-    create_scheduled_cycle_tasks,
-    create_scheduled_email_tasks,
+    init_subscription_tasks,
     create_subscription_name,
     get_subscription,
     get_subscription_cycles,
     get_subscription_status,
     send_stop_notification,
+    update_subscription,
+    save_subscription,
 )
 from api.utils.subscription.targets import batch_targets
 from api.utils.subscription.template_selector import personalize_template_batch
@@ -49,8 +48,16 @@ def start_subscription(data=None, subscription_uuid=None, new_cycle=False):
         subscription = data
 
     if new_cycle and subscription_uuid:
-        list(map(stop_campaign, subscription["gophish_campaign_list"]))
-        __delete_subscription_user_groups(subscription["gophish_campaign_list"])
+        campaigns_to_stop = list(
+            filter(
+                lambda x: x["campaign_id"]
+                in subscription["cycles"][-1]["campaigns_in_cycle"],
+                subscription["gophish_campaign_list"],
+            )
+        )
+        list(map(stop_campaign, campaigns_to_stop))
+
+        __delete_subscription_user_groups(campaigns_to_stop)
 
     # calculate start and end date to subscription
     start_date, end_date = calculate_subscription_start_end_date(
@@ -96,9 +103,7 @@ def start_subscription(data=None, subscription_uuid=None, new_cycle=False):
         subscription["name"] = create_subscription_name(customer)
 
     # get personalized and selected template_uuids
-    sub_levels = personalize_template_batch(
-        customer, subscription, sub_levels, new_cycle=new_cycle
-    )
+    sub_levels = personalize_template_batch(customer, subscription, sub_levels)
 
     # get targets assigned to each group
     sub_levels = batch_targets(subscription, sub_levels)
@@ -134,37 +139,22 @@ def start_subscription(data=None, subscription_uuid=None, new_cycle=False):
         subscription["cycles"] = []
     subscription["cycles"].append(
         get_subscription_cycles(
-            new_gophish_campaigns, start_date, end_date, cycle_uuid,
+            new_gophish_campaigns,
+            start_date,
+            end_date,
+            cycle_uuid,
         )[0]
     )
 
+    if not subscription.get("tasks"):
+        logging.info("setting tasks")
+        subscription["tasks"] = init_subscription_tasks(start_date)
+
     if subscription_uuid:
-        response = db.update_single(
-            subscription_uuid,
-            subscription,
-            "subscription",
-            SubscriptionModel,
-            validate_subscription,
-        )
+        response = update_subscription(subscription_uuid, subscription)
     else:
-        response = db.save_single(
-            subscription, "subscription", SubscriptionModel, validate_subscription
-        )
+        response = save_subscription(subscription)
         response["name"] = subscription["name"]
-
-    # Schedule client side reports emails
-    tasks = create_scheduled_email_tasks(start_date)
-    cycle_task = create_scheduled_cycle_tasks(start_date)
-    tasks.append(cycle_task)
-    subscription["tasks"] = tasks
-
-    response = db.update_single(
-        uuid=response["subscription_uuid"],
-        put_data=SubscriptionPatchSerializer(subscription).data,
-        collection="subscription",
-        model=SubscriptionModel,
-        validation_model=validate_subscription,
-    )
 
     return response
 
@@ -175,10 +165,17 @@ def stop_subscription(subscription):
     Returns updated subscription.
     """
     # Stop Campaigns
-    updated_campaigns = list(map(stop_campaign, subscription["gophish_campaign_list"]))
+    campaigns_to_stop = list(
+        filter(
+            lambda x: x["campaign_id"]
+            in subscription["cycles"][-1]["campaigns_in_cycle"],
+            subscription["gophish_campaign_list"],
+        )
+    )
+    updated_campaigns = list(map(stop_campaign, campaigns_to_stop))
 
     # Delete User Groups
-    __delete_subscription_user_groups(subscription["gophish_campaign_list"])
+    __delete_subscription_user_groups(campaigns_to_stop)
 
     # Remove subscription tasks from the scheduler
     subscription["tasks"] = []
@@ -195,15 +192,7 @@ def stop_subscription(subscription):
     except Exception as e:
         logging.exception(e)
 
-    resp = db.update_single(
-        uuid=subscription["subscription_uuid"],
-        put_data=SubscriptionPatchSerializer(subscription).data,
-        collection="subscription",
-        model=SubscriptionModel,
-        validation_model=validate_subscription,
-    )
-
-    logging.info(f"udpated rep={resp}")
+    resp = update_subscription(subscription["subscription_uuid"], subscription)
 
     return resp
 

@@ -2,7 +2,6 @@
 # Standard Python Libraries
 import asyncio
 import datetime
-import logging
 import uuid
 
 # Models
@@ -12,8 +11,6 @@ from api.models.template_models import TemplateModel
 from database.service import Service
 from django.conf import settings
 import os
-
-logger = logging.getLogger(__name__)
 
 
 def __db_service(collection_name, model, validate_model):
