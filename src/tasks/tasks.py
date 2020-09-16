@@ -56,7 +56,8 @@ def email_subscription_yearly(subscription):
     schedule the next yearly subscription report email
     """
     # Send email
-    sender = EmailSender(subscription, "yearly_report", datetime.now().isoformat())
+    cycle = subscription["cycles"][-1]["start_date"].isoformat()
+    sender = EmailSender(subscription, "yearly_report", cycle)
     sender.send()
 
     context = {

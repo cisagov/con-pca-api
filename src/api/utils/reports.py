@@ -1,5 +1,4 @@
 from io import BytesIO
-import logging
 
 import pyppeteer
 import asyncio
@@ -36,9 +35,7 @@ async def _download_pdf(report_type, uuid, cycle, auth_header=None, cycle_uuid=N
     if auth_header:
         url += f"?reportToken={auth_header}"
 
-    await page.goto(
-        url, waitUntil="networkidle0",
-    )
+    await page.goto(url, waitUntil="networkidle0")
 
     await page.emulateMedia("screen")
     await page.waitForSelector("#bluePhishLogo")
