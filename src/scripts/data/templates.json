@@ -2573,7 +2573,7 @@
       "external": 0,
       "internal": 0
     },
-    "subject": "",
+    "subject": "New Documents",
     "template_type": "Email",
     "template_uuid": "4079250e-71e9-4d44-90ea-1cf27b8ec989",
     "text": "",
@@ -2616,7 +2616,7 @@
       "external": 0,
       "internal": 0
     },
-    "subject": "",
+    "subject": "Alert: Transfer Initiated",
     "template_type": "Email",
     "template_uuid": "06ecacf5-73ad-44b9-ac38-38e932696445",
     "text": "",
@@ -2659,7 +2659,7 @@
       "external": 0,
       "internal": 0
     },
-    "subject": "",
+    "subject": "Someone Shared a google Drive link with you",
     "template_type": "Email",
     "template_uuid": "125ec979-c01f-4564-8b30-7acb57289c65",
     "text": "",
@@ -2702,7 +2702,7 @@
       "external": 0,
       "internal": 0
     },
-    "subject": "",
+    "subject": "Linkedin Invitation reminders",
     "template_type": "Email",
     "template_uuid": "b11c72f6-06df-4a54-8345-478803479e59",
     "text": "",
@@ -2745,7 +2745,7 @@
       "external": 0,
       "internal": 0
     },
-    "subject": "",
+    "subject": "Microsoft Account Alert",
     "template_type": "Email",
     "template_uuid": "b7547252-f627-4b44-b671-6cfc8bce12ab",
     "text": "",
@@ -2776,7 +2776,7 @@
     "landing_page_uuid": "c68ff254-bd10-4098-819a-f6ca07fc266c",
     "last_updated_by": "dev user",
     "lub_timestamp": "2020-08-19T13:48:45.640000Z",
-    "name": "size",
+    "name": "Email size",
     "relevancy": {
       "organization": 0,
       "public_news": 0
@@ -2788,7 +2788,7 @@
       "external": 0,
       "internal": 0
     },
-    "subject": "",
+    "subject": "Email Size Limit Reached",
     "template_type": "Email",
     "template_uuid": "7bf9b392-92f1-4a14-92fc-f160bc29e399",
     "text": "",
@@ -3992,7 +3992,7 @@
       "external": 0,
       "internal": 0
     },
-    "subject": "",
+    "subject": "NOTICE: Email Account Compromised",
     "template_type": "Email",
     "template_uuid": "bd7e438b-b9d3-489b-b188-bd8cd22c2f16",
     "text": "",
@@ -4121,7 +4121,7 @@
       "external": 0,
       "internal": 0
     },
-    "subject": "",
+    "subject": "Suspicious Login",
     "template_type": "Email",
     "template_uuid": "bcc29152-bfc7-4de3-963b-f1463bb7bf4e",
     "text": "",
@@ -4680,7 +4680,7 @@
       "external": 0,
       "internal": 0
     },
-    "subject": "",
+    "subject": "Langing page",
     "template_type": "Landing",
     "template_uuid": "a8c696d5-5a0d-4a84-b3b9-76ea044b026e",
     "text": "You've been phished! This is a message from a Gophish campaign :p",
@@ -6357,7 +6357,7 @@
       "external": 0,
       "internal": 0
     },
-    "subject": "",
+    "subject": "Email Migration Issue",
     "template_type": "Email",
     "template_uuid": "78440829-a367-4b73-ad51-cedf6bbdc394",
     "text": "",
@@ -6486,7 +6486,7 @@
       "external": 0,
       "internal": 0
     },
-    "subject": "",
+    "subject": "FDIC Credit",
     "template_type": "Email",
     "template_uuid": "e926db0c-bb04-46f5-aa46-09f538b36920",
     "text": "",
@@ -6572,7 +6572,7 @@
       "external": 0,
       "internal": 0
     },
-    "subject": "",
+    "subject": "Better Business Bureau Claim",
     "template_type": "Email",
     "template_uuid": "a3dd0684-5367-4ac4-84d7-be90145ff1b2",
     "text": "",
@@ -6615,7 +6615,7 @@
       "external": 0,
       "internal": 0
     },
-    "subject": "",
+    "subject": "Hey guys! Breaking News! ",
     "template_type": "Email",
     "template_uuid": "b84c5cb3-050b-42cb-8d61-b7ad79f33c70",
     "text": "",
@@ -6658,7 +6658,7 @@
       "external": 0,
       "internal": 0
     },
-    "subject": "",
+    "subject": "Your Package has Arrived!",
     "template_type": "Email",
     "template_uuid": "83613f75-2270-45b0-afc5-a2c0dbd56389",
     "text": "",
@@ -6701,7 +6701,7 @@
       "external": 0,
       "internal": 0
     },
-    "subject": "",
+    "subject": "Skype Account Charges",
     "template_type": "Email",
     "template_uuid": "2ebff060-259a-4d5e-b497-2cf15c517de0",
     "text": "",
@@ -6744,7 +6744,7 @@
       "external": 0,
       "internal": 0
     },
-    "subject": "",
+    "subject": "New Travel Partner for <%CUSTOMER_NAME%>",
     "template_type": "Email",
     "template_uuid": "fb0738c1-7f88-4406-b2fb-3989611017fa",
     "text": "",
