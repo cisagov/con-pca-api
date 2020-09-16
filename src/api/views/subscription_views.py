@@ -78,6 +78,9 @@ class SubscriptionsListView(APIView):
         if request.GET.get("template"):
             parameters["templates_selected_uuid_list"] = request.GET.get("template")
 
+        if request.GET.get("dhs_contact"):
+            parameters["dhs_contact_uuid"] = request.GET.get("dhs_contact")
+
         subscription_list = get_list(
             parameters, "subscription", SubscriptionModel, validate_subscription
         )
