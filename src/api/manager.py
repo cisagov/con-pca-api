@@ -231,9 +231,11 @@ class CampaignManager:
         if name in existing_names:
             logger.info("Template, {}, already exists.. skipping".format(name))
             return
+        template = "<html><head></head><body>" + template + "</body></html>"
         email_template = Template(name=name, subject=subject, html=template)
         if text is not None:
             email_template.text = text
+
 
         return self.gp_api.templates.post(email_template)
 
