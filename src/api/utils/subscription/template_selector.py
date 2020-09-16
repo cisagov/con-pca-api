@@ -114,9 +114,7 @@ def personalize_templates(customer, subscription, templates, sub_levels: dict):
     return sub_levels
 
 
-def personalize_template_batch(
-    customer, subscription, sub_levels: dict, new_cycle=False
-):
+def personalize_template_batch(customer, subscription, sub_levels: dict):
     """Personalize_template_batch."""
     # Gets list of available email templates
     templates = get_email_templates()

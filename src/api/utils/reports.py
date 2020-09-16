@@ -1,5 +1,4 @@
 from io import BytesIO
-import logging
 
 import pyppeteer
 import asyncio
@@ -13,7 +12,9 @@ def download_pdf(report_type, uuid, cycle, cycle_uuid=None):
     auth_header = settings.LOCAL_API_KEY if settings.LOCAL_API_KEY else None
 
     response = loop.run_until_complete(
-        _download_pdf(report_type, uuid, cycle, auth_header=auth_header, cycle_uuid=cycle_uuid)
+        _download_pdf(
+            report_type, uuid, cycle, auth_header=auth_header, cycle_uuid=cycle_uuid
+        )
     )
     buffer = BytesIO()
     buffer.write(response)
@@ -33,14 +34,8 @@ async def _download_pdf(report_type, uuid, cycle, auth_header=None, cycle_uuid=N
         url += f"/{cycle_uuid}"
     if auth_header:
         url += f"?reportToken={auth_header}"
-    
-        
 
-    
-
-    await page.goto(
-        url, waitUntil="networkidle0",
-    )
+    await page.goto(url, waitUntil="networkidle0")
 
     await page.emulateMedia("screen")
     await page.waitForSelector("#bluePhishLogo")

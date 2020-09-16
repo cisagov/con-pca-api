@@ -262,6 +262,7 @@ class SubscriptionPostSerializer(serializers.Serializer):
 
     customer_uuid = serializers.UUIDField()
     name = serializers.CharField(required=True, max_length=100)
+    target_domain = serializers.CharField(required=False)
     url = serializers.CharField(required=True, max_length=100)
     keywords = serializers.CharField(max_length=100)
     start_date = serializers.DateTimeField()
@@ -278,6 +279,7 @@ class SubscriptionPostSerializer(serializers.Serializer):
     active = serializers.BooleanField()
     archived = serializers.BooleanField(default=False)
     manually_stopped = serializers.BooleanField(default=False)
+    cycles = CycleSerializer(required=False, many=True)
     email_report_history = SubscriptionEmailHistorySerializer(required=False, many=True)
 
 

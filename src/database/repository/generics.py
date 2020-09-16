@@ -314,16 +314,14 @@ class GenericRepository(object):
         if params:
             object_params = {**object_params, **params}
 
-        await self.collection.update_one(object_params, {"$set": object})
-        return {self.uuid_name: uuid}
+        return await self.collection.update_one(object_params, {"$set": object})
 
     async def push_nested_item(self, uuid, object, params=None):
         object_params = {self.uuid_name: uuid}
         if params:
             object_params = {**object_params, **params}
 
-        await self.collection.update_one(object_params, {"$push": object})
-        return {self.uuid_name: uuid}
+        return await self.collection.update_one(object_params, {"$push": object})
 
     async def delete(self, uuid):
         """

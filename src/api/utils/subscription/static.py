@@ -12,3 +12,5 @@ MONTHLY_MINUTES = int(os.environ.get("MONTHLY_MINUTES", 43200))
 
 # set yearly minutes or 365 days
 YEARLY_MINUTES = int(os.environ.get("YEARLY_MINUTES", 525600))
+
+DEFAULT_X_GOPHISH_CONTACT = os.environ.get("DEFAULT_X_GOPHISH_CONTACT")
