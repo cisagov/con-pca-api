@@ -60,6 +60,11 @@ class LandingPagesListView(APIView):
         serializer = LandingPageQuerySerializer(request.GET.dict())
         parameters = serializer.data
 
+        with_default = False
+        if request.query_params:
+            if request.query_params["with_default"]:
+                with_default = True
+
         if not parameters:
             parameters = request.data.copy()
 
@@ -67,6 +72,16 @@ class LandingPagesListView(APIView):
         landing_page_list = get_list(
             parameters, "landing_page", LandingPageModel, validate_landing_page
         )
+        default_landing_page = LandingPageModel()
+        for landing_page in landing_page_list:
+            if landing_page["is_default_template"]:
+                default_landing_page = landing_page.copy()
+                break
+
+        default_landing_page["name"] = "(System Default)" + default_landing_page["name"]
+        default_landing_page["landing_page_uuid"] = 0
+        if with_default:
+            landing_page_list.append(default_landing_page)
         serializer = LandingPageGetSerializer(landing_page_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

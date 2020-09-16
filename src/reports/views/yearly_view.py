@@ -215,7 +215,9 @@ class YearlyReportsView(APIView):
             "metrics": metrics,
             "yearly_report_start_date": yearly_start_date,
             "yearly_report_end_date": yearly_end_date,
-            "cycles": cycles_stats,
+            "cycles": sorted(
+                cycles_stats, key=lambda cycle: cycle["start_date"], reverse=True
+            ),
             "percentage_trends_data": percentage_trends_data,
             "clickrate_vs_reportrate_data": clickrate_vs_reportrate_data,
             "trend": trend,

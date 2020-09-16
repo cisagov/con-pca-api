@@ -318,14 +318,20 @@ def filter_campaign_timeline_by_date_range(
         keys_to_remove = []
 
 
-def get_subscription_stats_for_month(subscription, end_date):
+def get_subscription_stats_for_month(subscription, end_date, cycle_uuid=None):
     """
     Generate statistics for a subscriptions given month.
 
     Determine the month by the provided start_date, goes x amount of days past that depending on month_length.
     """
     # Get the correct cycle based on the provided start_date
-    active_cycle = get_cycle_by_date_in_range(subscription, end_date)
+    if cycle_uuid:
+        active_cycle = subscription["cycles"][0]
+        for cycle in subscription["cycles"]:
+            if cycle["cycle_uuid"] == cycle_uuid:
+                active_cycle = cycle
+    else:
+        active_cycle = get_cycle_by_date_in_range(subscription, end_date)
 
     # start_date = active_cycle["start_date"]
     # Get all the campaigns for the specified cycle from the gophish_campaign_list
@@ -924,7 +930,7 @@ def get_related_subscription_stats(subscription, start_date=None):
     national_stats = generate_region_stats(subscription_list)
     sector_stats = generate_region_stats(sector_subscriptions)
     industry_stats = generate_region_stats(industry_subscriptions)
-    customer_stats = generate_region_stats(customer_subscriptions, start_date)
+    customer_stats = generate_region_stats(customer_subscriptions)
 
     return {
         "national": national_stats,

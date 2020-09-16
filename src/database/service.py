@@ -97,7 +97,8 @@ class Service:
         This will return the objectID of the updated object
         """
 
-        return await self.service.update_nested(uuid, to_update, params)
+        resp = await self.service.update_nested(uuid, to_update, params)
+        return resp.raw_result
 
     async def push_nested_item(self, uuid, item, params=None):
         """
@@ -105,7 +106,8 @@ class Service:
 
         Given a json object, it will add that object to an array in the document.
         """
-        return await self.service.push_nested_item(uuid, item, params)
+        resp = await self.service.push_nested_item(uuid, item, params)
+        return resp.raw_result
 
     async def delete(self, uuid):
         """

@@ -122,7 +122,6 @@ class SubscriptionView(APIView):
     )
     def get(self, request, subscription_uuid):
         """Get method."""
-        print("get subscription_uuid {}".format(subscription_uuid))
         subscription = get_single(
             subscription_uuid, "subscription", SubscriptionModel, validate_subscription
         )
@@ -187,7 +186,6 @@ class SubscriptionView(APIView):
             validation_model=validate_subscription,
         )
 
-        logger.info("delete responce {}".format(delete_response))
         if "errors" in delete_response:
             return Response(delete_response, status=status.HTTP_400_BAD_REQUEST)
         serializer = SubscriptionDeleteResponseSerializer(delete_response)

@@ -3,14 +3,15 @@
 from datetime import datetime, timedelta
 from uuid import uuid4
 
-from django.conf import settings
-
 # Third-Party Libraries
-from api.models.dhs_models import DHSContactModel, validate_dhs_contact
 from api.models.subscription_models import SubscriptionModel, validate_subscription
 from api.utils import db_utils as db
 from notifications.views import EmailSender
 from api.utils.subscription.static import CYCLE_MINUTES, MONTHLY_MINUTES, YEARLY_MINUTES
+from api.serializers.subscriptions_serializers import (
+    SubscriptionPatchSerializer,
+    SubscriptionPostSerializer,
+)
 
 
 def get_subscription(subscription_uuid: str):
@@ -24,6 +25,25 @@ def get_subscriptions(sub_filter=None):
     """Returns list of subscriptions from database."""
     return db.get_list(
         sub_filter, "subscription", SubscriptionModel, validate_subscription
+    )
+
+
+def save_subscription(data):
+    return db.save_single(
+        SubscriptionPostSerializer(data).data,
+        "subscription",
+        SubscriptionModel,
+        validate_subscription,
+    )
+
+
+def update_subscription(subscription_uuid, data):
+    return db.update_single(
+        uuid=subscription_uuid,
+        put_data=SubscriptionPatchSerializer(data).data,
+        collection="subscription",
+        model=SubscriptionModel,
+        validation_model=validate_subscription,
     )
 
 
@@ -130,39 +150,24 @@ def send_stop_notification(subscription):
     sender.send()
 
 
-def create_scheduled_email_tasks(start_date):
-    """Create Scheduled Email Tasks.
-
-    Returns:
-        list: list of tasks and message types
-    """
+def init_subscription_tasks(start_date, existing_tasks=[]):
     message_types = {
         "start_subscription_email": start_date - timedelta(minutes=5),
         "monthly_report": start_date + timedelta(minutes=MONTHLY_MINUTES),
         "cycle_report": start_date + timedelta(minutes=CYCLE_MINUTES),
         "yearly_report": start_date + timedelta(minutes=YEARLY_MINUTES),
+        "start_new_cycle": start_date + timedelta(minutes=CYCLE_MINUTES),
     }
 
-    context = []
+    tasks = []
     for message_type, send_date in message_types.items():
-        context.append(
+        tasks.append(
             {
-                "task_uuid": uuid4(),
+                "task_uuid": str(uuid4()),
                 "message_type": message_type,
                 "scheduled_date": send_date,
                 "executed": False,
             }
         )
 
-    return context
-
-
-def create_scheduled_cycle_tasks(start_date):
-    send_date = start_date + timedelta(minutes=CYCLE_MINUTES)
-
-    return {
-        "task_uuid": uuid4(),
-        "message_type": "start_new_cycle",
-        "scheduled_date": send_date,
-        "executed": False,
-    }
+    return tasks

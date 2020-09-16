@@ -31,11 +31,11 @@ logger = logging.getLogger()
 
 
 class EmailSender:
-    def __init__(self, subscription, message_type, cycle=None):
+    def __init__(self, subscription, message_type, cycle=None, cycle_uuid=None):
         self.subscription = subscription
+        self.cycle_uuid = cycle_uuid
         self.notification = self.set_notification(message_type)
         self.attachment = self.get_attachment(cycle)
-
         self.dhs_contact = get_single(
             self.subscription.get("dhs_contact_uuid"),
             "dhs_contact",
@@ -61,6 +61,7 @@ class EmailSender:
                 report_type=self.notification["link"],
                 uuid=self.subscription["subscription_uuid"],
                 cycle=cycle,
+                cycle_uuid=self.cycle_uuid,
             )
         return None
 

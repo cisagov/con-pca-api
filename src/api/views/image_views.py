@@ -35,6 +35,7 @@ class ImageView(APIView):
         s3 = S3()
 
         try:
+            image = request.data["file"]
             key, bucket, url = s3.upload_fileobj_image(request.data["file"],)
         except ClientError as e:
             logger.exception(e)
