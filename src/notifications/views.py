@@ -87,10 +87,11 @@ class EmailSender:
 
         image_files = ["cisa_logo.png"]
         for image_file in image_files:
-            with staticfiles_storage.open(f"img/{image_file}") as f:
-                header = MIMEImage(f.read())
-                header.add_header("Content-ID", f"<{image_file}>")
-                message.attach(header)
+            fp = open(staticfiles_storage.path(f"img/{image_file}"), "rb")
+            msgImage = MIMEImage(fp.read(), _subtype="png")
+            fp.close()
+            msgImage.add_header("Content-ID", f"<{image_file}>")
+            message.attach(msgImage)
 
         message.attach_alternative(self.html_content, "text/html")
 
