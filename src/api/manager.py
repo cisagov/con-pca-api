@@ -236,7 +236,6 @@ class CampaignManager:
         if text is not None:
             email_template.text = text
 
-
         return self.gp_api.templates.post(email_template)
 
     def generate_landing_page(self, name: str, template: str):
