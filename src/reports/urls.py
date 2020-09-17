@@ -35,6 +35,11 @@ urlpatterns = [
         name="system-reports-page",
     ),
     path(
+        "subscription_report_emails_sent/<subscription_uuid>/",
+        system_view.SubsriptionReportsListView.as_view(),
+        name="system-reports-page",
+    ),    
+    path(
         "<subscription_uuid>/subscription-stats-page/<cycle_uuid>/",
         cycle_view.CycleStatusView.as_view(),
         name="cycle-status",
