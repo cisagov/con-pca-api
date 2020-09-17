@@ -33,3 +33,18 @@ variable "image_tag" {
 variable "domain_name" {
   type = string
 }
+
+variable "cycle_minutes" {
+  type    = string
+  default = "129600"
+}
+
+variable "monthly_minutes" {
+  type    = string
+  default = "43200"
+}
+
+variable "yearly_minutes" {
+  type    = string
+  default = "525600"
+}
