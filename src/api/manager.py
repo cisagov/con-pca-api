@@ -9,7 +9,7 @@ import random
 
 # Third-Party Libraries
 from bs4 import BeautifulSoup
-from django.conf import settings
+from config import settings
 from faker import Faker
 import requests
 from sklearn.feature_extraction.text import TfidfVectorizer

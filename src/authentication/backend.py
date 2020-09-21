@@ -5,7 +5,7 @@ import hmac
 import hashlib
 
 from django.apps import apps as django_apps
-from django.conf import settings
+from config import settings
 from django.utils.encoding import smart_text
 from django.utils.translation import ugettext as _
 from rest_framework import exceptions

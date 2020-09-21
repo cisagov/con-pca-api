@@ -12,7 +12,7 @@ from email.mime.image import MIMEImage
 import logging
 
 # Third-Party Libraries
-from django.conf import settings
+from config import settings
 from api.models.dhs_models import DHSContactModel, validate_dhs_contact
 from api.utils.db_utils import get_single
 from django.contrib.staticfiles.storage import staticfiles_storage

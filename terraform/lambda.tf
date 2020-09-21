@@ -27,7 +27,7 @@ data "archive_file" "code" {
 resource "aws_lambda_function" "tasks" {
   filename         = data.archive_file.code.output_path
   function_name    = "${var.app}-${var.env}-tasks"
-  handler          = "lambda_functions.tasks.lambda_handler"
+  handler          = "lambda_functions.tasks.handler.lambda_handler"
   layers           = [aws_lambda_layer_version.layer.arn]
   role             = aws_iam_role.lambda_exec_role.arn
   memory_size      = 128
