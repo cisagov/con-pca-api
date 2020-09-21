@@ -63,6 +63,7 @@ jobs:
         working-directory: ./terraform
         run: |
           pip install -r ../requirements-lambda.txt -t src/
+          ls src/
 
       - name: Verify Terraform version
         run: terraform --version
