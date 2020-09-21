@@ -7,7 +7,7 @@ data "archive_file" "layer" {
   output_path = "${path.module}/output/layer.zip"
 }
 
-resource "aws_lambda_layer_version" "django" {
+resource "aws_lambda_layer_version" "layer" {
   filename         = data.archive_file.layer.output_path
   source_code_hash = data.archive_file.layer.output_path
   layer_name       = "${var.app}-${var.env}-layer"
