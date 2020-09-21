@@ -3,7 +3,7 @@ import json
 
 import jwt
 import requests
-from django.conf import settings
+from config import settings
 from django.core.cache import cache
 from django.utils.functional import cached_property
 from jwt.algorithms import RSAAlgorithm

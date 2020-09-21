@@ -1,6 +1,4 @@
-* text=auto
+* text=lf
 
 *.png binary
 *.jpg binary
-
-*.sh text eol=lf

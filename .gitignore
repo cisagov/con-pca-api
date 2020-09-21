@@ -3,6 +3,7 @@
 .python-version
 __pycache__
 .venv
+.lambda
 .vs
 
 .vscode
@@ -14,3 +15,6 @@ src/staticfiles
 created_dummy_data_*.json
 node_modules
 /.vsenv
+
+terraform/output
+terraform/layer

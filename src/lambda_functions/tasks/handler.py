@@ -11,7 +11,7 @@ from api.utils.subscription import actions
 
 
 def lambda_handler(event, context):
-    logging.info("Getting tasks to execute")
+    print("Getting tasks to execute")
 
     subscriptions = db.get_list(
         {}, "subscription", SubscriptionModel, validate_subscription
@@ -31,7 +31,7 @@ def lambda_handler(event, context):
                     scheduled_date.replace(tzinfo=None) < datetime.now()
                     and not executed
                 ):
-                    logging.info(f"Executing task {t}")
+                    print(f"Executing task {t}")
 
                     # Execute Task
                     try:
@@ -46,14 +46,14 @@ def lambda_handler(event, context):
                             t["message_type"],
                         )
 
-                        logging.info(f"Successfully executed task {t}")
+                        print(f"Successfully executed task {t}")
 
                     except BaseException as e:
                         logging.exception(e)
                         t["error"] = str(e)
                         update_task(s["subscription_uuid"], t)
         else:
-            logging.info("No tasks to execute")
+            print("No tasks to execute")
 
     return
 
@@ -72,7 +72,7 @@ def update_task(subscription_uuid, task):
 
 
 def add_new_task(subscription_uuid, scheduled_date, message_type):
-    logging.info("checking for new task to add")
+    print("checking for new task to add")
 
     new_date = {
         "monthly_report": scheduled_date + timedelta(minutes=MONTHLY_MINUTES),
@@ -89,7 +89,7 @@ def add_new_task(subscription_uuid, scheduled_date, message_type):
             "executed": False,
         }
 
-        logging.info(f"Adding new task {task}")
+        print(f"Adding new task {task}")
 
         return db.push_nested_item(
             uuid=subscription_uuid,
@@ -175,7 +175,3 @@ def email_subscription_yearly(subscription):
     }
 
     return context
-
-
-if __name__ == "__main__":
-    lambda_handler(None, None)

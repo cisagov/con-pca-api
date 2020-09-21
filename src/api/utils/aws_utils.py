@@ -2,7 +2,7 @@
 import logging
 import os
 import uuid
-from django.conf import settings
+from config import settings
 
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText

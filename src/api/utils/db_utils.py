@@ -9,7 +9,7 @@ from api.models.dhs_models import DHSContactModel
 from api.models.subscription_models import SubscriptionModel
 from api.models.template_models import TemplateModel
 from database.service import Service
-from django.conf import settings
+from config import settings
 import os
 
 
