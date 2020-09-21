@@ -1,16 +1,44 @@
 # ===================================
-# Lambda Layer
+# Lambda Layers
 # ===================================
-data "archive_file" "layer" {
+data "archive_file" "django" {
   type        = "zip"
-  source_dir  = "${path.module}/layer"
-  output_path = "${path.module}/output/layer.zip"
+  source_dir  = "${path.module}/layers/django"
+  output_path = "${path.module}/output/django.zip"
 }
 
-resource "aws_lambda_layer_version" "layer" {
-  filename         = data.archive_file.layer.output_path
-  source_code_hash = data.archive_file.layer.output_path
-  layer_name       = "${var.app}-${var.env}-layer"
+resource "aws_lambda_layer_version" "django" {
+  filename         = data.archive_file.django.output_path
+  source_code_hash = data.archive_file.django.output_path
+  layer_name       = "${var.app}-${var.env}-django"
+
+  compatible_runtimes = ["python3.8"]
+}
+
+data "archive_file" "reports" {
+  type        = "zip"
+  source_dir  = "${path.module}/layers/reports"
+  output_path = "${path.module}/output/reports.zip"
+}
+
+resource "aws_lambda_layer_version" "reports" {
+  filename         = data.archive_file.reports.output_path
+  source_code_hash = data.archive_file.reports.output_path
+  layer_name       = "${var.app}-${var.env}-reports"
+
+  compatible_runtimes = ["python3.8"]
+}
+
+data "archive_file" "other" {
+  type        = "zip"
+  source_dir  = "${path.module}/layers/other"
+  output_path = "${path.module}/output/other.zip"
+}
+
+resource "aws_lambda_layer_version" "reports" {
+  filename         = data.archive_file.other.output_path
+  source_code_hash = data.archive_file.other.output_path
+  layer_name       = "${var.app}-${var.env}-other"
 
   compatible_runtimes = ["python3.8"]
 }
@@ -28,12 +56,17 @@ resource "aws_lambda_function" "tasks" {
   filename         = data.archive_file.code.output_path
   function_name    = "${var.app}-${var.env}-tasks"
   handler          = "lambda_functions.tasks.handler.lambda_handler"
-  layers           = [aws_lambda_layer_version.layer.arn]
   role             = aws_iam_role.lambda_exec_role.arn
   memory_size      = 128
   runtime          = "python3.8"
   source_code_hash = data.archive_file.code.output_base64sha256
   timeout          = 300
+
+  layers = [
+    aws_lambda_layer_version.other.arn,
+    aws_lambda_layer_version.django.arn,
+    aws_lambda_layer_version.reports.arn
+  ]
 
   environment {
     variables = local.environment

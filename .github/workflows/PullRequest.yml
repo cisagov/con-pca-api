@@ -76,8 +76,13 @@ jobs:
       - name: Create Dummy layer
         working-directory: ./terraform
         run: |
-          mkdir layer
-          mkdir layer/python
+          mkdir layers
+          mkdir layers/django
+          mkdir layers/other
+          mkdir layers/reports
+          mkdir layers/django/python
+          mkdir layers/other/python
+          mkdir layers/reports/python
 
       - name: Terraform Init
         working-directory: ./terraform

@@ -62,9 +62,16 @@ jobs:
       - name: Create Layer
         working-directory: ./terraform
         run: |
-          mkdir layer
-          mkdir layer/python
-          pip install -r ../requirements-lambda.txt -t layer/python
+          mkdir layers
+          mkdir layers/django
+          mkdir layers/other
+          mkdir layers/reports
+          mkdir layers/django/python
+          mkdir layers/other/python
+          mkdir layers/reports/python
+          pip install -r ../requirements-lambda-django.txt -t layers/django/python
+          pip install -r ../requirements-lambda-other.txt -t layers/other/python
+          pip install -r ../requirements-lambda-reports.txt -t layers/reports/python
 
       - name: Verify Terraform version
         run: terraform --version
