@@ -35,7 +35,7 @@ data "archive_file" "other" {
   output_path = "${path.module}/output/other.zip"
 }
 
-resource "aws_lambda_layer_version" "reports" {
+resource "aws_lambda_layer_version" "other" {
   filename         = data.archive_file.other.output_path
   source_code_hash = data.archive_file.other.output_path
   layer_name       = "${var.app}-${var.env}-other"
