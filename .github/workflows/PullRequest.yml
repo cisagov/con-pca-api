@@ -73,6 +73,12 @@ jobs:
         with:
           terraform_version: 0.12.28
 
+      - name: Create Dummy layer
+        working-directory: ./terraform
+        run: |
+          mkdir layer
+          mkdir layer/python
+
       - name: Terraform Init
         working-directory: ./terraform
         run: terraform init -input=false
@@ -88,6 +94,7 @@ jobs:
         run: terraform validate
 
       - name: Get Tag
+        working-directory: ./terraform
         id: vars
         run: echo ::set-output name=tag::$(echo ${GITHUB_SHA:0:10})
 
