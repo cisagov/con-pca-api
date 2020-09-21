@@ -62,8 +62,9 @@ jobs:
       - name: Install Python Requirements
         working-directory: ./terraform
         run: |
-          pip install -r ../requirements-lambda.txt -t ../src/
-          ls ../src/
+          mkdir layer
+          mkdir layer/python
+          pip install -r ../requirements-lambda.txt -t ./layer/python
 
       - name: Verify Terraform version
         run: terraform --version

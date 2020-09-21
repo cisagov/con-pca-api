@@ -13,12 +13,13 @@ import logging
 
 # Third-Party Libraries
 from config import settings
-from api.models.dhs_models import DHSContactModel, validate_dhs_contact
-from api.utils.db_utils import get_single
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.mail.message import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
+
+from api.models.dhs_models import DHSContactModel, validate_dhs_contact
+from api.utils.db_utils import get_single
 from api.utils.reports import download_pdf
 from api.utils.template.templates import get_subscription_templates
 from api.utils import db_utils as db
