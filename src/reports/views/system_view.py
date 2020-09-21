@@ -153,11 +153,11 @@ class SystemReportsView(APIView):
 
 class SubsriptionReportsListView(APIView):
     def get(self, request, **kwargs):
-        
+
         subscription_uuid = self.kwargs["subscription_uuid"]
         subscription = get_single(
             subscription_uuid, "subscription", SubscriptionModel, validate_subscription
         )
         context = subscription["email_report_history"]
-        
+
         return Response(context, status=status.HTTP_202_ACCEPTED)

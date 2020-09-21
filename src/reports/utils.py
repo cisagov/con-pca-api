@@ -632,7 +632,7 @@ def set_cycle_quarters(cycles):
     working_cycle_year = cycles[0]["start_date"].year
     current_quarter = 1
     # Count the cycle order from the year or try to match up to standard 'quarters'?
-    for num, cycle in enumerate(cycles,0):
+    for num, cycle in enumerate(cycles, 0):
         if cycle["start_date"].year > working_cycle_year:
             current_quarter = 1
             working_cycle_year = cycle["start_date"].year
