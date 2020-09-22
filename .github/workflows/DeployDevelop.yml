@@ -64,7 +64,7 @@ jobs:
         run: |
           mkdir layer
           mkdir layer/python
-          pip install -r ../requirements-lambda.txt -t ./layer/python
+          pip install -r ../requirements-lambda-other.txt -t ./layer/python
           mkdir layers
           mkdir layers/scikit
           mkdir layers/scikit/python
