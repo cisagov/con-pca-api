@@ -13,7 +13,30 @@ resource "aws_lambda_layer_version" "layer" {
   layer_name       = "${var.app}-${var.env}-layer"
 
   compatible_runtimes = ["python3.8"]
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
+
+data "archive_file" "scikit" {
+  type        = "zip"
+  source_dir  = "${path.module}/layers/scikit"
+  output_path = "${path.module}/output/scikit.zip"
+}
+
+resource "aws_lambda_layer_version" "scikit" {
+  filename         = data.archive_file.scikit.output_path
+  source_code_hash = data.archive_file.scikit.output_path
+  layer_name       = "${var.app}-${var.env}-scikit"
+
+  compatible_runtimes = ["python3.8"]
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
 
 # ===================================
 # Lambda Function
@@ -36,7 +59,8 @@ resource "aws_lambda_function" "tasks" {
 
   layers = [
     "arn:aws:lambda:us-east-1:668099181075:layer:AWSLambda-Python38-SciPy1x:29",
-    aws_lambda_layer_version.layer.arn
+    aws_lambda_layer_version.layer.arn,
+    aws_lambda_layer_version.scikit.arn
   ]
 
   environment {

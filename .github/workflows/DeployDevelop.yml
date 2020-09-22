@@ -65,6 +65,10 @@ jobs:
           mkdir layer
           mkdir layer/python
           pip install -r ../requirements-lambda.txt -t ./layer/python
+          mkdir layers
+          mkdir layers/scikit
+          mkdir layers/scikit/python
+          pip install -r ../requirements-lambda-scikit.txt -t ./layers/scikit/python --no-deps
 
       - name: Verify Terraform version
         run: terraform --version
