@@ -71,7 +71,7 @@ jobs:
 
       - uses: hashicorp/setup-terraform@v1
         with:
-          terraform_version: 0.12.28
+          terraform_version: 0.13.3
 
       - name: Create Dummy layer
         working-directory: ./terraform
