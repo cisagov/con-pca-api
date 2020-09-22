@@ -187,7 +187,6 @@ def get_staggered_dates_in_range(start, end, intv):
         list[datetime]: list of N dates where N=intv
     """
     date_list = []
-    diff = (end - start) / intv
     for i in range(intv):
-        date_list.append(start + diff * i)
+        date_list.append(start + timedelta(hours=i))
     return date_list
