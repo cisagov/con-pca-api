@@ -13,7 +13,6 @@ import logging
 
 # Third-Party Libraries
 from config import settings
-from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.mail.message import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
@@ -27,8 +26,13 @@ from api.manager import CampaignManager
 from api.models.subscription_models import SubscriptionModel, validate_subscription
 from api.utils.aws_utils import SES
 
+import os
+
 
 logger = logging.getLogger()
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+STATIC_DIR = os.path.abspath(f"{BASE_DIR}/static")
 
 
 class EmailSender:
@@ -76,6 +80,7 @@ class EmailSender:
             self.add_email_report_history()
         except Exception as e:
             logging.exception(e)
+            raise e
 
     def _send_django(self):
         message = EmailMultiAlternatives(
@@ -88,7 +93,7 @@ class EmailSender:
 
         image_files = ["cisa_logo.png"]
         for image_file in image_files:
-            fp = open(staticfiles_storage.path(f"img/{image_file}"), "rb")
+            fp = open(os.path.abspath(f"{STATIC_DIR}/img/{image_file}"), "rb")
             msgImage = MIMEImage(fp.read(), _subtype="png")
             fp.close()
             msgImage.add_header("Content-ID", f"<{image_file}>")
@@ -120,7 +125,7 @@ class EmailSender:
             bcc=self.bcc,
             text=self.text_content,
             html=self.html_content,
-            attachments=["img/cisa_logo.png"],
+            attachments=[os.path.abspath(f"{STATIC_DIR}/img/cisa_logo.png")],
             binary_attachments=binary_attachments,
         )
 
