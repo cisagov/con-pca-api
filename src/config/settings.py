@@ -71,7 +71,6 @@ INSTALLED_APPS = [
     "authentication",
     "notifications",
     "reports",
-    "tasks",
     "api",
 ]
 
