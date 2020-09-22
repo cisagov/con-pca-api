@@ -23,7 +23,6 @@ locals {
     "BROWSERLESS_ENDPOINT" : module.browserless.lb_dns_name,
     "EXTRA_BCC_EMAILS" : "william.martin@inl.gov",
     "USE_SES" : 1,
-    "TASKS_CRONTAB" : "*/5 * * * *",
     "DEFAULT_X_GOPHISH_CONTACT": "vulnerability@cisa.dhs.gov",
     "CYCLE_MINUTES": var.cycle_minutes,
     "MONTHLY_MINUTES": var.monthly_minutes,

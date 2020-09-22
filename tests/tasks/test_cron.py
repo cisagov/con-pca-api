@@ -1,1 +1,1 @@
-from src.tasks import cron
+from src.lambda_functions.tasks import handler

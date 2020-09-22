@@ -62,7 +62,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_smtp_ssl",
-    "django_crontab",
     "corsheaders",
     "storages",
     # third party
@@ -213,15 +212,3 @@ AWS_S3_FILE_OVERWRITE = False
 
 # API Key for running local scripts
 LOCAL_API_KEY = os.environ.get("LOCAL_API_KEY")
-
-# Execute cron job every hour
-CRONJOBS = [
-    (
-        os.environ.get("TASKS_CRONTAB", "*/5 * * * *"),
-        "tasks.cron.execute_tasks",
-        ">> /proc/1/fd/1 2> /proc/1/fd/1",
-    )
-]
-CRONTAB_PYTHON_EXECUTABLE = os.environ.get(
-    "CRONTAB_PYTHON_EXECUTABLE", "/usr/local/bin/python3"
-)
