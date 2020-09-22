@@ -246,6 +246,7 @@ class SubscriptionGetSerializer(serializers.Serializer):
     tasks = SubscriptionTasksSerializer(many=True, required=False)
     cycles = CycleSerializer(many=True)
     email_report_history = SubscriptionEmailHistorySerializer(required=False, many=True)
+    stagger_emails = serializers.BooleanField(default=True)
     # db data tracking added below
     created_by = serializers.CharField(max_length=100)
     cb_timestamp = serializers.DateTimeField()
@@ -281,6 +282,7 @@ class SubscriptionPostSerializer(serializers.Serializer):
     manually_stopped = serializers.BooleanField(default=False)
     cycles = CycleSerializer(required=False, many=True)
     email_report_history = SubscriptionEmailHistorySerializer(required=False, many=True)
+    stagger_emails = serializers.BooleanField(default=True)
 
 
 class SubscriptionPostResponseSerializer(serializers.Serializer):
@@ -353,6 +355,7 @@ class SubscriptionPatchResponseSerializer(serializers.Serializer):
     active = serializers.BooleanField()
     archived = serializers.BooleanField(default=False)
     manually_stopped = serializers.BooleanField(default=False)
+    stagger_emails = serializers.BooleanField(default=True)
     created_by = serializers.CharField(max_length=100)
     cb_timestamp = serializers.DateTimeField()
     last_updated_by = serializers.CharField(max_length=100)
@@ -390,6 +393,7 @@ class SubscriptionQuerySerializer(serializers.Serializer):
     active = serializers.BooleanField()
     archived = serializers.BooleanField(default=False)
     manually_stopped = serializers.BooleanField(default=False)
+    stagger_emails = serializers.BooleanField(default=True)
     created_by = serializers.CharField(max_length=100)
     cb_timestamp = serializers.DateTimeField()
     last_updated_by = serializers.CharField(max_length=100)

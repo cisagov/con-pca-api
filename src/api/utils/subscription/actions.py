@@ -49,6 +49,9 @@ def start_subscription(data=None, subscription_uuid=None, new_cycle=False):
     else:
         subscription = data
 
+    # remove after ui in implimented
+    subscription["stagger_emails"] = True
+
     if new_cycle and subscription_uuid:
         campaigns_to_stop = list(
             filter(
@@ -70,8 +73,11 @@ def start_subscription(data=None, subscription_uuid=None, new_cycle=False):
     customer = get_customer(subscription["customer_uuid"])
 
     # Divide stagger each start date and randomize:
-    date_list = get_staggered_dates_in_range(start_date, end_date, 3)
-    numpy.random.shuffle(date_list)
+    if subscription["stagger_emails"]:
+        date_list = get_staggered_dates_in_range(start_date, end_date, 3)
+        numpy.random.shuffle(date_list)
+    else:
+        date_list = [start_date, start_date, start_date]
 
     # Create the needed subscription levels to fill.
     sub_levels = {

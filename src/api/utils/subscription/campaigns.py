@@ -54,11 +54,16 @@ def create_campaign(subscription, sub_level, landing_page, cycle_uuid):
         list(dict): gophish_campaigns
     """
     gophish_campaigns = []
-    date_list = get_staggered_dates_in_range(
-        sub_level["start_date"],
-        sub_level["end_date"],
-        len(sub_level["template_targets"]),
-    )
+    if subscription["stagger_emails"]:
+        date_list = get_staggered_dates_in_range(
+            sub_level["start_date"],
+            sub_level["end_date"],
+            len(sub_level["template_targets"]),
+        )
+    else:
+        date_list = []
+        for _ in range(len(sub_level["template_targets"])):
+            date_list.append(sub_level["start_date"])
 
     for index, k in enumerate(sub_level["template_targets"].keys()):
         group_name = (
