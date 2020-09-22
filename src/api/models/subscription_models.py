@@ -291,6 +291,7 @@ class SubscriptionModel(Model):
     email_report_history = ListType(
         ModelType(SubscriptionEmailHistoryModel), default=[]
     )
+    stagger_emails = BooleanType()
     # db data tracking added below
     created_by = StringType()
     cb_timestamp = DateTimeType()

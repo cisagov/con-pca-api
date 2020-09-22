@@ -171,3 +171,22 @@ def init_subscription_tasks(start_date, existing_tasks=[]):
         )
 
     return tasks
+
+
+def get_staggered_dates_in_range(start, end, intv):
+    """Get Staggered Dates
+
+    Takes range of dates and gets N dates within them, returns a list of dates.
+
+    Args:
+        start (datetime): starting date of subscription
+        end (datetime): ending date of subscription
+        intv (int): number of inteval dates
+
+    Returns:
+        list[datetime]: list of N dates where N=intv
+    """
+    date_list = []
+    for i in range(intv):
+        date_list.append(start + timedelta(hours=i))
+    return date_list
