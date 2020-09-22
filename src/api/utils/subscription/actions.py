@@ -190,6 +190,7 @@ def stop_subscription(subscription):
     subscription["tasks"] = []
 
     # Update subscription
+    subscription["templates_selected_uuid_list"] = []
     subscription["gophish_campaign_list"] = updated_campaigns
     subscription["active"] = False
     subscription["manually_stopped"] = True
