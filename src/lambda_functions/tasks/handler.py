@@ -8,7 +8,10 @@ from notifications.views import EmailSender
 
 from datetime import datetime, timedelta
 from uuid import uuid4
-import logging
+
+from django.core.wsgi import get_wsgi_application
+
+application = get_wsgi_application()
 
 
 def lambda_handler(event, context):
@@ -17,6 +20,8 @@ def lambda_handler(event, context):
     subscriptions = db.get_list(
         {}, "subscription", SubscriptionModel, validate_subscription
     )
+
+    executed_count = 0
 
     for s in subscriptions:
         tasks = s.get("tasks")
@@ -29,7 +34,7 @@ def lambda_handler(event, context):
                 executed = t.get("executed")
 
                 if (
-                    scheduled_date.replace(tzinfo=None) < datetime.now()
+                    scheduled_date.replace(tzinfo=None) < datetime.utcnow()
                     and not executed
                 ):
                     print(f"Executing task {t}")
@@ -37,6 +42,7 @@ def lambda_handler(event, context):
                     # Execute Task
                     try:
                         execute_task(s, t["message_type"])
+                        executed_count += 1
                         t["executed"] = True
                         t["error"] = ""
                         t["executed_date"] = datetime.now()
@@ -50,13 +56,11 @@ def lambda_handler(event, context):
                         print(f"Successfully executed task {t}")
 
                     except BaseException as e:
-                        logging.exception(e)
+                        print(e)
                         t["error"] = str(e)
                         update_task(s["subscription_uuid"], t)
-        else:
-            print("No tasks to execute")
 
-    return
+    print(f"{str(executed_count)} tasks executed")
 
 
 def update_task(subscription_uuid, task):
