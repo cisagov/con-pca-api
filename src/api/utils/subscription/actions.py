@@ -3,6 +3,7 @@
 # Standard Python Libraries
 import logging
 import uuid
+import numpy
 
 # Third-Party Libraries
 from api.manager import CampaignManager
@@ -20,6 +21,7 @@ from api.utils.subscription.subscriptions import (
     send_stop_notification,
     update_subscription,
     save_subscription,
+    get_staggered_dates_in_range,
 )
 from api.utils.subscription.targets import batch_targets
 from api.utils.subscription.template_selector import personalize_template_batch
@@ -67,10 +69,14 @@ def start_subscription(data=None, subscription_uuid=None, new_cycle=False):
     # Get details for the customer that is attached to the subscription
     customer = get_customer(subscription["customer_uuid"])
 
+    # Divide stagger each start date and randomize:
+    date_list = get_staggered_dates_in_range(start_date, end_date, 3)
+    numpy.random.shuffle(date_list)
+
     # Create the needed subscription levels to fill.
     sub_levels = {
         "high": {
-            "start_date": start_date,
+            "start_date": date_list[0],
             "end_date": end_date,
             "template_targets": {},
             "template_uuids": [],
@@ -79,7 +85,7 @@ def start_subscription(data=None, subscription_uuid=None, new_cycle=False):
             "deception_level": deception_level.get("high"),
         },
         "moderate": {
-            "start_date": start_date,
+            "start_date": date_list[1],
             "end_date": end_date,
             "template_targets": {},
             "template_uuids": [],
@@ -88,7 +94,7 @@ def start_subscription(data=None, subscription_uuid=None, new_cycle=False):
             "deception_level": deception_level.get("moderate"),
         },
         "low": {
-            "start_date": start_date,
+            "start_date": date_list[2],
             "end_date": end_date,
             "template_targets": {},
             "template_uuids": [],
