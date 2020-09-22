@@ -8,8 +8,6 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 
-from django.contrib.staticfiles.storage import staticfiles_storage
-
 # Third-Party Libraries
 import boto3
 
@@ -96,7 +94,7 @@ class SES(AWS):
 
         # Add attachments
         for attachment in attachments or []:
-            with staticfiles_storage.open(attachment) as f:
+            with open(attachment, "rb") as f:
                 part = MIMEApplication(f.read())
                 part.add_header(
                     "Content-Disposition",

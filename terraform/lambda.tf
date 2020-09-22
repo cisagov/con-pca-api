@@ -145,6 +145,17 @@ data "aws_iam_policy_document" "lambda_policy_doc" {
 
     resources = ["*"]
   }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "sts:AssumeRole"
+    ]
+
+    resources = [
+      data.aws_ssm_parameter.ses_assume_role_arn.value
+    ]
+  }
 }
 
 resource "aws_iam_policy" "lambda_iam_policy" {

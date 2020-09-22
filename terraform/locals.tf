@@ -23,11 +23,10 @@ locals {
     "BROWSERLESS_ENDPOINT" : module.browserless.lb_dns_name,
     "EXTRA_BCC_EMAILS" : "william.martin@inl.gov",
     "USE_SES" : 1,
-    "TASKS_CRONTAB" : "*/5 * * * *",
-    "DEFAULT_X_GOPHISH_CONTACT": "vulnerability@cisa.dhs.gov",
-    "CYCLE_MINUTES": var.cycle_minutes,
-    "MONTHLY_MINUTES": var.monthly_minutes,
-    "YEARLY_MINUTES": var.yearly_minutes,
+    "DEFAULT_X_GOPHISH_CONTACT" : "vulnerability@cisa.dhs.gov",
+    "CYCLE_MINUTES" : var.cycle_minutes,
+    "MONTHLY_MINUTES" : var.monthly_minutes,
+    "YEARLY_MINUTES" : var.yearly_minutes,
     "DB_USER" : aws_ssm_parameter.docdb_username.value,
     "DB_PW" : aws_ssm_parameter.docdb_password.value,
     "GP_API_KEY" : data.aws_ssm_parameter.gp_api_key.value,
@@ -41,6 +40,7 @@ locals {
     "SMTP_FROM" : data.aws_ssm_parameter.smtp_from.value,
     "SMTP_USER" : data.aws_ssm_parameter.smtp_user.value,
     "COGNITO_AUDIENCE" : data.aws_ssm_parameter.client_id.value,
-    "SES_ASSUME_ROLE_ARN" : data.aws_ssm_parameter.ses_assume_role_arn.value
+    "SES_ASSUME_ROLE_ARN" : data.aws_ssm_parameter.ses_assume_role_arn.value,
+    "DJANGO_SETTINGS_MODULE" : "config.settings"
   }
 }
