@@ -12,6 +12,7 @@ load_dotenv(find_dotenv())
 os.environ["DB_HOST"] = "localhost"
 os.environ["GP_URL"] = "http://localhost:3333/"
 os.environ["DJANGO_SETTINGS_MODULE"] = "config.settings"
+os.environ["BROWSERLESS_ENDPOINT"] = "localhost:3000"
 
 from lambda_functions.tasks.handler import lambda_handler
 

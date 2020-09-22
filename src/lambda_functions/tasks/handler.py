@@ -141,7 +141,12 @@ def email_subscription_monthly(subscription):
     schedule the next monthly subscription report email
     """
     # Send email
-    sender = EmailSender(subscription, "monthly_report", datetime.now().isoformat())
+    sender = EmailSender(
+        subscription,
+        "monthly_report",
+        datetime.now().isoformat(),
+        subscription["cycles"][-1]["cycle_uuid"],
+    )
     sender.send()
 
     context = {
