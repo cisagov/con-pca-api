@@ -3,7 +3,6 @@ FROM python:3.8
 # Nginx
 RUN apt-get update
 RUN apt-get install nginx -y
-RUN apt-get install cron -y
 
 # Generate certs
 RUN mkdir /certs
