@@ -52,7 +52,7 @@ resource "aws_lambda_function" "tasks" {
   function_name    = "${var.app}-${var.env}-tasks"
   handler          = "lambda_functions.tasks.handler.lambda_handler"
   role             = aws_iam_role.lambda_exec_role.arn
-  memory_size      = 128
+  memory_size      = 1024
   runtime          = "python3.8"
   source_code_hash = data.archive_file.code.output_base64sha256
   timeout          = 300
@@ -171,20 +171,20 @@ resource "aws_iam_role_policy_attachment" "lambda_policy_attachment" {
 # ===================================
 # Cloudwatch Event rule
 # ===================================
-# resource "aws_cloudwatch_event_rule" "every_one_hour" {
-#   name                = "${var.app}-${var.env}-sync_db"
-#   description         = "Fires every hour"
-#   schedule_expression = "rate(1 hour)"
-# }
-# resource "aws_cloudwatch_event_target" "check_every_one_hour" {
-#   rule      = aws_cloudwatch_event_rule.every_one_hour.name
-#   target_id = "lambda"
-#   arn       = aws_lambda_function.sync_db.arn
-# }
-# resource "aws_lambda_permission" "allow_cloudwatch_to_call_check_sync_db" {
-#   statement_id  = "AllowExecutionFromCloudWatch"
-#   action        = "lambda:InvokeFunction"
-#   function_name = aws_lambda_function.sync_db.function_name
-#   principal     = "events.amazonaws.com"
-#   source_arn    = aws_cloudwatch_event_rule.every_one_hour.arn
-# }
+resource "aws_cloudwatch_event_rule" "tasks" {
+  name                = "${var.app}-${var.env}-tasks"
+  description         = "Every 5 minutes"
+  schedule_expression = "rate(5 minutes)"
+}
+resource "aws_cloudwatch_event_target" "tasks" {
+  rule      = aws_cloudwatch_event_rule.tasks.name
+  target_id = "lambda"
+  arn       = aws_lambda_function.tasks.arn
+}
+resource "aws_lambda_permission" "tasks" {
+  statement_id  = "AllowExecutionFromCloudWatch"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.tasks.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.tasks.arn
+}
