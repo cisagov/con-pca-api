@@ -2,6 +2,7 @@ from io import BytesIO
 
 import pyppeteer
 import asyncio
+from contextlib import suppress
 
 from config import settings
 
@@ -16,6 +17,11 @@ def download_pdf(report_type, uuid, cycle, cycle_uuid=None):
             report_type, uuid, cycle, auth_header=auth_header, cycle_uuid=cycle_uuid
         )
     )
+
+    with suppress(asyncio.exceptions.CancelledError):
+        pending = asyncio.Task.all_tasks()
+        loop.run_until_complete(asyncio.gather(*pending))
+
     buffer = BytesIO()
     buffer.write(response)
     buffer.seek(0)
