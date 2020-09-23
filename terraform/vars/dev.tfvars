@@ -18,6 +18,6 @@ image_repo = "780016325729.dkr.ecr.us-east-1.amazonaws.com/con-pca-api"
 
 domain_name = "con-pca.dev.inltesting.xyz"
 
-# yearly_minutes = "30"
-# cycle_minutes = "15"
-# monthly_minutes = "10"
+yearly_minutes = "60"
+cycle_minutes = "30"
+monthly_minutes = "15"
