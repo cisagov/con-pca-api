@@ -10,7 +10,7 @@ from api.utils.generic import (
     customer_spoof_email,
     generate_random_name,
 )
-from api.utils.faker import FakerUtil
+from api.utils.faker.faker_util import FakerUtil
 from simpleeval import simple_eval
 
 logger = logging.getLogger(__name__)
@@ -69,8 +69,6 @@ def personalize_template(customer_info, template_data, sub_data, tag_list):
             "get_full_customer_address": get_full_customer_address,
             "generate_random_name": generate_random_name,
             "customer_spoof_email": customer_spoof_email,
-            # "spoof_domain": spoof_domain,
-            # Faker
             "building_number": faker.address.building_number,
             "city": faker.address.city,
             "city_suffix": faker.address.city_suffix,

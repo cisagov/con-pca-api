@@ -458,7 +458,7 @@
   {
     "data_source": "ascii_company_email()",
     "description": "Faker generated ascii_company_email.",
-    "tag": "<%FAKER_ASCII_COMPANY_EMAIL>",
+    "tag": "<%FAKER_ASCII_COMPANY_EMAIL%>",
     "tag_type": "con-pca-eval"
   },
   {
