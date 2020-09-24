@@ -22,6 +22,9 @@ def download_pdf(report_type, uuid, cycle, cycle_uuid=None):
         pending = asyncio.Task.all_tasks()
         loop.run_until_complete(asyncio.gather(*pending))
 
+    if response == "500":
+        raise Exception("Report Error - Check Logs")
+
     buffer = BytesIO()
     buffer.write(response)
     buffer.seek(0)
@@ -41,12 +44,19 @@ async def _download_pdf(report_type, uuid, cycle, auth_header=None, cycle_uuid=N
     if auth_header:
         url += f"?reportToken={auth_header}"
 
-    await page.goto(url, waitUntil="networkidle0")
+    responses = []
+    page.on("response", lambda response: responses.append(response.status))
 
+    await page.goto(url, waitUntil="networkidle0")
     await page.emulateMedia("screen")
     await page.waitForSelector("#bluePhishLogo")
     await page.waitFor(1500)
 
     pdf_content = await page.pdf({"format": "Letter", "printBackground": True})
+    await page.close()
     await browser.close()
+
+    if 500 in responses:
+        return "500"
+
     return pdf_content
