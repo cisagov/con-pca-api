@@ -1,6 +1,8 @@
 locals {
   api_container_port     = 80
   api_load_balancer_port = 8043
+  api_load_balancer_http_port = 8000
+  browserless_lb_port         = 3000
 
   environment = {
     "SECRET_KEY" : random_string.django_secret_key.result,

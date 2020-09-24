@@ -36,13 +36,12 @@ module "documentdb" {
   source                  = "github.com/cloudposse/terraform-aws-documentdb-cluster"
   stage                   = "${var.env}"
   name                    = "${var.env}-${var.app}-docdb"
-  cluster_size            = 1
+  cluster_size            = var.documentdb_cluster_size
   master_username         = random_string.docdb_username.result
   master_password         = random_password.docdb_password.result
-  instance_class          = "db.r5.large"
+  instance_class          = var.documentdb_instance_class
   vpc_id                  = var.vpc_id
   subnet_ids              = var.public_subnet_ids
-  allowed_cidr_blocks     = ["0.0.0.0/0"]
   allowed_security_groups = [aws_security_group.api.id]
   skip_final_snapshot     = true
 }
@@ -113,7 +112,7 @@ module "browserless" {
 
   vpc_id     = var.vpc_id
   subnet_ids = var.private_subnet_ids
-  lb_port    = 3000
+  lb_port    = var.browserless_lb_port
 }
 
 # ===========================
@@ -129,7 +128,7 @@ module "container" {
   container_image = "${var.image_repo}:${var.image_tag}"
   container_port  = local.api_container_port
   region          = var.region
-  log_retention   = 7
+  log_retention   = var.log_retention_days
   environment     = local.environment
 }
 
@@ -167,8 +166,8 @@ module "api" {
   container_port        = local.api_container_port
   container_definition  = module.container.json
   container_name        = "pca-api"
-  cpu                   = 2048
-  memory                = 4096
+  cpu                   = var.api_container_cpu
+  memory                = var.api_container_memory
   vpc_id                = var.vpc_id
   health_check_interval = 60
   health_check_path     = "/"
@@ -186,7 +185,7 @@ module "api" {
 # Once we have good certs, can remove this.
 resource "aws_lb_listener" "api_http" {
   load_balancer_arn = data.aws_lb.public.arn
-  port              = 8000
+  port              = local.api_load_balancer_http_port
   protocol          = "HTTP"
 
   default_action {
