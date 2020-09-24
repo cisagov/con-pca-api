@@ -112,7 +112,7 @@ module "browserless" {
 
   vpc_id     = var.vpc_id
   subnet_ids = var.private_subnet_ids
-  lb_port    = var.browserless_lb_port
+  lb_port    = local.browserless_lb_port
 }
 
 # ===========================
