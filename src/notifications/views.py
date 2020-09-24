@@ -25,6 +25,7 @@ from api.utils import db_utils as db
 from api.manager import CampaignManager
 from api.models.subscription_models import SubscriptionModel, validate_subscription
 from api.utils.aws_utils import SES
+from api.utils.subscription.static import DEFAULT_X_GOPHISH_CONTACT
 
 import os
 
@@ -205,6 +206,8 @@ class EmailSender:
             "phishing_email": phishing_email,
             "email_count": email_count,
             "dhs_contact": dhs_contact,
+            "phishing_domain": phishing_email.split("@")[-1],
+            "x_gophish_contact": DEFAULT_X_GOPHISH_CONTACT,
         }
 
     def set_to(self):

@@ -18,14 +18,14 @@ phishing exercise emails and actual phishing attempts
 please use the following:
 
     All phishing emails from the Con-PCA program will
-    come from the following email address:
+    come from the following domain:
 
-    {{phishing_email}}
+    {{phishing_domain}}
 
-    This will be the sending email for the current cycle,
-    but different display names will be used based upon
-    the email template. This email address may change between
-    cycles.
+    This will be the sending domain for the current
+    cycle, but different display names will be used
+    based upon the email template. This sending domain
+    may change between cycles.
 
     All emails coming from the Con-PCA program will
     have a custom header:
@@ -42,12 +42,8 @@ please use the following:
 
     You have enrolled {{email_count}} Emails in this campaign.
 
-    You have been assigned the following Lead for this Campaign:
-    Name: {{dhs_contact.first_name}} {{dhs_contact.last_name}}
-    Email: {{dhs_contact.email}}
-
 In the interests of security and efficiency, please
-respond to your DHS contact directly with any
+respond to {{x_gophish_contact}} directly with any
 questions or concerns you may have
 
 Respectfully,
