@@ -10,7 +10,10 @@ from api.manager import CampaignManager
 from api.models.landing_page_models import LandingPageModel, validate_landing_page
 from api.utils import db_utils as db
 from api.utils.customer.customers import get_customer
-from api.utils.subscription.campaigns import generate_campaigns, stop_campaign
+from api.utils.subscription.campaigns import (
+    generate_campaigns,
+    stop_campaigns,
+)
 from api.utils.subscription.subscriptions import (
     calculate_subscription_start_end_date,
     init_subscription_tasks,
@@ -53,16 +56,7 @@ def start_subscription(data=None, subscription_uuid=None, new_cycle=False):
     subscription["stagger_emails"] = True
 
     if new_cycle and subscription_uuid:
-        campaigns_to_stop = list(
-            filter(
-                lambda x: x["campaign_id"]
-                in subscription["cycles"][-1]["campaigns_in_cycle"],
-                subscription["gophish_campaign_list"],
-            )
-        )
-        list(map(stop_campaign, campaigns_to_stop))
-
-        __delete_subscription_user_groups(campaigns_to_stop)
+        stop_campaigns(subscription["gophish_campaign_list"])
 
     # calculate start and end date to subscription
     start_date, end_date = calculate_subscription_start_end_date(
@@ -174,24 +168,13 @@ def stop_subscription(subscription):
     Returns updated subscription.
     """
     # Stop Campaigns
-    campaigns_to_stop = list(
-        filter(
-            lambda x: x["campaign_id"]
-            in subscription["cycles"][-1]["campaigns_in_cycle"],
-            subscription["gophish_campaign_list"],
-        )
-    )
-    updated_campaigns = list(map(stop_campaign, campaigns_to_stop))
-
-    # Delete User Groups
-    __delete_subscription_user_groups(campaigns_to_stop)
+    stop_campaigns(subscription["gophish_campaign_list"])
 
     # Remove subscription tasks from the scheduler
     subscription["tasks"] = []
 
     # Update subscription
     subscription["templates_selected_uuid_list"] = []
-    subscription["gophish_campaign_list"] = updated_campaigns
     subscription["active"] = False
     subscription["manually_stopped"] = True
 
@@ -205,17 +188,3 @@ def stop_subscription(subscription):
     resp = update_subscription(subscription["subscription_uuid"], subscription)
 
     return resp
-
-
-def __delete_subscription_user_groups(gophish_campaign_list):
-    campaign_manager = CampaignManager()
-
-    for campaign in gophish_campaign_list:
-        groups = list({v["name"]: v for v in campaign["groups"]}.values())
-        for group in groups:
-            try:
-                campaign_manager.delete_user_group(group_id=group["id"])
-            except Exception as err:
-                logger.exception("Deleting group raised: %r", err)
-                pass
-    return
