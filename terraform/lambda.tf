@@ -52,7 +52,7 @@ resource "aws_lambda_function" "tasks" {
   function_name    = "${var.app}-${var.env}-tasks"
   handler          = "lambda_functions.tasks.handler.lambda_handler"
   role             = aws_iam_role.lambda_exec_role.arn
-  memory_size      = 1024
+  memory_size      = var.lambda_tasks_memory
   runtime          = "python3.8"
   source_code_hash = data.archive_file.code.output_base64sha256
   timeout          = 300
@@ -139,8 +139,7 @@ data "aws_iam_policy_document" "lambda_policy_doc" {
 
   statement {
     actions = [
-      "s3:*",
-      "route53:*"
+      "s3:*"
     ]
 
     resources = ["*"]
@@ -174,7 +173,7 @@ resource "aws_iam_role_policy_attachment" "lambda_policy_attachment" {
 resource "aws_cloudwatch_event_rule" "tasks" {
   name                = "${var.app}-${var.env}-tasks"
   description         = "Every 5 minutes"
-  schedule_expression = "rate(5 minutes)"
+  schedule_expression = var.lambda_tasks_schedule
 }
 resource "aws_cloudwatch_event_target" "tasks" {
   rule      = aws_cloudwatch_event_rule.tasks.name
