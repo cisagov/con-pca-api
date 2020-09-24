@@ -9,7 +9,7 @@ from api.utils.generic import (
     current_season,
     customer_spoof_email,
     generate_random_name,
-    spoof_domain,
+    faker_spoof_domain,
 )
 from simpleeval import simple_eval
 
@@ -55,6 +55,9 @@ def personalize_template(customer_info, template_data, sub_data, tag_list):
         "<%TARGET_POSITION%>": "{{.Position}}",
         "<%FROM%>": "{{.From}}"
     }
+     faker_tags = {
+        "<%FAKER_%>": "{{.URL}}"
+    }
     """
     simple_eval_options = {
         "names": {"today": datetime.today(), "customer_info": customer_info},
@@ -64,6 +67,7 @@ def personalize_template(customer_info, template_data, sub_data, tag_list):
             "generate_random_name": generate_random_name,
             "customer_spoof_email": customer_spoof_email,
             "spoof_domain": spoof_domain,
+            # Faker
         },
     }
 
