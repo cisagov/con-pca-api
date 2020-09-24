@@ -87,10 +87,6 @@ jobs:
         working-directory: ./terraform
         run: terraform validate
 
-      - name: Terraform plan
-        working-directory: ./terraform
-        run: terraform plan -input=false -var="image_tag=${{needs.build.outputs.tag}}" -var-file ./vars/$ENVIRONMENT.tfvars
-
       - name: Terraform Apply
         working-directory: ./terraform
         run: terraform apply -auto-approve -input=false -var="image_tag=${{needs.build.outputs.tag}}" -var-file ./vars/$ENVIRONMENT.tfvars
