@@ -130,6 +130,12 @@ def create_campaign(subscription, sub_level, landing_page, cycle_uuid):
     return gophish_campaigns
 
 
+def stop_campaigns(campaigns):
+    for campaign in campaigns:
+        if campaign["status"] != "stopped":
+            stop_campaign(campaign)
+
+
 def stop_campaign(campaign):
     """
     Stops a given campaign.
@@ -162,10 +168,19 @@ def stop_campaign(campaign):
     except Exception as e:
         logging.exception(e)
 
+    # Delete Sending Profile
     try:
         campaign_manager.delete("sending_profile", smtp_id=campaign["smtp"]["id"])
     except Exception as e:
         logging.exception(e)
+
+    # Delete User Groups
+    groups = list({v["name"]: v for v in campaign["groups"]}.values())
+    for group in groups:
+        try:
+            campaign_manager.delete_user_group(group_id=group["id"])
+        except Exception as e:
+            logging.exception(e)
 
     return campaign
 

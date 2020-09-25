@@ -293,11 +293,11 @@
                           <ul>
                             <li>
                               All phishing emails from the Con-PCA program will
-                              come from the following email address:
-                              <br /><br />{{phishing_email}}<br /><br />
-                              This will be the sending email for the current
+                              come from the following domain:
+                              <br /><br />{{phishing_domain}}<br /><br />
+                              This will be the sending domain for the current
                               cycle, but different display names will be used
-                              based upon the email template. This email address
+                              based upon the email template. This sending domain
                               may change between cycles.
                             </li>
                             <li>
@@ -319,12 +319,6 @@
                             <li>
                               You have enrolled {{email_count}} Emails in this
                               campaign.
-                            </li>
-                            <li>
-                              You have been assigned the following Lead for this
-                              Campaign: Name: {{dhs_contact.first_name}}
-                              {{dhs_contact.last_name}} Email:
-                              {{dhs_contact.email}}
                             </li>
                           </ul>
                         </div>
@@ -350,8 +344,8 @@
                           "
                         >
                           In the interests of security and efficiency, please
-                          respond to your DHS contact directly with any
-                          questions or concerns you may have
+                          respond to {{x_gophish_contact}} directly with any
+                          questions or concerns you may have.
                         </div>
                       </td>
                     </tr>
