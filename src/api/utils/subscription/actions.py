@@ -52,9 +52,6 @@ def start_subscription(data=None, subscription_uuid=None, new_cycle=False):
     else:
         subscription = data
 
-    # remove after ui in implimented
-    subscription["stagger_emails"] = True
-
     if new_cycle and subscription_uuid:
         stop_campaigns(subscription["gophish_campaign_list"])
 
