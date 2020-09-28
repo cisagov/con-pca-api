@@ -150,54 +150,6 @@
     "tag_type": "con-pca-eval"
   },
   {
-    "data_source": "generate_random_name('Full')",
-    "description": "A made up full name to imitate an employee from the customer organization.",
-    "tag": "<%SPOOF_NAME_FULL%>",
-    "tag_type": "con-pca-eval"
-  },
-  {
-    "data_source": "generate_random_name('Full')",
-    "description": "A made up a name to imitate an employee from the customer organization.",
-    "tag": "<%SPOOF_NAME%>",
-    "tag_type": "con-pca-eval"
-  },
-  {
-    "data_source": "generate_random_name('First')",
-    "description": "A made up first name to imitate an employee from the customer organization.",
-    "tag": "<%SPOOF_NAME_FIRST%>",
-    "tag_type": "con-pca-eval"
-  },
-  {
-    "data_source": "generate_random_name('Full', 'male')",
-    "description": "A made up full name to imitate an employee from the customer organization.",
-    "tag": "<%SPOOF_NAME_FULL_MALE%>",
-    "tag_type": "con-pca-eval"
-  },
-  {
-    "data_source": "generate_random_name('First', 'male')",
-    "description": "A made up first name to imitate an employee from the customer organization.",
-    "tag": "<%SPOOF_NAME_FIRST_MALE%>",
-    "tag_type": "con-pca-eval"
-  },
-  {
-    "data_source": "generate_random_name('Full', 'female')",
-    "description": "A made up full name to imitate an employee from the customer organization.",
-    "tag": "<%SPOOF_NAME_FULL_FEMALE%>",
-    "tag_type": "con-pca-eval"
-  },
-  {
-    "data_source": "generate_random_name('First', 'female')",
-    "description": "A made up first name to imitate an employee from the customer organization.",
-    "tag": "<%SPOOF_NAME_FIRST_FEMALE%>",
-    "tag_type": "con-pca-eval"
-  },
-  {
-    "data_source": "generate_random_name('Last')",
-    "description": "A made up last name to imitate an employee from the customer organization.",
-    "tag": "<%SPOOF_NAME_LAST%>",
-    "tag_type": "con-pca-eval"
-  },
-  {
     "data_source": "",
     "description": "An important event that is relevant to the customer organization and the context of the email.",
     "tag": "<%EVENT%>",

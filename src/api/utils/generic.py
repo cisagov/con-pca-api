@@ -37,27 +37,6 @@ def format_ztime(datetime_string):
     return t
 
 
-def generate_random_name(name_type, gender=None):
-    """Generate random name.
-
-    This uses Python package `names`
-    to genrate names.
-    See https://pypi.org/project/names/ for more info.
-    Args:
-        name_type (string): name type: 'Full', 'First', 'Last'
-        gender (string, optional): can be either either 'male', 'female'. Defaults to None.
-
-    Returns:
-        string: returns randomly genrated name string.
-    """
-    if name_type == "Full":
-        return names.get_full_name(gender=gender)
-    elif name_type == "First":
-        return names.get_first_name(gender=gender)
-    elif name_type == "Last":
-        return names.get_last_name()
-
-
 def customer_spoof_email(customer_info):
     """Customer Spoof Email.
 
@@ -74,13 +53,3 @@ def customer_spoof_email(customer_info):
     _, customer_domain = customer_info["contact_list"][0]["email"].split("@")
     spoof_email = "{}.{}@{}".format(spoof_first_name, spoof_last_name, customer_domain)
     return spoof_email
-
-
-def spoof_domain():
-    """Spoof Domain.
-
-    Returns:
-        string: returns fake domain string.
-    """
-    fake = Faker()
-    return fake.domain_name()

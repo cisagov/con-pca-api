@@ -67,7 +67,7 @@ def create_sending_profile(profiles):
             smtp = API.smtp.post(smtp)
             print(f"Sending profile with id: {smtp.id} has been created")
     else:
-        print(f"Sending profiles already initiated.. Skipping")
+        print("Sending profiles already initiated.. Skipping")
 
 
 def create_landing_page(pages):
@@ -79,19 +79,13 @@ def create_landing_page(pages):
         for page in pages:
             page_name = page.get("name")
             if page_name in existing_names:
-                print(f"Landing page, {page_name}, already exists.. Skipping")
+                print("Landing page, {page_name}, already exists.. Skipping")
                 continue
             landing_page = Page(name=page_name, html=page.get("html"))
             landing_page = API.pages.post(landing_page)
             print(f"Landing page with id: {landing_page.id} has been created")
     else:
-        print(f"Langing Pages already initiated.. Skipping")
-
-
-def readinLandingHtml(path):
-    """
-    read in default landing page template
-    """
+        print("Langing Pages already initiated.. Skipping")
 
 
 def create_webhook(webhooks):
@@ -149,33 +143,43 @@ def create_templates():
             else:
                 print(f"Template, {template['name']}, already exists.. Skipping")
     else:
-        print(f"Templates already initiated.. Skipping")
+        print("Templates already initiated.. Skipping")
 
 
 def create_tags():
     tags = load_file("data/tags.json")
-    existing_tags = [
-        t["tag"]
-        for t in requests.get(f"{LOCAL_URL}/api/v1/tags/", headers=get_headers()).json()
-    ]
-    if len(existing_tags) <= 0:
-        for tag in tags:
-            if tag["tag"] not in existing_tags:
-                resp = requests.post(
-                    f"{LOCAL_URL}/api/v1/tags/", json=tag, headers=get_headers()
-                )
-                resp.raise_for_status()
-                resp_json = resp.json()
-                if resp_json.get("error"):
-                    print(f"Tag Creation error: {resp_json}")
-                else:
-                    print(
-                        f"Tag with uuid {resp_json['tag_definition_uuid']} has been created"
-                    )
+    existing_tags = requests.get(
+        f"{LOCAL_URL}/api/v1/tags/", headers=get_headers()
+    ).json()
+    existing_tag_names = [t["tag"] for t in existing_tags]
+    tag_names = [t["tag"] for t in tags]
+
+    # Create new tags
+    for tag in tags:
+        if tag["tag"] not in existing_tag_names:
+            resp = requests.post(
+                f"{LOCAL_URL}/api/v1/tags/", json=tag, headers=get_headers()
+            )
+            resp.raise_for_status()
+            resp_json = resp.json()
+            if resp_json.get("error"):
+                print(f"Tag Creation error: {resp_json}")
             else:
-                print(f"Tag, {tag['tag']}, already exists.. Skipping")
-    else:
-        print(f"Tags already initiated.. Skipping")
+                print(
+                    f"Tag with uuid {resp_json['tag_definition_uuid']} has been created"
+                )
+        else:
+            print(f"Tag, {tag['tag']}, already exists.. Skipping")
+
+    # Delete old tags
+    for tag in existing_tags:
+        if tag["tag"] not in tag_names:
+            resp = requests.delete(
+                f"{LOCAL_URL}/api/v1/tag/{tag['tag_definition_uuid']}/"
+            )
+            print(f"Tag with uuid {tag['tag_definition_uuid']} has been deleted.")
+
+    print("Tags initialized.")
 
 
 def get_headers():

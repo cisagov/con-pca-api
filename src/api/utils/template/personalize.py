@@ -8,7 +8,6 @@ from api.utils.customer.customers import get_full_customer_address
 from api.utils.generic import (
     current_season,
     customer_spoof_email,
-    generate_random_name,
 )
 from api.utils.faker.faker_util import FakerUtil
 from simpleeval import simple_eval
@@ -67,7 +66,6 @@ def personalize_template(customer_info, template_data, sub_data, tag_list):
         "functions": {
             "current_season": current_season,
             "get_full_customer_address": get_full_customer_address,
-            "generate_random_name": generate_random_name,
             "customer_spoof_email": customer_spoof_email,
             "building_number": faker.address.building_number,
             "city": faker.address.city,
