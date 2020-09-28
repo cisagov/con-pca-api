@@ -7,6 +7,7 @@ import time
 # Third Party Libraries
 from gophish import Gophish
 from gophish.models import SMTP, Page, Webhook
+from faker import Faker
 
 API_KEY = os.environ.get("GP_API_KEY")
 URL = os.environ.get("GP_URL")
@@ -148,6 +149,7 @@ def create_templates():
 
 def create_tags():
     tags = load_file("data/tags.json")
+    tags.extend(generate_faker_tags())
     existing_tags = requests.get(
         f"{LOCAL_URL}/api/v1/tags/", headers=get_headers()
     ).json()
@@ -169,17 +171,60 @@ def create_tags():
                     f"Tag with uuid {resp_json['tag_definition_uuid']} has been created"
                 )
         else:
-            print(f"Tag, {tag['tag']}, already exists.. Skipping")
+            existing_tag = list(
+                filter(lambda x: x["tag"] == tag["tag"], existing_tags)
+            )[0]
+            resp = requests.patch(
+                f"{LOCAL_URL}/api/v1/tag/{existing_tag['tag_definition_uuid']}/",
+                json=tag,
+                headers=get_headers(),
+            )
+            print(f"Updated tag, {tag['tag']}")
 
     # Delete old tags
     for tag in existing_tags:
         if tag["tag"] not in tag_names:
             resp = requests.delete(
-                f"{LOCAL_URL}/api/v1/tag/{tag['tag_definition_uuid']}/"
+                f"{LOCAL_URL}/api/v1/tag/{tag['tag_definition_uuid']}/",
+                headers=get_headers(),
             )
             print(f"Tag with uuid {tag['tag_definition_uuid']} has been deleted.")
 
     print("Tags initialized.")
+
+
+def generate_faker_tags():
+    ret_val = []
+    for k in get_faker_tags().keys():
+        ret_val.append(
+            {
+                "data_source": k,
+                "description": f"Faker generated {k}",
+                "tag": f"<%{k.upper()}%>",
+                "tag_type": "con-pca-eval",
+            }
+        )
+    return ret_val
+
+
+def get_faker_tags():
+    fake = Faker()
+    ret_val = {}
+    for func in dir(fake):
+        try:
+            if (
+                callable(getattr(fake, func))
+                and not func.startswith("_")
+                and not func.startswith("add_")
+                and not func.startswith("get_")
+                and not func.startswith("seed_")
+                and not func.startswith("set_")
+                and func not in ["format", "parse", "provider", "binary", "tar", "zip"]
+            ):
+                ret_val[f"faker_{func}".lower()] = str(getattr(fake, func)())
+        except Exception:
+            pass
+    return ret_val
 
 
 def get_headers():

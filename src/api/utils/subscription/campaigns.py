@@ -316,7 +316,7 @@ def __create_campaign_smtp(
         template_display = None
 
     # Get template sender
-    template_sender = template_from_address.split("<")[-1].split("@")[0]
+    template_sender = template_from_address.split("@")[0].split("<")[-1]
 
     # Get sending profile domain
     sp_domain = (
@@ -329,17 +329,25 @@ def __create_campaign_smtp(
     else:
         from_address = f"{template_sender}@{sp_domain}"
 
-    return campaign_manager.create(
-        "sending_profile",
-        name=campaign_name,
-        username=sending_profile.username,
-        password=sending_profile.password,
-        host=sending_profile.host,
-        interface_type=sending_profile.interface_type,
-        from_address=from_address,
-        ignore_cert_errors=sending_profile.ignore_cert_errors,
-        headers=sending_profile.headers,
-    )
+    try:
+        resp = campaign_manager.create(
+            "sending_profile",
+            name=campaign_name,
+            username=sending_profile.username,
+            password=sending_profile.password,
+            host=sending_profile.host,
+            interface_type=sending_profile.interface_type,
+            from_address=from_address,
+            ignore_cert_errors=sending_profile.ignore_cert_errors,
+            headers=sending_profile.headers,
+        )
+    except Exception as e:
+        logging.error(
+            f"Error creating sending profile. Name={campaign_name}; From={from_address}; template_from={template_from_address}"
+        )
+        raise e
+
+    return resp
 
 
 def __set_smtp_headers(sending_profile, cycle_uuid):
