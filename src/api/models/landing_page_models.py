@@ -8,7 +8,6 @@ from database.repository.models import Model
 from database.repository.types import (
     BooleanType,
     DateTimeType,
-    EmailType,
     IntType,
     ListType,
     ModelType,
@@ -32,8 +31,6 @@ class LandingPageModel(Model):
     template_type = StringType()
     image_list = ListType(ModelType(TemplateImageModel))
     is_default_template = BooleanType(default=False)
-    retired = BooleanType(default=False)
-    retired_description = StringType()
     html = StringType()
 
     # db tracking data added below

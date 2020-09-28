@@ -27,8 +27,6 @@ class LandingPageGetSerializer(serializers.Serializer):
     template_type = serializers.ChoiceField(choices=TEMPLATE_TYPE_CHOICES)
     image_list = TemplateImageSerializer(many=True)
     is_default_template = serializers.BooleanField(default=False)
-    retired = serializers.BooleanField(default=False)
-    retired_description = serializers.CharField(default="")
     html = serializers.CharField()
     # db tracking data added below
     created_by = serializers.CharField(max_length=200)
@@ -50,8 +48,6 @@ class LandingPagePostSerializer(serializers.Serializer):
     template_type = serializers.ChoiceField(choices=TEMPLATE_TYPE_CHOICES)
     image_list = TemplateImageSerializer(many=True)
     is_default_template = serializers.BooleanField(default=False)
-    retired = serializers.BooleanField(default=False)
-    retired_description = serializers.CharField(default="")
     subject = serializers.CharField(max_length=200)
 
     html = serializers.CharField()
@@ -84,8 +80,6 @@ class LandingPagePatchSerializer(serializers.Serializer):
     )
     image_list = TemplateImageSerializer(many=True, required=False)
     is_default_template = serializers.BooleanField(default=False, required=False)
-    retired = serializers.BooleanField(default=False, required=False)
-    retired_description = serializers.CharField(default="", required=False)
     html = serializers.CharField(required=False)
 
 
@@ -102,8 +96,6 @@ class LandingPagePatchResponseSerializer(serializers.Serializer):
     template_type = serializers.ChoiceField(choices=TEMPLATE_TYPE_CHOICES)
     image_list = TemplateImageSerializer(many=True)
     is_default_template = serializers.BooleanField(default=False)
-    retired = serializers.BooleanField(default=False)
-    retired_description = serializers.CharField(default="")
     html = serializers.CharField()
     created_by = serializers.CharField(max_length=200)
     cb_timestamp = serializers.DateTimeField()
@@ -141,8 +133,6 @@ class LandingPageQuerySerializer(serializers.Serializer):
         choices=TEMPLATE_TYPE_CHOICES, required=False
     )
     is_default_template = serializers.BooleanField(default=False)
-    retired = serializers.BooleanField(default=False)
-    retired_description = serializers.CharField(required=False)
     html = serializers.CharField(required=False)
     created_by = serializers.CharField(required=False)
     cb_timestamp = serializers.DateTimeField(required=False)

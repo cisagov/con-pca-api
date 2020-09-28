@@ -303,6 +303,7 @@ class TemplateQuerySerializer(serializers.Serializer):
     subject = serializers.CharField(required=False)
     text = serializers.CharField(required=False)
     html = serializers.CharField(required=False)
+    landing_page_uuid = serializers.UUIDField(required=False)
     topic_list = serializers.ListField(required=False)
     complexity = serializers.IntegerField(required=False)
     created_by = serializers.CharField(required=False)
