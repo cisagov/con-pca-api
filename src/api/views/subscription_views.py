@@ -75,8 +75,13 @@ class SubscriptionsListView(APIView):
             if archivedParm.lower() == "true":
                 parameters["archived"] = True
 
+        # Need to get subscriptions using templates from campaign list.
+        # If a template is deleted that a subscription historically has used.
+        # The subscription stops working in the UI.
         if request.GET.get("template"):
-            parameters["templates_selected_uuid_list"] = request.GET.get("template")
+            parameters["gophish_campaign_list.template_uuid"] = request.GET.get(
+                "template"
+            )
 
         if request.GET.get("dhs_contact"):
             parameters["dhs_contact_uuid"] = request.GET.get("dhs_contact")
@@ -310,8 +315,7 @@ class SubscriptionRestartView(APIView):
 
 
 class SubscriptionTargetCacheView(APIView):
-    """
-    """
+    """"""
 
     @swagger_auto_schema(
         request_body=SubscriptionPostSerializer,
