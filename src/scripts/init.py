@@ -149,7 +149,7 @@ def create_templates():
 
 def create_tags():
     tags = load_file("data/tags.json")
-    tags.extend(generate_faker_tags())
+    tags.extend(get_faker_tags())
     existing_tags = requests.get(
         f"{LOCAL_URL}/api/v1/tags/", headers=get_headers()
     ).json()
@@ -191,20 +191,6 @@ def create_tags():
             print(f"Tag with uuid {tag['tag_definition_uuid']} has been deleted.")
 
     print("Tags initialized.")
-
-
-def generate_faker_tags():
-    ret_val = []
-    for k in get_faker_tags().keys():
-        ret_val.append(
-            {
-                "data_source": k,
-                "description": f"Faker generated {k}",
-                "tag": f"<%{k.upper()}%>",
-                "tag_type": "con-pca-eval",
-            }
-        )
-    return ret_val
 
 
 def get_faker_tags():
