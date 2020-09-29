@@ -77,8 +77,6 @@ def update_target_history(campaign_info, seralized_data):
         }
         db.save_single(targert_hist, "target", TargetHistoryModel, validate_history)
 
-    return
-
 
 def get_subscription_templates(subscription):
     return db.get_list(
