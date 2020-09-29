@@ -66,7 +66,8 @@ def personalize_template(customer_info, template_data, sub_data, tag_list):
             "customer_spoof_email": customer_spoof_email,
         },
     }
-    simple_eval_options["functions"].update(get_faker_tags())
+    for t in get_faker_tags(with_values=True):
+        simple_eval_options["functions"][t["data_source"]] = t["value"]
 
     personalized_template_data = []
     for template in template_data:

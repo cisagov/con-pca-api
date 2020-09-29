@@ -26,9 +26,9 @@ def check_tag_format(tag):
     return False
 
 
-def get_faker_tags():
+def get_faker_tags(with_values: bool = False):
     fake = Faker()
-    ret_val = {}
+    tags = []
     for func in dir(fake):
         try:
             if (
@@ -40,7 +40,16 @@ def get_faker_tags():
                 and not func.startswith("set_")
                 and func not in ["format", "parse", "provider", "binary", "tar", "zip"]
             ):
-                ret_val[f"faker_{func}".lower()] = str(getattr(fake, func)())
+                tag = {
+                    "data_source": f"faker_{func}".lower(),
+                    "description": f"Faker generated {func}",
+                    "tag": f"<%FAKER_{func.upper()}%>",
+                    "tag_type": "con-pca-eval",
+                }
+                if with_values:
+                    tag["value"] = str(getattr(fake, func)())
+
+                tags.append(tag)
         except Exception:
             pass
-    return ret_val
+    return tags
