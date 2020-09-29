@@ -3,6 +3,8 @@ from src.api.utils.template import personalize
 from src.scripts.init import load_file
 from src.api.utils.tag.tags import get_faker_tags
 
+from unittest import mock
+
 fake = Faker()
 
 customer_info = {
@@ -40,7 +42,8 @@ def test_customer_name():
     assert result[0]["from_address"] == f"{customer_info['name']} <test@test.com>"
 
 
-def test_tags_file():
+@mock.patch("gophish.Gophish")
+def test_tags_file(mocked_gophish):
     tags = load_file("data/tags.json")
     for tag in tags:
         template_data = [
