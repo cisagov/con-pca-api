@@ -21,11 +21,12 @@ def get_full_customer_address(customer_info):
 
     When passed customer info, it will return an assemebed full address.
     """
-    customer_full_address = "{} \n {} \n {}, {}, {}".format(
-        customer_info["address_1"],
-        customer_info["address_2"],
-        customer_info["city"],
-        customer_info["state"],
-        customer_info["zip_code"],
-    )
-    return customer_full_address
+    full_address = []
+    full_address.append(customer_info["address_1"])
+    if customer_info.get("address_2"):
+        full_address.append(customer_info["address_2"])
+    full_address.append(customer_info["city"])
+    full_address.append(customer_info["state"])
+    full_address.append(customer_info["zip_code"])
+
+    return "\n".join(full_address)
