@@ -9,11 +9,10 @@ from gophish import Gophish
 from gophish.models import SMTP, Page, Webhook
 from faker import Faker
 
-API_KEY = os.environ.get("GP_API_KEY")
-URL = os.environ.get("GP_URL")
-API = Gophish(API_KEY, host=URL)
-LOCAL_URL = "http://localhost:8000"
-
+API_KEY = None
+URL = None
+API = None
+LOCAL_URL = None
 
 SENDING_PROFILES = [
     {
@@ -44,6 +43,20 @@ WEBHOOKS = [
         "secret": os.environ.get("LOCAL_API_KEY"),
     }
 ]
+
+
+def set_init():
+    global API_KEY
+    API_KEY = os.environ.get("GP_API_KEY")
+
+    global URL
+    URL = os.environ.get("GP_URL")
+
+    global API
+    API = Gophish(API_KEY, host=URL)
+
+    global LOCAL_URL
+    LOCAL_URL = "http://localhost:8000"
 
 
 def create_sending_profile(profiles):
@@ -248,6 +261,8 @@ def load_file(data_file):
 
 
 def main():
+    set_init()
+
     print("Waiting for api to initialize")
     wait_connection()
 
