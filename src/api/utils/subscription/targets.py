@@ -15,7 +15,7 @@ def batch_targets(subscription, sub_levels: dict):
     Returns:
         dict: updated sub_levels
     """
-    targets = random.shuffle(
+    targets = random.sample(
         subscription["target_email_list"], len(subscription["target_email_list"])
     )
     avg = len(targets) / float(3)
