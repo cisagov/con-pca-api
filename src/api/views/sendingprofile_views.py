@@ -39,7 +39,7 @@ class SendingProfilesListView(APIView):
     )
     def get(self, request):
         """Get method."""
-        sending_profiles = campaign_manager.get("sending_profile")
+        sending_profiles = campaign_manager.get_sending_profile()
         serializer = SendingProfileSerializer(sending_profiles, many=True)
         return Response(serializer.data)
 
@@ -58,8 +58,7 @@ class SendingProfilesListView(APIView):
     )
     def post(self, request):
         sp = request.data.copy()
-        sending_profile = campaign_manager.create(
-            "sending_profile",
+        sending_profile = campaign_manager.create_sending_profile(
             name=sp.get("name"),
             username=sp.get("username"),
             password=sp.get("password"),
@@ -87,7 +86,7 @@ class SendingProfileView(APIView):
         operation_description="This handles the API for the Get a Sending Profile with id.",
     )
     def get(self, request, id):
-        sending_profile = campaign_manager.get("sending_profile", smtp_id=id)
+        sending_profile = campaign_manager.get_sending_profile(smtp_id=id)
         serializer = SendingProfileSerializer(sending_profile)
         return Response(serializer.data)
 
@@ -106,7 +105,7 @@ class SendingProfileView(APIView):
     )
     def patch(self, request, id):
         # get the saved record and overlay with whatever was sent
-        sp = campaign_manager.get("sending_profile", smtp_id=id)
+        sp = campaign_manager.get_sending_profile(smtp_id=id)
         patch_data = request.data.copy()
 
         sp.name = self.__setAttribute(sp.name, patch_data, "name")
@@ -127,7 +126,7 @@ class SendingProfileView(APIView):
         campaign_manager.put_sending_profile(sp)
 
         # get the new version from gophish to make sure we return the latest
-        sending_profile = campaign_manager.get("sending_profile", smtp_id=id)
+        sending_profile = campaign_manager.get_sending_profile(smtp_id=id)
         serializer = SendingProfileSerializer(sending_profile)
         return Response(serializer.data)
 
@@ -145,7 +144,7 @@ class SendingProfileView(APIView):
         operation_description="This handles the API for the Delete Sending Profile with uuid.",
     )
     def delete(self, request, id):
-        delete_response = campaign_manager.delete("sending_profile", smtp_id=id)
+        delete_response = campaign_manager.delete_sending_profile(smtp_id=id)
         serializer = SendingProfileDeleteResponseSerializer(delete_response)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

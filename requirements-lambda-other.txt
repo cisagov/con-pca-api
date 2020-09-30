@@ -15,7 +15,6 @@ gophish==0.5.1
 idna==2.10
 jmespath==0.10.0
 joblib==0.16.0
-lcgit @ git+https://github.com/cisagov/lcgit.git@7360374e78661d8dfa5ec550337a4e398c3bb4e8
 motor==2.2.0
 names==0.3.0
 packaging==20.4

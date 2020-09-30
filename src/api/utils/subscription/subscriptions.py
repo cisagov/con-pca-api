@@ -49,53 +49,29 @@ def update_subscription(subscription_uuid, data):
 
 def create_subscription_name(customer: dict):
     """Returns a subscription name."""
-    subscription_list = get_subscriptions({"customer_uuid": customer["customer_uuid"]})
+    subscriptions = get_subscriptions({"customer_uuid": customer["customer_uuid"]})
 
-    if not subscription_list:
-        base_name = f"{customer['identifier']}_1.1"
+    if not subscriptions:
+        return f"{customer['identifier']}_1"
     else:
-        names = [x["name"] for x in subscription_list]
-        list_tupe = []
-        for name in names:
-            int_ind, sub_id = name.rsplit(".", 1)
-            _, sub = int_ind.rsplit("_", 1)
-            list_tupe.append((sub, sub_id))
-        # now sort tuple list by second element
-        list_tupe.sort(key=lambda tup: tup[1])
-        # get last run inc values
-        last_ran_x, last_ran_y = list_tupe[-1]
-
-        # now check to see there are any others running during.
-        active_subscriptions = [x for x in subscription_list if x["active"]]
-        if len(active_subscriptions) <= 0:
-            # if none are active, check last running number and create new name
-            next_run_x, next_run_y = "1", str(int(last_ran_y) + 1)
-        else:
-            next_run_x, next_run_y = str(int(last_ran_x) + 1), last_ran_y
-
-        base_name = f"{customer['identifier']}_{next_run_x}.{next_run_y}"
-
-    return base_name
+        ids = [int(float(x["name"].split("_")[-1])) for x in subscriptions]
+        return f"{customer['identifier']}_{max(ids) + 1}"
 
 
 def calculate_subscription_start_end_date(start_date):
     """Calculates the start and end date for subscription from given start date."""
-    date = start_date
     now = datetime.now()
 
-    if not date:
-        date = now.strftime("%Y-%m-%dT%H:%M:%S")
+    if not start_date:
+        start_date = now.strftime("%Y-%m-%dT%H:%M:%S")
 
-    if not isinstance(date, datetime):
-        start_date = datetime.strptime(date.split(".")[0], "%Y-%m-%dT%H:%M:%S")
-
-        if start_date < now:
-            start_date = now
-    else:
+    if not isinstance(start_date, datetime):
+        start_date = datetime.strptime(start_date.split(".")[0], "%Y-%m-%dT%H:%M:%S")
+    if start_date < now:
         start_date = now
 
-    end_date = start_date + timedelta(minutes=CYCLE_MINUTES)
     start_date = start_date + timedelta(minutes=1)
+    end_date = start_date + timedelta(minutes=CYCLE_MINUTES)
 
     return start_date, end_date
 
@@ -150,7 +126,7 @@ def send_stop_notification(subscription):
     sender.send()
 
 
-def init_subscription_tasks(start_date, existing_tasks=[]):
+def init_subscription_tasks(start_date):
     message_types = {
         "start_subscription_email": start_date - timedelta(minutes=5),
         "monthly_report": start_date + timedelta(minutes=MONTHLY_MINUTES),
@@ -173,14 +149,13 @@ def init_subscription_tasks(start_date, existing_tasks=[]):
     return tasks
 
 
-def get_staggered_dates_in_range(start, end, intv):
+def get_staggered_dates_in_range(start, intv):
     """Get Staggered Dates
 
     Takes range of dates and gets N dates within them, returns a list of dates.
 
     Args:
         start (datetime): starting date of subscription
-        end (datetime): ending date of subscription
         intv (int): number of inteval dates
 
     Returns:

@@ -1,14 +1,8 @@
 """Tempalte Selector Util."""
-# Standard Python Libraries
-import logging
-
-# Third-Party Libraries
 from api.manager import TemplateManager
 from api.utils.tag.tags import get_tags
 from api.utils.template.personalize import personalize_template
 from api.utils.template.templates import get_email_templates
-
-logger = logging.getLogger()
 
 
 def get_num_templates_per_batch(diversity_level="moderate"):
@@ -17,11 +11,7 @@ def get_num_templates_per_batch(diversity_level="moderate"):
     return numbers.get(diversity_level, 5)
 
 
-def get_relevant_templates(templates, subscription, template_count: int):
-    """Get_relevant_templates."""
-    template_manager = TemplateManager()
-
-    # Values as a minimum
+def group_templates(templates):
     template_score_to_level = {"high": 5, "medium": 2, "low": 0}
     template_groups = {"low": [], "medium": [], "high": []}
     for template in templates:
@@ -32,8 +22,17 @@ def get_relevant_templates(templates, subscription, template_count: int):
         else:
             template_groups["high"].append(template)
 
-    # formats templates for alogrithm
+    return template_groups
 
+
+def get_relevant_templates(templates, subscription, template_count: int):
+    """Get_relevant_templates."""
+    template_manager = TemplateManager()
+
+    # Values as a minimum
+    template_groups = group_templates(templates)
+
+    # formats templates for alogrithm
     template_data_low = {
         t.get("template_uuid"): t.get("descriptive_words")
         for t in template_groups["low"]
@@ -74,11 +73,6 @@ def get_relevant_templates(templates, subscription, template_count: int):
 
 def batch_templates(templates, num_per_batch, sub_levels: dict):
     """Batch_templates."""
-    # batches = [
-    #     templates[x : x + num_per_batch]
-    #     for x in range(0, len(templates), num_per_batch)
-    # ]
-
     sub_levels["high"]["template_uuids"] = templates["high"][:num_per_batch]
     sub_levels["moderate"]["template_uuids"] = templates["medium"][:num_per_batch]
     sub_levels["low"]["template_uuids"] = templates["low"][:num_per_batch]
@@ -119,24 +113,18 @@ def personalize_template_batch(customer, subscription, sub_levels: dict):
     # Gets list of available email templates
     templates = get_email_templates()
 
-    # logger.info(f"Template Count = {len(templates)}")
-
     # Determines how many templates are available in each batch
     templates_per_batch = get_num_templates_per_batch()
-    # logger.info(f"{templates_per_batch}")
 
     # Gets needed amount of relevant templates
     relevant_templates = get_relevant_templates(
         templates, subscription, 3 * templates_per_batch
     )
-    # logger.info(f"{relevant_templates}")
 
     # Batches templates
     sub_levels = batch_templates(relevant_templates, templates_per_batch, sub_levels)
-    # logger.info(f"{sub_levels}")
 
     # Personalize Templates
     sub_levels = personalize_templates(customer, subscription, templates, sub_levels)
-    # logger.info(f"{sub_levels}")
 
     return sub_levels

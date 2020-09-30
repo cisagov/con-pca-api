@@ -51,7 +51,7 @@ class CycleReportedView(APIView):
             subscription_uuid, "subscription", SubscriptionModel, validate_subscription
         )
 
-        emails_reported_list, _ = get_reported_emails(subscription)
+        emails_reported_list = get_reported_emails(subscription)
 
         serializer = CycleEmailReportedListSerializer(emails_reported_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -75,17 +75,13 @@ class CycleReportedView(APIView):
             data["override_total_reported"] is not None
             and data["override_total_reported"] > -1
         ):
-            subscription = override_total_reported(subscription, data)
+            override_total_reported(subscription, data)
         else:
-            subscription = override_total_reported(subscription, data)
-            subscription["gophish_campaign_list"] = delete_reported_emails(
-                subscription, data
-            )
-            subscription["gophish_campaign_list"] = update_reported_emails(
-                subscription, data
-            )
+            override_total_reported(subscription, data)
+            delete_reported_emails(subscription, data)
+            update_reported_emails(subscription, data)
 
-        emails_reported_list, subscription = get_reported_emails(subscription)
+        emails_reported_list = get_reported_emails(subscription)
 
         serialized_data = SubscriptionPatchSerializer(subscription)
         updated_response = update_single(

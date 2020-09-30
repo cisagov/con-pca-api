@@ -2,7 +2,7 @@
 # Third-Party Libraries
 from api.models.template_models import TargetHistoryModel, validate_history
 from api.utils import db_utils as db
-from lcgit import lcg
+import random
 
 
 def batch_targets(subscription, sub_levels: dict):
@@ -15,7 +15,9 @@ def batch_targets(subscription, sub_levels: dict):
     Returns:
         dict: updated sub_levels
     """
-    targets = lcgit_list_randomizer(subscription["target_email_list"])
+    targets = random.sample(
+        subscription["target_email_list"], len(subscription["target_email_list"])
+    )
     avg = len(targets) / float(3)
 
     batches = []
@@ -29,21 +31,6 @@ def batch_targets(subscription, sub_levels: dict):
     sub_levels["low"]["targets"] = batches[0]
     sub_levels["moderate"]["targets"] = batches[1]
     sub_levels["high"]["targets"] = batches[2]
-
-    return sub_levels
-
-
-def lcgit_list_randomizer(object_list):
-    """
-    Lcgit List Randomizer.
-
-    This uses lcgit from https://github.com/cisagov/lcgit
-    to genrate a random list order
-    """
-    random_list = []
-    for item in lcg(object_list):
-        random_list.append(item)
-    return random_list
 
 
 def get_target_available_templates(email, templates):
@@ -84,11 +71,12 @@ def assign_targets(sub_level):
         available_templates = get_target_available_templates(
             target["email"], sub_level["template_uuids"]
         )
-        randomized_templates = lcgit_list_randomizer(available_templates)
+        randomized_templates = random.sample(
+            available_templates, len(available_templates)
+        )
+        print(randomized_templates)
         selected_template = randomized_templates[0]
         if not sub_level["template_targets"].get(selected_template):
             sub_level["template_targets"][selected_template] = []
 
         sub_level["template_targets"][selected_template].append(target)
-
-    return sub_level

@@ -11,9 +11,8 @@ from api.serializers import campaign_serializers
 from api.utils.generic import format_ztime
 from api.utils.subscription.targets import assign_targets
 from api.utils.subscription.subscriptions import get_staggered_dates_in_range
-from api.utils import db_utils as db
-from api.models.landing_page_models import LandingPageModel, validate_landing_page
 from api.utils.subscription.static import CAMPAIGN_MINUTES, DEFAULT_X_GOPHISH_CONTACT
+from api.utils.landing_pages import get_landing_page
 
 logger = logging.getLogger()
 
@@ -34,7 +33,7 @@ def generate_campaigns(subscription, landing_page, sub_levels, cycle_uuid):
     gophish_campaigns = []
     for k in sub_levels.keys():
         # Assign targets to templates in each group
-        sub_levels[k] = assign_targets(sub_levels[k])
+        assign_targets(sub_levels[k])
         gophish_campaigns.extend(
             create_campaign(subscription, sub_levels[k], landing_page, cycle_uuid)
         )
@@ -56,9 +55,7 @@ def create_campaign(subscription, sub_level, landing_page, cycle_uuid):
     gophish_campaigns = []
     if subscription["stagger_emails"]:
         date_list = get_staggered_dates_in_range(
-            sub_level["start_date"],
-            sub_level["end_date"],
-            len(sub_level["template_targets"]),
+            sub_level["start_date"], len(sub_level["template_targets"]),
         )
     else:
         date_list = []
@@ -66,32 +63,14 @@ def create_campaign(subscription, sub_level, landing_page, cycle_uuid):
             date_list.append(sub_level["start_date"])
 
     for index, k in enumerate(sub_level["template_targets"].keys()):
-        group_name = (
-            f"{subscription['name']}.Targets.{sub_level['deception_level']}.{index}"
-        )
 
-        target_group = campaign_manager.create(
-            "user_group",
-            group_name=group_name,
+        # Create user groups in Gophish
+        target_group = campaign_manager.create_user_group(
+            subscription_name=subscription["name"],
+            deception_level=sub_level["deception_level"],
+            index=index,
             target_list=sub_level["template_targets"][k],
         )
-
-        if not target_group:
-            # target_group exists, so delete and remake
-            # first get all group
-            gp_user_groups = campaign_manager.get_user_group()
-            # filter out group
-            pg_user_group = list(
-                filter(lambda x: x.name == group_name, gp_user_groups)
-            )[0]
-            # delete pre-exisiting group
-            campaign_manager.delete_email_template(template_id=pg_user_group.id)
-            # create new group
-            target_group = campaign_manager.create(
-                "user_group",
-                group_name=group_name,
-                target_list=sub_level["template_targets"][k],
-            )
 
         template = list(
             filter(
@@ -100,18 +79,10 @@ def create_campaign(subscription, sub_level, landing_page, cycle_uuid):
         )[0]
 
         landing_page_name = landing_page
-        if "landing_page_uuid" in template:
-            if template[
-                "landing_page_uuid"
-            ]:  # Check to make sure landing page uuid is not null
-                landing_page_list = db.get_list(
-                    {"landing_page_uuid": template["landing_page_uuid"]},
-                    "landing_page",
-                    LandingPageModel,
-                    validate_landing_page,
-                )
-                if landing_page_list:
-                    landing_page_name = landing_page_list[0]["name"]
+        if template.get("landing_page_uuid"):
+            template_lp = get_landing_page(template["landing_page_uuid"])
+            if template_lp:
+                landing_page_name = template_lp["name"]
 
         gophish_campaigns.append(
             __create_campaign(
@@ -162,21 +133,20 @@ def stop_campaign(campaign):
 
     # Delete Templates
     try:
-        campaign_manager.delete(
-            "email_template", template_id=campaign["email_template_id"]
+        campaign_manager.delete_email_template(
+            template_id=campaign["email_template_id"]
         )
     except Exception as e:
         logging.exception(e)
 
     # Delete Sending Profile
     try:
-        campaign_manager.delete("sending_profile", smtp_id=campaign["smtp"]["id"])
+        campaign_manager.delete_sending_profile(smtp_id=campaign["smtp"]["id"])
     except Exception as e:
         logging.exception(e)
 
     # Delete User Groups
-    groups = list({v["name"]: v for v in campaign["groups"]}.values())
-    for group in groups:
+    for group in campaign["groups"]:
         try:
             campaign_manager.delete_user_group(group_id=group["id"])
         except Exception as e:
@@ -203,28 +173,12 @@ def __create_campaign(
     """
     base_name = f"{subscription['name']}.{deception_level}.{index}"
 
-    created_template = campaign_manager.generate_email_template(
+    created_template = campaign_manager.create_email_template(
         name=f"{base_name}.{template['name']}",
         template=template["data"],
         text=BeautifulSoup(template["data"], "html.parser").get_text(),
         subject=template["subject"],
     )
-    if not created_template:
-        # template exists, so delete and remake
-        # first get all teampletes
-        gp_templates = campaign_manager.get_email_template()
-        # filter out template
-        gp_template = list(
-            filter(lambda x: x.name == f"{base_name}.{template['name']}", gp_templates)
-        )[0]
-        # delete pre-exisiting template
-        campaign_manager.delete_email_template(template_id=gp_template.id)
-        # create new template
-        created_template = campaign_manager.generate_email_template(
-            name=f"{base_name}.{template['name']}",
-            template=template["data"],
-            subject=template["subject"],
-        )
 
     campaign_start = start_date
     campaign_end = start_date + timedelta(minutes=CAMPAIGN_MINUTES)
@@ -238,8 +192,7 @@ def __create_campaign(
         subscription["sending_profile_name"],
     )
 
-    campaign = campaign_manager.create(
-        "campaign",
+    campaign = campaign_manager.create_campaign(
         campaign_name=campaign_name,
         smtp_name=sending_profile.name,
         page_name=landing_page,
@@ -248,8 +201,6 @@ def __create_campaign(
         launch_date=start_date.strftime("%Y-%m-%dT%H:%M:%S+00:00"),
         send_by_date=(campaign_end).strftime("%Y-%m-%dT%H:%M:%S+00:00"),
     )
-
-    logger.info("campaign created: {}".format(campaign))
 
     default_phish_results = {
         "sent": 0,
@@ -299,7 +250,7 @@ def __create_campaign_smtp(
     Returns:
         SMTP[object]: returning newly created sending profile from gophish
     """
-    sending_profiles = campaign_manager.get("sending_profile")
+    sending_profiles = campaign_manager.get_sending_profile()
     sending_profile = next(
         iter(
             [p for p in sending_profiles if p.name == subscription_sending_profile_name]
@@ -309,6 +260,30 @@ def __create_campaign_smtp(
 
     __set_smtp_headers(sending_profile, cycle_uuid)
 
+    from_address = get_campaign_from_address(sending_profile, template_from_address)
+
+    try:
+        resp = campaign_manager.create_sending_profile(
+            "sending_profile",
+            name=campaign_name,
+            username=sending_profile.username,
+            password=sending_profile.password,
+            host=sending_profile.host,
+            interface_type=sending_profile.interface_type,
+            from_address=from_address,
+            ignore_cert_errors=sending_profile.ignore_cert_errors,
+            headers=sending_profile.headers,
+        )
+    except Exception as e:
+        logging.error(
+            f"Error creating sending profile. Name={campaign_name}; From={from_address}; template_from={template_from_address}"
+        )
+        raise e
+
+    return resp
+
+
+def get_campaign_from_address(sending_profile, template_from_address):
     # Get template display name
     if "<" in template_from_address:
         template_display = template_from_address.split("<")[0].strip()
@@ -328,26 +303,7 @@ def __create_campaign_smtp(
         from_address = f"{template_display} <{template_sender}@{sp_domain}>"
     else:
         from_address = f"{template_sender}@{sp_domain}"
-
-    try:
-        resp = campaign_manager.create(
-            "sending_profile",
-            name=campaign_name,
-            username=sending_profile.username,
-            password=sending_profile.password,
-            host=sending_profile.host,
-            interface_type=sending_profile.interface_type,
-            from_address=from_address,
-            ignore_cert_errors=sending_profile.ignore_cert_errors,
-            headers=sending_profile.headers,
-        )
-    except Exception as e:
-        logging.error(
-            f"Error creating sending profile. Name={campaign_name}; From={from_address}; template_from={template_from_address}"
-        )
-        raise e
-
-    return resp
+    return from_address
 
 
 def __set_smtp_headers(sending_profile, cycle_uuid):
@@ -381,6 +337,7 @@ def set_dhs_phish_header(sending_profile, cycle_uuid):
 def set_x_gophish_contact_header(sending_profile):
     for header in sending_profile.headers:
         if header["key"] == "X-Gophish-Contact":
+            header["value"] = DEFAULT_X_GOPHISH_CONTACT
             return
 
     if DEFAULT_X_GOPHISH_CONTACT:

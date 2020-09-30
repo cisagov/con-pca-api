@@ -65,7 +65,7 @@ def start_subscription(data=None, subscription_uuid=None, new_cycle=False):
 
     # Divide stagger each start date and randomize:
     if subscription["stagger_emails"]:
-        date_list = get_staggered_dates_in_range(start_date, end_date, 3)
+        date_list = get_staggered_dates_in_range(start_date, 3)
         numpy.random.shuffle(date_list)
     else:
         date_list = [start_date, start_date, start_date]
@@ -109,7 +109,7 @@ def start_subscription(data=None, subscription_uuid=None, new_cycle=False):
     sub_levels = personalize_template_batch(customer, subscription, sub_levels)
 
     # get targets assigned to each group
-    sub_levels = batch_targets(subscription, sub_levels)
+    batch_targets(subscription, sub_levels)
 
     # Get all Landing pages or default
     # This is currently selecting the default page on creation.

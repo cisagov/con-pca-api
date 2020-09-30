@@ -115,8 +115,8 @@ class LandingPagesListView(APIView):
                 status=status.HTTP_409_CONFLICT,
             )
 
-        landing_page = campaign_manager.create(
-            "landing_page", name=post_data["name"], template=post_data["html"]
+        landing_page = campaign_manager.create_landing_page(
+            name=post_data["name"], template=post_data["html"]
         )
 
         post_data["gophish_template_id"] = landing_page.id
@@ -174,7 +174,7 @@ class LandingPageView(APIView):
             landing_page_uuid, "landing_page", LandingPageModel, validate_landing_page
         )
 
-        campaign_manager.put(
+        campaign_manager.put_landing_page(
             "landing_page",
             gp_id=landing_page["gophish_template_id"],
             name=data["name"],
