@@ -1,48 +1,32 @@
 # Standard Python Libraries
-from datetime import datetime, timedelta
 import logging
-import base64
 
 # Third-Party Libraries
 # Local Libraries
 # Django Libraries
-from scipy.stats.mstats import gmean
 from api.manager import CampaignManager
 from api.models.customer_models import CustomerModel, validate_customer
 from api.models.subscription_models import SubscriptionModel, validate_subscription
-from api.models.customer_models import CustomerModel, validate_customer
 from api.models.dhs_models import DHSContactModel, validate_dhs_contact
 from api.models.recommendations_models import (
     RecommendationsModel,
     validate_recommendations,
 )
 from api.utils.db_utils import get_list, get_single
-import pytz
-from django.utils import timezone
 from reports.utils import get_relevant_recommendations
 
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.views.generic import TemplateView
 
-
-# from . import views
 from reports.utils import (
     get_subscription_stats_for_yearly,
     get_related_subscription_stats,
-    get_cycles_breakdown,
     get_template_details,
     get_statistic_from_group,
-    get_reports_to_click,
-    campaign_templates_to_string,
-    get_most_successful_campaigns,
-    get_closest_cycle_within_day_range,
     ratio_to_percent,
     format_timedelta,
     get_statistic_from_region_group,
-    get_stats_low_med_high_by_level,
-    get_cycle_by_date_in_range,
     set_cycle_quarters,
     cycle_stats_to_percentage_trend_graph_data,
     cycle_stats_to_click_rate_vs_report_rate,
@@ -84,11 +68,6 @@ class YearlyReportsView(APIView):
             DHSContactModel,
             validate_dhs_contact,
         )
-        campaigns = subscription.get("gophish_campaign_list")
-        # summary = [
-        #     campaign_manager.get("summary", campaign_id=campaign.get("campaign_id"))
-        #     for campaign in campaigns
-        # ]
 
         cycles = subscription["cycles"]
         set_cycle_quarters(cycles)
@@ -122,10 +101,6 @@ class YearlyReportsView(APIView):
             customer.get("address_2"),
             customer.get("state"),
             customer.get("zip_code"),
-        )
-
-        dhs_contact_name = "{} {}".format(
-            dhs_contact.get("first_name"), dhs_contact.get("last_name")
         )
 
         metrics = {
@@ -206,7 +181,6 @@ class YearlyReportsView(APIView):
             "start_date": subscription.get("start_date"),
             "end_date": subscription.get("end_date"),
             "target_count": target_count,
-            "cycles": cycles,
             "primary_contact": primary_contact,
             "primary_contact_email": primary_contact.get("email"),
             "subscription_stats": subscription_stats,

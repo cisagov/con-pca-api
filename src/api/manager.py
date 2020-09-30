@@ -20,7 +20,6 @@ from sklearn.metrics.pairwise import cosine_similarity
 from gophish import Gophish
 from gophish.models import SMTP, Campaign, Group, Page, Template, User
 
-logger = logging.getLogger(__name__)
 faker = Faker()
 vectorizer = TfidfVectorizer()
 
@@ -85,8 +84,6 @@ class TemplateManager:
                 dict(zip(cosine_similarities, template_uuids)).items(), reverse=True
             )
         ]
-        print("=======================")
-        logger.info(f"{context} {len(context)}")
 
         return context
 
@@ -98,79 +95,8 @@ class CampaignManager:
         """Init."""
         self.gp_api = Gophish(settings.GP_API_KEY, host=settings.GP_URL)
 
-    def create(self, method, **kwargs):
-        """Create Method."""
-        if method == "email_template":
-            return self.generate_email_template(
-                kwargs.get("name"), kwargs.get("template")
-            )
-        elif method == "landing_page":
-            return self.generate_landing_page(
-                kwargs.get("name"), kwargs.get("template")
-            )
-        elif method == "user_group":
-            return self.generate_user_group(
-                kwargs.get("group_name"), kwargs.get("target_list")
-            )
-        elif method == "sending_profile":
-            if kwargs:
-                return self.create_sending_profile(kwargs)
-            else:
-                return self.generate_sending_profile()
-        elif method == "campaign":
-            return self.generate_campaign(
-                kwargs.get("campaign_name"),
-                kwargs.get("smtp_name"),
-                kwargs.get("page_name"),
-                kwargs.get("user_group"),
-                kwargs.get("email_template"),
-                kwargs.get("launch_date"),
-                kwargs.get("send_by_date"),
-            )
-
-    def get(self, method, **kwargs):
-        """GET Method."""
-        if method == "email_template":
-            return self.get_email_template(kwargs.get("template_id", None))
-        elif method == "landing_page":
-            return self.get_landing_page(kwargs.get("page_id", None))
-        elif method == "user_group":
-            return self.get_user_group(kwargs.get("group_id", None))
-        elif method == "sending_profile":
-            return self.get_sending_profile(kwargs.get("smtp_id", None))
-        elif method == "campaign":
-            return self.get_campaign(kwargs.get("campaign_id", None))
-        elif method == "summary":
-            return self.get_campaign_summary(kwargs.get("campaign_id", None))
-        else:
-            return "method not found"
-
-    def delete(self, method, **kwargs):
-        """DELETE Method."""
-        if method == "email_template":
-            return self.delete_email_template(kwargs.get("template_id", None))
-        elif method == "landing_page":
-            return self.delete_landing_page(kwargs.get("page_id", None))
-        elif method == "user_group":
-            return self.delete_user_group(kwargs.get("group_id", None))
-        elif method == "sending_profile":
-            return self.delete_sending_profile(kwargs.get("smtp_id", None))
-        elif method == "campaign":
-            return self.delete_campaign(kwargs.get("campaign_id", None))
-        else:
-            return "method not found"
-
-    def put(self, method, **kwargs):
-        """Modify Method."""
-        if method == "landing_page":
-            return self.put_landing_page(
-                kwargs.get("gp_id"), kwargs.get("name"), kwargs.get("html")
-            )
-        else:
-            return "method not found"
-
     # Create methods
-    def generate_campaign(
+    def create_campaign(
         self,
         campaign_name: str,
         smtp_name: str,
@@ -183,9 +109,6 @@ class CampaignManager:
         """Generate campaign Method."""
         smtp = SMTP(name=smtp_name)
         landing_page = Page(name=page_name)
-
-        print(smtp_name)
-
         campaign = Campaign(
             name=campaign_name,
             groups=[user_group],
@@ -201,21 +124,26 @@ class CampaignManager:
 
         return campaign
 
-    def generate_sending_profile(self):
-        """Generate Sending Profiles."""
-        smtp = SMTP(name="HyreGuard")
-        return self.gp_api.smtp.post(smtp=smtp)
-
-    def create_sending_profile(self, sp):
+    def create_sending_profile(
+        self,
+        name,
+        username,
+        password,
+        host,
+        interface_type,
+        from_address,
+        ignore_cert_errors,
+        headers,
+    ):
         smtp = SMTP(
-            name=sp.get("name"),
-            username=sp.get("username"),
-            password=sp.get("password"),
-            host=sp.get("host"),
-            interface_type=sp.get("interface_type"),
-            from_address=sp.get("from_address"),
-            ignore_cert_errors=sp.get("ignore_cert_errors"),
-            headers=sp.get("headers"),
+            name=name,
+            username=username,
+            password=password,
+            host=host,
+            interface_type=interface_type,
+            from_address=from_address,
+            ignore_cert_errors=ignore_cert_errors,
+            headers=headers,
         )
 
         return self.gp_api.smtp.post(smtp=smtp)
@@ -223,14 +151,8 @@ class CampaignManager:
     def put_sending_profile(self, sp):
         return self.gp_api.smtp.put(smtp=sp)
 
-    def generate_email_template(
-        self, name: str, template: str, subject: str, text=None
-    ):
+    def create_email_template(self, name: str, template: str, subject: str, text=None):
         """Generate Email Templates."""
-        existing_names = {email.name for email in self.gp_api.templates.get()}
-        if name in existing_names:
-            logger.info("Template, {}, already exists.. skipping".format(name))
-            return
         template = "<html><head></head><body>" + template + "</body></html>"
         email_template = Template(name=name, subject=subject, html=template)
         if text is not None:
@@ -238,7 +160,7 @@ class CampaignManager:
 
         return self.gp_api.templates.post(email_template)
 
-    def generate_landing_page(self, name: str, template: str):
+    def create_landing_page(self, name: str, template: str):
         """Generate Landing Page."""
         landing_page = Page(
             name=name, html=template, capture_credentials=False, capture_passwords=False
@@ -250,7 +172,13 @@ class CampaignManager:
         landing_page = Page(id=gp_id, name=name, html=html)
         return self.gp_api.pages.put(landing_page)
 
-    def generate_user_group(self, group_name: str = None, target_list: Dict = None):
+    def create_user_group(
+        self,
+        subscription_name: str,
+        deception_level: int,
+        index: int,
+        target_list: Dict = None,
+    ):
         """Generate User Group."""
         users = [
             User(
@@ -261,6 +189,8 @@ class CampaignManager:
             )
             for target in target_list
         ]
+
+        group_name = f"{subscription_name}.Targets.{deception_level}.{index}"
 
         target_group = Group(name=group_name, targets=users)
 
@@ -362,7 +292,6 @@ class CampaignManager:
         try:
             # sending post request and saving response as response object
             url = settings.GP_URL + "api/util/send_test_email"
-            logger.info(url)
             headers = {
                 "Content-Type": "application/json",
                 "Authorization": "Bearer {}".format(settings.GP_API_KEY),
@@ -371,7 +300,7 @@ class CampaignManager:
             # extracting response text
             return json.loads(r.text)
         except Exception as e:
-            logger.error(e)
+            logging.exception(e)
             if hasattr(e, "message"):
                 return e.message
             else:

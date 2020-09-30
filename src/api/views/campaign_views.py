@@ -31,7 +31,7 @@ class CampaignListView(APIView):
     )
     def get(self, request):
         """Get method."""
-        campaigns = manager.get("campaign")
+        campaigns = manager.get_campaign()
         serializer = campaign_serializers.CampaignSerializer(campaigns, many=True)
         return Response(serializer.data)
 
@@ -54,6 +54,6 @@ class CampaignDetailView(APIView):
     )
     def get(self, request, campaign_id):
         """Get method."""
-        campaign = manager.get("campaign", campaign_id=campaign_id)
+        campaign = manager.get_campaign(campaign_id=campaign_id)
         serializer = campaign_serializers.CampaignSerializer(campaign)
         return Response(serializer.data)

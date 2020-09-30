@@ -185,7 +185,7 @@ class EmailSender:
         phishing_email = list(
             filter(
                 lambda x: x.name == self.subscription.get("sending_profile_name"),
-                campaign_manager.get("sending_profile"),
+                campaign_manager.get_sending_profile(),
             )
         )[0].from_address
 

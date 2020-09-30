@@ -294,14 +294,6 @@ class MonthlyReportsView(APIView):
             validate_dhs_contact,
         )
 
-        campaigns = subscription.get("gophish_campaign_list")
-        # summary = [
-        #     campaign_manager.get("summary", campaign_id=campaign.get("campaign_id"))
-        #     for campaign in campaigns
-        # ]
-
-        # target_count = campaign_manager.get("summary", campaign_id=campaign.get("campaign_id"))
-
         metrics, subscription_stats = self.getMonthlyStats(subscription)
 
         customer_address = """{},\n{}""".format(
@@ -320,8 +312,6 @@ class MonthlyReportsView(APIView):
         primary_contact_name = "{} {}".format(
             primary_contact.get("first_name"), primary_contact.get("last_name")
         )
-
-        total_users_targeted = len(subscription["target_email_list"])
 
         context = {
             # Customer info

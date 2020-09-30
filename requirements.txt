@@ -62,7 +62,6 @@ Jinja2==2.11.2
 jmespath==0.10.0
 joblib==0.14.1
 kombu==4.6.8
-lcgit @ git+https://github.com/cisagov/lcgit.git@7360374e78661d8dfa5ec550337a4e398c3bb4e8
 lxml==4.5.0
 mando==0.6.4
 MarkupSafe==1.1.1
