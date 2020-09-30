@@ -26,7 +26,7 @@ def test_batch_targets():
     assert len(sub_levels["moderate"]["targets"]) == 2
     assert len(sub_levels["high"]["targets"]) == 2
 
-    subscription = {"target_email_list": [{"email": fake.email()},]}
+    subscription = {"target_email_list": [{"email": fake.email()}]}
     sub_levels = {
         "low": {"targets": []},
         "moderate": {"targets": []},
