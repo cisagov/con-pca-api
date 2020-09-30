@@ -108,11 +108,12 @@ def test_calculate_subscription_start_end_date():
     assert end == start_date + timedelta(minutes=1) + timedelta(minutes=CYCLE_MINUTES)
 
     # passing string to function
-    start_date = datetime.now()
+    start_date = datetime.now() + timedelta(hours=1)
     start, end = subscriptions.calculate_subscription_start_end_date(
         start_date.isoformat()
     )
-    assert start == start_date + timedelta(minutes=1)
+    assert start <= start_date + timedelta(minutes=1)
+    assert start > start_date - timedelta(minutes=3)
 
 
 def test_get_subscription_status():
@@ -167,6 +168,6 @@ def test_get_staggered_dates_in_range():
     start = datetime.now()
     result = subscriptions.get_staggered_dates_in_range(start, 3)
     assert len(result) == 3
-    assert result[0] == datetime.now()
-    assert result[1] == datetime.now() + timedelta(hours=1)
-    assert result[2] == datetime.now() + timedelta(hours=2)
+    assert result[0] == start
+    assert result[1] == start + timedelta(hours=1)
+    assert result[2] == start + timedelta(hours=2)
