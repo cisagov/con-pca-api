@@ -11,13 +11,7 @@ from api.serializers.dhs_serializers import (
     DHSContactPatchSerializer,
 )
 from api.models.dhs_models import DHSContactModel, validate_dhs_contact
-from api.utils.db_utils import (
-    get_list,
-    save_single,
-    delete_single,
-    update_single,
-    get_single,
-)
+from api.utils import db_utils as db
 
 from drf_yasg.utils import swagger_auto_schema
 
@@ -36,7 +30,7 @@ class DHSContactListView(APIView):
         if not parameters:
             parameters = request.data.copy()
 
-        contact_list = get_list(
+        contact_list = db.get_list(
             parameters, "dhs_contact", DHSContactModel, validate_dhs_contact
         )
         serializer = DHSContactGetSerializer(contact_list, many=True)
@@ -51,7 +45,7 @@ class DHSContactListView(APIView):
     )
     def post(self, request, format=None):
         post_data = request.data.copy()
-        resp = save_single(
+        resp = db.save_single(
             post_data, "dhs_contact", DHSContactModel, validate_dhs_contact
         )
         serializer = DHSContactPostResponseSerializer(resp)
@@ -66,7 +60,7 @@ class DHSContactView(APIView):
         operation_description="This handles the API for the Get a dhs contact with dhs_contact_uuid.",
     )
     def get(self, request, dhs_contact_uuid):
-        contact = get_single(
+        contact = db.get_single(
             dhs_contact_uuid, "dhs_contact", DHSContactModel, validate_dhs_contact
         )
         serializer = DHSContactGetSerializer(contact)
@@ -82,7 +76,7 @@ class DHSContactView(APIView):
     def patch(self, request, dhs_contact_uuid):
         put_data = request.data.copy()
         serialized_data = DHSContactPatchSerializer(put_data)
-        resp = update_single(
+        resp = db.update_single(
             uuid=dhs_contact_uuid,
             put_data=serialized_data.data,
             collection="dhs_contact",
@@ -99,7 +93,7 @@ class DHSContactView(APIView):
         operation_description="API for deleting a single dhs contact",
     )
     def delete(self, request, dhs_contact_uuid):
-        resp = delete_single(
+        resp = db.delete_single(
             dhs_contact_uuid, "dhs_contact", DHSContactModel, validate_dhs_contact
         )
         serializer = DHSContactDeleteResponseSerializer(resp)
