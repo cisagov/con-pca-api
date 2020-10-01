@@ -11,13 +11,13 @@ fake = Faker()
 @mock.patch("api.utils.db_utils.get_single")
 def test_get_subscription(mocked_get):
     subscriptions.get_subscription("test")
-    assert mocked_get.assert_called
+    assert mocked_get.called
 
 
 @mock.patch("api.utils.db_utils.get_list")
 def test_get_subscriptions(mocked_list):
     subscriptions.get_subscriptions("test")
-    assert mocked_list.assert_called
+    assert mocked_list.called
 
 
 @mock.patch("api.utils.db_utils.save_single")
@@ -47,13 +47,13 @@ def test_save_subscription(mocked_save):
         "cycles": [],
     }
     subscriptions.save_subscription(subscription)
-    assert mocked_save.assert_called
+    assert mocked_save.called
 
 
 @mock.patch("api.utils.db_utils.update_single")
 def test_update_subscription(mocked_update):
     subscriptions.update_subscription("", {})
-    assert mocked_update.assert_called
+    assert mocked_update.called
 
 
 def test_create_subscription_name():
@@ -64,7 +64,7 @@ def test_create_subscription_name():
         customer = {"customer_uuid": "1", "identifier": "test"}
         result = subscriptions.create_subscription_name(customer)
         assert result == "test_2"
-        assert mocked_get.assert_called
+        assert mocked_get.called
 
     with mock.patch(
         "api.utils.db_utils.get_list",
@@ -73,13 +73,13 @@ def test_create_subscription_name():
         customer = {"customer_uuid": "1", "identifier": "test"}
         result = subscriptions.create_subscription_name(customer)
         assert result == "test_3"
-        assert mocked_get.assert_called
+        assert mocked_get.called
 
     with mock.patch("api.utils.db_utils.get_list", return_value=[],) as mocked_get:
         customer = {"customer_uuid": "1", "identifier": "test"}
         result = subscriptions.create_subscription_name(customer)
         assert result == "test_1"
-        assert mocked_get.assert_called
+        assert mocked_get.called
 
     with mock.patch(
         "api.utils.db_utils.get_list",
@@ -91,7 +91,7 @@ def test_create_subscription_name():
         customer = {"customer_uuid": "1", "identifier": "test"}
         result = subscriptions.create_subscription_name(customer)
         assert result == "test_3"
-        assert mocked_get.assert_called
+        assert mocked_get.called
 
 
 def test_calculate_subscription_start_end_date():
