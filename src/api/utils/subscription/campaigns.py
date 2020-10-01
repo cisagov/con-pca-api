@@ -264,7 +264,6 @@ def __create_campaign_smtp(
 
     try:
         resp = campaign_manager.create_sending_profile(
-            "sending_profile",
             name=campaign_name,
             username=sending_profile.username,
             password=sending_profile.password,
