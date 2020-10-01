@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=emulateIE7" />
-    <title>Coverage for src\api\serializers\webhook_serializers.py: 100%</title>
+    <title>Coverage for src\api\utils\subscription\static.py: 100%</title>
     <link rel="stylesheet" href="style.css" type="text/css" />
     <script type="text/javascript" src="jquery.min.js"></script>
     <script type="text/javascript" src="jquery.hotkeys.js"></script>
@@ -17,7 +17,7 @@
     <div id="header">
       <div class="content">
         <h1>
-          Coverage for <b>src\api\serializers\webhook_serializers.py</b> :
+          Coverage for <b>src\api\utils\subscription\static.py</b> :
           <span class="pc_cov">100%</span>
         </h1>
         <img
@@ -26,13 +26,13 @@
           alt="Show keyboard shortcuts"
         />
         <h2 class="stats">
-          7 statements &nbsp;
+          6 statements &nbsp;
           <button
             type="button"
             class="run shortkey_r button_toggle_run"
             title="Toggle lines run"
           >
-            7 run
+            6 run
           </button>
           <button
             type="button"
@@ -74,56 +74,63 @@
       </div>
     </div>
     <div id="source">
-      <p id="t1" class="pln">
+      <p id="t1" class="run">
         <span class="n"><a href="#t1">1</a></span
-        ><span class="t"><span class="str">"""</span>&nbsp;</span
+        ><span class="t"
+          ><span class="key">import</span>
+          <span class="nam">os</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t2" class="pln">
         <span class="n"><a href="#t2">2</a></span
-        ><span class="t"
-          ><span class="str">WebHook Serializers.</span>&nbsp;</span
-        ><span class="r"></span>
+        ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
       <p id="t3" class="pln">
         <span class="n"><a href="#t3">3</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
+        ><span class="t"
+          ><span class="com"># Set cycle minutes or 90 days</span>&nbsp;</span
+        ><span class="r"></span>
       </p>
-      <p id="t4" class="pln">
+      <p id="t4" class="run">
         <span class="n"><a href="#t4">4</a></span
         ><span class="t"
-          ><span class="str"
-            >These are Django Rest Framework Serializers. These are used
-            for</span
-          >&nbsp;</span
+          ><span class="nam">CYCLE_MINUTES</span> <span class="op">=</span>
+          <span class="nam">int</span><span class="op">(</span
+          ><span class="nam">os</span><span class="op">.</span
+          ><span class="nam">environ</span><span class="op">.</span
+          ><span class="nam">get</span><span class="op">(</span
+          ><span class="str">"CYCLE_MINUTES"</span><span class="op">,</span>
+          <span class="num">129600</span><span class="op">)</span
+          ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t5" class="pln">
         <span class="n"><a href="#t5">5</a></span
-        ><span class="t"
-          ><span class="str"
-            >serializing data coming from the db into a request response.</span
-          >&nbsp;</span
-        ><span class="r"></span>
+        ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
       <p id="t6" class="pln">
         <span class="n"><a href="#t6">6</a></span
-        ><span class="t"><span class="str">"""</span>&nbsp;</span
+        ><span class="t"
+          ><span class="com"
+            ># Give some time for final phishing numbers to go</span
+          >&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t7" class="pln">
         <span class="n"><a href="#t7">7</a></span
         ><span class="t"
-          ><span class="com"># Third-Party Libraries</span>&nbsp;</span
+          ><span class="com"># through before starting a new subscription</span
+          >&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t8" class="run">
         <span class="n"><a href="#t8">8</a></span
         ><span class="t"
-          ><span class="key">from</span>
-          <span class="nam">rest_framework</span>
-          <span class="key">import</span>
-          <span class="nam">serializers</span>&nbsp;</span
+          ><span class="nam">CAMPAIGN_MINUTES</span> <span class="op">=</span>
+          <span class="nam">int</span><span class="op">(</span
+          ><span class="nam">CYCLE_MINUTES</span> <span class="op">*</span>
+          <span class="num">2</span> <span class="op">/</span>
+          <span class="num">3</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t9" class="pln">
@@ -132,94 +139,59 @@
       </p>
       <p id="t10" class="pln">
         <span class="n"><a href="#t10">10</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
+        ><span class="t"
+          ><span class="com"># Set monthly minutes or 30 days</span>&nbsp;</span
+        ><span class="r"></span>
       </p>
       <p id="t11" class="run">
         <span class="n"><a href="#t11">11</a></span
         ><span class="t"
-          ><span class="key">class</span>
-          <span class="nam">InboundWebhookSerializer</span
-          ><span class="op">(</span><span class="nam">serializers</span
-          ><span class="op">.</span><span class="nam">Serializer</span
-          ><span class="op">)</span><span class="op">:</span>&nbsp;</span
+          ><span class="nam">MONTHLY_MINUTES</span> <span class="op">=</span>
+          <span class="nam">int</span><span class="op">(</span
+          ><span class="nam">os</span><span class="op">.</span
+          ><span class="nam">environ</span><span class="op">.</span
+          ><span class="nam">get</span><span class="op">(</span
+          ><span class="str">"MONTHLY_MINUTES"</span><span class="op">,</span>
+          <span class="num">43200</span><span class="op">)</span
+          ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t12" class="pln">
         <span class="n"><a href="#t12">12</a></span
-        ><span class="t"> <span class="str">"""</span>&nbsp;</span
-        ><span class="r"></span>
+        ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
       <p id="t13" class="pln">
         <span class="n"><a href="#t13">13</a></span
         ><span class="t"
-          ><span class="str">
-            This is the Inbound Webhook Post data Serializer.</span
-          >&nbsp;</span
+          ><span class="com"># set yearly minutes or 365 days</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t14" class="pln">
+      <p id="t14" class="run">
         <span class="n"><a href="#t14">14</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
+        ><span class="t"
+          ><span class="nam">YEARLY_MINUTES</span> <span class="op">=</span>
+          <span class="nam">int</span><span class="op">(</span
+          ><span class="nam">os</span><span class="op">.</span
+          ><span class="nam">environ</span><span class="op">.</span
+          ><span class="nam">get</span><span class="op">(</span
+          ><span class="str">"YEARLY_MINUTES"</span><span class="op">,</span>
+          <span class="num">525600</span><span class="op">)</span
+          ><span class="op">)</span>&nbsp;</span
+        ><span class="r"></span>
       </p>
       <p id="t15" class="pln">
         <span class="n"><a href="#t15">15</a></span
-        ><span class="t"
-          ><span class="str">
-            This is a formats the data coming out of the Db.</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t16" class="pln">
-        <span class="n"><a href="#t16">16</a></span
-        ><span class="t"><span class="str"> """</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t17" class="pln">
-        <span class="n"><a href="#t17">17</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t18" class="run">
-        <span class="n"><a href="#t18">18</a></span
-        ><span class="t">
-          <span class="nam">campaign_id</span> <span class="op">=</span>
-          <span class="nam">serializers</span><span class="op">.</span
-          ><span class="nam">IntegerField</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t19" class="run">
-        <span class="n"><a href="#t19">19</a></span
-        ><span class="t">
-          <span class="nam">email</span> <span class="op">=</span>
-          <span class="nam">serializers</span><span class="op">.</span
-          ><span class="nam">EmailField</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t20" class="run">
-        <span class="n"><a href="#t20">20</a></span
-        ><span class="t">
-          <span class="nam">time</span> <span class="op">=</span>
-          <span class="nam">serializers</span><span class="op">.</span
-          ><span class="nam">DateTimeField</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t21" class="run">
-        <span class="n"><a href="#t21">21</a></span
-        ><span class="t">
-          <span class="nam">message</span> <span class="op">=</span>
-          <span class="nam">serializers</span><span class="op">.</span
-          ><span class="nam">CharField</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t22" class="run">
-        <span class="n"><a href="#t22">22</a></span
-        ><span class="t">
-          <span class="nam">details</span> <span class="op">=</span>
-          <span class="nam">serializers</span><span class="op">.</span
-          ><span class="nam">CharField</span><span class="op">(</span
+      <p id="t16" class="run">
+        <span class="n"><a href="#t16">16</a></span
+        ><span class="t"
+          ><span class="nam">DEFAULT_X_GOPHISH_CONTACT</span>
+          <span class="op">=</span> <span class="nam">os</span
+          ><span class="op">.</span><span class="nam">environ</span
+          ><span class="op">.</span><span class="nam">get</span
+          ><span class="op">(</span
+          ><span class="str">"DEFAULT_X_GOPHISH_CONTACT"</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>

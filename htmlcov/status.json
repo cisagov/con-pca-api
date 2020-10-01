@@ -49,14 +49,14 @@
       }
     },
     "src_api_manager_py": {
-      "hash": "63c06791eb2d04bc322e76f9f104f7bd",
+      "hash": "67c0827f03a65cd27c52223004ddf934",
       "index": {
         "html_filename": "src_api_manager_py.html",
         "nums": [
           1,
-          198,
+          145,
           0,
-          148,
+          101,
           0,
           0,
           0
@@ -97,12 +97,12 @@
       }
     },
     "src_api_models_landing_page_models_py": {
-      "hash": "ff5e8cd009ce843d4bb994e5928dac8e",
+      "hash": "6904704fe35d784c75e3ac07f69f4fd8",
       "index": {
         "html_filename": "src_api_models_landing_page_models_py.html",
         "nums": [
           1,
-          19,
+          17,
           0,
           1,
           0,
@@ -129,12 +129,12 @@
       }
     },
     "src_api_models_subscription_models_py": {
-      "hash": "486a8a972ea2472ab676644671800384",
+      "hash": "1030f2a7b4f5e3ea7073f38ff055a423",
       "index": {
         "html_filename": "src_api_models_subscription_models_py.html",
         "nums": [
           1,
-          124,
+          125,
           0,
           1,
           0,
@@ -145,7 +145,7 @@
       }
     },
     "src_api_models_template_models_py": {
-      "hash": "052e954e79c84355f8acf28617746292",
+      "hash": "e88a0666c3509935928e09b97c4483fe",
       "index": {
         "html_filename": "src_api_models_template_models_py.html",
         "nums": [
@@ -225,12 +225,12 @@
       }
     },
     "src_api_serializers_landing_page_serializers_py": {
-      "hash": "7263c0e156863e47cb85cf72ef7a0a20",
+      "hash": "79b430ad7a7aa9cc42be0cbf6e5d78c3",
       "index": {
         "html_filename": "src_api_serializers_landing_page_serializers_py.html",
         "nums": [
           1,
-          73,
+          63,
           0,
           0,
           0,
@@ -289,12 +289,12 @@
       }
     },
     "src_api_serializers_subscriptions_serializers_py": {
-      "hash": "0a0773125f2600d04e825778881dd1a8",
+      "hash": "e167efe86c7f11ea0615c46ec42e4d0c",
       "index": {
         "html_filename": "src_api_serializers_subscriptions_serializers_py.html",
         "nums": [
           1,
-          210,
+          216,
           0,
           0,
           0,
@@ -305,12 +305,12 @@
       }
     },
     "src_api_serializers_template_serializers_py": {
-      "hash": "3e44ec3ddd8473075b56d1b654b247ea",
+      "hash": "b070dbbabf34f4d2c0f40b3acb675129",
       "index": {
         "html_filename": "src_api_serializers_template_serializers_py.html",
         "nums": [
           1,
-          192,
+          193,
           0,
           0,
           0,
@@ -337,7 +337,7 @@
       }
     },
     "src_api_urls_py": {
-      "hash": "69a5f171bd81cff2363c85a8b9ee891a",
+      "hash": "24740a42a165498e3a5980d2798a018c",
       "index": {
         "html_filename": "src_api_urls_py.html",
         "nums": [
@@ -369,14 +369,14 @@
       }
     },
     "src_api_utils_aws_utils_py": {
-      "hash": "3f7d5a29f705e68fd46037684c97fe90",
+      "hash": "a288c5b53373e802e09b67839bc05343",
       "index": {
         "html_filename": "src_api_utils_aws_utils_py.html",
         "nums": [
           1,
-          68,
+          58,
           0,
-          45,
+          1,
           0,
           0,
           0
@@ -385,14 +385,14 @@
       }
     },
     "src_api_utils_customer_customers_py": {
-      "hash": "caefbef0b3cb1c76b8e01cd3d32b4e09",
+      "hash": "9383b2c51c68f4efe8e7d2164016bc51",
       "index": {
         "html_filename": "src_api_utils_customer_customers_py.html",
         "nums": [
           1,
-          7,
+          13,
           0,
-          3,
+          0,
           0,
           0,
           0
@@ -401,14 +401,14 @@
       }
     },
     "src_api_utils_db_utils_py": {
-      "hash": "bd5dcea17273d17a984ba4daab87431a",
+      "hash": "63de9490e1348cdb6b9f2095dc19ad10",
       "index": {
         "html_filename": "src_api_utils_db_utils_py.html",
         "nums": [
           1,
-          104,
+          102,
           0,
-          79,
+          76,
           0,
           0,
           0
@@ -417,14 +417,14 @@
       }
     },
     "src_api_utils_generic_py": {
-      "hash": "16fe6a7f76bf4aad4d63310e15d09081",
+      "hash": "af5dea455f482a6ec4dcdbd3e34f09ae",
       "index": {
         "html_filename": "src_api_utils_generic_py.html",
         "nums": [
           1,
-          28,
+          16,
           0,
-          20,
+          0,
           0,
           0,
           0
@@ -433,14 +433,14 @@
       }
     },
     "src_api_utils_landing_pages_py": {
-      "hash": "fab7a4d8d712d2907b18ae37647eead1",
+      "hash": "0e08e903981a18fa8a4c96b020800552",
       "index": {
         "html_filename": "src_api_utils_landing_pages_py.html",
         "nums": [
           1,
-          13,
+          15,
           0,
-          10,
+          0,
           0,
           0,
           0
@@ -449,14 +449,14 @@
       }
     },
     "src_api_utils_reports_py": {
-      "hash": "658806827e183b14f856ff9053d42521",
+      "hash": "0857b68973e0d23ed67f1dc5819e0581",
       "index": {
         "html_filename": "src_api_utils_reports_py.html",
         "nums": [
           1,
-          25,
+          39,
           0,
-          18,
+          32,
           0,
           0,
           0
@@ -465,14 +465,14 @@
       }
     },
     "src_api_utils_sector_industry_utils_py": {
-      "hash": "237b554331e116b743f60efb2e2302da",
+      "hash": "7a3d76b17c6fddb1dcf583b98806214c",
       "index": {
         "html_filename": "src_api_utils_sector_industry_utils_py.html",
         "nums": [
           1,
           3,
           0,
-          2,
+          0,
           0,
           0,
           0
@@ -481,14 +481,14 @@
       }
     },
     "src_api_utils_subscription_actions_py": {
-      "hash": "a169bfa4299190fd1a8552e4d1615b49",
+      "hash": "bacad91332a6cbe183ee7a0af660bf45",
       "index": {
         "html_filename": "src_api_utils_subscription_actions_py.html",
         "nums": [
           1,
-          86,
+          73,
           0,
-          68,
+          57,
           0,
           0,
           0
@@ -497,14 +497,14 @@
       }
     },
     "src_api_utils_subscription_campaigns_py": {
-      "hash": "8a7138d20c23de76910213350fe84285",
+      "hash": "0095588dbaa729238a891efe9383072c",
       "index": {
         "html_filename": "src_api_utils_subscription_campaigns_py.html",
         "nums": [
           1,
-          104,
+          117,
           0,
-          85,
+          55,
           0,
           0,
           0
@@ -513,14 +513,14 @@
       }
     },
     "src_api_utils_subscription_cycles_py": {
-      "hash": "467f08ad69fd2e238c0c0dec267a236f",
+      "hash": "0355992780a64233f8db7dbb8ee70d88",
       "index": {
         "html_filename": "src_api_utils_subscription_cycles_py.html",
         "nums": [
           1,
-          78,
-          0,
           70,
+          0,
+          2,
           0,
           0,
           0
@@ -528,15 +528,31 @@
         "relative_filename": "src\\api\\utils\\subscription\\cycles.py"
       }
     },
+    "src_api_utils_subscription_static_py": {
+      "hash": "f1ff2dc010875aa140caada405392ae5",
+      "index": {
+        "html_filename": "src_api_utils_subscription_static_py.html",
+        "nums": [
+          1,
+          6,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "relative_filename": "src\\api\\utils\\subscription\\static.py"
+      }
+    },
     "src_api_utils_subscription_subscriptions_py": {
-      "hash": "462bcc0829a5eb624d29aa03b00dffd3",
+      "hash": "77cf4de774913526282aabcfa3786891",
       "index": {
         "html_filename": "src_api_utils_subscription_subscriptions_py.html",
         "nums": [
           1,
-          64,
+          56,
           0,
-          47,
+          5,
           0,
           0,
           0
@@ -545,14 +561,14 @@
       }
     },
     "src_api_utils_subscription_targets_py": {
-      "hash": "9e86b9ac4c3773745e3b86ae38f6dc4c",
+      "hash": "a29f940ca7339f48872cd2987bd195e8",
       "index": {
         "html_filename": "src_api_utils_subscription_targets_py.html",
         "nums": [
           1,
-          38,
+          32,
           0,
-          31,
+          0,
           0,
           0,
           0
@@ -561,14 +577,14 @@
       }
     },
     "src_api_utils_subscription_template_selector_py": {
-      "hash": "760e0f9d41d333a04262414d187f3970",
+      "hash": "3fc55797cdffd12ece5bee8b7628734d",
       "index": {
         "html_filename": "src_api_utils_subscription_template_selector_py.html",
         "nums": [
           1,
-          46,
+          47,
           0,
-          35,
+          6,
           0,
           0,
           0
@@ -577,14 +593,14 @@
       }
     },
     "src_api_utils_tag_tags_py": {
-      "hash": "195de81204bcf46ceca0d33fb5fe50ec",
+      "hash": "645307ce59cbd4cd03ac07c637caba30",
       "index": {
         "html_filename": "src_api_utils_tag_tags_py.html",
         "nums": [
           1,
-          10,
+          24,
           0,
-          5,
+          0,
           0,
           0,
           0
@@ -592,31 +608,15 @@
         "relative_filename": "src\\api\\utils\\tag\\tags.py"
       }
     },
-    "src_api_utils_template_landing_pages_py": {
-      "hash": "d088a0722c17714f43da644a743b8ed9",
-      "index": {
-        "html_filename": "src_api_utils_template_landing_pages_py.html",
-        "nums": [
-          1,
-          5,
-          0,
-          1,
-          0,
-          0,
-          0
-        ],
-        "relative_filename": "src\\api\\utils\\template\\landing_pages.py"
-      }
-    },
     "src_api_utils_template_personalize_py": {
-      "hash": "c8035f903e6fb168625aacea211383d4",
+      "hash": "4e8fcbdb80df25d519f2b0901ffe865a",
       "index": {
         "html_filename": "src_api_utils_template_personalize_py.html",
         "nums": [
           1,
-          42,
+          45,
           0,
-          35,
+          4,
           0,
           0,
           0
@@ -625,14 +625,14 @@
       }
     },
     "src_api_utils_template_templates_py": {
-      "hash": "53adc85ee832dfd16813aebbb0464eed",
+      "hash": "0525b9a5290453f3ec6cca002e9e6ee9",
       "index": {
         "html_filename": "src_api_utils_template_templates_py.html",
         "nums": [
           1,
-          19,
+          18,
           0,
-          12,
+          0,
           0,
           0,
           0
@@ -641,14 +641,14 @@
       }
     },
     "src_api_utils_webhooks_py": {
-      "hash": "46a2a4f47a2112f600eae3e3adc6fbf9",
+      "hash": "d3a40ca4c020a445e1b52428a2903ea9",
       "index": {
         "html_filename": "src_api_utils_webhooks_py.html",
         "nums": [
           1,
           8,
           0,
-          4,
+          0,
           0,
           0,
           0
@@ -657,7 +657,7 @@
       }
     },
     "src_api_views_campaign_views_py": {
-      "hash": "59f4e1450b5e412273461c7d6ead42f1",
+      "hash": "65d376590a9074d3ce9c051f7e5659ae",
       "index": {
         "html_filename": "src_api_views_campaign_views_py.html",
         "nums": [
@@ -689,7 +689,7 @@
       }
     },
     "src_api_views_cycle_views_py": {
-      "hash": "4a7b46502df99fbe4bf6259900100acf",
+      "hash": "e2870194ae0d3f70ab22741e10846942",
       "index": {
         "html_filename": "src_api_views_cycle_views_py.html",
         "nums": [
@@ -721,14 +721,14 @@
       }
     },
     "src_api_views_image_views_py": {
-      "hash": "d84602cb483cce8ec71613d8eec7526f",
+      "hash": "ec1fb9060c47ef51f61e9333ea01cfc8",
       "index": {
         "html_filename": "src_api_views_image_views_py.html",
         "nums": [
           1,
-          20,
+          21,
           0,
-          9,
+          10,
           0,
           0,
           0
@@ -737,14 +737,14 @@
       }
     },
     "src_api_views_landing_page_views_py": {
-      "hash": "3e5add7e4f7f0453562d25ac68a686dc",
+      "hash": "54b454ba617e41fca048d4bda4504560",
       "index": {
         "html_filename": "src_api_views_landing_page_views_py.html",
         "nums": [
           1,
-          86,
+          98,
           0,
-          56,
+          68,
           0,
           0,
           0
@@ -769,7 +769,7 @@
       }
     },
     "src_api_views_report_views_py": {
-      "hash": "611ef987b22cb9827877ade25fe62ed5",
+      "hash": "0ef7ffd83873ddfabd515d928c6065be",
       "index": {
         "html_filename": "src_api_views_report_views_py.html",
         "nums": [
@@ -785,7 +785,7 @@
       }
     },
     "src_api_views_sendingprofile_views_py": {
-      "hash": "d17480c9c853db2a3e684acfd6bb53d0",
+      "hash": "4713bd7f9d4445861d0d77b853d1130b",
       "index": {
         "html_filename": "src_api_views_sendingprofile_views_py.html",
         "nums": [
@@ -801,7 +801,7 @@
       }
     },
     "src_api_views_subscription_views_py": {
-      "hash": "6651c70fe3f7fdbdd1c38459a64c0b35",
+      "hash": "1a74269d6752fb640c5e7c5c65eaee31",
       "index": {
         "html_filename": "src_api_views_subscription_views_py.html",
         "nums": [
@@ -817,14 +817,14 @@
       }
     },
     "src_api_views_template_views_py": {
-      "hash": "9e260590de06df32fe38f8fdcff50d61",
+      "hash": "964e22fbd56072f85e1477edf5a8dd46",
       "index": {
         "html_filename": "src_api_views_template_views_py.html",
         "nums": [
           1,
-          126,
+          128,
           0,
-          85,
+          87,
           0,
           0,
           0
@@ -865,7 +865,7 @@
       }
     },
     "src_authentication_backend_py": {
-      "hash": "eb44547144801438d9dc27d902ae6c62",
+      "hash": "9ecf0c3cc4ab851e55856f12a0df20da",
       "index": {
         "html_filename": "src_authentication_backend_py.html",
         "nums": [
@@ -881,7 +881,7 @@
       }
     },
     "src_authentication_validator_py": {
-      "hash": "d1d6968075c084825f9615f8646dd35c",
+      "hash": "d8ff522ee86cef5ff502307466dfac12",
       "index": {
         "html_filename": "src_authentication_validator_py.html",
         "nums": [
@@ -913,12 +913,12 @@
       }
     },
     "src_config_settings_py": {
-      "hash": "63ed8b5e1251157dcdaf4d833e658644",
+      "hash": "9f27e3248fa1037506e05462d8d5fea8",
       "index": {
         "html_filename": "src_config_settings_py.html",
         "nums": [
           1,
-          67,
+          65,
           0,
           6,
           0,
@@ -993,14 +993,14 @@
       }
     },
     "src_database_repository_generics_py": {
-      "hash": "55c1789b8013ef425c565baffbc04a16",
+      "hash": "7a9da9ec4115f20100be4728514da03d",
       "index": {
         "html_filename": "src_database_repository_generics_py.html",
         "nums": [
           1,
-          125,
+          123,
           0,
-          93,
+          91,
           0,
           0,
           0
@@ -1057,14 +1057,14 @@
       }
     },
     "src_database_service_py": {
-      "hash": "504eb42346b1bbbd0cc46d019696e64d",
+      "hash": "377ee622d08da6ad44dcf76d6049000b",
       "index": {
         "html_filename": "src_database_service_py.html",
         "nums": [
           1,
-          33,
+          35,
           0,
-          20,
+          22,
           0,
           0,
           0
@@ -1089,14 +1089,14 @@
       }
     },
     "src_notifications_views_py": {
-      "hash": "06015d14bae62caea91d76dbe8a58c13",
+      "hash": "72a4d5e2002b080cf6a7b4d1dba6ee9a",
       "index": {
         "html_filename": "src_notifications_views_py.html",
         "nums": [
           1,
-          95,
+          102,
           0,
-          68,
+          72,
           0,
           0,
           0
@@ -1121,7 +1121,7 @@
       }
     },
     "src_reports_urls_py": {
-      "hash": "2a776238df4b3a56e3447e2645e3a094",
+      "hash": "3b28f417f806eedf9db2b942eeff5749",
       "index": {
         "html_filename": "src_reports_urls_py.html",
         "nums": [
@@ -1137,14 +1137,14 @@
       }
     },
     "src_reports_utils_py": {
-      "hash": "7d838f6a80f6f89984cc4e4fa8fceda2",
+      "hash": "5693abe8e13760f36517b20c3b41b499",
       "index": {
         "html_filename": "src_reports_utils_py.html",
         "nums": [
           1,
-          690,
+          701,
           0,
-          631,
+          642,
           0,
           0,
           0
@@ -1185,14 +1185,14 @@
       }
     },
     "src_reports_views_monthly_view_py": {
-      "hash": "9f2fdecbb211eea0caa834e32d705015",
+      "hash": "65aaab0f6644e6300ea3104ff352fcf0",
       "index": {
         "html_filename": "src_reports_views_monthly_view_py.html",
         "nums": [
           1,
-          68,
+          119,
           0,
-          46,
+          95,
           0,
           0,
           0
@@ -1201,14 +1201,14 @@
       }
     },
     "src_reports_views_system_view_py": {
-      "hash": "4137fa5ff9fa8b9459b5ce7a027f986d",
+      "hash": "d59b07f156f71ca9aaca1b67c05d1e74",
       "index": {
         "html_filename": "src_reports_views_system_view_py.html",
         "nums": [
           1,
-          75,
+          81,
           0,
-          56,
+          60,
           0,
           0,
           0
@@ -1217,14 +1217,14 @@
       }
     },
     "src_reports_views_yearly_view_py": {
-      "hash": "2917968a6251772c68e80a2a22e779be",
+      "hash": "3e27d527bcd7ef7dbb83e7a29ee7a483",
       "index": {
         "html_filename": "src_reports_views_yearly_view_py.html",
         "nums": [
           1,
-          54,
+          45,
           0,
-          31,
+          29,
           0,
           0,
           0
@@ -1232,56 +1232,24 @@
         "relative_filename": "src\\reports\\views\\yearly_view.py"
       }
     },
-    "src_tasks___init___py": {
-      "hash": "af9d0d0de0ea3b71d198bc63f1499a7d",
+    "src_scripts_init_py": {
+      "hash": "315377ca935d0da332fd2075238cd054",
       "index": {
-        "html_filename": "src_tasks___init___py.html",
+        "html_filename": "src_scripts_init_py.html",
         "nums": [
           1,
+          150,
           0,
-          0,
-          0,
+          117,
           0,
           0,
           0
         ],
-        "relative_filename": "src\\tasks\\__init__.py"
-      }
-    },
-    "src_tasks_cron_py": {
-      "hash": "366ed1a6ebcfb9324f930e0c95924859",
-      "index": {
-        "html_filename": "src_tasks_cron_py.html",
-        "nums": [
-          1,
-          44,
-          0,
-          34,
-          0,
-          0,
-          0
-        ],
-        "relative_filename": "src\\tasks\\cron.py"
-      }
-    },
-    "src_tasks_tasks_py": {
-      "hash": "c823c590b13ab4b3941dafafda59a669",
-      "index": {
-        "html_filename": "src_tasks_tasks_py.html",
-        "nums": [
-          1,
-          25,
-          0,
-          16,
-          0,
-          0,
-          0
-        ],
-        "relative_filename": "src\\tasks\\tasks.py"
+        "relative_filename": "src\\scripts\\init.py"
       }
     }
   },
   "format": 2,
-  "globals": "c3fc29d529a3af98c1a2065daa2addf6",
-  "version": "5.2.1"
+  "globals": "45fb87dcd1251109c254273a76c6d399",
+  "version": "5.3"
 }

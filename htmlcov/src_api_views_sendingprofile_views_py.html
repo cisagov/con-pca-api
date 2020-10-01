@@ -363,8 +363,7 @@
         ><span class="t">
           <span class="nam">sending_profiles</span> <span class="op">=</span>
           <span class="nam">campaign_manager</span><span class="op">.</span
-          ><span class="nam">get</span><span class="op">(</span
-          ><span class="str">"sending_profile"</span
+          ><span class="nam">get_sending_profile</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
@@ -510,18 +509,12 @@
         ><span class="t">
           <span class="nam">sending_profile</span> <span class="op">=</span>
           <span class="nam">campaign_manager</span><span class="op">.</span
-          ><span class="nam">create</span><span class="op">(</span>&nbsp;</span
+          ><span class="nam">create_sending_profile</span
+          ><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t62" class="pln">
         <span class="n"><a href="#t62">62</a></span
-        ><span class="t">
-          <span class="str">"sending_profile"</span
-          ><span class="op">,</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t63" class="pln">
-        <span class="n"><a href="#t63">63</a></span
         ><span class="t">
           <span class="nam">name</span><span class="op">=</span
           ><span class="nam">sp</span><span class="op">.</span
@@ -530,8 +523,8 @@
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t64" class="pln">
-        <span class="n"><a href="#t64">64</a></span
+      <p id="t63" class="pln">
+        <span class="n"><a href="#t63">63</a></span
         ><span class="t">
           <span class="nam">username</span><span class="op">=</span
           ><span class="nam">sp</span><span class="op">.</span
@@ -540,8 +533,8 @@
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t65" class="pln">
-        <span class="n"><a href="#t65">65</a></span
+      <p id="t64" class="pln">
+        <span class="n"><a href="#t64">64</a></span
         ><span class="t">
           <span class="nam">password</span><span class="op">=</span
           ><span class="nam">sp</span><span class="op">.</span
@@ -550,8 +543,8 @@
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t66" class="pln">
-        <span class="n"><a href="#t66">66</a></span
+      <p id="t65" class="pln">
+        <span class="n"><a href="#t65">65</a></span
         ><span class="t">
           <span class="nam">host</span><span class="op">=</span
           ><span class="nam">sp</span><span class="op">.</span
@@ -560,8 +553,8 @@
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t67" class="pln">
-        <span class="n"><a href="#t67">67</a></span
+      <p id="t66" class="pln">
+        <span class="n"><a href="#t66">66</a></span
         ><span class="t">
           <span class="nam">interface_type</span><span class="op">=</span
           ><span class="nam">sp</span><span class="op">.</span
@@ -570,8 +563,8 @@
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t68" class="pln">
-        <span class="n"><a href="#t68">68</a></span
+      <p id="t67" class="pln">
+        <span class="n"><a href="#t67">67</a></span
         ><span class="t">
           <span class="nam">from_address</span><span class="op">=</span
           ><span class="nam">sp</span><span class="op">.</span
@@ -580,8 +573,8 @@
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t69" class="pln">
-        <span class="n"><a href="#t69">69</a></span
+      <p id="t68" class="pln">
+        <span class="n"><a href="#t68">68</a></span
         ><span class="t">
           <span class="nam">ignore_cert_errors</span><span class="op">=</span
           ><span class="nam">sp</span><span class="op">.</span
@@ -590,8 +583,8 @@
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t70" class="pln">
-        <span class="n"><a href="#t70">70</a></span
+      <p id="t69" class="pln">
+        <span class="n"><a href="#t69">69</a></span
         ><span class="t">
           <span class="nam">headers</span><span class="op">=</span
           ><span class="nam">sp</span><span class="op">.</span
@@ -600,17 +593,17 @@
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t71" class="pln">
-        <span class="n"><a href="#t71">71</a></span
+      <p id="t70" class="pln">
+        <span class="n"><a href="#t70">70</a></span
         ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t72" class="pln">
-        <span class="n"><a href="#t72">72</a></span
+      <p id="t71" class="pln">
+        <span class="n"><a href="#t71">71</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t73" class="mis show_mis">
-        <span class="n"><a href="#t73">73</a></span
+      <p id="t72" class="mis show_mis">
+        <span class="n"><a href="#t72">72</a></span
         ><span class="t">
           <span class="nam">serializer</span> <span class="op">=</span>
           <span class="nam">SendingProfileSerializer</span
@@ -618,8 +611,8 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t74" class="mis show_mis">
-        <span class="n"><a href="#t74">74</a></span
+      <p id="t73" class="mis show_mis">
+        <span class="n"><a href="#t73">73</a></span
         ><span class="t">
           <span class="key">return</span> <span class="nam">Response</span
           ><span class="op">(</span><span class="nam">serializer</span
@@ -627,16 +620,16 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
+      <p id="t74" class="pln">
+        <span class="n"><a href="#t74">74</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
       <p id="t75" class="pln">
         <span class="n"><a href="#t75">75</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t76" class="pln">
+      <p id="t76" class="run">
         <span class="n"><a href="#t76">76</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t77" class="run">
-        <span class="n"><a href="#t77">77</a></span
         ><span class="t"
           ><span class="key">class</span>
           <span class="nam">SendingProfileView</span><span class="op">(</span
@@ -644,44 +637,44 @@
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t78" class="pln">
-        <span class="n"><a href="#t78">78</a></span
+      <p id="t77" class="pln">
+        <span class="n"><a href="#t77">77</a></span
         ><span class="t"> <span class="str">"""</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t79" class="pln">
-        <span class="n"><a href="#t79">79</a></span
+      <p id="t78" class="pln">
+        <span class="n"><a href="#t78">78</a></span
         ><span class="t"
           ><span class="str"> This is the SendingProfileView APIView.</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t80" class="pln">
-        <span class="n"><a href="#t80">80</a></span
+      <p id="t79" class="pln">
+        <span class="n"><a href="#t79">79</a></span
         ><span class="t"
           ><span class="str">
             This handles the API for the Get a Sending Profile with id.</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t81" class="pln">
-        <span class="n"><a href="#t81">81</a></span
+      <p id="t80" class="pln">
+        <span class="n"><a href="#t80">80</a></span
         ><span class="t"><span class="str"> """</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t82" class="pln">
-        <span class="n"><a href="#t82">82</a></span
+      <p id="t81" class="pln">
+        <span class="n"><a href="#t81">81</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t83" class="run">
-        <span class="n"><a href="#t83">83</a></span
+      <p id="t82" class="run">
+        <span class="n"><a href="#t82">82</a></span
         ><span class="t">
           <span class="op">@</span><span class="nam">swagger_auto_schema</span
           ><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t84" class="pln">
-        <span class="n"><a href="#t84">84</a></span
+      <p id="t83" class="pln">
+        <span class="n"><a href="#t83">83</a></span
         ><span class="t">
           <span class="nam">responses</span><span class="op">=</span
           ><span class="op">{</span><span class="str">"200"</span
@@ -692,24 +685,24 @@
           ><span class="op">}</span><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t85" class="pln">
-        <span class="n"><a href="#t85">85</a></span
+      <p id="t84" class="pln">
+        <span class="n"><a href="#t84">84</a></span
         ><span class="t">
           <span class="nam">security</span><span class="op">=</span
           ><span class="op">[</span><span class="op">]</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t86" class="pln">
-        <span class="n"><a href="#t86">86</a></span
+      <p id="t85" class="pln">
+        <span class="n"><a href="#t85">85</a></span
         ><span class="t">
           <span class="nam">operation_id</span><span class="op">=</span
           ><span class="str">"Get single Sending Profile"</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t87" class="pln">
-        <span class="n"><a href="#t87">87</a></span
+      <p id="t86" class="pln">
+        <span class="n"><a href="#t86">86</a></span
         ><span class="t">
           <span class="nam">operation_description</span><span class="op">=</span
           ><span class="str"
@@ -717,13 +710,13 @@
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t88" class="pln">
-        <span class="n"><a href="#t88">88</a></span
+      <p id="t87" class="pln">
+        <span class="n"><a href="#t87">87</a></span
         ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t89" class="run">
-        <span class="n"><a href="#t89">89</a></span
+      <p id="t88" class="run">
+        <span class="n"><a href="#t88">88</a></span
         ><span class="t">
           <span class="key">def</span> <span class="nam">get</span
           ><span class="op">(</span><span class="nam">self</span
@@ -732,19 +725,18 @@
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t90" class="mis show_mis">
-        <span class="n"><a href="#t90">90</a></span
+      <p id="t89" class="mis show_mis">
+        <span class="n"><a href="#t89">89</a></span
         ><span class="t">
           <span class="nam">sending_profile</span> <span class="op">=</span>
           <span class="nam">campaign_manager</span><span class="op">.</span
-          ><span class="nam">get</span><span class="op">(</span
-          ><span class="str">"sending_profile"</span><span class="op">,</span>
-          <span class="nam">smtp_id</span><span class="op">=</span
+          ><span class="nam">get_sending_profile</span><span class="op">(</span
+          ><span class="nam">smtp_id</span><span class="op">=</span
           ><span class="nam">id</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t91" class="mis show_mis">
-        <span class="n"><a href="#t91">91</a></span
+      <p id="t90" class="mis show_mis">
+        <span class="n"><a href="#t90">90</a></span
         ><span class="t">
           <span class="nam">serializer</span> <span class="op">=</span>
           <span class="nam">SendingProfileSerializer</span
@@ -752,8 +744,8 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t92" class="mis show_mis">
-        <span class="n"><a href="#t92">92</a></span
+      <p id="t91" class="mis show_mis">
+        <span class="n"><a href="#t91">91</a></span
         ><span class="t">
           <span class="key">return</span> <span class="nam">Response</span
           ><span class="op">(</span><span class="nam">serializer</span
@@ -761,63 +753,63 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t93" class="pln">
-        <span class="n"><a href="#t93">93</a></span
+      <p id="t92" class="pln">
+        <span class="n"><a href="#t92">92</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t94" class="pln">
-        <span class="n"><a href="#t94">94</a></span
+      <p id="t93" class="pln">
+        <span class="n"><a href="#t93">93</a></span
         ><span class="t"> <span class="str">"""</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t95" class="pln">
-        <span class="n"><a href="#t95">95</a></span
+      <p id="t94" class="pln">
+        <span class="n"><a href="#t94">94</a></span
         ><span class="t"
           ><span class="str"> This is the SendingProfileView APIView.</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t96" class="pln">
-        <span class="n"><a href="#t96">96</a></span
+      <p id="t95" class="pln">
+        <span class="n"><a href="#t95">95</a></span
         ><span class="t"
           ><span class="str">
             This handles the API for PATCHing a Sending Profile with id.</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t97" class="pln">
-        <span class="n"><a href="#t97">97</a></span
+      <p id="t96" class="pln">
+        <span class="n"><a href="#t96">96</a></span
         ><span class="t"
           ><span class="str"> https://localhost:3333/api/smtp/:id</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t98" class="pln">
-        <span class="n"><a href="#t98">98</a></span
+      <p id="t97" class="pln">
+        <span class="n"><a href="#t97">97</a></span
         ><span class="t"><span class="str"> """</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t99" class="pln">
-        <span class="n"><a href="#t99">99</a></span
+      <p id="t98" class="pln">
+        <span class="n"><a href="#t98">98</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t100" class="run">
-        <span class="n"><a href="#t100">100</a></span
+      <p id="t99" class="run">
+        <span class="n"><a href="#t99">99</a></span
         ><span class="t">
           <span class="op">@</span><span class="nam">swagger_auto_schema</span
           ><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t101" class="pln">
-        <span class="n"><a href="#t101">101</a></span
+      <p id="t100" class="pln">
+        <span class="n"><a href="#t100">100</a></span
         ><span class="t">
           <span class="nam">request_body</span><span class="op">=</span
           ><span class="nam">SendingProfilePatchSerializer</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t102" class="pln">
-        <span class="n"><a href="#t102">102</a></span
+      <p id="t101" class="pln">
+        <span class="n"><a href="#t101">101</a></span
         ><span class="t">
           <span class="nam">responses</span><span class="op">=</span
           ><span class="op">{</span><span class="str">"202"</span
@@ -828,24 +820,24 @@
           ><span class="op">}</span><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t103" class="pln">
-        <span class="n"><a href="#t103">103</a></span
+      <p id="t102" class="pln">
+        <span class="n"><a href="#t102">102</a></span
         ><span class="t">
           <span class="nam">security</span><span class="op">=</span
           ><span class="op">[</span><span class="op">]</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t104" class="pln">
-        <span class="n"><a href="#t104">104</a></span
+      <p id="t103" class="pln">
+        <span class="n"><a href="#t103">103</a></span
         ><span class="t">
           <span class="nam">operation_id</span><span class="op">=</span
           ><span class="str">"Update and Patch single Sending Profile"</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t105" class="pln">
-        <span class="n"><a href="#t105">105</a></span
+      <p id="t104" class="pln">
+        <span class="n"><a href="#t104">104</a></span
         ><span class="t">
           <span class="nam">operation_description</span><span class="op">=</span
           ><span class="str"
@@ -854,13 +846,13 @@
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t106" class="pln">
-        <span class="n"><a href="#t106">106</a></span
+      <p id="t105" class="pln">
+        <span class="n"><a href="#t105">105</a></span
         ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t107" class="run">
-        <span class="n"><a href="#t107">107</a></span
+      <p id="t106" class="run">
+        <span class="n"><a href="#t106">106</a></span
         ><span class="t">
           <span class="key">def</span> <span class="nam">patch</span
           ><span class="op">(</span><span class="nam">self</span
@@ -869,27 +861,26 @@
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t108" class="pln">
-        <span class="n"><a href="#t108">108</a></span
+      <p id="t107" class="pln">
+        <span class="n"><a href="#t107">107</a></span
         ><span class="t">
           <span class="com"
             ># get the saved record and overlay with whatever was sent</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t109" class="mis show_mis">
-        <span class="n"><a href="#t109">109</a></span
+      <p id="t108" class="mis show_mis">
+        <span class="n"><a href="#t108">108</a></span
         ><span class="t">
           <span class="nam">sp</span> <span class="op">=</span>
           <span class="nam">campaign_manager</span><span class="op">.</span
-          ><span class="nam">get</span><span class="op">(</span
-          ><span class="str">"sending_profile"</span><span class="op">,</span>
-          <span class="nam">smtp_id</span><span class="op">=</span
+          ><span class="nam">get_sending_profile</span><span class="op">(</span
+          ><span class="nam">smtp_id</span><span class="op">=</span
           ><span class="nam">id</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t110" class="mis show_mis">
-        <span class="n"><a href="#t110">110</a></span
+      <p id="t109" class="mis show_mis">
+        <span class="n"><a href="#t109">109</a></span
         ><span class="t">
           <span class="nam">patch_data</span> <span class="op">=</span>
           <span class="nam">request</span><span class="op">.</span
@@ -898,12 +889,12 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t111" class="pln">
-        <span class="n"><a href="#t111">111</a></span
+      <p id="t110" class="pln">
+        <span class="n"><a href="#t110">110</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t112" class="mis show_mis">
-        <span class="n"><a href="#t112">112</a></span
+      <p id="t111" class="mis show_mis">
+        <span class="n"><a href="#t111">111</a></span
         ><span class="t">
           <span class="nam">sp</span><span class="op">.</span
           ><span class="nam">name</span> <span class="op">=</span>
@@ -915,8 +906,8 @@
           <span class="str">"name"</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t113" class="mis show_mis">
-        <span class="n"><a href="#t113">113</a></span
+      <p id="t112" class="mis show_mis">
+        <span class="n"><a href="#t112">112</a></span
         ><span class="t">
           <span class="nam">sp</span><span class="op">.</span
           ><span class="nam">interface_type</span> <span class="op">=</span>
@@ -925,8 +916,8 @@
           ><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t114" class="pln">
-        <span class="n"><a href="#t114">114</a></span
+      <p id="t113" class="pln">
+        <span class="n"><a href="#t113">113</a></span
         ><span class="t">
           <span class="nam">sp</span><span class="op">.</span
           ><span class="nam">interface_type</span><span class="op">,</span>
@@ -934,13 +925,13 @@
           <span class="str">"interface_type"</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t115" class="pln">
-        <span class="n"><a href="#t115">115</a></span
+      <p id="t114" class="pln">
+        <span class="n"><a href="#t114">114</a></span
         ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t116" class="mis show_mis">
-        <span class="n"><a href="#t116">116</a></span
+      <p id="t115" class="mis show_mis">
+        <span class="n"><a href="#t115">115</a></span
         ><span class="t">
           <span class="nam">sp</span><span class="op">.</span
           ><span class="nam">host</span> <span class="op">=</span>
@@ -952,8 +943,8 @@
           <span class="str">"host"</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t117" class="mis show_mis">
-        <span class="n"><a href="#t117">117</a></span
+      <p id="t116" class="mis show_mis">
+        <span class="n"><a href="#t116">116</a></span
         ><span class="t">
           <span class="nam">sp</span><span class="op">.</span
           ><span class="nam">username</span> <span class="op">=</span>
@@ -966,8 +957,8 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t118" class="mis show_mis">
-        <span class="n"><a href="#t118">118</a></span
+      <p id="t117" class="mis show_mis">
+        <span class="n"><a href="#t117">117</a></span
         ><span class="t">
           <span class="nam">sp</span><span class="op">.</span
           ><span class="nam">password</span> <span class="op">=</span>
@@ -980,8 +971,8 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t119" class="mis show_mis">
-        <span class="n"><a href="#t119">119</a></span
+      <p id="t118" class="mis show_mis">
+        <span class="n"><a href="#t118">118</a></span
         ><span class="t">
           <span class="nam">sp</span><span class="op">.</span
           ><span class="nam">ignore_cert_errors</span>
@@ -990,8 +981,8 @@
           ><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t120" class="pln">
-        <span class="n"><a href="#t120">120</a></span
+      <p id="t119" class="pln">
+        <span class="n"><a href="#t119">119</a></span
         ><span class="t">
           <span class="nam">sp</span><span class="op">.</span
           ><span class="nam">ignore_cert_errors</span><span class="op">,</span>
@@ -999,13 +990,13 @@
           <span class="str">"ignore_cert_errors"</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t121" class="pln">
-        <span class="n"><a href="#t121">121</a></span
+      <p id="t120" class="pln">
+        <span class="n"><a href="#t120">120</a></span
         ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t122" class="mis show_mis">
-        <span class="n"><a href="#t122">122</a></span
+      <p id="t121" class="mis show_mis">
+        <span class="n"><a href="#t121">121</a></span
         ><span class="t">
           <span class="nam">sp</span><span class="op">.</span
           ><span class="nam">from_address</span> <span class="op">=</span>
@@ -1014,8 +1005,8 @@
           ><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t123" class="pln">
-        <span class="n"><a href="#t123">123</a></span
+      <p id="t122" class="pln">
+        <span class="n"><a href="#t122">122</a></span
         ><span class="t">
           <span class="nam">sp</span><span class="op">.</span
           ><span class="nam">from_address</span><span class="op">,</span>
@@ -1023,13 +1014,13 @@
           <span class="str">"from_address"</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t124" class="pln">
-        <span class="n"><a href="#t124">124</a></span
+      <p id="t123" class="pln">
+        <span class="n"><a href="#t123">123</a></span
         ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t125" class="mis show_mis">
-        <span class="n"><a href="#t125">125</a></span
+      <p id="t124" class="mis show_mis">
+        <span class="n"><a href="#t124">124</a></span
         ><span class="t">
           <span class="nam">sp</span><span class="op">.</span
           ><span class="nam">headers</span> <span class="op">=</span>
@@ -1042,24 +1033,24 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t126" class="pln">
-        <span class="n"><a href="#t126">126</a></span
+      <p id="t125" class="pln">
+        <span class="n"><a href="#t125">125</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t127" class="mis show_mis">
-        <span class="n"><a href="#t127">127</a></span
+      <p id="t126" class="mis show_mis">
+        <span class="n"><a href="#t126">126</a></span
         ><span class="t">
           <span class="nam">campaign_manager</span><span class="op">.</span
           ><span class="nam">put_sending_profile</span><span class="op">(</span
           ><span class="nam">sp</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t128" class="pln">
-        <span class="n"><a href="#t128">128</a></span
+      <p id="t127" class="pln">
+        <span class="n"><a href="#t127">127</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t129" class="pln">
-        <span class="n"><a href="#t129">129</a></span
+      <p id="t128" class="pln">
+        <span class="n"><a href="#t128">128</a></span
         ><span class="t">
           <span class="com"
             ># get the new version from gophish to make sure we return the
@@ -1067,19 +1058,18 @@
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t130" class="mis show_mis">
-        <span class="n"><a href="#t130">130</a></span
+      <p id="t129" class="mis show_mis">
+        <span class="n"><a href="#t129">129</a></span
         ><span class="t">
           <span class="nam">sending_profile</span> <span class="op">=</span>
           <span class="nam">campaign_manager</span><span class="op">.</span
-          ><span class="nam">get</span><span class="op">(</span
-          ><span class="str">"sending_profile"</span><span class="op">,</span>
-          <span class="nam">smtp_id</span><span class="op">=</span
+          ><span class="nam">get_sending_profile</span><span class="op">(</span
+          ><span class="nam">smtp_id</span><span class="op">=</span
           ><span class="nam">id</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t131" class="mis show_mis">
-        <span class="n"><a href="#t131">131</a></span
+      <p id="t130" class="mis show_mis">
+        <span class="n"><a href="#t130">130</a></span
         ><span class="t">
           <span class="nam">serializer</span> <span class="op">=</span>
           <span class="nam">SendingProfileSerializer</span
@@ -1087,8 +1077,8 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t132" class="mis show_mis">
-        <span class="n"><a href="#t132">132</a></span
+      <p id="t131" class="mis show_mis">
+        <span class="n"><a href="#t131">131</a></span
         ><span class="t">
           <span class="key">return</span> <span class="nam">Response</span
           ><span class="op">(</span><span class="nam">serializer</span
@@ -1096,63 +1086,63 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t133" class="pln">
-        <span class="n"><a href="#t133">133</a></span
+      <p id="t132" class="pln">
+        <span class="n"><a href="#t132">132</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t134" class="pln">
-        <span class="n"><a href="#t134">134</a></span
+      <p id="t133" class="pln">
+        <span class="n"><a href="#t133">133</a></span
         ><span class="t"> <span class="str">"""</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t135" class="pln">
-        <span class="n"><a href="#t135">135</a></span
+      <p id="t134" class="pln">
+        <span class="n"><a href="#t134">134</a></span
         ><span class="t"
           ><span class="str"> This is the SendingProfileView APIView.</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t136" class="pln">
-        <span class="n"><a href="#t136">136</a></span
+      <p id="t135" class="pln">
+        <span class="n"><a href="#t135">135</a></span
         ><span class="t"
           ><span class="str">
             This handles the API for PATCHing a Sending Profile with id.</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t137" class="pln">
-        <span class="n"><a href="#t137">137</a></span
+      <p id="t136" class="pln">
+        <span class="n"><a href="#t136">136</a></span
         ><span class="t"
           ><span class="str"> https://localhost:3333/api/smtp/:id</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t138" class="pln">
-        <span class="n"><a href="#t138">138</a></span
+      <p id="t137" class="pln">
+        <span class="n"><a href="#t137">137</a></span
         ><span class="t"><span class="str"> """</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t139" class="pln">
-        <span class="n"><a href="#t139">139</a></span
+      <p id="t138" class="pln">
+        <span class="n"><a href="#t138">138</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t140" class="run">
-        <span class="n"><a href="#t140">140</a></span
+      <p id="t139" class="run">
+        <span class="n"><a href="#t139">139</a></span
         ><span class="t">
           <span class="op">@</span><span class="nam">swagger_auto_schema</span
           ><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t141" class="pln">
-        <span class="n"><a href="#t141">141</a></span
+      <p id="t140" class="pln">
+        <span class="n"><a href="#t140">140</a></span
         ><span class="t">
           <span class="nam">request_body</span><span class="op">=</span
           ><span class="nam">SendingProfileDeleteSerializer</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t142" class="pln">
-        <span class="n"><a href="#t142">142</a></span
+      <p id="t141" class="pln">
+        <span class="n"><a href="#t141">141</a></span
         ><span class="t">
           <span class="nam">responses</span><span class="op">=</span
           ><span class="op">{</span><span class="str">"202"</span
@@ -1163,24 +1153,24 @@
           ><span class="op">}</span><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t143" class="pln">
-        <span class="n"><a href="#t143">143</a></span
+      <p id="t142" class="pln">
+        <span class="n"><a href="#t142">142</a></span
         ><span class="t">
           <span class="nam">security</span><span class="op">=</span
           ><span class="op">[</span><span class="op">]</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t144" class="pln">
-        <span class="n"><a href="#t144">144</a></span
+      <p id="t143" class="pln">
+        <span class="n"><a href="#t143">143</a></span
         ><span class="t">
           <span class="nam">operation_id</span><span class="op">=</span
           ><span class="str">"Delete single Sending Profile"</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t145" class="pln">
-        <span class="n"><a href="#t145">145</a></span
+      <p id="t144" class="pln">
+        <span class="n"><a href="#t144">144</a></span
         ><span class="t">
           <span class="nam">operation_description</span><span class="op">=</span
           ><span class="str"
@@ -1189,13 +1179,13 @@
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t146" class="pln">
-        <span class="n"><a href="#t146">146</a></span
+      <p id="t145" class="pln">
+        <span class="n"><a href="#t145">145</a></span
         ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t147" class="run">
-        <span class="n"><a href="#t147">147</a></span
+      <p id="t146" class="run">
+        <span class="n"><a href="#t146">146</a></span
         ><span class="t">
           <span class="key">def</span> <span class="nam">delete</span
           ><span class="op">(</span><span class="nam">self</span
@@ -1204,19 +1194,19 @@
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t148" class="mis show_mis">
-        <span class="n"><a href="#t148">148</a></span
+      <p id="t147" class="mis show_mis">
+        <span class="n"><a href="#t147">147</a></span
         ><span class="t">
           <span class="nam">delete_response</span> <span class="op">=</span>
           <span class="nam">campaign_manager</span><span class="op">.</span
-          ><span class="nam">delete</span><span class="op">(</span
-          ><span class="str">"sending_profile"</span><span class="op">,</span>
-          <span class="nam">smtp_id</span><span class="op">=</span
-          ><span class="nam">id</span><span class="op">)</span>&nbsp;</span
+          ><span class="nam">delete_sending_profile</span
+          ><span class="op">(</span><span class="nam">smtp_id</span
+          ><span class="op">=</span><span class="nam">id</span
+          ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t149" class="mis show_mis">
-        <span class="n"><a href="#t149">149</a></span
+      <p id="t148" class="mis show_mis">
+        <span class="n"><a href="#t148">148</a></span
         ><span class="t">
           <span class="nam">serializer</span> <span class="op">=</span>
           <span class="nam">SendingProfileDeleteResponseSerializer</span
@@ -1224,8 +1214,8 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t150" class="mis show_mis">
-        <span class="n"><a href="#t150">150</a></span
+      <p id="t149" class="mis show_mis">
+        <span class="n"><a href="#t149">149</a></span
         ><span class="t">
           <span class="key">return</span> <span class="nam">Response</span
           ><span class="op">(</span><span class="nam">serializer</span
@@ -1236,12 +1226,12 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t151" class="pln">
-        <span class="n"><a href="#t151">151</a></span
+      <p id="t150" class="pln">
+        <span class="n"><a href="#t150">150</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t152" class="run">
-        <span class="n"><a href="#t152">152</a></span
+      <p id="t151" class="run">
+        <span class="n"><a href="#t151">151</a></span
         ><span class="t">
           <span class="key">def</span> <span class="nam">__setAttribute</span
           ><span class="op">(</span><span class="nam">self</span
@@ -1251,24 +1241,24 @@
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t153" class="mis show_mis">
-        <span class="n"><a href="#t153">153</a></span
+      <p id="t152" class="mis show_mis">
+        <span class="n"><a href="#t152">152</a></span
         ><span class="t">
           <span class="key">if</span> <span class="nam">attrName</span>
           <span class="key">in</span> <span class="nam">d</span
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t154" class="mis show_mis">
-        <span class="n"><a href="#t154">154</a></span
+      <p id="t153" class="mis show_mis">
+        <span class="n"><a href="#t153">153</a></span
         ><span class="t">
           <span class="key">return</span> <span class="nam">d</span
           ><span class="op">[</span><span class="nam">attrName</span
           ><span class="op">]</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t155" class="mis show_mis">
-        <span class="n"><a href="#t155">155</a></span
+      <p id="t154" class="mis show_mis">
+        <span class="n"><a href="#t154">154</a></span
         ><span class="t">
           <span class="key">return</span>
           <span class="nam">orig</span>&nbsp;</span
@@ -1280,8 +1270,8 @@
         <p>
           <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp;
           <a class="nav" href="https://coverage.readthedocs.io"
-            >coverage.py v5.2.1</a
-          >, created at 2020-09-08 12:28 -0600
+            >coverage.py v5.3</a
+          >, created at 2020-10-01 11:17 -0600
         </p>
       </div>
     </div>
