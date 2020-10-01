@@ -18,7 +18,6 @@ def test_get_client(mock_client):
 def test_s3(mock_client):
     os.environ["AWS_S3_IMAGE_BUCKET"] = "test_bucket"
     s3 = aws_utils.S3()
-    print(mock_client.call_args)
     mock_client.assert_called_with(service_name="s3")
     assert s3.image_bucket == "test_bucket"
 
@@ -27,3 +26,31 @@ def test_s3(mock_client):
     assert type(key) is str
     assert bucket == "test_bucket"
     assert url == f"https://s3.amazonaws.com/test_bucket/{key}"
+
+
+@mock.patch("boto3.client")
+def test_ses(mock_client):
+    ses = aws_utils.SES()
+    ses.send_message(
+        sender=fake.email(),
+        to=[fake.email()],
+        subject=fake.word(),
+        bcc=[fake.email()],
+        text=fake.paragraph(),
+        html=fake.paragraph(),
+        attachments=["src/static/img/cisa_logo.png"],
+        binary_attachments=[{"filename": "test", "data": fake.binary()}],
+    )
+
+    assert mock_client.call_count > 0
+
+
+@mock.patch("boto3.client")
+def test_sts(mock_client):
+    sts = aws_utils.STS()
+    mock_client.assert_called_with(service_name="sts")
+    sts.assume_role_client("s3", "testarn")
+    assert mock_client.mock_calls[1].kwargs == {
+        "RoleArn": "testarn",
+        "RoleSessionName": "s3_session",
+    }
