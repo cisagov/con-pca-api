@@ -21,10 +21,6 @@ from api.utils.db_utils import (
 
 from drf_yasg.utils import swagger_auto_schema
 
-import logging
-
-logger = logging.getLogger()
-
 
 class DHSContactListView(APIView):
     @swagger_auto_schema(
@@ -48,7 +44,7 @@ class DHSContactListView(APIView):
 
     @swagger_auto_schema(
         request_body=DHSContactPostSerializer,
-        responses={"201": DHSContactPostResponseSerializer, "400": "Bad Request"},
+        responses={"201": DHSContactPostResponseSerializer},
         security=[],
         operation_id="Create DHS Contact",
         operation_description="This handles creating a DHS Contact",
@@ -58,16 +54,13 @@ class DHSContactListView(APIView):
         resp = save_single(
             post_data, "dhs_contact", DHSContactModel, validate_dhs_contact
         )
-        logger.info(resp)
-        if "errors" in resp:
-            return Response(resp, status=status.HTTP_400_BAD_REQUEST)
         serializer = DHSContactPostResponseSerializer(resp)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class DHSContactView(APIView):
     @swagger_auto_schema(
-        responses={"200": DHSContactGetSerializer, "400": "Bad Request"},
+        responses={"200": DHSContactGetSerializer},
         security=[],
         operation_id="Get single dhs contact",
         operation_description="This handles the API for the Get a dhs contact with dhs_contact_uuid.",
@@ -96,13 +89,11 @@ class DHSContactView(APIView):
             model=DHSContactModel,
             validation_model=validate_dhs_contact,
         )
-        if "errors" in resp:
-            return Response(resp, status=status.HTTP_400_BAD_REQUEST)
         serializer = DHSContactGetSerializer(resp)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
     @swagger_auto_schema(
-        responses={"200": DHSContactDeleteResponseSerializer, "400": "Bad Request"},
+        responses={"202": DHSContactDeleteResponseSerializer},
         security=[],
         operation_id="Delete single dhs contact",
         operation_description="API for deleting a single dhs contact",
@@ -111,7 +102,5 @@ class DHSContactView(APIView):
         resp = delete_single(
             dhs_contact_uuid, "dhs_contact", DHSContactModel, validate_dhs_contact
         )
-        if "errors" in resp:
-            return Response(resp, status=status.HTTP_400_BAD_REQUEST)
         serializer = DHSContactDeleteResponseSerializer(resp)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
