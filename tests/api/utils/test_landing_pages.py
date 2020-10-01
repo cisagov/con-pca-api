@@ -7,10 +7,6 @@ from unittest import mock
 @mock.patch("pymongo.collection.Collection.update_one")
 def test_clear_and_set_default(mock_one, mock_many):
     landing_pages.clear_and_set_default("test")
-    print(dir(mock_one))
-    print(dir(mock_one.call_args))
-    print(mock_one.call_args.args)
-    print(mock_one.call_args)
     assert mock_one.call_args.args == (
         {"landing_page_uuid": "test"},
         {"$set": {"is_default_template": True}},

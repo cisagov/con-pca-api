@@ -60,7 +60,7 @@ def create_subscription_name(customer: dict):
 
 def calculate_subscription_start_end_date(start_date):
     """Calculates the start and end date for subscription from given start date."""
-    now = datetime.utcnow()
+    now = datetime.now()
 
     if not start_date:
         start_date = now.strftime("%Y-%m-%dT%H:%M:%S")
