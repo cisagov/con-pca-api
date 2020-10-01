@@ -4,7 +4,6 @@ from datetime import datetime, timedelta
 
 # Third-Party Libraries
 from faker import Faker
-import names
 
 
 def current_season():
@@ -48,8 +47,9 @@ def customer_spoof_email(customer_info):
     Returns:
         string: returns spoofed email with customer email domain.
     """
-    spoof_first_name = names.get_first_name()
-    spoof_last_name = names.get_last_name()
+    fake = Faker()
     _, customer_domain = customer_info["contact_list"][0]["email"].split("@")
-    spoof_email = "{}.{}@{}".format(spoof_first_name, spoof_last_name, customer_domain)
+    spoof_email = "{}.{}@{}".format(
+        fake.first_name().lower(), fake.last_name().lower(), customer_domain
+    )
     return spoof_email

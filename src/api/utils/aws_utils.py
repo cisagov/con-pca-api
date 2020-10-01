@@ -1,5 +1,4 @@
 # Standard Python Libraries
-import logging
 import os
 import uuid
 from config import settings
@@ -10,8 +9,6 @@ from email.mime.application import MIMEApplication
 
 # Third-Party Libraries
 import boto3
-
-logger = logging.getLogger()
 
 
 class AWS:
@@ -26,7 +23,6 @@ class S3(AWS):
 
     def upload_fileobj_image(self, data):
         key = f"{uuid.uuid4().hex}.png"
-        logger.info(f"data={data} bucket={self.image_bucket} key={key}")
         self.client.upload_fileobj(data, self.image_bucket, key)
         host = "https://s3.amazonaws.com"
         url = f"{host}/{self.image_bucket}/{key}"
@@ -104,7 +100,6 @@ class SES(AWS):
                 msg.attach(part)
 
         for ba in binary_attachments or []:
-            logging.info("Adding binary attachment")
             part = MIMEApplication(ba["data"], _subtype="pdf")
             part.add_header(
                 "Content-Disposition", "attachment", filename=ba["filename"]
