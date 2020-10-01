@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=emulateIE7" />
-    <title>Coverage for src\api\utils\customer\customers.py: 57%</title>
+    <title>Coverage for src\api\utils\customer\customers.py: 100%</title>
     <link rel="stylesheet" href="style.css" type="text/css" />
     <script type="text/javascript" src="jquery.min.js"></script>
     <script type="text/javascript" src="jquery.hotkeys.js"></script>
@@ -18,7 +18,7 @@
       <div class="content">
         <h1>
           Coverage for <b>src\api\utils\customer\customers.py</b> :
-          <span class="pc_cov">57%</span>
+          <span class="pc_cov">100%</span>
         </h1>
         <img
           id="keyboard_icon"
@@ -26,20 +26,20 @@
           alt="Show keyboard shortcuts"
         />
         <h2 class="stats">
-          7 statements &nbsp;
+          13 statements &nbsp;
           <button
             type="button"
             class="run shortkey_r button_toggle_run"
             title="Toggle lines run"
           >
-            4 run
+            13 run
           </button>
           <button
             type="button"
             class="mis show_mis shortkey_m button_toggle_mis"
             title="Toggle lines missing"
           >
-            3 missing
+            0 missing
           </button>
           <button
             type="button"
@@ -161,7 +161,7 @@
         ><span class="t"><span class="str"> """</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t15" class="mis show_mis">
+      <p id="t15" class="run">
         <span class="n"><a href="#t15">15</a></span
         ><span class="t">
           <span class="key">return</span> <span class="nam">db</span
@@ -219,66 +219,83 @@
         ><span class="t"><span class="str"> """</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t24" class="mis show_mis">
+      <p id="t24" class="run">
         <span class="n"><a href="#t24">24</a></span
         ><span class="t">
-          <span class="nam">customer_full_address</span>
-          <span class="op">=</span>
-          <span class="str">"{} \n {} \n {}, {}, {}"</span
-          ><span class="op">.</span><span class="nam">format</span
-          ><span class="op">(</span>&nbsp;</span
+          <span class="nam">full_address</span> <span class="op">=</span>
+          <span class="op">[</span><span class="op">]</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t25" class="pln">
+      <p id="t25" class="run">
         <span class="n"><a href="#t25">25</a></span
         ><span class="t">
-          <span class="nam">customer_info</span><span class="op">[</span
+          <span class="nam">full_address</span><span class="op">.</span
+          ><span class="nam">append</span><span class="op">(</span
+          ><span class="nam">customer_info</span><span class="op">[</span
           ><span class="str">"address_1"</span><span class="op">]</span
-          ><span class="op">,</span>&nbsp;</span
+          ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t26" class="pln">
+      <p id="t26" class="run">
         <span class="n"><a href="#t26">26</a></span
         ><span class="t">
-          <span class="nam">customer_info</span><span class="op">[</span
-          ><span class="str">"address_2"</span><span class="op">]</span
-          ><span class="op">,</span>&nbsp;</span
+          <span class="key">if</span> <span class="nam">customer_info</span
+          ><span class="op">.</span><span class="nam">get</span
+          ><span class="op">(</span><span class="str">"address_2"</span
+          ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t27" class="pln">
+      <p id="t27" class="run">
         <span class="n"><a href="#t27">27</a></span
         ><span class="t">
-          <span class="nam">customer_info</span><span class="op">[</span
-          ><span class="str">"city"</span><span class="op">]</span
-          ><span class="op">,</span>&nbsp;</span
+          <span class="nam">full_address</span><span class="op">.</span
+          ><span class="nam">append</span><span class="op">(</span
+          ><span class="nam">customer_info</span><span class="op">[</span
+          ><span class="str">"address_2"</span><span class="op">]</span
+          ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t28" class="pln">
+      <p id="t28" class="run">
         <span class="n"><a href="#t28">28</a></span
         ><span class="t">
-          <span class="nam">customer_info</span><span class="op">[</span
-          ><span class="str">"state"</span><span class="op">]</span
-          ><span class="op">,</span>&nbsp;</span
+          <span class="nam">full_address</span><span class="op">.</span
+          ><span class="nam">append</span><span class="op">(</span
+          ><span class="nam">customer_info</span><span class="op">[</span
+          ><span class="str">"city"</span><span class="op">]</span
+          ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t29" class="pln">
+      <p id="t29" class="run">
         <span class="n"><a href="#t29">29</a></span
         ><span class="t">
-          <span class="nam">customer_info</span><span class="op">[</span
-          ><span class="str">"zip_code"</span><span class="op">]</span
-          ><span class="op">,</span>&nbsp;</span
+          <span class="nam">full_address</span><span class="op">.</span
+          ><span class="nam">append</span><span class="op">(</span
+          ><span class="nam">customer_info</span><span class="op">[</span
+          ><span class="str">"state"</span><span class="op">]</span
+          ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t30" class="pln">
+      <p id="t30" class="run">
         <span class="n"><a href="#t30">30</a></span
-        ><span class="t"> <span class="op">)</span>&nbsp;</span
+        ><span class="t">
+          <span class="nam">full_address</span><span class="op">.</span
+          ><span class="nam">append</span><span class="op">(</span
+          ><span class="nam">customer_info</span><span class="op">[</span
+          ><span class="str">"zip_code"</span><span class="op">]</span
+          ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t31" class="mis show_mis">
+      <p id="t31" class="pln">
         <span class="n"><a href="#t31">31</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t32" class="run">
+        <span class="n"><a href="#t32">32</a></span
         ><span class="t">
-          <span class="key">return</span>
-          <span class="nam">customer_full_address</span>&nbsp;</span
+          <span class="key">return</span> <span class="str">"\n"</span
+          ><span class="op">.</span><span class="nam">join</span
+          ><span class="op">(</span><span class="nam">full_address</span
+          ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
     </div>
@@ -287,8 +304,8 @@
         <p>
           <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp;
           <a class="nav" href="https://coverage.readthedocs.io"
-            >coverage.py v5.2.1</a
-          >, created at 2020-09-08 12:28 -0600
+            >coverage.py v5.3</a
+          >, created at 2020-10-01 11:17 -0600
         </p>
       </div>
     </div>

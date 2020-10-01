@@ -444,8 +444,7 @@
       <p id="t54" class="mis show_mis">
         <span class="n"><a href="#t54">54</a></span
         ><span class="t">
-          <span class="nam">emails_reported_list</span
-          ><span class="op">,</span> <span class="nam">_</span>
+          <span class="nam">emails_reported_list</span>
           <span class="op">=</span> <span class="nam">get_reported_emails</span
           ><span class="op">(</span><span class="nam">subscription</span
           ><span class="op">)</span>&nbsp;</span
@@ -637,7 +636,6 @@
       <p id="t78" class="mis show_mis">
         <span class="n"><a href="#t78">78</a></span
         ><span class="t">
-          <span class="nam">subscription</span> <span class="op">=</span>
           <span class="nam">override_total_reported</span
           ><span class="op">(</span><span class="nam">subscription</span
           ><span class="op">,</span> <span class="nam">data</span
@@ -653,7 +651,6 @@
       <p id="t80" class="mis show_mis">
         <span class="n"><a href="#t80">80</a></span
         ><span class="t">
-          <span class="nam">subscription</span> <span class="op">=</span>
           <span class="nam">override_total_reported</span
           ><span class="op">(</span><span class="nam">subscription</span
           ><span class="op">,</span> <span class="nam">data</span
@@ -663,67 +660,40 @@
       <p id="t81" class="mis show_mis">
         <span class="n"><a href="#t81">81</a></span
         ><span class="t">
-          <span class="nam">subscription</span><span class="op">[</span
-          ><span class="str">"gophish_campaign_list"</span
-          ><span class="op">]</span> <span class="op">=</span>
           <span class="nam">delete_reported_emails</span
-          ><span class="op">(</span>&nbsp;</span
+          ><span class="op">(</span><span class="nam">subscription</span
+          ><span class="op">,</span> <span class="nam">data</span
+          ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t82" class="pln">
+      <p id="t82" class="mis show_mis">
         <span class="n"><a href="#t82">82</a></span
         ><span class="t">
-          <span class="nam">subscription</span><span class="op">,</span>
-          <span class="nam">data</span>&nbsp;</span
+          <span class="nam">update_reported_emails</span
+          ><span class="op">(</span><span class="nam">subscription</span
+          ><span class="op">,</span> <span class="nam">data</span
+          ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t83" class="pln">
         <span class="n"><a href="#t83">83</a></span
-        ><span class="t"> <span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
+        ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
       <p id="t84" class="mis show_mis">
         <span class="n"><a href="#t84">84</a></span
         ><span class="t">
-          <span class="nam">subscription</span><span class="op">[</span
-          ><span class="str">"gophish_campaign_list"</span
-          ><span class="op">]</span> <span class="op">=</span>
-          <span class="nam">update_reported_emails</span
-          ><span class="op">(</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t85" class="pln">
-        <span class="n"><a href="#t85">85</a></span
-        ><span class="t">
-          <span class="nam">subscription</span><span class="op">,</span>
-          <span class="nam">data</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t86" class="pln">
-        <span class="n"><a href="#t86">86</a></span
-        ><span class="t"> <span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t87" class="pln">
-        <span class="n"><a href="#t87">87</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t88" class="mis show_mis">
-        <span class="n"><a href="#t88">88</a></span
-        ><span class="t">
-          <span class="nam">emails_reported_list</span
-          ><span class="op">,</span> <span class="nam">subscription</span>
+          <span class="nam">emails_reported_list</span>
           <span class="op">=</span> <span class="nam">get_reported_emails</span
           ><span class="op">(</span><span class="nam">subscription</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t89" class="pln">
-        <span class="n"><a href="#t89">89</a></span
+      <p id="t85" class="pln">
+        <span class="n"><a href="#t85">85</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t90" class="mis show_mis">
-        <span class="n"><a href="#t90">90</a></span
+      <p id="t86" class="mis show_mis">
+        <span class="n"><a href="#t86">86</a></span
         ><span class="t">
           <span class="nam">serialized_data</span> <span class="op">=</span>
           <span class="nam">SubscriptionPatchSerializer</span
@@ -731,69 +701,69 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t91" class="mis show_mis">
-        <span class="n"><a href="#t91">91</a></span
+      <p id="t87" class="mis show_mis">
+        <span class="n"><a href="#t87">87</a></span
         ><span class="t">
           <span class="nam">updated_response</span> <span class="op">=</span>
           <span class="nam">update_single</span
           ><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t92" class="pln">
-        <span class="n"><a href="#t92">92</a></span
+      <p id="t88" class="pln">
+        <span class="n"><a href="#t88">88</a></span
         ><span class="t">
           <span class="nam">uuid</span><span class="op">=</span
           ><span class="nam">subscription_uuid</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t93" class="pln">
-        <span class="n"><a href="#t93">93</a></span
+      <p id="t89" class="pln">
+        <span class="n"><a href="#t89">89</a></span
         ><span class="t">
           <span class="nam">put_data</span><span class="op">=</span
           ><span class="nam">serialized_data</span><span class="op">.</span
           ><span class="nam">data</span><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t94" class="pln">
-        <span class="n"><a href="#t94">94</a></span
+      <p id="t90" class="pln">
+        <span class="n"><a href="#t90">90</a></span
         ><span class="t">
           <span class="nam">collection</span><span class="op">=</span
           ><span class="str">"subscription"</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t95" class="pln">
-        <span class="n"><a href="#t95">95</a></span
+      <p id="t91" class="pln">
+        <span class="n"><a href="#t91">91</a></span
         ><span class="t">
           <span class="nam">model</span><span class="op">=</span
           ><span class="nam">SubscriptionModel</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t96" class="pln">
-        <span class="n"><a href="#t96">96</a></span
+      <p id="t92" class="pln">
+        <span class="n"><a href="#t92">92</a></span
         ><span class="t">
           <span class="nam">validation_model</span><span class="op">=</span
           ><span class="nam">validate_subscription</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t97" class="pln">
-        <span class="n"><a href="#t97">97</a></span
+      <p id="t93" class="pln">
+        <span class="n"><a href="#t93">93</a></span
         ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t98" class="mis show_mis">
-        <span class="n"><a href="#t98">98</a></span
+      <p id="t94" class="mis show_mis">
+        <span class="n"><a href="#t94">94</a></span
         ><span class="t">
           <span class="key">if</span> <span class="str">"errors"</span>
           <span class="key">in</span> <span class="nam">updated_response</span
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t99" class="mis show_mis">
-        <span class="n"><a href="#t99">99</a></span
+      <p id="t95" class="mis show_mis">
+        <span class="n"><a href="#t95">95</a></span
         ><span class="t">
           <span class="key">return</span> <span class="nam">Response</span
           ><span class="op">(</span><span class="nam">updated_response</span
@@ -803,12 +773,12 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t100" class="pln">
-        <span class="n"><a href="#t100">100</a></span
+      <p id="t96" class="pln">
+        <span class="n"><a href="#t96">96</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t101" class="mis show_mis">
-        <span class="n"><a href="#t101">101</a></span
+      <p id="t97" class="mis show_mis">
+        <span class="n"><a href="#t97">97</a></span
         ><span class="t">
           <span class="nam">serializer</span> <span class="op">=</span>
           <span class="nam">CycleEmailReportedListSerializer</span
@@ -818,8 +788,8 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t102" class="mis show_mis">
-        <span class="n"><a href="#t102">102</a></span
+      <p id="t98" class="mis show_mis">
+        <span class="n"><a href="#t98">98</a></span
         ><span class="t">
           <span class="key">return</span> <span class="nam">Response</span
           ><span class="op">(</span><span class="nam">serializer</span
@@ -836,8 +806,8 @@
         <p>
           <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp;
           <a class="nav" href="https://coverage.readthedocs.io"
-            >coverage.py v5.2.1</a
-          >, created at 2020-09-08 12:28 -0600
+            >coverage.py v5.3</a
+          >, created at 2020-10-01 11:17 -0600
         </p>
       </div>
     </div>

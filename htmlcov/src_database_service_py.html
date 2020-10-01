@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=emulateIE7" />
-    <title>Coverage for src\database\service.py: 39%</title>
+    <title>Coverage for src\database\service.py: 37%</title>
     <link rel="stylesheet" href="style.css" type="text/css" />
     <script type="text/javascript" src="jquery.min.js"></script>
     <script type="text/javascript" src="jquery.hotkeys.js"></script>
@@ -18,7 +18,7 @@
       <div class="content">
         <h1>
           Coverage for <b>src\database\service.py</b> :
-          <span class="pc_cov">39%</span>
+          <span class="pc_cov">37%</span>
         </h1>
         <img
           id="keyboard_icon"
@@ -26,7 +26,7 @@
           alt="Show keyboard shortcuts"
         />
         <h2 class="stats">
-          33 statements &nbsp;
+          35 statements &nbsp;
           <button
             type="button"
             class="run shortkey_r button_toggle_run"
@@ -39,7 +39,7 @@
             class="mis show_mis shortkey_m button_toggle_mis"
             title="Toggle lines missing"
           >
-            20 missing
+            22 missing
           </button>
           <button
             type="button"
@@ -757,21 +757,30 @@
       <p id="t100" class="mis show_mis">
         <span class="n"><a href="#t100">100</a></span
         ><span class="t">
-          <span class="key">return</span> <span class="key">await</span>
-          <span class="nam">self</span><span class="op">.</span
-          ><span class="nam">service</span><span class="op">.</span
-          ><span class="nam">update_nested</span><span class="op">(</span
-          ><span class="nam">uuid</span><span class="op">,</span>
-          <span class="nam">to_update</span><span class="op">,</span>
-          <span class="nam">params</span><span class="op">)</span>&nbsp;</span
+          <span class="nam">resp</span> <span class="op">=</span>
+          <span class="key">await</span> <span class="nam">self</span
+          ><span class="op">.</span><span class="nam">service</span
+          ><span class="op">.</span><span class="nam">update_nested</span
+          ><span class="op">(</span><span class="nam">uuid</span
+          ><span class="op">,</span> <span class="nam">to_update</span
+          ><span class="op">,</span> <span class="nam">params</span
+          ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t101" class="pln">
+      <p id="t101" class="mis show_mis">
         <span class="n"><a href="#t101">101</a></span
+        ><span class="t">
+          <span class="key">return</span> <span class="nam">resp</span
+          ><span class="op">.</span
+          ><span class="nam">raw_result</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t102" class="pln">
+        <span class="n"><a href="#t102">102</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t102" class="run">
-        <span class="n"><a href="#t102">102</a></span
+      <p id="t103" class="run">
+        <span class="n"><a href="#t103">103</a></span
         ><span class="t">
           <span class="key">async</span> <span class="key">def</span>
           <span class="nam">push_nested_item</span><span class="op">(</span
@@ -783,22 +792,22 @@
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t103" class="pln">
-        <span class="n"><a href="#t103">103</a></span
-        ><span class="t"> <span class="str">"""</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
       <p id="t104" class="pln">
         <span class="n"><a href="#t104">104</a></span
-        ><span class="t"><span class="str"> Push</span>&nbsp;</span
+        ><span class="t"> <span class="str">"""</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t105" class="pln">
         <span class="n"><a href="#t105">105</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
+        ><span class="t"><span class="str"> Push</span>&nbsp;</span
+        ><span class="r"></span>
       </p>
       <p id="t106" class="pln">
         <span class="n"><a href="#t106">106</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t107" class="pln">
+        <span class="n"><a href="#t107">107</a></span
         ><span class="t"
           ><span class="str">
             Given a json object, it will add that object to an array in the
@@ -806,29 +815,38 @@
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t107" class="pln">
-        <span class="n"><a href="#t107">107</a></span
+      <p id="t108" class="pln">
+        <span class="n"><a href="#t108">108</a></span
         ><span class="t"><span class="str"> """</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t108" class="mis show_mis">
-        <span class="n"><a href="#t108">108</a></span
+      <p id="t109" class="mis show_mis">
+        <span class="n"><a href="#t109">109</a></span
         ><span class="t">
-          <span class="key">return</span> <span class="key">await</span>
-          <span class="nam">self</span><span class="op">.</span
-          ><span class="nam">service</span><span class="op">.</span
-          ><span class="nam">push_nested_item</span><span class="op">(</span
-          ><span class="nam">uuid</span><span class="op">,</span>
-          <span class="nam">item</span><span class="op">,</span>
-          <span class="nam">params</span><span class="op">)</span>&nbsp;</span
+          <span class="nam">resp</span> <span class="op">=</span>
+          <span class="key">await</span> <span class="nam">self</span
+          ><span class="op">.</span><span class="nam">service</span
+          ><span class="op">.</span><span class="nam">push_nested_item</span
+          ><span class="op">(</span><span class="nam">uuid</span
+          ><span class="op">,</span> <span class="nam">item</span
+          ><span class="op">,</span> <span class="nam">params</span
+          ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t109" class="pln">
-        <span class="n"><a href="#t109">109</a></span
+      <p id="t110" class="mis show_mis">
+        <span class="n"><a href="#t110">110</a></span
+        ><span class="t">
+          <span class="key">return</span> <span class="nam">resp</span
+          ><span class="op">.</span
+          ><span class="nam">raw_result</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t111" class="pln">
+        <span class="n"><a href="#t111">111</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t110" class="run">
-        <span class="n"><a href="#t110">110</a></span
+      <p id="t112" class="run">
+        <span class="n"><a href="#t112">112</a></span
         ><span class="t">
           <span class="key">async</span> <span class="key">def</span>
           <span class="nam">delete</span><span class="op">(</span
@@ -837,42 +855,42 @@
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t111" class="pln">
-        <span class="n"><a href="#t111">111</a></span
+      <p id="t113" class="pln">
+        <span class="n"><a href="#t113">113</a></span
         ><span class="t"> <span class="str">"""</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t112" class="pln">
-        <span class="n"><a href="#t112">112</a></span
+      <p id="t114" class="pln">
+        <span class="n"><a href="#t114">114</a></span
         ><span class="t"><span class="str"> Delete.</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t113" class="pln">
-        <span class="n"><a href="#t113">113</a></span
+      <p id="t115" class="pln">
+        <span class="n"><a href="#t115">115</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t114" class="pln">
-        <span class="n"><a href="#t114">114</a></span
+      <p id="t116" class="pln">
+        <span class="n"><a href="#t116">116</a></span
         ><span class="t"
           ><span class="str"> Given a uuid of object deleteted</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t115" class="pln">
-        <span class="n"><a href="#t115">115</a></span
+      <p id="t117" class="pln">
+        <span class="n"><a href="#t117">117</a></span
         ><span class="t"
           ><span class="str">
             Returns bool of acknowledged of object being deleted.</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t116" class="pln">
-        <span class="n"><a href="#t116">116</a></span
+      <p id="t118" class="pln">
+        <span class="n"><a href="#t118">118</a></span
         ><span class="t"><span class="str"> """</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t117" class="mis show_mis">
-        <span class="n"><a href="#t117">117</a></span
+      <p id="t119" class="mis show_mis">
+        <span class="n"><a href="#t119">119</a></span
         ><span class="t">
           <span class="key">return</span> <span class="key">await</span>
           <span class="nam">self</span><span class="op">.</span
@@ -887,8 +905,8 @@
         <p>
           <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp;
           <a class="nav" href="https://coverage.readthedocs.io"
-            >coverage.py v5.2.1</a
-          >, created at 2020-09-08 12:28 -0600
+            >coverage.py v5.3</a
+          >, created at 2020-10-01 11:17 -0600
         </p>
       </div>
     </div>
