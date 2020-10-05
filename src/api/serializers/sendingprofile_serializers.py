@@ -68,7 +68,6 @@ class SendingProfileDeleteSerializer(serializers.Serializer):
 
 
 class SendingProfileDeleteResponseSerializer(serializers.Serializer):
-    """
-    """
+    """"""
 
     id = serializers.IntegerField()

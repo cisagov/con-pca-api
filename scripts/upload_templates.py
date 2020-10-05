@@ -63,7 +63,9 @@ for new_template in new_templates:
 
     else:
         resp = requests.post(
-            f"{args.url}/api/v1/templates/", headers=headers, json=new_template,
+            f"{args.url}/api/v1/templates/",
+            headers=headers,
+            json=new_template,
         )
         additions += 1
 

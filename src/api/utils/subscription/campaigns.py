@@ -55,7 +55,8 @@ def create_campaign(subscription, sub_level, landing_page, cycle_uuid):
     gophish_campaigns = []
     if subscription["stagger_emails"]:
         date_list = get_staggered_dates_in_range(
-            sub_level["start_date"], len(sub_level["template_targets"]),
+            sub_level["start_date"],
+            len(sub_level["template_targets"]),
         )
     else:
         date_list = []

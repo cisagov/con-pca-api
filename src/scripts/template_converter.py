@@ -55,7 +55,11 @@ CUSTOMER_PARAMS = {
         "[Customer Location ex. Town of...]",
         "[CUST_LOCATION/NETWORK]",
     ],
-    "state": ["[State]", "[State or Entity]", "[Entity or State]",],
+    "state": [
+        "[State]",
+        "[State or Entity]",
+        "[Entity or State]",
+    ],
     "date": [
         "[DATE]",
         "[CAMPAIGN END DATE, YEAR]",
@@ -74,7 +78,10 @@ CUSTOMER_PARAMS = {
     "year": ["<year>", "<Year>", "[CAMPAIGN END DATE, YEAR]", "[Year]", "[YEAR]"],
     "month": ["[Month]", "[Month Year of Campaign]", "[MONTH]", "<Month>"],
     "day": ["<day>"],
-    "season": ["[Season]", "[Select Summer/Spring/Fall/Winter]",],
+    "season": [
+        "[Season]",
+        "[Select Summer/Spring/Fall/Winter]",
+    ],
     "event": [
         "[list relevant weather event]",
         "[APPLICABLE EVENT]",
@@ -124,7 +131,10 @@ GOPHISH_PARAMS = {
         "[fakename]",
         "[MADE UP NAME]",
     ],
-    "target": ["%To_Name%", "%To%",],
+    "target": [
+        "%To_Name%",
+        "%To%",
+    ],
 }
 
 
@@ -297,8 +307,14 @@ def main(argv):
     print("Now saving new json file...")
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    output_file = os.path.join(current_dir, "data/reformated_template_data.json",)
-    tag_file = os.path.join(current_dir, "data/tag_file.json",)
+    output_file = os.path.join(
+        current_dir,
+        "data/reformated_template_data.json",
+    )
+    tag_file = os.path.join(
+        current_dir,
+        "data/tag_file.json",
+    )
 
     print("writting values to file: {}...".format(output_file))
 

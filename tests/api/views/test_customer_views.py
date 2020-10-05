@@ -130,7 +130,8 @@ def test_customer_view_patch(client):
     with mock.patch("api.utils.db_utils.update_single") as mock_update:
         mock_update.return_value = get_customer()
         result = client.patch(
-            f"/api/v1/customer/{uuid}/", json={"address_1": str(fake.street_address())},
+            f"/api/v1/customer/{uuid}/",
+            json={"address_1": str(fake.street_address())},
         )
         assert mock_update.called
         assert result.status_code == 202
@@ -138,7 +139,8 @@ def test_customer_view_patch(client):
     with mock.patch("api.utils.db_utils.update_single") as mock_update:
         mock_update.return_value = {"errors": "test error"}
         result = client.patch(
-            f"/api/v1/customer/{uuid}/", json={"address_1": str(fake.street_address())},
+            f"/api/v1/customer/{uuid}/",
+            json={"address_1": str(fake.street_address())},
         )
         assert mock_update.called
         assert result.status_code == 400

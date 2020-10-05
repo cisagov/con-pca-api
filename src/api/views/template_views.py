@@ -281,12 +281,14 @@ class TagsView(APIView):
 
         if not check_tag_format(post_data["tag"]):
             return Response(
-                {"error": "incorrect tag format"}, status=status.HTTP_400_BAD_REQUEST,
+                {"error": "incorrect tag format"},
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         if exists({"tag": post_data["tag"]}, "tag_definition", TagModel, validate_tag):
             return Response(
-                {"error": "Tag already exists"}, status=status.HTTP_409_CONFLICT,
+                {"error": "Tag already exists"},
+                status=status.HTTP_409_CONFLICT,
             )
 
         created_response = save_single(

@@ -72,7 +72,10 @@ class ReportsView(APIView):
         }
 
         template_list = get_list(
-            parameters, "template", TemplateModel, validate_template,
+            parameters,
+            "template",
+            TemplateModel,
+            validate_template,
         )
 
         # boil it all down to a template name and a score in one object
@@ -202,7 +205,11 @@ def cycle_report_email_view(request, subscription_uuid, cycle):
 def cycle_reports_pdf_view(request, subscription_uuid, cycle):
     """Cycle_reports_pdf_view."""
     return FileResponse(
-        download_pdf("cycle", subscription_uuid, cycle,),
+        download_pdf(
+            "cycle",
+            subscription_uuid,
+            cycle,
+        ),
         as_attachment=True,
         filename="cycle_subscription_report.pdf",
     )
@@ -219,7 +226,11 @@ def yearly_report_email_view(request, subscription_uuid, cycle):
 def yearly_reports_pdf_view(request, subscription_uuid, cycle):
     """Yearly_reports_pdf_view."""
     return FileResponse(
-        download_pdf("yearly", subscription_uuid, cycle,),
+        download_pdf(
+            "yearly",
+            subscription_uuid,
+            cycle,
+        ),
         as_attachment=True,
         filename="yearly_subscription_report.pdf",
     )

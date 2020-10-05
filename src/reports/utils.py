@@ -1263,7 +1263,10 @@ def get_stats_low_med_high_by_level(subscription_stats):
 
 def get_relevant_recommendations(subscription_stats):
     recommendations_list = get_list(
-        None, "recommendations", RecommendationsModel, validate_recommendations,
+        None,
+        "recommendations",
+        RecommendationsModel,
+        validate_recommendations,
     )
     if not recommendations_list:
         return {}

@@ -301,7 +301,9 @@ class MonthlyReportsView(APIView):
         )
 
         customer_address_2 = """{}, {} {} USA""".format(
-            customer.get("city"), customer.get("state"), customer.get("zip_code"),
+            customer.get("city"),
+            customer.get("state"),
+            customer.get("zip_code"),
         )
 
         dhs_contact_name = "{} {}".format(

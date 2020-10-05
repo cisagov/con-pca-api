@@ -149,8 +149,16 @@ urlpatterns = [
         template_views.TemplateStopView.as_view(),
         name="template_stop_api",
     ),
-    path("v1/tags/", template_views.TagsView.as_view(), name="tags_list_api",),
-    path("v1/tag/<tag_uuid>/", template_views.TagView.as_view(), name="tags_get_api",),
+    path(
+        "v1/tags/",
+        template_views.TagsView.as_view(),
+        name="tags_list_api",
+    ),
+    path(
+        "v1/tag/<tag_uuid>/",
+        template_views.TagView.as_view(),
+        name="tags_get_api",
+    ),
     path(
         "v1/campaigns/", campaign_views.CampaignListView.as_view(), name="campaign_list"
     ),
@@ -184,7 +192,11 @@ urlpatterns = [
         webhook_views.IncomingWebhookView.as_view(),
         name="inbound_webhook_api",
     ),
-    path("v1/imageupload/", image_views.ImageView.as_view(), name="image_upload",),
+    path(
+        "v1/imageupload/",
+        image_views.ImageView.as_view(),
+        name="image_upload",
+    ),
     path(
         "v1/sectorindustry/",
         customer_views.SectorIndustryView.as_view(),

@@ -27,7 +27,9 @@ class ImageView(APIView):
     def post(self, request, format=None):
         """Post method."""
         s3 = S3()
-        key, bucket, url = s3.upload_fileobj_image(request.data["file"],)
+        key, bucket, url = s3.upload_fileobj_image(
+            request.data["file"],
+        )
 
         result = {
             "status": "true",

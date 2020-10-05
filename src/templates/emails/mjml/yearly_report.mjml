@@ -2,7 +2,6 @@
   <mj-body>
     <mj-section>
       <mj-column>
-
         <mj-image width="100px" src="cid:cisa_logo.png"></mj-image>
 
         <mj-divider border-color="#1B2352"></mj-divider>
@@ -12,9 +11,8 @@
         </mj-text>
 
         <mj-text font-size="20px" color="#1B2352" font-family="helvetica">
-          Thank you for participating in the CISA Phishing
-          Subscription Service Con-PCA. Attached is your yearly
-          phishing report for your review.
+          Thank you for participating in the CISA Phishing Subscription Service
+          Con-PCA. Attached is your yearly phishing report for your review.
         </mj-text>
         <mj-text font-size="20px" color="#1B2352" font-family="helvetica">
           In the interests of security and efficiency, please respond to your

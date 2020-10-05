@@ -142,7 +142,10 @@ def start_subscription(data=None, subscription_uuid=None, new_cycle=False):
         subscription["cycles"] = []
     subscription["cycles"].append(
         get_subscription_cycles(
-            new_gophish_campaigns, start_date, end_date, cycle_uuid,
+            new_gophish_campaigns,
+            start_date,
+            end_date,
+            cycle_uuid,
         )[0]
     )
 

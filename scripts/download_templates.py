@@ -20,7 +20,8 @@ parser.add_argument(
 args = parser.parse_args()
 
 resp = requests.get(
-    f"{args.url}/api/v1/templates/", headers={"Authorization": f"Bearer {args.token}"},
+    f"{args.url}/api/v1/templates/",
+    headers={"Authorization": f"Bearer {args.token}"},
 )
 
 with open(args.outfile, "w") as f:

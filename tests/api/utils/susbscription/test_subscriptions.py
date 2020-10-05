@@ -75,7 +75,10 @@ def test_create_subscription_name():
         assert result == "test_3"
         assert mocked_get.called
 
-    with mock.patch("api.utils.db_utils.get_list", return_value=[],) as mocked_get:
+    with mock.patch(
+        "api.utils.db_utils.get_list",
+        return_value=[],
+    ) as mocked_get:
         customer = {"customer_uuid": "1", "identifier": "test"}
         result = subscriptions.create_subscription_name(customer)
         assert result == "test_1"
