@@ -96,7 +96,10 @@ class SystemReportsView(APIView):
                 append_timeline_moment(unique_moment, timeline_item_summary)
             stats, time_aggregate = generate_campaign_statistics(timeline_item_summary)
             all_stats.append(
-                {"campaign_stats": stats, "times": time_aggregate,}
+                {
+                    "campaign_stats": stats,
+                    "times": time_aggregate,
+                }
             )
             timeline_item_summary = []
 

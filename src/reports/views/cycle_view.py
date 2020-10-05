@@ -303,7 +303,10 @@ class CycleReportsView(APIView):
         recommendation_uuids = get_relevant_recommendations(subscription_stats)
 
         _recomendations = get_list(
-            None, "recommendations", RecommendationsModel, validate_recommendations,
+            None,
+            "recommendations",
+            RecommendationsModel,
+            validate_recommendations,
         )
         recomendations = []
         for rec in _recomendations:

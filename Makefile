@@ -109,3 +109,7 @@ mongo_restore:
 
 make tasks:
 	python src/lambda_functions/tasks/
+
+lint:
+	pre-commit autoupdate
+	pre-commit run --all-files

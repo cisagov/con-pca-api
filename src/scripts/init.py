@@ -32,7 +32,10 @@ SENDING_PROFILES = [
 ]
 
 LANDING_PAGES = [
-    {"name": "Phished", "html": "",},
+    {
+        "name": "Phished",
+        "html": "",
+    },
 ]
 
 WEBHOOKS = [

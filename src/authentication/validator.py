@@ -22,7 +22,8 @@ class TokenValidator:
     @cached_property
     def pool_url(self):
         return "https://cognito-idp.{}.amazonaws.com/{}".format(
-            self.aws_region, self.aws_user_pool,
+            self.aws_region,
+            self.aws_user_pool,
         )
 
     @cached_property

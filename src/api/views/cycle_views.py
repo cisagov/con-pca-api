@@ -58,7 +58,10 @@ class CycleReportedView(APIView):
 
     @swagger_auto_schema(
         request_body=CycleEmailReportedListPostSerializer,
-        responses={"200": CycleEmailReportedListSerializer, "400": "Bad Request",},
+        responses={
+            "200": CycleEmailReportedListSerializer,
+            "400": "Bad Request",
+        },
         security=[],
         operation_id="Incoming WebHook from gophish ",
         operation_description=" This handles incoming webhooks from GoPhish Campaigns.",

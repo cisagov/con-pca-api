@@ -1,12 +1,7 @@
 {% load tz %}
 <mjml>
   <mj-head>
-    <mj-style>
-      ul li {
-        background: #cce5ff;
-        margin: 10px;
-      }
-    </mj-style>
+    <mj-style> ul li { background: #cce5ff; margin: 10px; } </mj-style>
   </mj-head>
   <mj-body>
     <mj-section>
@@ -17,14 +12,26 @@
           Dear {{ first_name }} {{ last_name }},
         </mj-text>
         <mj-text font-size="20px" color="#1B2352" font-family="helvetica">
-          Thank you for participating in the CISA Phishing
-          This email is to inform you that your campaign has begun starting {% localtime on %}{{ start_date }}{% endlocaltime %} UTC and will run until {{ end_date }} UTC.
+          Thank you for participating in the CISA Phishing This email is to
+          inform you that your campaign has begun starting {% localtime on %}{{
+          start_date }}{% endlocaltime %} UTC and will run until {{ end_date }}
+          UTC.
         </mj-text>
         <mj-text font-size="20px" color="#1B2352" font-family="helvetica">
-          To assist you in differentianting between DHS Con-PCA phishing exercise emails and actual phishing attempts please use the following:
+          To assist you in differentianting between DHS Con-PCA phishing
+          exercise emails and actual phishing attempts please use the following:
           <ul>
-            <li>All emails coming from the Con-PCA program will have a custom header DHS-PHISH:{{cycle_uuid}}}.  Please look for this header the value for this header is unique to your subscription and changes every 90 days or more frequently.</li>
-            <li>The whois guard for all Con-PCA domains is turned off.  Doing a whois lookup on the actual sender domain will show the domain owner as DHS.</li>
+            <li>
+              All emails coming from the Con-PCA program will have a custom
+              header DHS-PHISH:{{cycle_uuid}}}. Please look for this header the
+              value for this header is unique to your subscription and changes
+              every 90 days or more frequently.
+            </li>
+            <li>
+              The whois guard for all Con-PCA domains is turned off. Doing a
+              whois lookup on the actual sender domain will show the domain
+              owner as DHS.
+            </li>
           </ul>
         </mj-text>
         <mj-text font-size="20px" color="#1B2352" font-family="helvetica">
