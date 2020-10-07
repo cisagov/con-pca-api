@@ -28,7 +28,6 @@ class LandingPageModel(Model):
     gophish_template_id = IntType()
     # User Creataed
     name = StringType()
-    template_type = StringType()
     image_list = ListType(ModelType(TemplateImageModel))
     is_default_template = BooleanType(default=False)
     html = StringType()

@@ -54,12 +54,6 @@
     "tag_type": "con-pca-eval"
   },
   {
-    "data_source": "",
-    "description": "A relevant system in the customer organization that relates to the content of the email, i.e., a computer system that needs maintenance.",
-    "tag": "<%CUSTOMER_SYSTEM%>",
-    "tag_type": "con-pca"
-  },
-  {
     "data_source": "get_full_customer_address(customer_info)",
     "description": "The customer organization's full address including the building number, street name, suite/building, city, state, and zip code.",
     "tag": "<%CUSTOMER_ADDRESS_FULL%>",
@@ -150,33 +144,9 @@
     "tag_type": "con-pca-eval"
   },
   {
-    "data_source": "",
-    "description": "An important event that is relevant to the customer organization and the context of the email.",
-    "tag": "<%EVENT%>",
-    "tag_type": "con-pca"
-  },
-  {
-    "data_source": "",
-    "description": "A timeframe for a task or action to be completed by/occur (i.e. within a week, by the end of the quarter, etc.).",
-    "tag": "<%TIMEFRAME%>",
-    "tag_type": "con-pca"
-  },
-  {
     "data_source": "customer_info['identifier']",
     "description": "An abbreviated form of a phrase, such as a company/organization's name (i.e. CISA for Cybersecurity and Infrastructure Security Agency).",
     "tag": "<%ACRONYM%>",
     "tag_type": "con-pca-eval"
-  },
-  {
-    "data_source": "",
-    "description": "A mark to show that something has been written or agreed by the signer.",
-    "tag": "<%SIGNATURE%>",
-    "tag_type": "con-pca"
-  },
-  {
-    "data_source": "",
-    "description": "The subject matter of the email.",
-    "tag": "<%TOPIC%>",
-    "tag_type": "con-pca"
   }
 ]

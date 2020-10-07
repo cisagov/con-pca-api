@@ -3,9 +3,6 @@ Landing Page Views
 
 This handles the api for all the landing Page URLS
 """
-# Standard Python Libraries
-import logging
-
 # Third-Party Libraries
 from api.manager import CampaignManager
 from api.models.subscription_models import SubscriptionModel, validate_subscription
@@ -34,8 +31,6 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
-logger = logging.getLogger(__name__)
 
 campaign_manager = CampaignManager()
 
@@ -124,7 +119,6 @@ class LandingPagesListView(APIView):
         created_response = save_single(
             post_data, "landing_page", LandingPageModel, validate_landing_page
         )
-        logger.info("created response {}".format(created_response))
         if "errors" in created_response:
             return Response(created_response, status=status.HTTP_400_BAD_REQUEST)
         serializer = LandingPagePostResponseSerializer(created_response)
@@ -147,7 +141,6 @@ class LandingPageView(APIView):
     )
     def get(self, request, landing_page_uuid):
         """Get method."""
-        logger.debug("get landing_page_uuid {}".format(landing_page_uuid))
         print("get landing_page_uuid {}".format(landing_page_uuid))
         landing_page = get_single(
             landing_page_uuid, "landing_page", LandingPageModel, validate_landing_page
@@ -165,9 +158,7 @@ class LandingPageView(APIView):
     )
     def patch(self, request, landing_page_uuid):
         """Patch method."""
-        logger.debug("patch landing_page_uuid {}".format(landing_page_uuid))
         put_data = request.data.copy()
-
         data = LandingPagePatchSerializer(put_data).data
 
         landing_page = get_single(
@@ -175,22 +166,19 @@ class LandingPageView(APIView):
         )
 
         campaign_manager.put_landing_page(
-            "landing_page",
             gp_id=landing_page["gophish_template_id"],
             name=data["name"],
             html=data["html"],
         )
 
         if data["is_default_template"]:
-            self.set_default_template(landing_page_uuid)
+            clear_and_set_default(landing_page_uuid)
 
         # this really seems like there should be a better way.
         update_put_value = {
             "landing_page_uuid": landing_page_uuid,
             "name": data["name"],
             "is_default_template": data["is_default_template"],
-            "retired": data["retired"],
-            "retired_description": data["retired_description"],
             "html": data["html"],
         }
         updated_response = update_single(
@@ -200,7 +188,6 @@ class LandingPageView(APIView):
             model=LandingPageModel,
             validation_model=validate_landing_page,
         )
-        logger.info("created response {}".format(updated_response))
         if "errors" in updated_response:
             return Response(updated_response, status=status.HTTP_400_BAD_REQUEST)
         serializer = LandingPagePatchResponseSerializer(updated_response)
@@ -215,18 +202,13 @@ class LandingPageView(APIView):
     )
     def delete(self, request, landing_page_uuid):
         """Delete method."""
-        logger.debug("delete landing_page_uuid {}".format(landing_page_uuid))
         delete_response = delete_single(
             landing_page_uuid, "landing_page", LandingPageModel, validate_landing_page
         )
-        logger.info("delete response {}".format(delete_response))
         if "errors" in delete_response:
             return Response(delete_response, status=status.HTTP_400_BAD_REQUEST)
         serializer = LandingPageDeleteResponseSerializer(delete_response)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def set_default_template(self, landing_page_uuid):
-        clear_and_set_default(landing_page_uuid)
 
 
 class LandingPageStopView(APIView):
