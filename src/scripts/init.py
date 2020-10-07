@@ -31,13 +31,6 @@ SENDING_PROFILES = [
     },
 ]
 
-LANDING_PAGES = [
-    {
-        "name": "Phished",
-        "html": "",
-    },
-]
-
 WEBHOOKS = [
     {
         "name": "con-pca-webhook",
@@ -87,10 +80,13 @@ def create_sending_profile(profiles):
         print("Sending profiles already initiated.. Skipping")
 
 
-def create_landing_page(pages):
+def create_default_landing_page():
     """
     Create a Gophish landing page
     """
+    pages = [
+        {"name": "Phished", "html": load_file("data/landing.html", jsonfile=False)}
+    ]
     existing_names = {smtp.name for smtp in API.pages.get()}
     if len(existing_names) <= 0:
         for page in pages:
@@ -131,9 +127,7 @@ def create_templates():
         ).json()
     ]
     if len(existing_names) <= 0:
-        templates = load_file("data/templates.json") + load_file(
-            "data/landing_pages.json"
-        )
+        templates = load_file("data/templates.json")
 
         for template in templates:
             if not template["name"] in existing_names:
@@ -209,9 +203,9 @@ def create_tags():
     print("Tags initialized.")
 
 
-def get_faker_tags():
+def get_faker_tags(with_values: bool = False):
     fake = Faker()
-    ret_val = {}
+    tags = []
     for func in dir(fake):
         try:
             if (
@@ -223,10 +217,19 @@ def get_faker_tags():
                 and not func.startswith("set_")
                 and func not in ["format", "parse", "provider", "binary", "tar", "zip"]
             ):
-                ret_val[f"faker_{func}".lower()] = str(getattr(fake, func)())
+                tag = {
+                    "data_source": f"faker_{func}".lower(),
+                    "description": f"Faker generated {func}",
+                    "tag": f"<%FAKER_{func.upper()}%>",
+                    "tag_type": "con-pca-eval",
+                }
+                if with_values:
+                    tag["value"] = str(getattr(fake, func)())
+
+                tags.append(tag)
         except Exception:
             pass
-    return ret_val
+    return tags
 
 
 def get_headers():
@@ -243,23 +246,14 @@ def wait_connection():
             time.sleep(5)
 
 
-def load_default_landing_page():
-    LANDING_PAGES[0]["html"] = load_file_html("data/landing.html")
-
-
-def load_file_html(data_file):
+def load_file(data_file, jsonfile=True):
     current_dir = os.path.dirname(os.path.abspath(__file__))
     data_file = os.path.join(current_dir, data_file)
     with open(data_file, "r") as f:
-        data = f.read()
-    return data
-
-
-def load_file(data_file):
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    data_file = os.path.join(current_dir, data_file)
-    with open(data_file, "r") as f:
-        data = json.load(f)
+        if jsonfile:
+            data = json.load(f)
+        else:
+            data = f.read()
     return data
 
 
@@ -272,9 +266,7 @@ def main():
     print("Step 1/5: Creating Sending Profiles")
     create_sending_profile(SENDING_PROFILES)
     print("Step 2/5: Creating Landing Pages")
-
-    load_default_landing_page()
-    create_landing_page(LANDING_PAGES)
+    create_default_landing_page()
     print("Step 3/5: Create Webhooks")
     create_webhook(WEBHOOKS)
     print("Step 4/5: Create Templates")

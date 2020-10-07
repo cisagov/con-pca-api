@@ -3,9 +3,6 @@ Recommendation Views.
 
 This handles the api for all the Template urls.
 """
-# Standard Python Libraries
-import logging
-
 # Third-Party Libraries
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.response import Response
@@ -34,9 +31,6 @@ from api.utils.db_utils import (
     save_single,
     update_single,
 )
-
-
-logger = logging.getLogger(__name__)
 
 
 class RecommendationsListView(APIView):
@@ -98,7 +92,6 @@ class RecommendationsListView(APIView):
         created_response = save_single(
             post_data, "recommendations", RecommendationsModel, validate_recommendations
         )
-        logger.info("created response {}".format(created_response))
 
         if "errors" in created_response:
             return Response(created_response, status=status.HTTP_400_BAD_REQUEST)
@@ -122,7 +115,6 @@ class RecommendationsView(APIView):
     )
     def get(self, request, recommendations_uuid):
         """Get method."""
-        logger.debug("get recommendations uuid {}".format(recommendations_uuid))
         recommendations = get_single(
             recommendations_uuid,
             "recommendations",
@@ -142,7 +134,6 @@ class RecommendationsView(APIView):
     )
     def patch(self, request, recommendations_uuid):
         """Patch method."""
-        logger.debug("patch recommendations uuid {}".format(recommendations_uuid))
         put_data = request.data.copy()
         serialized_data = RecommendationsPatchSerializer(put_data)
         updated_response = update_single(
@@ -152,7 +143,6 @@ class RecommendationsView(APIView):
             model=RecommendationsModel,
             validation_model=validate_recommendations,
         )
-        logger.info("created response {}".format(updated_response))
         if "errors" in updated_response:
             return Response(updated_response, status=status.HTTP_400_BAD_REQUEST)
         serializer = RecommendationsPatchResponseSerializer(updated_response)
@@ -170,14 +160,12 @@ class RecommendationsView(APIView):
     )
     def delete(self, request, recommendations_uuid):
         """Delete method."""
-        logger.debug("delete recommendations uuid {}".format(recommendations_uuid))
         delete_response = delete_single(
             recommendations_uuid,
             "recommendations",
             RecommendationsModel,
             validate_recommendations,
         )
-        logger.info("delete response {}".format(delete_response))
         if "errors" in delete_response:
             return Response(delete_response, status=status.HTTP_400_BAD_REQUEST)
         serializer = RecommendationsDeleteResponseSerializer(delete_response)

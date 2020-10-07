@@ -3,9 +3,6 @@ Template Views.
 
 This handles the api for all the Template urls.
 """
-# Standard Python Libraries
-import logging
-
 # Third-Party Libraries
 from api.manager import CampaignManager
 from api.models.subscription_models import SubscriptionModel, validate_subscription
@@ -45,8 +42,6 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
-logger = logging.getLogger(__name__)
 
 campaign_manager = CampaignManager()
 
@@ -105,7 +100,6 @@ class TemplatesListView(APIView):
         created_response = save_single(
             post_data, "template", TemplateModel, validate_template
         )
-        logger.info("created response {}".format(created_response))
         if "errors" in created_response:
             return Response(created_response, status=status.HTTP_400_BAD_REQUEST)
         serializer = TemplatePostResponseSerializer(created_response)
@@ -128,8 +122,6 @@ class TemplateView(APIView):
     )
     def get(self, request, template_uuid):
         """Get method."""
-        logger.debug("get template_uuid {}".format(template_uuid))
-        print("get template_uuid {}".format(template_uuid))
         template = get_single(
             template_uuid, "template", TemplateModel, validate_template
         )
@@ -146,7 +138,6 @@ class TemplateView(APIView):
     )
     def patch(self, request, template_uuid):
         """Patch method."""
-        logger.debug("patch template_uuid {}".format(template_uuid))
         put_data = request.data.copy()
         if put_data["landing_page_uuid"] == "0" or not put_data["landing_page_uuid"]:
             put_data["landing_page_uuid"] = None
@@ -158,7 +149,6 @@ class TemplateView(APIView):
             model=TemplateModel,
             validation_model=validate_template,
         )
-        logger.info("created response {}".format(updated_response))
         if "errors" in updated_response:
             return Response(updated_response, status=status.HTTP_400_BAD_REQUEST)
         serializer = TemplatePatchResponseSerializer(updated_response)
@@ -173,11 +163,9 @@ class TemplateView(APIView):
     )
     def delete(self, request, template_uuid):
         """Delete method."""
-        logger.debug("delete template_uuid {}".format(template_uuid))
         delete_response = delete_single(
             template_uuid, "template", TemplateModel, validate_template
         )
-        logger.info("delete response {}".format(delete_response))
         if "errors" in delete_response:
             return Response(delete_response, status=status.HTTP_400_BAD_REQUEST)
         serializer = TemplateDeleteResponseSerializer(delete_response)
@@ -294,7 +282,6 @@ class TagsView(APIView):
         created_response = save_single(
             post_data, "tag_definition", TagModel, validate_tag
         )
-        logger.info("created response {}".format(created_response))
         if "errors" in created_response:
             return Response(created_response, status=status.HTTP_400_BAD_REQUEST)
         serializer = TagResponseSerializer(created_response)
@@ -317,8 +304,6 @@ class TagView(APIView):
     )
     def get(self, request, tag_uuid):
         """Get method."""
-        logger.debug("get tag_uuid {}".format(tag_uuid))
-
         tag = get_single(tag_uuid, "tag_definition", TagModel, validate_tag)
         serializer = TagGetSerializer(tag)
         return Response(serializer.data)
@@ -333,7 +318,6 @@ class TagView(APIView):
     )
     def patch(self, request, tag_uuid):
         """Patch method."""
-        logger.debug("patch tag_uuid {}".format(tag_uuid))
         put_data = request.data.copy()
         serialized_data = TagPatchSerializer(put_data)
         updated_response = update_single(
@@ -343,7 +327,6 @@ class TagView(APIView):
             model=TagModel,
             validation_model=validate_tag,
         )
-        logger.info("created response {}".format(updated_response))
         if "errors" in updated_response:
             return Response(updated_response, status=status.HTTP_400_BAD_REQUEST)
         serializer = TagResponseSerializer(updated_response)
@@ -358,11 +341,9 @@ class TagView(APIView):
     )
     def delete(self, request, tag_uuid):
         """Delete method."""
-        logger.debug("delete tag_uuid {}".format(tag_uuid))
         delete_response = delete_single(
             tag_uuid, "tag_definition", TagModel, validate_tag
         )
-        logger.info("delete response {}".format(delete_response))
         if "errors" in delete_response:
             return Response(delete_response, status=status.HTTP_400_BAD_REQUEST)
         serializer = TagDeleteSerializer(delete_response)
