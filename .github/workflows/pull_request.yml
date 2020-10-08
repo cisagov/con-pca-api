@@ -3,8 +3,6 @@ name: Pull Request
 
 on:
   pull_request:
-  repository_dispatch:
-    types: [apb]
 
 env:
   ENVIRONMENT: dev
@@ -56,56 +54,6 @@ jobs:
       - name: Run pre-commit on all files
         run: pre-commit run --all-files
 
-  test_build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Build Docker image
-        run: docker build -t example .
-
-  terraform_plan:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: 0.13.3
-
-      - name: Create Dummy layer
-        working-directory: ./terraform
-        run: |
-          mkdir layer
-          mkdir layer/python
-          mkdir layers
-          mkdir layers/scikit
-          mkdir layers/scikit/python
-
-      - name: Terraform Init
-        working-directory: ./terraform
-        run: terraform init -input=false
-
-      - name: Terraform Workspace
-        working-directory: ./terraform
-        run: |
-          terraform workspace select $ENVIRONMENT
-          terraform workspace show
-
-      - name: Terraform Validate
-        working-directory: ./terraform
-        run: terraform validate
-
-      - name: Get Tag
-        working-directory: ./terraform
-        id: vars
-        run: echo ::set-output name=tag::$(echo ${GITHUB_SHA:0:10})
-
-      - name: Terraform Plan
-        working-directory: ./terraform
-        run: terraform plan -input=false -var="image_tag=${{steps.vars.outputs.tag}}" -var-file ./vars/$ENVIRONMENT.tfvars > /dev/null
   python_tests:
     runs-on: ubuntu-latest
     steps:
