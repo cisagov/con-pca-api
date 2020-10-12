@@ -8,13 +8,8 @@ __pycache__
 
 .vscode
 
-.terraform
 .env
 src/staticfiles
 created_dummy_data_*.json
 node_modules
 /.vsenv
-
-terraform/output
-terraform/layer
-terraform/layers
