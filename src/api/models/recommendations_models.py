@@ -7,7 +7,6 @@ These are not Django Models, there are created using Schematics Models
 from database.repository.models import Model
 from database.repository.types import (
     DateTimeType,
-    IntType,
     ModelType,
     StringType,
     UUIDType,
@@ -30,7 +29,6 @@ class RecommendationsModel(Model):
     recommendations_uuid = UUIDType()
     name = StringType()
     description = StringType()
-    deception_level = IntType()
 
     # Score data
     appearance = ModelType(TemplateAppearanceModel)

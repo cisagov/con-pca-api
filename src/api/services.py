@@ -227,8 +227,8 @@ class RecommendationService(DBService):
             collection="recommendations",
             model=recommendations_models.RecommendationsModel,
             validation=recommendations_models.validate_recommendations,
-            model_serializer=recommendations_serializers.RecommendationsGetSerializer,
-            response_serializer=recommendations_serializers.RecommendationsDeleteResponseSerializer,
+            model_serializer=recommendations_serializers.RecommendationsSerializer,
+            response_serializer=recommendations_serializers.RecommendationsResponseSerializer,
             save_serializer=recommendations_serializers.RecommendationsPostSerializer,
             update_serializer=recommendations_serializers.RecommendationsPatchSerializer,
         )
