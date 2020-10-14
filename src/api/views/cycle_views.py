@@ -1,15 +1,9 @@
 """Cycle View."""
-# Standard Python Libraries
-import logging
-
-# Third-Party Libraries
-from api.models.subscription_models import SubscriptionModel, validate_subscription
 from api.serializers.cycle_serializers import (
     CycleEmailReportedListPostSerializer,
     CycleEmailReportedListSerializer,
 )
-from api.serializers.subscriptions_serializers import SubscriptionPatchSerializer
-from api.utils.db_utils import get_single, update_single
+from api.services import SubscriptionService
 from api.utils.subscription.cycles import (
     delete_reported_emails,
     get_reported_emails,
@@ -21,7 +15,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-logger = logging.getLogger(__name__)
+subscription_service = SubscriptionService()
 
 
 class CycleReportedView(APIView):
@@ -47,10 +41,7 @@ class CycleReportedView(APIView):
         Returns:
             object: Django Responce object
         """
-        subscription = get_single(
-            subscription_uuid, "subscription", SubscriptionModel, validate_subscription
-        )
-
+        subscription = subscription_service.get(subscription_uuid)
         emails_reported_list = get_reported_emails(subscription)
 
         serializer = CycleEmailReportedListSerializer(emails_reported_list, many=True)
@@ -69,9 +60,7 @@ class CycleReportedView(APIView):
     )
     def post(self, request, subscription_uuid):
         """Post method."""
-        subscription = get_single(
-            subscription_uuid, "subscription", SubscriptionModel, validate_subscription
-        )
+        subscription = subscription_service.get(subscription_uuid)
 
         data = request.data.copy()
         if "override_total_reported" in data and (
@@ -85,15 +74,8 @@ class CycleReportedView(APIView):
             update_reported_emails(subscription, data)
 
         emails_reported_list = get_reported_emails(subscription)
+        updated_response = subscription_service.update(subscription_uuid, data)
 
-        serialized_data = SubscriptionPatchSerializer(subscription)
-        updated_response = update_single(
-            uuid=subscription_uuid,
-            put_data=serialized_data.data,
-            collection="subscription",
-            model=SubscriptionModel,
-            validation_model=validate_subscription,
-        )
         if "errors" in updated_response:
             return Response(updated_response, status=status.HTTP_400_BAD_REQUEST)
 

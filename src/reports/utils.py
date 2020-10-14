@@ -3,34 +3,24 @@ Reporting Utils.
 
 These are utils for creating reports.
 """
-# Standard Python Libraries
 from datetime import timedelta, datetime
 import statistics
 import logging
-import pprint
 import pytz
 import math
 from django.utils import timezone
 
-# Third-Party Libraries
-from api.models.customer_models import (
-    CustomerModel,
-    TestModel,
-    validate_customer,
-    validate_test,
+from api.services import (
+    CustomerService,
+    SubscriptionService,
+    TemplateService,
+    RecommendationService,
 )
-from api.models.subscription_models import SubscriptionModel, validate_subscription
-from api.models.template_models import TemplateModel, validate_template
-from api.models.recommendations_models import (
-    RecommendationsModel,
-    validate_recommendations,
-)
-from api.utils.db_utils import get_list, get_single, update_nested_single
 
-
-def pprintItem(item):
-    pp = pprint.PrettyPrinter(indent=4)
-    pp.pprint(item)
+customer_service = CustomerService()
+subscription_service = SubscriptionService()
+template_service = TemplateService()
+recommendation_service = RecommendationService()
 
 
 def get_closest_cycle_within_day_range(subscription, start_date, day_range=90):
@@ -765,25 +755,19 @@ def generate_cycle_phish_results(subscription, cycle):
                     phishing_results = count_timeline_moments(unique_moments)
 
                     # Update database with new phish results
-                    update_nested_single(
+                    subscription_service.update_nested(
                         uuid=subscription["subscription_uuid"],
                         field="gophish_campaign_list.$.phish_results",
-                        put_data=phishing_results,
-                        collection="subscription",
-                        model=SubscriptionModel,
-                        validation_model=validate_subscription,
+                        data=phishing_results,
                         params={
                             "gophish_campaign_list.campaign_id": campaign["campaign_id"]
                         },
                     )
                     #  Mark campaign data as clean
-                    update_nested_single(
+                    subscription_service.update_nested(
                         uuid=subscription["subscription_uuid"],
                         field="gophish_campaign_list.$.phish_results_dirty",
-                        put_data=False,
-                        collection="subscription",
-                        model=SubscriptionModel,
-                        validation_model=validate_subscription,
+                        data=False,
                         params={
                             "gophish_campaign_list.campaign_id": campaign["campaign_id"]
                         },
@@ -797,24 +781,18 @@ def generate_cycle_phish_results(subscription, cycle):
         cycle["phish_result"] = cycle_phish_results
 
     # update the cycle phish results
-    update_nested_single(
+    subscription_service.update_nested(
         uuid=subscription["subscription_uuid"],
         field="cycles.$.phish_results",
-        put_data=cycle_phish_results,
-        collection="subscription",
-        model=SubscriptionModel,
-        validation_model=validate_subscription,
+        data=cycle_phish_results,
         params={"cycles.cycle_uuid": cycle["cycle_uuid"]},
     )
 
     # Mark cycle data as clean
-    update_nested_single(
+    subscription_service.update_nested(
         uuid=subscription["subscription_uuid"],
         field="cycles.$.phish_results_dirty",
-        put_data=False,
-        collection="subscription",
-        model=SubscriptionModel,
-        validation_model=validate_subscription,
+        data=False,
         params={"cycles.cycle_uuid": cycle["cycle_uuid"]},
     )
 
@@ -866,9 +844,7 @@ def generate_region_stats(subscription_list, cycle_date=None):
 def get_related_subscription_stats(subscription, start_date=None):
     """Get base stats for all related subscriptions (national, sector, industry, and customer)."""
     # Get the customer associated with the subscription
-    _customer = get_single(
-        subscription["customer_uuid"], "customer", CustomerModel, validate_customer
-    )
+    _customer = customer_service.get(subscription["customer_uuid"])
 
     # Get a list of all customers with the same sector so sector/industry averages can be calculated
     parameters = {"sector": _customer["sector"]}
@@ -877,8 +853,8 @@ def get_related_subscription_stats(subscription, start_date=None):
         "sector": 1,
         "industry": 1,
     }
-    customer_list_by_sector = get_list(
-        parameters, "customer", TestModel, validate_test, fields
+    customer_list_by_sector = customer_service.get_list(
+        parameters=parameters, fields=fields
     )
 
     sector_customer_uuids = []
@@ -900,12 +876,8 @@ def get_related_subscription_stats(subscription, start_date=None):
         "name": 1,
         "gophish_campaign_list": 1,
     }
-    subscription_list = get_list(
-        parameters,
-        "subscription",
-        SubscriptionModel,
-        validate_subscription,
-        subscription_fields,
+    subscription_list = subscription_service.get_list(
+        parameters=parameters, fields=subscription_fields
     )
 
     sector_subscriptions = []
@@ -944,13 +916,7 @@ def get_related_subscription_stats(subscription, start_date=None):
 def get_gov_group_stats():
     """Get base stats for all related subscriptions (national, sector, industry, and customer)."""
 
-    # fields = {
-    #     "customer_uuid": 1,
-    #     "sector": 1,
-    #     "industry": 1,
-    #     "customer_type": 1,
-    # }
-    customers = get_list({}, "customer", CustomerModel, validate_customer)
+    customers = customer_service.get_list()
 
     fed_customer_uuids = []
     state_customer_uuids = []
@@ -970,20 +936,7 @@ def get_gov_group_stats():
         if cust["customer_type"] == "Private":
             private_customer_uuids.append(cust["customer_uuid"])
 
-    parameters = {}
-    # subscription_fields = {
-    #     "customer_uuid": 1,
-    #     "subscription_uuid": 1,
-    #     "cycles": 1,
-    #     "name": 1,
-    # }
-    subscription_list = get_list(
-        parameters,
-        "subscription",
-        SubscriptionModel,
-        validate_subscription,
-        # subscription_fields,
-    )
+    subscription_list = subscription_service.get_list()
 
     fed_subscriptions = []
     state_subscriptions = []
@@ -1153,7 +1106,6 @@ def campaign_templates_to_string(most_succesful_campaigns):
 
 def get_template_details(campaign_results):
     """Given a list of campaigns, retrieve the template data for each one."""
-    parameters = {}
     fields = {
         "template_uuid": 1,
         "name": 1,
@@ -1167,9 +1119,7 @@ def get_template_details(campaign_results):
         "from_address": 1,
         "html": 1,
     }
-    template_list = get_list(
-        parameters, "template", TemplateModel, validate_template, fields
-    )
+    template_list = template_service.get_list(fields=fields)
     total_sent = 0
     for camp in campaign_results:
         try:
@@ -1262,12 +1212,7 @@ def get_stats_low_med_high_by_level(subscription_stats):
 
 
 def get_relevant_recommendations(subscription_stats):
-    recommendations_list = get_list(
-        None,
-        "recommendations",
-        RecommendationsModel,
-        validate_recommendations,
-    )
+    recommendations_list = recommendation_service.get_list()
     if not recommendations_list:
         return {}
 
@@ -1285,7 +1230,7 @@ def get_relevant_recommendations(subscription_stats):
     recommendations_set = set(recommendations_list[0])
     try:
         templates_set = set([template[2] for template in sorted_templates][0])
-    except:
+    except Exception:
         return {}
     recommendations_uuid = {}
     for matching_key in recommendations_set.intersection(templates_set):

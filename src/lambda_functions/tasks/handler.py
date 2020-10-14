@@ -1,8 +1,7 @@
-from api.utils import db_utils as db
-from api.models.subscription_models import SubscriptionModel, validate_subscription
 from api.utils.subscription.static import YEARLY_MINUTES, MONTHLY_MINUTES, CYCLE_MINUTES
 from api.utils.subscription.subscriptions import send_start_notification
 from api.utils.subscription import actions
+from api.services import SubscriptionService
 
 from notifications.views import EmailSender
 
@@ -13,13 +12,13 @@ from django.core.wsgi import get_wsgi_application
 
 application = get_wsgi_application()
 
+subscription_service = SubscriptionService()
+
 
 def lambda_handler(event, context):
     print("Getting tasks to execute")
 
-    subscriptions = db.get_list(
-        {}, "subscription", SubscriptionModel, validate_subscription
-    )
+    subscriptions = subscription_service.get_list()
 
     executed_count = 0
 
@@ -65,13 +64,10 @@ def lambda_handler(event, context):
 
 def update_task(subscription_uuid, task):
 
-    return db.update_nested_single(
+    return subscription_service.update_nested(
         uuid=subscription_uuid,
         field="tasks.$",
-        put_data=task,
-        collection="subscription",
-        model=SubscriptionModel,
-        validation_model=validate_subscription,
+        data=task,
         params={"tasks.task_uuid": task["task_uuid"]},
     )
 
@@ -96,13 +92,8 @@ def add_new_task(subscription_uuid, scheduled_date, message_type):
 
         print(f"Adding new task {task}")
 
-        return db.push_nested_item(
-            uuid=subscription_uuid,
-            field="tasks",
-            put_data=task,
-            collection="subscription",
-            model=SubscriptionModel,
-            validation_model=validate_subscription,
+        return subscription_service.push_nested(
+            uuid=subscription_uuid, field="tasks", data=task
         )
 
     return None

@@ -5,7 +5,6 @@ This lists all urls under the API app.
 """
 # Third-Party Libraries
 from api.views import (
-    campaign_views,
     customer_views,
     cycle_views,
     dhs_views,
@@ -18,6 +17,7 @@ from api.views import (
     webhook_views,
     landing_page_views,
     test_email_views,
+    tag_views,
 )
 from django.urls import path
 from drf_yasg import openapi
@@ -151,21 +151,13 @@ urlpatterns = [
     ),
     path(
         "v1/tags/",
-        template_views.TagsView.as_view(),
+        tag_views.TagsView.as_view(),
         name="tags_list_api",
     ),
     path(
         "v1/tag/<tag_uuid>/",
-        template_views.TagView.as_view(),
+        tag_views.TagView.as_view(),
         name="tags_get_api",
-    ),
-    path(
-        "v1/campaigns/", campaign_views.CampaignListView.as_view(), name="campaign_list"
-    ),
-    path(
-        "v1/campaign/<campaign_id>/",
-        campaign_views.CampaignDetailView.as_view(),
-        name="campaign_detail",
     ),
     path(
         "v1/customers/",

@@ -12,11 +12,11 @@ from api.utils.generic import format_ztime
 from api.utils.subscription.targets import assign_targets
 from api.utils.subscription.subscriptions import get_staggered_dates_in_range
 from api.utils.subscription.static import CAMPAIGN_MINUTES, DEFAULT_X_GOPHISH_CONTACT
-from api.utils.landing_pages import get_landing_page
 
-logger = logging.getLogger()
+from api.services import LandingPageService
 
 campaign_manager = CampaignManager()
+landing_page_service = LandingPageService()
 
 
 def generate_campaigns(subscription, landing_page, sub_levels, cycle_uuid):
@@ -81,7 +81,7 @@ def create_campaign(subscription, sub_level, landing_page, cycle_uuid):
 
         landing_page_name = landing_page
         if template.get("landing_page_uuid"):
-            template_lp = get_landing_page(template["landing_page_uuid"])
+            template_lp = landing_page_service.get(template["landing_page_uuid"])
             if template_lp:
                 landing_page_name = template_lp["name"]
 

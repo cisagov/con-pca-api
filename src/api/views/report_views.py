@@ -3,22 +3,14 @@ Reports Views.
 
 This handles the api for all the Reports urls.
 """
-# Standard Python Libraries
-import logging
-
-# Third-Party Libraries
 from api.manager import CampaignManager
-from api.models.subscription_models import SubscriptionModel, validate_subscription
 from api.models.template_models import (
     DeceptionLevelStatsModel,
-    TemplateModel,
-    validate_template,
 )
 from api.serializers.reports_serializers import (
     EmailReportsGetSerializer,
     ReportsGetSerializer,
 )
-from api.utils.db_utils import get_list, get_single
 from django.http import FileResponse, JsonResponse
 from drf_yasg.utils import swagger_auto_schema
 from notifications.views import EmailSender
@@ -36,10 +28,11 @@ from reports.utils import (
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from api.utils.reports import download_pdf
-from api.utils.subscription.subscriptions import get_subscription
+from api.services import TemplateService, SubscriptionService
 
-
-logger = logging.getLogger(__name__)
+# database services
+template_service = TemplateService()
+subscription_service = SubscriptionService()
 
 # GoPhish API Manager
 campaign_manager = CampaignManager()
@@ -52,18 +45,11 @@ class ReportsView(APIView):
     This handles the API a Get .
     """
 
-    @swagger_auto_schema(
-        responses={"200": ReportsGetSerializer, "400": "Bad Request"},
-        security=[],
-        operation_id="Get Subscription Report data",
-        operation_description="This fetches a subscription's report data by subscription uuid",
-    )
+    @swagger_auto_schema(operation_id="Get Subscription Report data")
     def get(self, request, subscription_uuid):
         """Get Method."""
         subscription_uuid = self.kwargs["subscription_uuid"]
-        subscription = get_single(
-            subscription_uuid, "subscription", SubscriptionModel, validate_subscription
-        )
+        subscription = subscription_service.get(subscription_uuid)
 
         campaigns = subscription.get("gophish_campaign_list")
 
@@ -71,12 +57,7 @@ class ReportsView(APIView):
             "template_uuid": {"$in": subscription["templates_selected_uuid_list"]}
         }
 
-        template_list = get_list(
-            parameters,
-            "template",
-            TemplateModel,
-            validate_template,
-        )
+        template_list = template_service.get_list(parameters)
 
         # boil it all down to a template name and a score in one object
         templates = {
@@ -178,7 +159,7 @@ class ReportsView(APIView):
 
 
 def monthly_report_email_view(request, subscription_uuid, cycle, cycle_uuid=None):
-    subscription = get_subscription(subscription_uuid)
+    subscription = subscription_service.get(subscription_uuid)
     sender = EmailSender(subscription, "monthly_report", cycle, cycle_uuid)
     sender.send()
     serializer = EmailReportsGetSerializer({"subscription_uuid": subscription_uuid})
@@ -195,7 +176,7 @@ def monthly_reports_pdf_view(request, subscription_uuid, cycle, cycle_uuid=None)
 
 
 def cycle_report_email_view(request, subscription_uuid, cycle):
-    subscription = get_subscription(subscription_uuid)
+    subscription = subscription_service.get(subscription_uuid)
     sender = EmailSender(subscription, "cycle_report", cycle)
     sender.send()
     serializer = EmailReportsGetSerializer({"subscription_uuid": subscription_uuid})
@@ -216,7 +197,7 @@ def cycle_reports_pdf_view(request, subscription_uuid, cycle):
 
 
 def yearly_report_email_view(request, subscription_uuid, cycle):
-    subscription = get_subscription(subscription_uuid)
+    subscription = subscription_service.get(subscription_uuid)
     sender = EmailSender(subscription, "yearly_report", cycle)
     sender.send()
     serializer = EmailReportsGetSerializer({"subscription_uuid": subscription_uuid})

@@ -16,21 +16,16 @@ from config import settings
 from django.core.mail.message import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
-
-from api.models.dhs_models import DHSContactModel, validate_dhs_contact
-from api.utils.db_utils import get_single
 from api.utils.reports import download_pdf
-from api.utils.template.templates import get_subscription_templates
-from api.utils import db_utils as db
 from api.manager import CampaignManager
-from api.models.subscription_models import SubscriptionModel, validate_subscription
 from api.utils.aws_utils import SES
 from api.utils.subscription.static import DEFAULT_X_GOPHISH_CONTACT
-
+from api.services import DHSContactService, SubscriptionService, TemplateService
 import os
 
-
-logger = logging.getLogger()
+dhs_contact_service = DHSContactService()
+subscription_service = SubscriptionService()
+template_service = TemplateService()
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STATIC_DIR = os.path.abspath(f"{BASE_DIR}/static")
@@ -42,11 +37,8 @@ class EmailSender:
         self.cycle_uuid = cycle_uuid
         self.notification = self.set_notification(message_type)
         self.attachment = self.get_attachment(cycle)
-        self.dhs_contact = get_single(
-            self.subscription.get("dhs_contact_uuid"),
-            "dhs_contact",
-            DHSContactModel,
-            validate_dhs_contact,
+        self.dhs_contact = dhs_contact_service.get(
+            self.subscription.get("dhs_contact_uuid")
         )
 
         self.context = self.set_context()
@@ -141,13 +133,10 @@ class EmailSender:
 
         logging.info(data)
 
-        resp = db.push_nested_item(
+        resp = subscription_service.push_nested(
             uuid=self.subscription["subscription_uuid"],
             field="email_report_history",
-            put_data=data,
-            collection="subscription",
-            model=SubscriptionModel,
-            validation_model=validate_subscription,
+            data=data,
         )
 
         return resp
@@ -181,7 +170,13 @@ class EmailSender:
                     end_date.split(".")[0], "%Y-%m-%dT%H:%M:%S"
                 )
 
-        templates = get_subscription_templates(self.subscription)
+        templates = template_service.get_list(
+            {
+                "template_uuid": {
+                    "$in": self.subscription.get("templates_selected_uuid_list")
+                }
+            }
+        )
         phishing_email = list(
             filter(
                 lambda x: x.name == self.subscription.get("sending_profile_name"),

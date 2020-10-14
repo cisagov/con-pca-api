@@ -1,8 +1,8 @@
 """Target Util."""
-# Third-Party Libraries
-from api.models.template_models import TargetHistoryModel, validate_history
-from api.utils import db_utils as db
 import random
+from api.services import TargetHistoryService
+
+target_history_service = TargetHistoryService()
 
 
 def batch_targets(subscription, sub_levels: dict):
@@ -36,9 +36,7 @@ def batch_targets(subscription, sub_levels: dict):
 def get_target_available_templates(email, templates):
     """Returns a list of avaiable template uuids."""
     # Check history of target
-    history = db.get_list(
-        {"email": email}, "target", TargetHistoryModel, validate_history
-    )
+    history = target_history_service.get_list({"email": email})
 
     # If no history, return all templates
     if not history:

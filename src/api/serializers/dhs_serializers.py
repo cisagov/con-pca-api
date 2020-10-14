@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 
-class DHSContactGetSerializer(serializers.Serializer):
+class DHSContactSerializer(serializers.Serializer):
     """
     This is the CustomerContact Serializer.
 
@@ -40,11 +40,7 @@ class DHSContactPostSerializer(serializers.Serializer):
     active = serializers.BooleanField(required=False, default=True, allow_null=False)
 
 
-class DHSContactPostResponseSerializer(serializers.Serializer):
-    dhs_contact_uuid = serializers.UUIDField()
-
-
-class DHSContactDeleteResponseSerializer(serializers.Serializer):
+class DHSContactResponseSerializer(serializers.Serializer):
     dhs_contact_uuid = serializers.UUIDField()
 
 

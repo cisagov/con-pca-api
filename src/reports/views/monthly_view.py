@@ -1,51 +1,31 @@
 # Standard Python Libraries
-from datetime import datetime, timedelta
-import logging
-import base64
+from datetime import datetime
 
 # Third-Party Libraries
 # Local Libraries
 # Django Libraries
-from scipy.stats.mstats import gmean
 from api.manager import CampaignManager
-from api.models.customer_models import CustomerModel, validate_customer
-from api.models.subscription_models import SubscriptionModel, validate_subscription
-from api.models.customer_models import CustomerModel, validate_customer
-from api.models.dhs_models import DHSContactModel, validate_dhs_contact
-from api.utils.db_utils import get_list, get_single
 from django.utils import timezone
 import pytz
 
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.views.generic import TemplateView
 
-
-# from . import views
 from reports.utils import (
-    get_subscription_stats_for_cycle,
     get_subscription_stats_for_month,
-    get_related_subscription_stats,
-    get_cycles_breakdown,
     get_template_details,
     get_statistic_from_group,
     get_reports_to_click,
-    campaign_templates_to_string,
-    get_most_successful_campaigns,
-    get_closest_cycle_within_day_range,
-    ratio_to_percent,
-    format_timedelta,
-    get_statistic_from_region_group,
     get_stats_low_med_high_by_level,
-    get_cycle_by_date_in_range,
-    pprintItem,
 )
 
-logger = logging.getLogger(__name__)
+from api.services import SubscriptionService, CustomerService, DHSContactService
 
-# GoPhish API Manager
 campaign_manager = CampaignManager()
+subscription_service = SubscriptionService()
+customer_service = CustomerService()
+dhs_contact_service = DHSContactService()
 
 
 class MonthlyReportsView(APIView):
@@ -183,14 +163,10 @@ class MonthlyReportsView(APIView):
         get_template_details(subscription_stats["campaign_results"])
         self.getTemplateClickedIndicators(subscription_stats)
 
-        # Get the correct cycle based on the provided start_date
-        if cycle_uuid:
-            active_cycle = subscription["cycles"][0]
-            for cycle in subscription["cycles"]:
-                if cycle["cycle_uuid"] == cycle_uuid:
-                    active_cycle = cycle
-        else:
-            active_cycle = get_cycle_by_date_in_range(subscription, end_date)
+        active_cycle = subscription["cycles"][0]
+        for cycle in subscription["cycles"]:
+            if cycle["cycle_uuid"] == cycle_uuid:
+                active_cycle = cycle
 
         active_campaigns = []
         for campaign in subscription["gophish_campaign_list"]:
@@ -201,9 +177,6 @@ class MonthlyReportsView(APIView):
         for campaign in active_campaigns:
             target_count += len(campaign["target_email_list"])
 
-        # subscription_stats = get_subscription_stats_for_cycle(
-        #     subscription, start_date
-        # )
         opened = get_statistic_from_group(
             subscription_stats, "stats_all", "opened", "count"
         )
@@ -212,9 +185,6 @@ class MonthlyReportsView(APIView):
         )
         sent = get_statistic_from_group(
             subscription_stats, "stats_all", "sent", "count"
-        )
-        submitted = get_statistic_from_group(
-            subscription_stats, "stats_all", "submitted", "count"
         )
         reported = get_statistic_from_group(
             subscription_stats, "stats_all", "reported", "count"
@@ -277,22 +247,10 @@ class MonthlyReportsView(APIView):
 
     def get(self, request, **kwargs):
         subscription_uuid = self.kwargs["subscription_uuid"]
-        subscription = get_single(
-            subscription_uuid, "subscription", SubscriptionModel, validate_subscription
-        )
-        customer = get_single(
-            subscription.get("customer_uuid"),
-            "customer",
-            CustomerModel,
-            validate_customer,
-        )
+        subscription = subscription_service.get(subscription_uuid)
+        customer = customer_service.get(subscription.get("customer_uuid"))
 
-        dhs_contact = get_single(
-            subscription.get("dhs_contact_uuid"),
-            "dhs_contact",
-            DHSContactModel,
-            validate_dhs_contact,
-        )
+        dhs_contact = dhs_contact_service.get(subscription.get("dhs_contact_uuid"))
 
         metrics, subscription_stats = self.getMonthlyStats(subscription)
 

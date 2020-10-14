@@ -1,12 +1,6 @@
-from api.utils import db_utils as db
-from api.models.template_models import TagModel, validate_tag
 from faker import Faker
 
 import re
-
-
-def get_tags():
-    return db.get_list(None, "tag_definition", TagModel, validate_tag)
 
 
 def check_tag_format(tag):

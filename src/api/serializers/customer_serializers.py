@@ -27,9 +27,9 @@ class CustomerContactSerializer(serializers.Serializer):
     active = serializers.BooleanField(default=True, allow_null=False)
 
 
-class CustomerGetSerializer(serializers.Serializer):
+class CustomerSerializer(serializers.Serializer):
     """
-    This is the CustomerGet Serializer.
+    This is the Customer Serializer.
 
     This is a formats the data coming out of the Db.
     """
@@ -78,25 +78,7 @@ class CustomerPostSerializer(serializers.Serializer):
     sector = serializers.CharField(max_length=250)
 
 
-class CustomerPostResponseSerializer(serializers.Serializer):
-    """
-    This is the CustomerPostResponse Serializer.
-
-    This is a formats the data coming out of the Db from a create.
-    """
-
-    # created by mongodb
-    customer_uuid = serializers.UUIDField()
-
-
 class CustomerPatchSerializer(serializers.Serializer):
-    """
-    This is the Customer Patch Serializer.
-
-    This is a formats the data coming in from the user for a post create.
-    """
-
-    # user created fields
     name = serializers.CharField(max_length=250, required=False)
     identifier = serializers.CharField(max_length=250, required=False)
     address_1 = serializers.CharField(max_length=250, required=False)
@@ -110,54 +92,11 @@ class CustomerPatchSerializer(serializers.Serializer):
     sector = serializers.CharField(max_length=250, required=False)
 
 
-class CustomerPatchResponseSerializer(serializers.Serializer):
-    """
-    This is the CustomerPostResponse Serializer.
-
-    This is a formats the data coming out of the Db from a create.
-    """
-
-    # created by mongodb
-    customer_uuid = serializers.UUIDField()
-    # user created fields
-    name = serializers.CharField(max_length=250)
-    identifier = serializers.CharField(max_length=250)
-    address_1 = serializers.CharField(max_length=250)
-    address_2 = serializers.CharField(
-        max_length=250, required=False, allow_blank=True, allow_null=True
-    )
-    city = serializers.CharField(max_length=250)
-    state = serializers.CharField(max_length=250)
-    zip_code = serializers.CharField(max_length=250)
-    customer_type = serializers.CharField(max_length=250)
-    contact_list = CustomerContactSerializer(many=True)
-    industry = serializers.CharField(max_length=250)
-    sector = serializers.CharField(max_length=250)
-    # db data tracking added below
-    created_by = serializers.CharField(max_length=100)
-    cb_timestamp = serializers.DateTimeField()
-    last_updated_by = serializers.CharField(max_length=100)
-    lub_timestamp = serializers.DateTimeField()
-
-
-class CustomerDeleteResponseSerializer(serializers.Serializer):
-    """
-    This is the Customer Delete Response Serializer .
-
-    This is a formats the data coming out of the Db from a create.
-    """
-
-    # created by mongodb
+class CustomerResponseSerializer(serializers.Serializer):
     customer_uuid = serializers.UUIDField()
 
 
 class SectorIndustry(serializers.Serializer):
-    """
-    This is the SectorIndustry Serializer.
-
-    This is a formats the data coming out of the Db.
-    """
-
     name = serializers.CharField(max_length=250)
 
 

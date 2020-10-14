@@ -1,56 +1,23 @@
-# Standard Python Libraries
-from datetime import datetime, timedelta
-import logging
-import base64
-
-# Third-Party Libraries
-# Local Libraries
-# Django Libraries
-from scipy.stats.mstats import gmean
 from api.manager import CampaignManager
-from api.models.customer_models import CustomerModel, validate_customer
-from api.models.subscription_models import SubscriptionModel, validate_subscription
-from api.models.customer_models import CustomerModel, validate_customer
-from api.models.dhs_models import DHSContactModel, validate_dhs_contact
-from api.utils.db_utils import get_list, get_single
+from api.services import CustomerService, SubscriptionService
 
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.views.generic import TemplateView
 
-
-# from . import views
 from reports.utils import (
-    generate_region_stats,
-    get_subscription_stats_for_cycle,
-    get_subscription_stats_for_month,
-    get_related_subscription_stats,
-    get_cycles_breakdown,
-    get_template_details,
-    get_statistic_from_group,
     generate_campaign_statistics,
-    get_reports_to_click,
-    campaign_templates_to_string,
-    get_most_successful_campaigns,
     consolidate_campaign_group_stats,
-    get_closest_cycle_within_day_range,
-    ratio_to_percent,
     format_timedelta,
-    get_statistic_from_region_group,
-    get_stats_low_med_high_by_level,
-    get_cycle_by_date_in_range,
     append_timeline_moment,
     calc_ratios,
     get_gov_group_stats,
     get_unique_moments,
-    pprintItem,
 )
 
-logger = logging.getLogger(__name__)
-
-# GoPhish API Manager
 campaign_manager = CampaignManager()
+customer_service = CustomerService()
+subscription_service = SubscriptionService()
 
 
 class SystemReportsView(APIView):
@@ -60,9 +27,7 @@ class SystemReportsView(APIView):
         """
 
         sub_parameters = {"archived": {"$in": [False, None]}}
-        subscriptions = get_list(
-            sub_parameters, "subscription", SubscriptionModel, validate_subscription
-        )
+        subscriptions = subscription_service.get_list(sub_parameters)
 
         cycles_started = 0
         monthly_reports_sent = 0
@@ -88,9 +53,6 @@ class SystemReportsView(APIView):
         all_stats = []
 
         for timeline in _timeline_list:
-            # for moment in timeline:
-            #     if not moment["duplicate"]:
-            #         append_timeline_moment(moment, timeline_item_summary)
             unique_moments = get_unique_moments(timeline)
             for unique_moment in unique_moments:
                 append_timeline_moment(unique_moment, timeline_item_summary)
@@ -106,7 +68,7 @@ class SystemReportsView(APIView):
         consolidated_stats = consolidate_campaign_group_stats(all_stats)
         consolidated_stats["ratios"] = calc_ratios(consolidated_stats)
 
-        customers = get_list({}, "customer", CustomerModel, validate_customer)
+        customers = customer_service.get_list()
         federal_customers = 0
         state_customers = 0
         local_customers = 0
@@ -158,9 +120,7 @@ class SubsriptionReportsListView(APIView):
     def get(self, request, **kwargs):
 
         subscription_uuid = self.kwargs["subscription_uuid"]
-        subscription = get_single(
-            subscription_uuid, "subscription", SubscriptionModel, validate_subscription
-        )
+        subscription = subscription_service.get(subscription_uuid)
         context = subscription["email_report_history"]
 
         return Response(context, status=status.HTTP_202_ACCEPTED)

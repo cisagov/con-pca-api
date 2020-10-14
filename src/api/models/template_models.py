@@ -8,7 +8,6 @@ from database.repository.models import Model
 from database.repository.types import (
     BooleanType,
     DateTimeType,
-    EmailType,
     IntType,
     ListType,
     ModelType,
@@ -143,37 +142,6 @@ def validate_template(data_object):
     return TemplateModel(data_object).validate()
 
 
-class TagModel(Model):
-    """
-    Tag Model.
-
-    A Tag is a replaceable string in a
-    Template that is replaced by a real value.
-    """
-
-    # created by mongodb
-    tag_definition_uuid = UUIDType()
-    # User Defined
-    tag = StringType()
-    description = StringType()
-    data_source = StringType()
-    tag_type = StringType()
-    # db tracking data added below
-    created_by = StringType()
-    cb_timestamp = DateTimeType()
-    last_updated_by = StringType()
-    lub_timestamp = DateTimeType()
-
-
-def validate_tag(data_object):
-    """
-    This is an the validate_tag.
-
-    This shows basic validation for the model.
-    """
-    return TagModel(data_object).validate()
-
-
 class DeceptionLevelStatsModel:
     """Statistics for a deception level."""
 
@@ -201,42 +169,3 @@ class DeceptionLevelStatsModel:
         self.clicked = 0
         self.submitted_data = 0
         self.email_reported = 0
-
-
-class TemplateStatusModel(Model):
-    """
-    Template Status Model.
-
-    This tracks the template uuid and timestamp of being sent.
-    """
-
-    template_uuid = UUIDType()
-    sent_timestamp = DateTimeType()
-
-
-class TargetHistoryModel(Model):
-    """
-    Template History Model.
-
-    This tracks the history of tempaltes sent to a user.
-    """
-
-    # created by mongodb
-    target_uuid = UUIDType()
-    # User Defined
-    email = EmailType(required=True)
-    history_list = ListType(ModelType(TemplateStatusModel))
-    # db tracking data added below
-    created_by = StringType()
-    cb_timestamp = DateTimeType()
-    last_updated_by = StringType()
-    lub_timestamp = DateTimeType()
-
-
-def validate_history(data_object):
-    """
-    This is an the validate_tag.
-
-    This shows basic validation for the model.
-    """
-    return TargetHistoryModel(data_object).validate()

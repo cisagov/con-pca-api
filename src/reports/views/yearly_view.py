@@ -1,18 +1,11 @@
-# Standard Python Libraries
-import logging
-
-# Third-Party Libraries
-# Local Libraries
-# Django Libraries
+from datetime import datetime
 from api.manager import CampaignManager
-from api.models.customer_models import CustomerModel, validate_customer
-from api.models.subscription_models import SubscriptionModel, validate_subscription
-from api.models.dhs_models import DHSContactModel, validate_dhs_contact
-from api.models.recommendations_models import (
-    RecommendationsModel,
-    validate_recommendations,
+from api.services import (
+    CustomerService,
+    SubscriptionService,
+    DHSContactService,
+    RecommendationService,
 )
-from api.utils.db_utils import get_list, get_single
 from reports.utils import get_relevant_recommendations
 
 from rest_framework import status
@@ -32,13 +25,14 @@ from reports.utils import (
     cycle_stats_to_click_rate_vs_report_rate,
     determine_trend,
     get_yearly_start_dates,
-    pprintItem,
 )
-
-logger = logging.getLogger(__name__)
 
 # GoPhish API Manager
 campaign_manager = CampaignManager()
+customer_service = CustomerService()
+subscription_service = SubscriptionService()
+dhs_contact_service = DHSContactService()
+recommendation_service = RecommendationService()
 
 
 class YearlyReportsView(APIView):
@@ -47,27 +41,13 @@ class YearlyReportsView(APIView):
     """
 
     def get(self, request, **kwargs):
-        for i in kwargs:
-            pprintItem(i)
         subscription_uuid = self.kwargs["subscription_uuid"]
         start_date_param = self.kwargs["start_date"]
         start_date = datetime.strptime(start_date_param, "%Y-%m-%dT%H:%M:%S.%f%z")
-        subscription = get_single(
-            subscription_uuid, "subscription", SubscriptionModel, validate_subscription
-        )
-        customer = get_single(
-            subscription.get("customer_uuid"),
-            "customer",
-            CustomerModel,
-            validate_customer,
-        )
+        subscription = subscription_service.get(subscription_uuid)
+        customer = customer_service.get(subscription.get("customer_uuid"))
 
-        dhs_contact = get_single(
-            subscription.get("dhs_contact_uuid"),
-            "dhs_contact",
-            DHSContactModel,
-            validate_dhs_contact,
-        )
+        dhs_contact = dhs_contact_service.get(subscription.get("dhs_contact_uuid"))
 
         cycles = subscription["cycles"]
         set_cycle_quarters(cycles)
@@ -161,12 +141,7 @@ class YearlyReportsView(APIView):
         get_template_details(subscription_stats["campaign_results"])
         recommendation_uuids = get_relevant_recommendations(subscription_stats)
 
-        _recomendations = get_list(
-            None,
-            "recommendations",
-            RecommendationsModel,
-            validate_recommendations,
-        )
+        _recomendations = recommendation_service.get_list()
         recomendations = []
         for rec in _recomendations:
             if rec["recommendations_uuid"] in recommendation_uuids:
