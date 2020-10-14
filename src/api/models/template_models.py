@@ -9,7 +9,6 @@ from database.repository.types import (
     BooleanType,
     DateTimeType,
     IntType,
-    ListType,
     ModelType,
     StringType,
     UUIDType,
