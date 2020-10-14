@@ -11,12 +11,22 @@ class DHSContactSerializer(serializers.Serializer):
     dhs_contact_uuid = serializers.UUIDField()
     first_name = serializers.CharField(max_length=250)
     last_name = serializers.CharField(max_length=250)
-    title = serializers.CharField(required=False, max_length=250)
-    office_phone = serializers.CharField(required=False, max_length=100)
-    mobile_phone = serializers.CharField(required=False, max_length=100)
+    title = serializers.CharField(
+        required=False, max_length=250, allow_null=True, allow_blank=True
+    )
+    office_phone = serializers.CharField(
+        required=False, max_length=100, allow_null=True, allow_blank=True
+    )
+    mobile_phone = serializers.CharField(
+        required=False, max_length=100, allow_null=True, allow_blank=True
+    )
     email = serializers.EmailField(max_length=None, min_length=None, allow_blank=False)
     notes = serializers.CharField(
-        required=False, max_length=None, min_length=None, allow_blank=True
+        required=False,
+        max_length=None,
+        min_length=None,
+        allow_blank=True,
+        allow_null=True,
     )
     active = serializers.BooleanField(default=True, allow_null=False)
 
@@ -30,12 +40,20 @@ class DHSContactSerializer(serializers.Serializer):
 class DHSContactPostSerializer(serializers.Serializer):
     first_name = serializers.CharField(max_length=250)
     last_name = serializers.CharField(max_length=250)
-    title = serializers.CharField(max_length=250)
-    office_phone = serializers.CharField(required=False, max_length=100)
-    mobile_phone = serializers.CharField(required=False, max_length=100)
+    title = serializers.CharField(max_length=250, allow_null=True, allow_blank=True)
+    office_phone = serializers.CharField(
+        required=False, max_length=100, allow_null=True, allow_blank=True
+    )
+    mobile_phone = serializers.CharField(
+        required=False, max_length=100, allow_null=True, allow_blank=True
+    )
     email = serializers.EmailField(max_length=None, min_length=None, allow_blank=False)
     notes = serializers.CharField(
-        required=False, max_length=None, min_length=None, allow_blank=True
+        required=False,
+        max_length=None,
+        min_length=None,
+        allow_blank=True,
+        allow_null=True,
     )
     active = serializers.BooleanField(required=False, default=True, allow_null=False)
 
@@ -47,14 +65,24 @@ class DHSContactResponseSerializer(serializers.Serializer):
 class DHSContactPatchSerializer(serializers.Serializer):
     first_name = serializers.CharField(required=False, max_length=250)
     last_name = serializers.CharField(required=False, max_length=250)
-    title = serializers.CharField(required=False, max_length=250)
-    office_phone = serializers.CharField(required=False, max_length=100)
-    mobile_phone = serializers.CharField(required=False, max_length=100)
+    title = serializers.CharField(
+        required=False, max_length=250, allow_null=True, allow_blank=True
+    )
+    office_phone = serializers.CharField(
+        required=False, max_length=100, allow_null=True, allow_blank=True
+    )
+    mobile_phone = serializers.CharField(
+        required=False, max_length=100, allow_null=True, allow_blank=True
+    )
     email = serializers.EmailField(
         required=False, max_length=None, min_length=None, allow_blank=False
     )
     notes = serializers.CharField(
-        required=False, max_length=None, min_length=None, allow_blank=True
+        required=False,
+        max_length=None,
+        min_length=None,
+        allow_blank=True,
+        allow_null=True,
     )
     active = serializers.BooleanField(required=False, default=True, allow_null=False)
 
