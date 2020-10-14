@@ -10,11 +10,6 @@ from api.serializers.subscriptions_serializers import (
 )
 from rest_framework import serializers
 
-TEMPLATE_TYPE_CHOICES = (
-    ("Email", "Email"),
-    ("Landing", "Landing Page"),
-)
-
 
 class TemplateAppearanceSerializer(serializers.Serializer):
     """
@@ -64,18 +59,7 @@ class TemplateBehaviorSerializer(serializers.Serializer):
     greed = serializers.IntegerField()
 
 
-class TemplateImageSerializer(serializers.Serializer):
-    """
-    This is the Template Image Model.
-
-    This holds values for template Image data.
-    """
-
-    file_name = serializers.CharField()
-    file_url = serializers.CharField()
-
-
-class TemplateGetSerializer(serializers.Serializer):
+class TemplateSerializer(serializers.Serializer):
     """
     This is the Template GET Serializer.
 
@@ -83,27 +67,24 @@ class TemplateGetSerializer(serializers.Serializer):
     """
 
     template_uuid = serializers.UUIDField()
-    gophish_template_id = serializers.IntegerField()
     name = serializers.CharField()
-    template_type = serializers.ChoiceField(choices=TEMPLATE_TYPE_CHOICES)
-    landing_page_uuid = serializers.UUIDField(default=None)
+    landing_page_uuid = serializers.UUIDField(default=None, allow_null=True)
     deception_score = serializers.IntegerField()
-    descriptive_words = serializers.CharField()
-    description = serializers.CharField()
-    image_list = TemplateImageSerializer(many=True)
-    from_address = serializers.EmailField()
+    descriptive_words = serializers.CharField(allow_null=True)
+    description = serializers.CharField(allow_null=True)
+    from_address = serializers.CharField()
     retired = serializers.BooleanField(default=False)
-    retired_description = serializers.CharField(default="")
+    retired_description = serializers.CharField(
+        default="", allow_blank=True, allow_null=True
+    )
     subject = serializers.CharField(max_length=200)
     text = serializers.CharField()
     html = serializers.CharField()
-    topic_list = serializers.ListField()
     # Score data
     appearance = TemplateAppearanceSerializer()
     sender = TemplateSenderSerializer()
     relevancy = TemplateRelevancySerializer()
     behavior = TemplateBehaviorSerializer()
-    complexity = serializers.IntegerField()
     # db tracking data added below
     created_by = serializers.CharField(max_length=200)
     cb_timestamp = serializers.DateTimeField()
@@ -118,118 +99,57 @@ class TemplatePostSerializer(serializers.Serializer):
     This is a formats the data coming out of the Db.
     """
 
-    gophish_template_id = serializers.IntegerField()
     name = serializers.CharField()
-    template_type = serializers.ChoiceField(choices=TEMPLATE_TYPE_CHOICES)
-    landing_page_uuid = serializers.UUIDField(required=False)
+    landing_page_uuid = serializers.UUIDField(required=False, allow_null=True)
     deception_score = serializers.IntegerField()
-    descriptive_words = serializers.CharField()
-    description = serializers.CharField()
-    image_list = TemplateImageSerializer(many=True)
-    from_address = serializers.EmailField()
+    descriptive_words = serializers.CharField(
+        required=False, allow_null=True, allow_blank=True
+    )
+    description = serializers.CharField(
+        required=False, allow_null=True, allow_blank=True
+    )
+    from_address = serializers.CharField()
     retired = serializers.BooleanField(default=False)
-    retired_description = serializers.CharField(default="")
+    retired_description = serializers.CharField(
+        default="", allow_blank=True, allow_null=True
+    )
     subject = serializers.CharField(max_length=200)
     text = serializers.CharField()
     html = serializers.CharField()
-    topic_list = serializers.ListField()
     # Score data
     appearance = TemplateAppearanceSerializer()
     sender = TemplateSenderSerializer()
     relevancy = TemplateRelevancySerializer()
     behavior = TemplateBehaviorSerializer()
-    complexity = serializers.IntegerField()
-
-
-class TemplatePostResponseSerializer(serializers.Serializer):
-    """
-    This is the Template Post Response Serializer.
-
-    This is a formats the data coming out of the Db.
-    """
-
-    template_uuid = serializers.UUIDField()
 
 
 class TemplatePatchSerializer(serializers.Serializer):
-    """
-    This is the Template PATCH Serializer.
-
-    This is a formats the data coming out of the Db.
-    """
-
     name = serializers.CharField(required=False)
-    template_type = serializers.ChoiceField(
-        choices=TEMPLATE_TYPE_CHOICES, required=False
-    )
-    landing_page_uuid = serializers.UUIDField(required=False)
+    landing_page_uuid = serializers.UUIDField(required=False, allow_null=True)
     deception_score = serializers.IntegerField(required=False)
-    descriptive_words = serializers.CharField(required=False)
-    description = serializers.CharField(required=False)
-    image_list = TemplateImageSerializer(many=True, required=False)
-    from_address = serializers.EmailField(required=False)
+    descriptive_words = serializers.CharField(required=False, allow_null=True)
+    description = serializers.CharField(required=False, allow_null=True)
+    from_address = serializers.CharField(required=False)
     retired = serializers.BooleanField(default=False, required=False)
-    retired_description = serializers.CharField(default="", required=False)
+    retired_description = serializers.CharField(
+        default="", required=False, allow_blank=True, allow_null=True
+    )
     subject = serializers.CharField(max_length=200, required=False)
     text = serializers.CharField(required=False)
     html = serializers.CharField(required=False)
-    topic_list = serializers.ListField(required=False)
     # Score data
     appearance = TemplateAppearanceSerializer(required=False)
     sender = TemplateSenderSerializer(required=False)
     relevancy = TemplateRelevancySerializer(required=False)
     behavior = TemplateBehaviorSerializer(required=False)
-    complexity = serializers.IntegerField(required=False)
 
 
-class TemplatePatchResponseSerializer(serializers.Serializer):
-    """
-    This is the Template PATCH Response Serializer.
-
-    This is a formats the data coming out of the Db.
-    """
-
-    template_uuid = serializers.UUIDField()
-    gophish_template_id = serializers.IntegerField()
-    name = serializers.CharField()
-    template_type = serializers.ChoiceField(choices=TEMPLATE_TYPE_CHOICES)
-    landing_page_uuid = serializers.UUIDField()
-    deception_score = serializers.IntegerField()
-    descriptive_words = serializers.CharField()
-    description = serializers.CharField()
-    image_list = TemplateImageSerializer(many=True)
-    from_address = serializers.EmailField()
-    retired = serializers.BooleanField(default=False)
-    retired_description = serializers.CharField(default="")
-    subject = serializers.CharField(max_length=200)
-    text = serializers.CharField()
-    html = serializers.CharField()
-    topic_list = serializers.ListField()
-    appearance = TemplateAppearanceSerializer()
-    sender = TemplateSenderSerializer()
-    relevancy = TemplateRelevancySerializer()
-    behavior = TemplateBehaviorSerializer()
-    complexity = serializers.IntegerField()
-    created_by = serializers.CharField(max_length=200)
-    cb_timestamp = serializers.DateTimeField()
-    last_updated_by = serializers.CharField(max_length=200)
-    lub_timestamp = serializers.DateTimeField()
-
-
-class TemplateDeleteResponseSerializer(serializers.Serializer):
-    """
-    This is the Template DELETE Response Serializer.
-
-    This is a formats the data coming out of the Db.
-    """
-
+class TemplateResponseSerializer(serializers.Serializer):
     template_uuid = serializers.UUIDField()
 
 
 class TemplateStopResponseSerializer(serializers.Serializer):
-    """This is the Template STOP Response Serializer."""
-
-    template = TemplatePatchResponseSerializer()
+    template = TemplateSerializer()
     subscriptions = SubscriptionSerializer(many=True)
 
 
@@ -240,23 +160,17 @@ class TemplateQuerySerializer(serializers.Serializer):
     This is sets queries we can run on db collection.
     """
 
-    gophish_template_id = serializers.IntegerField(required=False)
     name = serializers.CharField(required=False)
-    template_type = serializers.ChoiceField(
-        choices=TEMPLATE_TYPE_CHOICES, required=False
-    )
     deception_score = serializers.IntegerField(required=False)
     descriptive_words = serializers.CharField(required=False)
     description = serializers.CharField(required=False)
-    from_address = serializers.EmailField(required=False)
+    from_address = serializers.CharField(required=False)
     retired = serializers.BooleanField(default=False)
     retired_description = serializers.CharField(required=False)
     subject = serializers.CharField(required=False)
     text = serializers.CharField(required=False)
     html = serializers.CharField(required=False)
     landing_page_uuid = serializers.UUIDField(required=False)
-    topic_list = serializers.ListField(required=False)
-    complexity = serializers.IntegerField(required=False)
     created_by = serializers.CharField(required=False)
     cb_timestamp = serializers.DateTimeField(required=False)
     last_updated_by = serializers.CharField(required=False)

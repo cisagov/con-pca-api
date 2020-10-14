@@ -37,7 +37,6 @@ class RecommendationsModel(Model):
     sender = ModelType(TemplateSenderModel)
     relevancy = ModelType(TemplateRelevancyModel)
     behavior = ModelType(TemplateBehaviorModel)
-    complexity = IntType()
 
     # db tracking data added below
     created_by = StringType()

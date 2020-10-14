@@ -31,7 +31,6 @@ class RecommendationsGetSerializer(serializers.Serializer):
     sender = TemplateSenderSerializer()
     relevancy = TemplateRelevancySerializer()
     behavior = TemplateBehaviorSerializer()
-    complexity = serializers.IntegerField()
     # db tracking data added below
     created_by = serializers.CharField(max_length=200)
     cb_timestamp = serializers.DateTimeField()
@@ -54,7 +53,6 @@ class RecommendationsPostSerializer(serializers.Serializer):
     sender = TemplateSenderSerializer()
     relevancy = TemplateRelevancySerializer()
     behavior = TemplateBehaviorSerializer()
-    complexity = serializers.IntegerField()
 
 
 class RecommendationsPostResponseSerializer(serializers.Serializer):
@@ -82,7 +80,6 @@ class RecommendationsPatchSerializer(serializers.Serializer):
     sender = TemplateSenderSerializer(required=False)
     relevancy = TemplateRelevancySerializer(required=False)
     behavior = TemplateBehaviorSerializer(required=False)
-    complexity = serializers.IntegerField(required=False)
 
 
 class RecommendationsPatchResponseSerializer(serializers.Serializer):
@@ -100,7 +97,6 @@ class RecommendationsPatchResponseSerializer(serializers.Serializer):
     sender = TemplateSenderSerializer()
     relevancy = TemplateRelevancySerializer()
     behavior = TemplateBehaviorSerializer()
-    complexity = serializers.IntegerField()
     created_by = serializers.CharField(max_length=200)
     cb_timestamp = serializers.DateTimeField()
     last_updated_by = serializers.CharField(max_length=200)
@@ -117,7 +113,6 @@ class RecommendationsQuerySerializer(serializers.Serializer):
     name = serializers.CharField(required=False)
     description = serializers.CharField(required=False)
     deception_level = serializers.IntegerField(required=False)
-    complexity = serializers.IntegerField(required=False)
     created_by = serializers.CharField(required=False)
     cb_timestamp = serializers.DateTimeField(required=False)
     last_updated_by = serializers.CharField(required=False)

@@ -9,12 +9,9 @@ from database.repository.types import (
     BooleanType,
     DateTimeType,
     IntType,
-    ListType,
-    ModelType,
     StringType,
     UUIDType,
 )
-from api.models.template_models import TemplateImageModel
 
 
 class LandingPageModel(Model):
@@ -28,7 +25,6 @@ class LandingPageModel(Model):
     gophish_template_id = IntType()
     # User Creataed
     name = StringType()
-    image_list = ListType(ModelType(TemplateImageModel))
     is_default_template = BooleanType(default=False)
     html = StringType()
 

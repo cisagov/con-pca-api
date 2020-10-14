@@ -64,67 +64,27 @@ class TemplateBehaviorModel(Model):
     greed = IntType()
 
 
-class TemplateImageModel(Model):
-    """
-    This is the Template Image Model.
-
-    This holds values for template Image Data.
-    """
-
-    file_name = StringType()
-    file_url = StringType()
-
-
 class TemplateModel(Model):
-    """
-    This is the Template Model.
-
-    This controls all data needed in saving the model. Current fields are:
-    template_uuid
-    name,
-    deception_score,
-    descriptive_words
-    description [string]
-    display_link [string]
-    from_address [string]
-    retired [bool]
-    retired_description [string]
-    subject [string]
-    text [string]
-    topic [list] [string]
-    landing_page_uuid
-    appearance [TemplateAppearanceModel]
-    sender [TemplateSenderModel]
-    relevancy [TemplateRelevancyModel]
-    behavior [TemplateBehaviorModel]
-    complexity [int]
-    """
-
     # Created via service
     template_uuid = UUIDType()
-    # Created by Gophish
-    gophish_template_id = IntType()
-    # User Creataed
+
+    # User Created
     name = StringType()
-    template_type = StringType()
     landing_page_uuid = UUIDType(required=False)
     deception_score = IntType()
     descriptive_words = StringType()
     description = StringType()
-    image_list = ListType(ModelType(TemplateImageModel))
     from_address = StringType()
     retired = BooleanType(default=False)
     retired_description = StringType()
     subject = StringType()
     text = StringType()
     html = StringType()
-    topic_list = ListType(StringType)
     # Score data
     appearance = ModelType(TemplateAppearanceModel)
     sender = ModelType(TemplateSenderModel)
     relevancy = ModelType(TemplateRelevancyModel)
     behavior = ModelType(TemplateBehaviorModel)
-    complexity = IntType()
 
     # db tracking data added below
     created_by = StringType()

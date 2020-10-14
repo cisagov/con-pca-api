@@ -84,7 +84,6 @@
         "fear": 0,
         "greed": 1
       },
-      "complexity": 1,
       "deception_level": 1,
       "description": "Recommendation with deception level of 1",
       "name": "Recommendation 1",
@@ -110,7 +109,6 @@
         "fear": 0,
         "greed": 1
       },
-      "complexity": 1,
       "deception_level": 2,
       "description": "Recommendation with deception level of 2",
       "name": "Recommendation 2",
@@ -136,7 +134,6 @@
         "fear": 0,
         "greed": 1
       },
-      "complexity": 3,
       "deception_level": 3,
       "description": "Recommendation with deception level of 3",
       "name": "Recommendation 3",
@@ -162,7 +159,6 @@
         "fear": 0,
         "greed": 1
       },
-      "complexity": 1,
       "deception_level": 1,
       "description": "Recommendation with deception level of 1",
       "name": "Recommendation 4",

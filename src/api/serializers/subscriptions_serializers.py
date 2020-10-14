@@ -89,7 +89,7 @@ class SubscriptionSerializer(serializers.Serializer):
     keywords = serializers.CharField(max_length=100)
     start_date = serializers.DateTimeField()
     end_date = serializers.DateTimeField(required=False)
-    gophish_campaign_list = GoPhishCampaignsSerializer(many=True)
+    gophish_campaign_list = GoPhishCampaignsSerializer(many=True, required=False)
     primary_contact = CustomerContactSerializer()
     dhs_contact_uuid = serializers.UUIDField(required=False)
     status = serializers.CharField(max_length=100)

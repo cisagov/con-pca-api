@@ -8,7 +8,6 @@ serializing data coming from the db into a request response.
 from api.serializers.subscriptions_serializers import (
     SubscriptionSerializer,
 )
-from api.serializers.template_serializers import TemplateImageSerializer
 from rest_framework import serializers
 
 
@@ -16,7 +15,6 @@ class LandingPageSerializer(serializers.Serializer):
     landing_page_uuid = serializers.UUIDField()
     gophish_template_id = serializers.IntegerField()
     name = serializers.CharField()
-    image_list = TemplateImageSerializer(many=True)
     is_default_template = serializers.BooleanField(default=False)
     html = serializers.CharField()
     # db tracking data added below
@@ -30,18 +28,15 @@ class LandingPagePostSerializer(serializers.Serializer):
     landing_page_uuid = serializers.UUIDField()
     gophish_template_id = serializers.IntegerField()
     name = serializers.CharField()
-    image_list = TemplateImageSerializer(many=True)
     is_default_template = serializers.BooleanField(default=False)
     subject = serializers.CharField(max_length=200)
     html = serializers.CharField()
-    topic_list = serializers.ListField()
 
 
 class LandingPagePatchSerializer(serializers.Serializer):
     landing_page_uuid = serializers.UUIDField()
     gophish_template_id = serializers.IntegerField(required=False)
     name = serializers.CharField(required=False)
-    image_list = TemplateImageSerializer(many=True, required=False)
     is_default_template = serializers.BooleanField(default=False, required=False)
     html = serializers.CharField(required=False)
 

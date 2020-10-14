@@ -3,7 +3,6 @@ Template Views.
 
 This handles the api for all the Template urls.
 """
-# Third-Party Libraries
 from api.manager import CampaignManager
 from api.serializers.template_serializers import (
     TemplatePatchSerializer,
@@ -47,7 +46,6 @@ class TemplatesListView(APIView):
     def post(self, request, format=None):
         """Post method."""
         post_data = request.data.copy()
-
         if template_service.exists({"name": post_data["name"]}):
             return Response(
                 {"error": "Template with name already exists"},
@@ -55,8 +53,6 @@ class TemplatesListView(APIView):
             )
 
         created_response = template_service.save(post_data)
-        if "errors" in created_response:
-            return Response(created_response, status=status.HTTP_400_BAD_REQUEST)
         return Response(created_response, status=status.HTTP_201_CREATED)
 
 
@@ -79,16 +75,12 @@ class TemplateView(APIView):
         if put_data["landing_page_uuid"] == "0" or not put_data["landing_page_uuid"]:
             put_data["landing_page_uuid"] = None
         updated_response = template_service.update(template_uuid, put_data)
-        if "errors" in updated_response:
-            return Response(updated_response, status=status.HTTP_400_BAD_REQUEST)
         return Response(updated_response, status=status.HTTP_202_ACCEPTED)
 
     @swagger_auto_schema(operation_id="Delete single Template")
     def delete(self, request, template_uuid):
         """Delete method."""
         delete_response = template_service.delete(template_uuid)
-        if "errors" in delete_response:
-            return Response(delete_response, status=status.HTTP_400_BAD_REQUEST)
         return Response(delete_response, status=status.HTTP_200_OK)
 
 

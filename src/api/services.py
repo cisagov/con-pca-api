@@ -1,3 +1,5 @@
+import logging
+from rest_framework import serializers
 import pymongo
 
 from api.utils import db_utils as db
@@ -36,22 +38,25 @@ class DBService:
         collection,
         model,
         validation,
-        get_serializer,
-        delete_response_serializer,
+        model_serializer,
+        response_serializer,
         save_serializer,
-        save_response_serializer,
         update_serializer,
-        update_response_serializer,
     ):
         self.collection = collection
         self.model = model
         self.validation = validation
-        self.get_serializer = get_serializer
-        self.delete_response_serializer = delete_response_serializer
+        self.model_serializer = model_serializer
+        self.response_serializer = response_serializer
         self.save_serializer = save_serializer
-        self.save_response_serializer = save_response_serializer
         self.update_serializer = update_serializer
-        self.update_response_serializer = update_response_serializer
+
+    def validate_serializer(self, serializer):
+        try:
+            serializer.is_valid(raise_exception=True)
+        except serializers.ValidationError as e:
+            logging.exception(e)
+            raise e
 
     def delete(self, uuid):
         resp = db.delete_single(
@@ -60,8 +65,8 @@ class DBService:
             model=self.model,
             validation_model=self.validation,
         )
-        serializer = self.delete_response_serializer(data=resp)
-        serializer.is_valid()
+        serializer = self.response_serializer(data=resp)
+        self.validate_serializer(serializer)
         return serializer.data
 
     def get(self, uuid):
@@ -71,8 +76,9 @@ class DBService:
             model=self.model,
             validation_model=self.validation,
         )
-        serializer = self.get_serializer(data=result)
-        serializer.is_valid()
+        serializer = self.model_serializer(data=result)
+        self.validate_serializer(serializer)
+
         return serializer.data
 
     def get_list(self, parameters=None, fields=None):
@@ -83,26 +89,26 @@ class DBService:
             validation_model=self.validation,
             fields=fields,
         )
-        serializer = self.get_serializer(data=result, many=True)
-        serializer.is_valid()
+        serializer = self.model_serializer(data=result, many=True)
+        self.validate_serializer(serializer)
         return serializer.data
 
     def save(self, data):
         serializer = self.save_serializer(data=data)
-        serializer.is_valid()
+        self.validate_serializer(serializer)
         result = db.save_single(
             post_data=serializer.data,
             collection=self.collection,
             model=self.model,
             validation_model=self.validation,
         )
-        serializer = self.save_response_serializer(data=result)
-        serializer.is_valid()
+        serializer = self.response_serializer(data=result)
+        self.validate_serializer(serializer)
         return serializer.data
 
     def update(self, uuid, data):
         serializer = self.update_serializer(data=data)
-        serializer.is_valid()
+        self.validate_serializer(serializer)
         result = db.update_single(
             uuid=uuid,
             put_data=serializer.data,
@@ -110,8 +116,8 @@ class DBService:
             model=self.model,
             validation_model=self.validation,
         )
-        serializer = self.update_response_serializer(data=result)
-        serializer.is_valid()
+        serializer = self.model_serializer(data=result)
+        self.validate_serializer(serializer)
         return serializer.data
 
     def update_nested(self, uuid, field, data, params=None):
@@ -151,12 +157,10 @@ class CampaignService(DBService):
             collection="campaign",
             model=campaign_models.GoPhishCampaignsModel,
             validation=campaign_models.validate_campaign,
-            get_serializer=campaign_serializers.GoPhishCampaignsSerializer,
-            delete_response_serializer=campaign_serializers.GoPhishCampaignsResponseSerializer,
+            model_serializer=campaign_serializers.GoPhishCampaignsSerializer,
+            response_serializer=campaign_serializers.GoPhishCampaignsResponseSerializer,
             save_serializer=campaign_serializers.GoPhishCampaignsPostSerializer,
-            save_response_serializer=campaign_serializers.GoPhishCampaignsResponseSerializer,
             update_serializer=campaign_serializers.GoPhishCampaignsPatchSerializer,
-            update_response_serializer=campaign_serializers.GoPhishCampaignsResponseSerializer,
         )
 
 
@@ -166,12 +170,10 @@ class LandingPageService(DBService):
             collection="landing_page",
             model=landing_page_models.LandingPageModel,
             validation=landing_page_models.validate_landing_page,
-            get_serializer=landing_page_serializers.LandingPageSerializer,
-            delete_response_serializer=landing_page_serializers.LandingPageResponseSerializer,
+            model_serializer=landing_page_serializers.LandingPageSerializer,
+            response_serializer=landing_page_serializers.LandingPageResponseSerializer,
             save_serializer=landing_page_serializers.LandingPagePostSerializer,
-            save_response_serializer=landing_page_serializers.LandingPageResponseSerializer,
             update_serializer=landing_page_serializers.LandingPagePatchSerializer,
-            update_response_serializer=landing_page_serializers.LandingPageSerializer,
         )
 
     def clear_and_set_default(self, uuid):
@@ -193,12 +195,10 @@ class SubscriptionService(DBService):
             collection="subscription",
             model=subscription_models.SubscriptionModel,
             validation=subscription_models.validate_subscription,
-            get_serializer=subscriptions_serializers.SubscriptionSerializer,
-            delete_response_serializer=subscriptions_serializers.SubscriptionDeleteResponseSerializer,
+            model_serializer=subscriptions_serializers.SubscriptionSerializer,
+            response_serializer=subscriptions_serializers.SubscriptionDeleteResponseSerializer,
             save_serializer=subscriptions_serializers.SubscriptionPostSerializer,
-            save_response_serializer=subscriptions_serializers.SubscriptionPostResponseSerializer,
             update_serializer=subscriptions_serializers.SubscriptionPatchSerializer,
-            update_response_serializer=subscriptions_serializers.SubscriptionSerializer,
         )
 
     def get(self, uuid):
@@ -211,7 +211,9 @@ class SubscriptionService(DBService):
         subscription["gophish_campaign_list"] = self.campaign_service.get_list(
             {"subscription_uuid": uuid}
         )
-        return self.get_serializer(data=subscription).data
+        serializer = self.get_serializer(data=subscription)
+        self.validate_serializer(serializer)
+        return serializer.data
 
     def get_single_subscription_webhook(self, campaign_id):
         return db.get_single_subscription_webhook(
@@ -225,12 +227,10 @@ class RecommendationService(DBService):
             collection="recommendations",
             model=recommendations_models.RecommendationsModel,
             validation=recommendations_models.validate_recommendations,
-            get_serializer=recommendations_serializers.RecommendationsGetSerializer,
-            delete_response_serializer=recommendations_serializers.RecommendationsDeleteResponseSerializer,
+            model_serializer=recommendations_serializers.RecommendationsGetSerializer,
+            response_serializer=recommendations_serializers.RecommendationsDeleteResponseSerializer,
             save_serializer=recommendations_serializers.RecommendationsPostSerializer,
-            save_response_serializer=recommendations_serializers.RecommendationsPostResponseSerializer,
             update_serializer=recommendations_serializers.RecommendationsPatchSerializer,
-            update_response_serializer=recommendations_serializers.RecommendationsPatchResponseSerializer,
         )
 
 
@@ -240,12 +240,10 @@ class TemplateService(DBService):
             collection="template",
             model=template_models.TemplateModel,
             validation=template_models.validate_template,
-            get_serializer=template_serializers.TemplateGetSerializer,
-            delete_response_serializer=template_serializers.TemplateDeleteResponseSerializer,
+            model_serializer=template_serializers.TemplateSerializer,
+            response_serializer=template_serializers.TemplateResponseSerializer,
             save_serializer=template_serializers.TemplatePostSerializer,
-            save_response_serializer=template_serializers.TemplatePostResponseSerializer,
             update_serializer=template_serializers.TemplatePatchSerializer,
-            update_response_serializer=template_serializers.TemplatePatchResponseSerializer,
         )
 
 
@@ -255,12 +253,10 @@ class TagService(DBService):
             collection="tag_definition",
             model=tag_models.TagModel,
             validation=tag_models.validate_tag,
-            get_serializer=tag_serializers.TagSerializer,
-            delete_response_serializer=tag_serializers.TagResponseSerializer,
+            model_serializer=tag_serializers.TagSerializer,
+            response_serializer=tag_serializers.TagResponseSerializer,
             save_serializer=tag_serializers.TagPostSerializer,
-            save_response_serializer=tag_serializers.TagResponseSerializer,
             update_serializer=tag_serializers.TagPatchSerializer,
-            update_response_serializer=tag_serializers.TagSerializer,
         )
 
 
@@ -270,12 +266,10 @@ class DHSContactService(DBService):
             collection="dhs_contact",
             model=dhs_models.DHSContactModel,
             validation=dhs_models.validate_dhs_contact,
-            get_serializer=dhs_serializers.DHSContactSerializer,
-            delete_response_serializer=dhs_serializers.DHSContactResponseSerializer,
+            model_serializer=dhs_serializers.DHSContactSerializer,
+            response_serializer=dhs_serializers.DHSContactResponseSerializer,
             save_serializer=dhs_serializers.DHSContactPostSerializer,
-            save_response_serializer=dhs_serializers.DHSContactResponseSerializer,
             update_serializer=dhs_serializers.DHSContactPatchSerializer,
-            update_response_serializer=dhs_serializers.DHSContactSerializer,
         )
 
 
@@ -285,12 +279,10 @@ class CustomerService(DBService):
             collection="customer",
             model=customer_models.CustomerModel,
             validation=customer_models.validate_customer,
-            get_serializer=customer_serializers.CustomerSerializer,
-            delete_response_serializer=customer_serializers.CustomerResponseSerializer,
+            model_serializer=customer_serializers.CustomerSerializer,
+            response_serializer=customer_serializers.CustomerResponseSerializer,
             save_serializer=customer_serializers.CustomerPostSerializer,
-            save_response_serializer=customer_serializers.CustomerResponseSerializer,
             update_serializer=customer_serializers.CustomerPatchSerializer,
-            update_response_serializer=customer_serializers.CustomerSerializer,
         )
 
 
@@ -300,10 +292,8 @@ class TargetHistoryService(DBService):
             collection="target",
             model=target_history_models.TargetHistoryModel,
             validation=target_history_models.validate_history,
-            get_serializer=target_history_serializers.TargetHistorySerializer,
-            delete_response_serializer=target_history_serializers.TargetHistoryResponseSerializer,
+            model_serializer=target_history_serializers.TargetHistorySerializer,
+            response_serializer=target_history_serializers.TargetHistoryResponseSerializer,
             save_serializer=target_history_serializers.TargetHistoryPostSerializer,
-            save_response_serializer=target_history_serializers.TargetHistoryResponseSerializer,
             update_serializer=target_history_serializers.TargetHistoryPatchSerializer,
-            update_response_serializer=target_history_serializers.TargetHistorySerializer,
         )

@@ -225,7 +225,7 @@ def __create_campaign(
         "status": campaign.status,
         "results": [],
         "phish_results": default_phish_results,
-        "groups": [campaign_serializers.CampaignGroupSerializer(target_group).data],
+        "groups": [campaign_serializers.GoPhishGroupSerializer(target_group).data],
         "timeline": [
             {
                 "email": None,
@@ -235,7 +235,7 @@ def __create_campaign(
             }
         ],
         "target_email_list": targets,
-        "smtp": campaign_serializers.CampaignSmtpSerializer(campaign.smtp).data,
+        "smtp": campaign_serializers.GoPhishSmtpSerializer(campaign.smtp).data,
     }
 
 
