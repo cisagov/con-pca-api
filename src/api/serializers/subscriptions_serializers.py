@@ -58,7 +58,7 @@ class SubscriptionSerializer(serializers.Serializer):
     )
     start_date = serializers.DateTimeField()
     end_date = serializers.DateTimeField(required=False)
-    gophish_campaign_list = GoPhishCampaignsSerializer(many=True, required=False)
+    campaigns = GoPhishCampaignsSerializer(many=True, required=False)
     primary_contact = CustomerContactSerializer()
     dhs_contact_uuid = serializers.UUIDField()
     status = serializers.CharField(max_length=100)

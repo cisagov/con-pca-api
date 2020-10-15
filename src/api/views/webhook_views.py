@@ -13,10 +13,11 @@ from api.serializers import webhook_serializers
 from api.utils import webhooks
 from api.utils.generic import format_ztime
 from api.utils.template.templates import update_target_history
-from api.services import SubscriptionService
+from api.services import SubscriptionService, CampaignService
 
 manager = CampaignManager()
 subscription_service = SubscriptionService()
+campaign_service = CampaignService()
 
 
 class IncomingWebhookView(APIView):
@@ -76,6 +77,13 @@ class IncomingWebhookView(APIView):
             subscription = subscription_service.get_single_subscription_webhook(
                 seralized_data["campaign_id"]
             )
+
+            campaign = CampaignService.get_list(
+                parameters={"campaign_id": seralized_data["campaign_id"]}
+            )[0]
+
+            subscription = SubscriptionService.get(campaign["subscription_uuid"])
+
             if subscription is None:
                 return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -95,21 +103,13 @@ class IncomingWebhookView(APIView):
                         subscription["subscription_uuid"], {"status": "In Progress"}
                     )
 
-                campaign = list(
-                    filter(
-                        lambda x: x["campaign_id"] == seralized_data["campaign_id"],
-                        subscription["gophish_campaign_list"],
-                    )
-                )[0]
-
                 # If there is not a corresponding opened event to a link being clicked, create one
                 if campaign_event == "Clicked Link":
                     if not webhooks.check_opened_event(
                         campaign["timeline"], seralized_data["email"]
                     ):
                         webhooks.push_webhook(
-                            subscription_uuid=subscription["subscription_uuid"],
-                            campaign_id=campaign["campaign_id"],
+                            campaign_uuid=campaign["campaign_uuid"],
                             email=seralized_data["email"],
                             message="Email Opened",
                             time=datetime.now(),
@@ -118,8 +118,7 @@ class IncomingWebhookView(APIView):
 
                 # Add Timeline Data
                 webhooks.push_webhook(
-                    subscription_uuid=subscription["subscription_uuid"],
-                    campaign_id=campaign["campaign_id"],
+                    campaign_uuid=campaign["campaign_uuid"],
                     email=seralized_data["email"],
                     message=seralized_data["message"],
                     time=format_ztime(seralized_data["time"]),
@@ -127,13 +126,8 @@ class IncomingWebhookView(APIView):
                 )
 
                 # update campaign to be marked as dirty
-                subscription_service.update_nested(
-                    uuid=subscription["subscription_uuid"],
-                    field="gophish_campaign_list.$.phish_results_dirty",
-                    data=True,
-                    params={
-                        "gophish_campaign_list.campaign_id": campaign["campaign_id"]
-                    },
+                campaign_service.update(
+                    campaign["campaign_uuid"], {"phish_results_dirty": True}
                 )
 
                 # update cycle to be marked as dirty

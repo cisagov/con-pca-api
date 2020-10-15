@@ -46,7 +46,7 @@ class SystemReportsView(APIView):
                     cycle_reports_sent += 1
                 if email_notifcation["report_type"] == "Yearly":
                     yearly_reports_sent += 1
-            for campaign in sub["gophish_campaign_list"]:
+            for campaign in sub["campaigns"]:
                 _timeline_list.append(campaign["timeline"])
 
         timeline_item_summary = []

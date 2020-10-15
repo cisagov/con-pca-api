@@ -1,15 +1,15 @@
-from api.services import SubscriptionService
+from api.services import CampaignService
 
-subscription_service = SubscriptionService()
+campaign_service = CampaignService()
 
 
-def push_webhook(subscription_uuid, campaign_id, email, message, time, details):
+def push_webhook(campaign_uuid, email, message, time, details):
     data = {"email": email, "message": message, "time": time, "details": details}
-    return subscription_service.push_nested(
-        uuid=subscription_uuid,
-        field="gophish_campaign_list.$.timeline",
+
+    return campaign_service.push_nested(
+        uuid=campaign_uuid,
+        field="timeline",
         data=data,
-        params={"gophish_campaign_list.campaign_id": campaign_id},
     )
 
 

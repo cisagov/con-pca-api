@@ -81,13 +81,12 @@ class DBService:
 
         return serializer.data
 
-    def get_list(self, parameters=None, fields=None):
+    def get_list(self, parameters=None):
         result = db.get_list(
             parameters=parameters,
             collection=self.collection,
             model=self.model,
             validation_model=self.validation,
-            fields=fields,
         )
         serializer = self.model_serializer(data=result, many=True)
         self.validate_serializer(serializer)
@@ -211,17 +210,12 @@ class SubscriptionService(DBService):
             model=self.model,
             validation_model=self.validation,
         )
-        subscription["gophish_campaign_list"] = self.campaign_service.get_list(
+        subscription["campaigns"] = self.campaign_service.get_list(
             {"subscription_uuid": uuid}
         )
         serializer = self.model_serializer(data=subscription)
         self.validate_serializer(serializer)
         return serializer.data
-
-    def get_single_subscription_webhook(self, campaign_id):
-        return db.get_single_subscription_webhook(
-            campaign_id, self.collection, self.model, self.validation
-        )
 
 
 class RecommendationService(DBService):

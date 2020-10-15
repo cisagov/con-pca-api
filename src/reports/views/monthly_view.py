@@ -169,7 +169,7 @@ class MonthlyReportsView(APIView):
                 active_cycle = cycle
 
         active_campaigns = []
-        for campaign in subscription["gophish_campaign_list"]:
+        for campaign in subscription["campaigns"]:
             if campaign["campaign_id"] in active_cycle["campaigns_in_cycle"]:
                 active_campaigns.append(campaign)
 

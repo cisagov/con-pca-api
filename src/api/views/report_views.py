@@ -51,7 +51,7 @@ class ReportsView(APIView):
         subscription_uuid = self.kwargs["subscription_uuid"]
         subscription = subscription_service.get(subscription_uuid)
 
-        campaigns = subscription.get("gophish_campaign_list")
+        campaigns = subscription.get("campaigns")
 
         parameters = {
             "template_uuid": {"$in": subscription["templates_selected_uuid_list"]}

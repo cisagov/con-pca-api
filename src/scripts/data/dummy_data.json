@@ -178,7 +178,6 @@
       "active": true,
       "customer_uuid": "changeme",
       "dhs_contact_uuid": "changeme",
-      "gophish_campaign_list": [],
       "keywords": "research development government work job",
       "name": "changeme1",
       "primary_contact": {
@@ -243,7 +242,6 @@
       "active": true,
       "customer_uuid": "changeme",
       "dhs_contact_uuid": "changeme",
-      "gophish_campaign_list": [],
       "keywords": "search query google",
       "name": "changme2",
       "primary_contact": {

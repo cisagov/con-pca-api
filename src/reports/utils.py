@@ -15,12 +15,14 @@ from api.services import (
     SubscriptionService,
     TemplateService,
     RecommendationService,
+    CampaignService,
 )
 
 customer_service = CustomerService()
 subscription_service = SubscriptionService()
 template_service = TemplateService()
 recommendation_service = RecommendationService()
+campaign_service = CampaignService()
 
 
 def get_closest_cycle_within_day_range(subscription, start_date, day_range=90):
@@ -324,9 +326,9 @@ def get_subscription_stats_for_month(subscription, end_date, cycle_uuid=None):
         active_cycle = get_cycle_by_date_in_range(subscription, end_date)
 
     # start_date = active_cycle["start_date"]
-    # Get all the campaigns for the specified cycle from the gophish_campaign_list
+    # Get all the campaigns for the specified cycle from the campaigns
     campaigns_in_cycle = []
-    for campaign in subscription["gophish_campaign_list"]:
+    for campaign in subscription["campaigns"]:
         if campaign["campaign_id"] in active_cycle["campaigns_in_cycle"]:
             campaigns_in_cycle.append(campaign)
 
@@ -378,9 +380,9 @@ def get_subscription_stats_for_cycle(subscription, cycle_uuid=None):
     if not active_cycle:
         active_cycle = subscription["cycles"][0]
 
-    # Get all the campaigns for the specified cycle from the gophish_campaign_list
+    # Get all the campaigns for the specified cycle from the campaigns
     campaigns_in_cycle = []
-    for campaign in subscription["gophish_campaign_list"]:
+    for campaign in subscription["campaigns"]:
         if campaign["campaign_id"] in active_cycle["campaigns_in_cycle"]:
             campaigns_in_cycle.append(campaign)
 
@@ -456,12 +458,12 @@ def get_subscription_stats_for_yearly(
 
     campaigns_in_year = campaigns_no_dupliactes
 
-    # Get all the campaigns for the specified cycle from the gophish_campaign_list
+    # Get all the campaigns for the specified cycle from the campaigns
 
-    # Get the campaign info from the gophish_campaign_list, and store in aggregate array
+    # Get the campaign info from the campaigns, and store in aggregate array
     # and hte cycle specific array
     campaigns_in_time_gap = []
-    for campaign in subscription["gophish_campaign_list"]:
+    for campaign in subscription["campaigns"]:
         if campaign["campaign_id"] in campaigns_in_year:
             campaigns_in_time_gap.append(campaign)
         for cycle in cycles_in_year:
@@ -745,40 +747,26 @@ def generate_cycle_phish_results(subscription, cycle):
         "submitted": 0,
         "reported": 0,
     }
-    if subscription["gophish_campaign_list"]:
-        for campaign in subscription["gophish_campaign_list"]:
-            if campaign["campaign_id"] in cycle["campaigns_in_cycle"]:
-                # If campaign timeline is dirty, recalculate the phish results
-                if campaign["phish_results_dirty"]:
+    for campaign in subscription["campaigns"]:
+        if campaign["campaign_id"] in cycle["campaigns_in_cycle"]:
+            # If campaign timeline is dirty, recalculate the phish results
+            if campaign["phish_results_dirty"]:
 
-                    unique_moments = get_unique_moments(campaign["timeline"])
-                    phishing_results = count_timeline_moments(unique_moments)
+                unique_moments = get_unique_moments(campaign["timeline"])
+                phishing_results = count_timeline_moments(unique_moments)
 
-                    # Update database with new phish results
-                    subscription_service.update_nested(
-                        uuid=subscription["subscription_uuid"],
-                        field="gophish_campaign_list.$.phish_results",
-                        data=phishing_results,
-                        params={
-                            "gophish_campaign_list.campaign_id": campaign["campaign_id"]
-                        },
-                    )
-                    #  Mark campaign data as clean
-                    subscription_service.update_nested(
-                        uuid=subscription["subscription_uuid"],
-                        field="gophish_campaign_list.$.phish_results_dirty",
-                        data=False,
-                        params={
-                            "gophish_campaign_list.campaign_id": campaign["campaign_id"]
-                        },
-                    )
-                    campaign["phish_results"] = phishing_results
+                # Update database with new phish results
+                campaign_service.update(
+                    campaign["campaign_uuid"],
+                    {"phish_results": phishing_results, "phish_results_dirty": False},
+                )
+                campaign["phish_results"] = phishing_results
 
-                # append campaign results to cycle results
-                for key in campaign["phish_results"]:
-                    cycle_phish_results[key] += campaign["phish_results"][key]
+            # append campaign results to cycle results
+            for key in campaign["phish_results"]:
+                cycle_phish_results[key] += campaign["phish_results"][key]
 
-        cycle["phish_result"] = cycle_phish_results
+    cycle["phish_result"] = cycle_phish_results
 
     # update the cycle phish results
     subscription_service.update_nested(
@@ -848,14 +836,7 @@ def get_related_subscription_stats(subscription, start_date=None):
 
     # Get a list of all customers with the same sector so sector/industry averages can be calculated
     parameters = {"sector": _customer["sector"]}
-    fields = {
-        "customer_uuid": 1,
-        "sector": 1,
-        "industry": 1,
-    }
-    customer_list_by_sector = customer_service.get_list(
-        parameters=parameters, fields=fields
-    )
+    customer_list_by_sector = customer_service.get_list(parameters=parameters)
 
     sector_customer_uuids = []
     industry_customer_uuids = []
@@ -874,7 +855,7 @@ def get_related_subscription_stats(subscription, start_date=None):
         "subscription_uuid": 1,
         "cycles": 1,
         "name": 1,
-        "gophish_campaign_list": 1,
+        "campaigns": 1,
     }
     subscription_list = subscription_service.get_list(
         parameters=parameters, fields=subscription_fields
@@ -1106,20 +1087,7 @@ def campaign_templates_to_string(most_succesful_campaigns):
 
 def get_template_details(campaign_results):
     """Given a list of campaigns, retrieve the template data for each one."""
-    fields = {
-        "template_uuid": 1,
-        "name": 1,
-        "deception_score": 1,
-        "description": 1,
-        "appearance": 1,
-        "sender": 1,
-        "relevancy": 1,
-        "behavior": 1,
-        "subject": 1,
-        "from_address": 1,
-        "html": 1,
-    }
-    template_list = template_service.get_list(fields=fields)
+    template_list = template_service.get_list()
     total_sent = 0
     for camp in campaign_results:
         try:

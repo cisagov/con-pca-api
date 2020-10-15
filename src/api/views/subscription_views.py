@@ -13,7 +13,7 @@ from api.serializers.subscriptions_serializers import (
     SubscriptionPatchSerializer,
     SubscriptionPostSerializer,
 )
-from api.services import SubscriptionService
+from api.services import SubscriptionService, CampaignService
 from api.utils.subscription.actions import start_subscription, stop_subscription
 from reports.utils import update_phish_results
 from drf_yasg.utils import swagger_auto_schema
@@ -27,6 +27,7 @@ campaign_manager = CampaignManager()
 template_manager = TemplateManager()
 
 subscription_service = SubscriptionService()
+campaign_service = CampaignService()
 
 
 class SubscriptionsListView(APIView):
@@ -49,9 +50,16 @@ class SubscriptionsListView(APIView):
         # If a template is deleted that a subscription historically has used.
         # The subscription stops working in the UI.
         if request.GET.get("template"):
-            parameters["gophish_campaign_list.template_uuid"] = request.GET.get(
-                "template"
+            campaigns = campaign_service.get_list(
+                parameters={"template_uuid": request.GET.get("template")}
             )
+            parameters[
+                {
+                    "subscription_uuid": {
+                        "$in": [c["subscription_uuid"] for c in campaigns]
+                    }
+                }
+            ]
 
         if request.GET.get("dhs_contact"):
             parameters["dhs_contact_uuid"] = request.GET.get("dhs_contact")
@@ -108,6 +116,11 @@ class SubscriptionView(APIView):
                 stop_subscription(subscription)
             except Exception as e:
                 logging.exception(e)
+
+        # Delete Campaigns
+        campaigns = campaign_service.get_list({"subscription_uuid": subscription_uuid})
+        for campaign in campaigns:
+            campaign_service.delete(campaign["campaign_uuid"])
 
         # Delete Subscription
         delete_response = subscription_service.delete(subscription_uuid)

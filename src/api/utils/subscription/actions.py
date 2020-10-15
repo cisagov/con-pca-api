@@ -55,7 +55,7 @@ def start_subscription(data=None, subscription_uuid=None, new_cycle=False):
         subscription = data
 
     if new_cycle and subscription_uuid:
-        stop_campaigns(subscription["gophish_campaign_list"])
+        stop_campaigns(subscription["campaigns"])
 
     # calculate start and end date to subscription
     start_date, end_date = calculate_subscription_start_end_date(
@@ -169,7 +169,7 @@ def stop_subscription(subscription):
     Returns updated subscription.
     """
     # Stop Campaigns
-    stop_campaigns(subscription["gophish_campaign_list"])
+    stop_campaigns(subscription["campaigns"])
 
     # Remove subscription tasks from the scheduler
     subscription["tasks"] = []

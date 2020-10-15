@@ -186,7 +186,7 @@ class EmailSender:
 
         campaign_smtps = []
 
-        for campaign in self.subscription.get("gophish_campaign_list"):
+        for campaign in self.subscription.get("campaigns"):
             campaign_smtps.append(campaign["smtp"])
 
         email_count = len(self.subscription.get("target_email_list"))

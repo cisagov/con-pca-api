@@ -182,26 +182,12 @@ def main():
         for cycle in subscription["cycles"]:
             if cycle["active"]:
                 active_campaigns = cycle["campaigns_in_cycle"]
-        for campaign in subscription["gophish_campaign_list"]:
+        for campaign in subscription["campaigns"]:
             if campaign["campaign_id"] in active_campaigns:
                 for target in campaign["target_email_list"]:
                     generate_webhooks_for_target(target, campaign["campaign_id"])
                     print(f"{target_on}/{target_count}")
                     target_on += 1
-
-    # print(active_campaigns)
-    # print("========")
-    # print(subscriptions)
-
-    # print("writing values to file: {}...".format(output_file))
-
-    # with open(output_file, "w") as outfile:
-    #     data = {
-    #         "created_customers": created_customer_uuids,
-    #         "created_subcription_uuids": created_subcription_uuids,
-    #     }
-    #     json.dump(data, outfile, indent=2)
-    # print("Finished.....")
 
 
 def generate_webhooks_for_target(

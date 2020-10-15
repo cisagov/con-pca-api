@@ -1,6 +1,9 @@
 """Cycles Util."""
 # Third-Party Libraries
 from api.utils.generic import format_ztime
+from api.services import CampaignService
+
+campaign_service = CampaignService()
 
 
 def get_reported_emails(subscription):
@@ -13,7 +16,7 @@ def get_reported_emails(subscription):
         list: list of all cycles and their reported emails
     """
     campaign_reports = []
-    for campaign in subscription["gophish_campaign_list"]:
+    for campaign in subscription["campaigns"]:
         campaign_reports.append(get_campaign_reports(campaign))
 
     cycle_reports = []
@@ -58,21 +61,20 @@ def delete_reported_emails(subscription, data):
     """Delete Reported Emails.
 
     Args:
-        gophish_campaign_list (list): list of gophish campaigns
+        campaigns (list): list of gophish campaigns
         delete_list (list): list of objects to be deleted.
 
     Returns:
         list: updated gophish campaign list
     """
     cycle = get_cycle(subscription, data)
-    gophish_campaign_list = subscription["gophish_campaign_list"]
 
     if cycle is None:
-        return gophish_campaign_list
+        return subscription["campaigns"]
     campaigns_in_cycle = cycle["campaigns_in_cycle"]
     delete_list_campaigns = [email["campaign_id"] for email in data["delete_list"]]
 
-    for campaign in gophish_campaign_list:
+    for campaign in subscription["campaigns"]:
         if (
             campaign["campaign_id"] in delete_list_campaigns
             and campaign["campaign_id"] in campaigns_in_cycle
@@ -85,13 +87,17 @@ def delete_reported_emails(subscription, data):
                             and timeline_item["message"] == "Email Reported"
                         ):
                             campaign["timeline"].remove(timeline_item)
+                            campaign_service.update(
+                                campaign["campaign_uuid"],
+                                {"timeline": campaign["timeline"]},
+                            )
 
 
 def update_reported_emails(subscription, data):
     """Update Reported Emails.
 
     Args:
-        gophish_campaign_list (list): list of gophish campaigns
+        campaigns (list): list of gophish campaigns
         update_list (list): list of objects to be Updated or to add.
 
     Returns:
@@ -111,7 +117,7 @@ def update_reported_emails(subscription, data):
         else:
             add_email_reports.append(email)
 
-    for campaign in subscription["gophish_campaign_list"]:
+    for campaign in subscription["campaigns"]:
         campaign_targets = [target["email"] for target in campaign["target_email_list"]]
         if (
             campaign["campaign_id"] in update_list_campaigns
@@ -147,6 +153,10 @@ def update_reported_emails(subscription, data):
                         "duplicate": False,
                     }
                 )
+
+        campaign_service.update(
+            campaign["campaign_uuid"], {"timeline": campaign["timeline"]}
+        )
 
 
 def override_total_reported(subscription, cycle_data_override):
