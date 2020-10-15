@@ -76,8 +76,5 @@ class CycleReportedView(APIView):
         emails_reported_list = get_reported_emails(subscription)
         updated_response = subscription_service.update(subscription_uuid, data)
 
-        if "errors" in updated_response:
-            return Response(updated_response, status=status.HTTP_400_BAD_REQUEST)
-
         serializer = CycleEmailReportedListSerializer(emails_reported_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

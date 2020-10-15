@@ -102,7 +102,7 @@ class SubscriptionModel(Model):
     status = StringType()
     target_email_list = ListType(ModelType(SubscriptionTargetModel))
     target_email_list_cached_copy = ListType(ModelType(SubscriptionTargetModel))
-    templates_selected_uuid_list = ListType(StringType)
+    templates_selected_uuid_list = ListType(UUIDType)
     sending_profile_name = StringType()
     active = BooleanType()
     archived = BooleanType(default=False)

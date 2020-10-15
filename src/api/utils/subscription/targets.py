@@ -72,7 +72,6 @@ def assign_targets(sub_level):
         randomized_templates = random.sample(
             available_templates, len(available_templates)
         )
-        print(randomized_templates)
         selected_template = randomized_templates[0]
         if not sub_level["template_targets"].get(selected_template):
             sub_level["template_targets"][selected_template] = []

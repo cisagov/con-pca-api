@@ -152,6 +152,7 @@ def start_subscription(data=None, subscription_uuid=None, new_cycle=False):
     if subscription_uuid:
         response = subscription_service.update(subscription_uuid, subscription)
     else:
+        print("SAVING SUBSCRIPTION")
         response = subscription_service.save(subscription)
         response["name"] = subscription["name"]
 

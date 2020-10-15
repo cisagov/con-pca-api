@@ -248,9 +248,8 @@ class MonthlyReportsView(APIView):
     def get(self, request, **kwargs):
         subscription_uuid = self.kwargs["subscription_uuid"]
         subscription = subscription_service.get(subscription_uuid)
-        customer = customer_service.get(subscription.get("customer_uuid"))
-
-        dhs_contact = dhs_contact_service.get(subscription.get("dhs_contact_uuid"))
+        customer = customer_service.get(subscription["customer_uuid"])
+        dhs_contact = dhs_contact_service.get(subscription["dhs_contact_uuid"])
 
         metrics, subscription_stats = self.getMonthlyStats(subscription)
 

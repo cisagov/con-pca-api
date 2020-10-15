@@ -74,11 +74,7 @@ class SubscriptionsListView(APIView):
     def post(self, request, format=None):
         """Post method."""
         post_data = request.data.copy()
-
         created_response = start_subscription(data=post_data)
-
-        if "errors" in created_response:
-            return Response(created_response, status=status.HTTP_400_BAD_REQUEST)
         return Response(created_response, status=status.HTTP_201_CREATED)
 
 
@@ -102,8 +98,6 @@ class SubscriptionView(APIView):
         """Patch method."""
         put_data = request.data.copy()
         updated_response = subscription_service.update(subscription_uuid, put_data)
-        if "errors" in updated_response:
-            return Response(updated_response, status=status.HTTP_400_BAD_REQUEST)
         return Response(updated_response, status=status.HTTP_202_ACCEPTED)
 
     @swagger_auto_schema(operation_id="Delete single subscription")
@@ -125,8 +119,6 @@ class SubscriptionView(APIView):
         # Delete Subscription
         delete_response = subscription_service.delete(subscription_uuid)
 
-        if "errors" in delete_response:
-            return Response(delete_response, status=status.HTTP_400_BAD_REQUEST)
         return Response(delete_response, status=status.HTTP_200_OK)
 
 
@@ -204,6 +196,4 @@ class SubscriptionTargetCacheView(APIView):
             subscription_uuid, {"target_email_list_cached_copy": target_update_data}
         )
 
-        if "errors" in resp:
-            return Response(resp, status=status.HTTP_400_BAD_REQUEST)
         return Response(resp, status=status.HTTP_202_ACCEPTED)

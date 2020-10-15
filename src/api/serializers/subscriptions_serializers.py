@@ -66,7 +66,9 @@ class SubscriptionSerializer(serializers.Serializer):
     target_email_list_cached_copy = SubscriptionTargetSerializer(
         many=True, required=False
     )
-    templates_selected_uuid_list = serializers.ListField(required=False)
+    templates_selected_uuid_list = serializers.ListField(
+        child=serializers.UUIDField(), required=False
+    )
     sending_profile_name = serializers.CharField(required=False)
     active = serializers.BooleanField()
     archived = serializers.BooleanField(default=False)
@@ -100,7 +102,9 @@ class SubscriptionPostSerializer(serializers.Serializer):
     target_email_list = SubscriptionTargetSerializer(many=True)
     target_email_list_cached_copy = SubscriptionTargetSerializer(many=True)
     tasks = SubscriptionTasksSerializer(many=True, required=False)
-    templates_selected_uuid_list = serializers.ListField()
+    templates_selected_uuid_list = serializers.ListField(
+        child=serializers.UUIDField(), required=False
+    )
     sending_profile_name = serializers.CharField()
     active = serializers.BooleanField()
     archived = serializers.BooleanField(default=False)
@@ -130,7 +134,9 @@ class SubscriptionPatchSerializer(serializers.Serializer):
         required=False, many=True
     )
     tasks = SubscriptionTasksSerializer(many=True, required=False)
-    templates_selected_uuid_list = serializers.ListField(required=False)
+    templates_selected_uuid_list = serializers.ListField(
+        child=serializers.UUIDField(), required=False
+    )
     sending_profile_name = serializers.CharField(required=False)
     active = serializers.BooleanField(required=False)
     archived = serializers.BooleanField(required=False, default=False)

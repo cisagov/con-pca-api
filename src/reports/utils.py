@@ -339,10 +339,7 @@ def get_subscription_stats_for_month(subscription, end_date, cycle_uuid=None):
         unique_moments = get_unique_moments(campaign["timeline"])
         for unique_moment in unique_moments:
             append_timeline_moment(unique_moment, campaign_timeline_summary)
-        # filter the timeline moments to only those within the given date range
-        # filter_campaign_timeline_by_date_range(
-        #     campaign_timeline_summary, start_date, active_cycle["end_date"]
-        # )
+
         # Get stats and aggregate of all time differences (all times needed for stats like median when consolidated)
         stats, time_aggregate = generate_campaign_statistics(
             campaign_timeline_summary, active_cycle["override_total_reported"]
@@ -850,16 +847,7 @@ def get_related_subscription_stats(subscription, start_date=None):
     parameters = {
         "active": True,
     }
-    subscription_fields = {
-        "customer_uuid": 1,
-        "subscription_uuid": 1,
-        "cycles": 1,
-        "name": 1,
-        "campaigns": 1,
-    }
-    subscription_list = subscription_service.get_list(
-        parameters=parameters, fields=subscription_fields
-    )
+    subscription_list = subscription_service.get_list(parameters=parameters)
 
     sector_subscriptions = []
     industry_subscriptions = []

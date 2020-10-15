@@ -60,18 +60,18 @@ class DBService:
 
     def delete(self, uuid):
         resp = db.delete_single(
-            uuid=uuid,
+            uuid=str(uuid),
             collection=self.collection,
             model=self.model,
             validation_model=self.validation,
         )
         serializer = self.response_serializer(data=resp)
         self.validate_serializer(serializer)
-        return serializer.data
+        return serializer.validated_data
 
     def get(self, uuid):
         result = db.get_single(
-            uuid=uuid,
+            uuid=str(uuid),
             collection=self.collection,
             model=self.model,
             validation_model=self.validation,
@@ -79,7 +79,7 @@ class DBService:
         serializer = self.model_serializer(data=result)
         self.validate_serializer(serializer)
 
-        return serializer.data
+        return serializer.validated_data
 
     def get_list(self, parameters=None):
         result = db.get_list(
@@ -90,10 +90,9 @@ class DBService:
         )
         serializer = self.model_serializer(data=result, many=True)
         self.validate_serializer(serializer)
-        return serializer.data
+        return serializer.validated_data
 
     def save(self, data):
-        print("======SAVING======")
         serializer = self.save_serializer(data=data)
         self.validate_serializer(serializer)
         result = db.save_single(
@@ -102,29 +101,35 @@ class DBService:
             model=self.model,
             validation_model=self.validation,
         )
-        print("======SAVED======")
-        print(result)
+        if type(result) is dict:
+            if result.get("errors"):
+                logging.error(result.get("errors"))
+                raise Exception(result.get("errors"))
         serializer = self.response_serializer(data=result)
         self.validate_serializer(serializer)
-        return serializer.data
+        return serializer.validated_data
 
     def update(self, uuid, data):
         serializer = self.update_serializer(data=data)
         self.validate_serializer(serializer)
         result = db.update_single(
-            uuid=uuid,
+            uuid=str(uuid),
             put_data=serializer.data,
             collection=self.collection,
             model=self.model,
             validation_model=self.validation,
         )
+        if type(result) is dict:
+            if result.get("errors"):
+                logging.error(result.get("errors"))
+                raise Exception(result.get("errors"))
         serializer = self.model_serializer(data=result)
         self.validate_serializer(serializer)
-        return serializer.data
+        return serializer.validated_data
 
     def update_nested(self, uuid, field, data, params=None):
         return db.update_nested_single(
-            uuid=uuid,
+            uuid=str(uuid),
             field=field,
             put_data=data,
             collection=self.collection,
@@ -135,7 +140,7 @@ class DBService:
 
     def push_nested(self, uuid, field, data, params=None):
         return db.push_nested_item(
-            uuid=uuid,
+            uuid=str(uuid),
             field=field,
             put_data=data,
             collection=self.collection,
@@ -185,7 +190,7 @@ class LandingPageService(DBService):
         sub_query = {}
         newvalues = {"$set": {"is_default_template": False}}
         collection.update_many(sub_query, newvalues)
-        sub_query = {"landing_page_uuid": uuid}
+        sub_query = {"landing_page_uuid": str(uuid)}
         newvalues = {"$set": {"is_default_template": True}}
         collection.update_one(sub_query, newvalues)
 
@@ -205,17 +210,17 @@ class SubscriptionService(DBService):
 
     def get(self, uuid):
         subscription = db.get_single(
-            uuid=uuid,
+            uuid=str(uuid),
             collection=self.collection,
             model=self.model,
             validation_model=self.validation,
         )
         subscription["campaigns"] = self.campaign_service.get_list(
-            {"subscription_uuid": uuid}
+            {"subscription_uuid": str(uuid)}
         )
         serializer = self.model_serializer(data=subscription)
         self.validate_serializer(serializer)
-        return serializer.data
+        return serializer.validated_data
 
 
 class RecommendationService(DBService):

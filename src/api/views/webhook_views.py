@@ -30,6 +30,10 @@ class IncomingWebhookView(APIView):
     def post(self, request):
         """Post method."""
         data = request.data.copy()
+        print("========WEBHOOK========")
+        print(data)
+        if data.get("message") == "Campaign Created" or data.get("success"):
+            return Response(status=status.HTTP_200_OK)
         return self.__handle_webhook_data(data)
 
     def is_duplicate_timeline_entry(self, timeline, webhook_data):
@@ -74,15 +78,11 @@ class IncomingWebhookView(APIView):
         if "message" in data:
             seralized = webhook_serializers.InboundWebhookSerializer(data)
             seralized_data = seralized.data
-            subscription = subscription_service.get_single_subscription_webhook(
-                seralized_data["campaign_id"]
-            )
-
-            campaign = CampaignService.get_list(
+            campaign = campaign_service.get_list(
                 parameters={"campaign_id": seralized_data["campaign_id"]}
             )[0]
 
-            subscription = SubscriptionService.get(campaign["subscription_uuid"])
+            subscription = subscription_service.get(campaign["subscription_uuid"])
 
             if subscription is None:
                 return Response(status=status.HTTP_404_NOT_FOUND)

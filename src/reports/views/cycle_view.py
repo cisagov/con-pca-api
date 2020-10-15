@@ -51,7 +51,6 @@ class CycleReportsView(APIView):
         start_date = datetime.strptime(start_date_param, "%Y-%m-%dT%H:%M:%S.%f%z")
         # Get targeted subscription and associated customer data
         subscription = subscription_service.get(subscription_uuid)
-
         _customer = customer_service.get(subscription.get("customer_uuid"))
 
         company = {

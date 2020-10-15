@@ -56,8 +56,6 @@ class RecommendationsListView(APIView):
             )
         created_response = recommendation_service.save(post_data)
 
-        if "errors" in created_response:
-            return Response(created_response, status=status.HTTP_400_BAD_REQUEST)
         return Response(created_response, status=status.HTTP_201_CREATED)
 
 
@@ -82,14 +80,10 @@ class RecommendationsView(APIView):
         """Patch method."""
         put_data = request.data.copy()
         updated_response = recommendation_service.update(recommendations_uuid, put_data)
-        if "errors" in updated_response:
-            return Response(updated_response, status=status.HTTP_400_BAD_REQUEST)
         return Response(updated_response, status=status.HTTP_202_ACCEPTED)
 
     @swagger_auto_schema(operation_id="Delete single Recommendation")
     def delete(self, request, recommendations_uuid):
         """Delete method."""
         delete_response = recommendation_service.delete(recommendations_uuid)
-        if "errors" in delete_response:
-            return Response(delete_response, status=status.HTTP_400_BAD_REQUEST)
         return Response(delete_response, status=status.HTTP_200_OK)

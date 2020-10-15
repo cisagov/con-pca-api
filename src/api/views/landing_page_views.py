@@ -81,8 +81,6 @@ class LandingPagesListView(APIView):
         post_data["gophish_template_id"] = landing_page.id
 
         created_response = landing_page_service.save(post_data)
-        if "errors" in created_response:
-            return Response(created_response, status=status.HTTP_400_BAD_REQUEST)
         return Response(created_response, status=status.HTTP_201_CREATED)
 
 
@@ -124,16 +122,12 @@ class LandingPageView(APIView):
         updated_response = landing_page_service.update(
             landing_page_uuid, update_put_value
         )
-        if "errors" in updated_response:
-            return Response(updated_response, status=status.HTTP_400_BAD_REQUEST)
         return Response(updated_response, status=status.HTTP_202_ACCEPTED)
 
     @swagger_auto_schema(operation_id="Delete single LandingPage")
     def delete(self, request, landing_page_uuid):
         """Delete method."""
         delete_response = landing_page_service.delete(landing_page_uuid)
-        if "errors" in delete_response:
-            return Response(delete_response, status=status.HTTP_400_BAD_REQUEST)
         return Response(delete_response, status=status.HTTP_200_OK)
 
 
