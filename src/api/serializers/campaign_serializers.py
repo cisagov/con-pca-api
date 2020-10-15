@@ -22,11 +22,11 @@ class GoPhishSmtpSerializer(serializers.Serializer):
 
 
 class GoPhishTimelineSerializer(serializers.Serializer):
-    email = serializers.EmailField(required=False)
+    email = serializers.EmailField(required=False, allow_null=True, allow_blank=True)
     time = serializers.DateTimeField()
     message = serializers.CharField(max_length=255)
-    details = serializers.CharField(required=False)
-    duplicate = serializers.BooleanField(required=False)
+    details = serializers.CharField(required=False, allow_null=True, allow_blank=True)
+    duplicate = serializers.BooleanField(required=False, allow_null=True)
 
 
 class GoPhishGroupSerializer(serializers.Serializer):
@@ -58,7 +58,7 @@ class GoPhishCampaignsSerializer(serializers.Serializer):
     created_date = serializers.DateTimeField()
     launch_date = serializers.DateTimeField()
     send_by_date = serializers.DateTimeField(required=False)
-    completed_date = serializers.DateTimeField(required=False)
+    completed_date = serializers.DateTimeField(required=False, allow_null=True)
     email_template = serializers.CharField(required=False)
     email_template_id = serializers.IntegerField(required=False)
     template_uuid = serializers.UUIDField()
@@ -85,7 +85,7 @@ class GoPhishCampaignsPostSerializer(serializers.Serializer):
     created_date = serializers.DateTimeField()
     launch_date = serializers.DateTimeField()
     send_by_date = serializers.DateTimeField(required=False)
-    completed_date = serializers.DateTimeField(required=False)
+    completed_date = serializers.DateTimeField(required=False, allow_null=True)
     email_template = serializers.CharField(required=False)
     email_template_id = serializers.IntegerField(required=False)
     template_uuid = serializers.UUIDField()
@@ -108,7 +108,7 @@ class GoPhishCampaignsPatchSerializer(serializers.Serializer):
     created_date = serializers.DateTimeField(required=False)
     launch_date = serializers.DateTimeField(required=False)
     send_by_date = serializers.DateTimeField(required=False)
-    completed_date = serializers.DateTimeField(required=False)
+    completed_date = serializers.DateTimeField(required=False, allow_null=True)
     email_template = serializers.CharField(required=False)
     email_template_id = serializers.IntegerField(required=False)
     template_uuid = serializers.UUIDField(required=False)

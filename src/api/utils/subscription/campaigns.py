@@ -13,10 +13,11 @@ from api.utils.subscription.targets import assign_targets
 from api.utils.subscription.subscriptions import get_staggered_dates_in_range
 from api.utils.subscription.static import CAMPAIGN_MINUTES, DEFAULT_X_GOPHISH_CONTACT
 
-from api.services import LandingPageService
+from api.services import LandingPageService, CampaignService
 
 campaign_manager = CampaignManager()
 landing_page_service = LandingPageService()
+campaign_service = CampaignService()
 
 
 def generate_campaigns(subscription, landing_page, sub_levels, cycle_uuid):
@@ -153,7 +154,7 @@ def stop_campaign(campaign):
         except Exception as e:
             logging.exception(e)
 
-    return campaign
+    campaign_service.update(campaign["campaign_uuid"], campaign)
 
 
 def __create_campaign(

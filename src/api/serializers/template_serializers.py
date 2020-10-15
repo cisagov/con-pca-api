@@ -70,7 +70,7 @@ class TemplateSerializer(serializers.Serializer):
     name = serializers.CharField()
     landing_page_uuid = serializers.UUIDField(default=None, allow_null=True)
     deception_score = serializers.IntegerField()
-    descriptive_words = serializers.CharField(allow_null=True)
+    descriptive_words = serializers.CharField(required=False, allow_null=True)
     description = serializers.CharField(allow_null=True)
     from_address = serializers.CharField()
     retired = serializers.BooleanField(default=False)

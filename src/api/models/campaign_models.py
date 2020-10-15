@@ -80,6 +80,12 @@ class GoPhishCampaignsModel(Model):
     target_email_list = ListType(ModelType(SubscriptionTargetModel))
     smtp = ModelType(GoPhishSmtpModel)
 
+    # db data tracking added below
+    created_by = StringType()
+    cb_timestamp = DateTimeType()
+    last_updated_by = StringType()
+    lub_timestamp = DateTimeType()
+
 
 def validate_campaign(data_object):
     return GoPhishCampaignsModel(data_object).validate()

@@ -94,6 +94,7 @@ class DBService:
         return serializer.data
 
     def save(self, data):
+        print("======SAVING======")
         serializer = self.save_serializer(data=data)
         self.validate_serializer(serializer)
         result = db.save_single(
@@ -102,6 +103,8 @@ class DBService:
             model=self.model,
             validation_model=self.validation,
         )
+        print("======SAVED======")
+        print(result)
         serializer = self.response_serializer(data=result)
         self.validate_serializer(serializer)
         return serializer.data
@@ -196,7 +199,7 @@ class SubscriptionService(DBService):
             model=subscription_models.SubscriptionModel,
             validation=subscription_models.validate_subscription,
             model_serializer=subscriptions_serializers.SubscriptionSerializer,
-            response_serializer=subscriptions_serializers.SubscriptionDeleteResponseSerializer,
+            response_serializer=subscriptions_serializers.SubscriptionResponseSerializer,
             save_serializer=subscriptions_serializers.SubscriptionPostSerializer,
             update_serializer=subscriptions_serializers.SubscriptionPatchSerializer,
         )
@@ -211,7 +214,7 @@ class SubscriptionService(DBService):
         subscription["gophish_campaign_list"] = self.campaign_service.get_list(
             {"subscription_uuid": uuid}
         )
-        serializer = self.get_serializer(data=subscription)
+        serializer = self.model_serializer(data=subscription)
         self.validate_serializer(serializer)
         return serializer.data
 
