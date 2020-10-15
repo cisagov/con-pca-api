@@ -1,12 +1,4 @@
-from unittest import mock
-
 from src.api.utils.tag import tags
-
-
-@mock.patch("api.utils.db_utils.get_list")
-def test_get_tags(db_get_list):
-    tags.get_tags()
-    assert db_get_list.called
 
 
 def test_check_tag_format():

@@ -9,11 +9,18 @@ from unittest import mock
 @mock.patch("api.manager.CampaignManager.delete_email_template")
 @mock.patch("api.manager.CampaignManager.delete_sending_profile")
 @mock.patch("api.manager.CampaignManager.delete_user_group")
+@mock.patch("api.services.CampaignService.update")
 def test_stop_campaigns(
-    mock_del_user_group, mock_del_sp, mock_del_et, mock_del_camp, mock_comp
+    mock_service_update,
+    mock_del_user_group,
+    mock_del_sp,
+    mock_del_et,
+    mock_del_camp,
+    mock_comp,
 ):
     to_stop = [
         {
+            "campaign_uuid": "test",
             "campaign_id": 1,
             "status": "In Progress",
             "email_template_id": 1,
@@ -21,6 +28,7 @@ def test_stop_campaigns(
             "groups": [{"id": 1}, {"id": 2}, {"id": 3}],
         },
         {
+            "campaign_uuid": "test",
             "campaign_id": 1,
             "status": "In Progress",
             "email_template_id": 1,
@@ -28,6 +36,7 @@ def test_stop_campaigns(
             "groups": [{"id": 1}, {"id": 2}, {"id": 3}],
         },
         {
+            "campaign_uuid": "test",
             "campaign_id": 1,
             "email_template_id": 1,
             "status": "stopped",
@@ -41,6 +50,7 @@ def test_stop_campaigns(
     for c in to_stop:
         assert c["status"] == "stopped"
 
+    assert mock_service_update.call_count == 2
     assert mock_comp.call_count == 2
     assert mock_del_camp.call_count == 2
     assert mock_del_sp.call_count == 2

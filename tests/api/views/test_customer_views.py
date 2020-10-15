@@ -64,7 +64,7 @@ def new_customer():
 
 @pytest.mark.django_db
 def test_customer_list_view(client):
-    with mock.patch("api.utils.db_utils.get_list") as mock_get:
+    with mock.patch("api.services.CustomerService.get_list") as mock_get:
         mock_get.return_value = [get_customer()]
         response = client.get("/api/v1/customers/")
         assert mock_get.called
@@ -78,46 +78,30 @@ def test_customer_list_view(client):
 @pytest.mark.django_db
 def test_customer_list_view_post(client):
     # No existing customers
-    with mock.patch("api.utils.db_utils.get_list") as mock_get, mock.patch(
-        "api.utils.db_utils.save_single"
-    ) as mock_save:
-        mock_get.return_value = []
+    with mock.patch(
+        "api.services.CustomerService.save", return_value={"customer_uuid": "test"}
+    ) as mock_save, mock.patch(
+        "api.services.CustomerService.exists", return_value=False
+    ) as mock_exists:
         response = client.post("/api/v1/customers/", new_customer())
-        assert mock_get.called
+        assert mock_exists.called
         assert mock_save.called
         assert response.status_code == 201
 
     # Existing customer with same name/identifier
-    with mock.patch("api.utils.db_utils.get_list") as mock_get, mock.patch(
-        "api.utils.db_utils.save_single"
-    ) as mock_save:
-        old = get_customer()
-        old["identifier"] = "test"
-        old["name"] = "test"
-        new = new_customer()
-        new["identifier"] = "test"
-        new["name"] = "test"
-        mock_get.return_value = [old]
-        response = client.post("/api/v1/customers/", new)
-        assert mock_get.called
+    with mock.patch("api.services.CustomerService.save") as mock_save, mock.patch(
+        "api.services.CustomerService.exists", return_value=True
+    ) as mock_exists:
+        response = client.post("/api/v1/customers/", new_customer())
+        assert mock_exists.called
         assert not mock_save.called
         assert response.status_code == 202
-
-    with mock.patch("api.utils.db_utils.get_list") as mock_get, mock.patch(
-        "api.utils.db_utils.save_single"
-    ) as mock_save:
-        mock_get.return_value = []
-        mock_save.return_value = {"errors": "some error"}
-        response = client.post("/api/v1/customers/", new_customer())
-        assert mock_get.called
-        assert mock_save.called
-        assert response.status_code == 400
 
 
 @pytest.mark.django_db
 def test_customer_view_get(client):
     uuid = fake.uuid4()
-    with mock.patch("api.utils.db_utils.get_single") as mock_get:
+    with mock.patch("api.services.CustomerService.get") as mock_get:
         mock_get.return_value = get_customer()
         result = client.get(f"/api/v1/customer/{uuid}/")
         assert mock_get.called
@@ -127,7 +111,7 @@ def test_customer_view_get(client):
 @pytest.mark.django_db
 def test_customer_view_patch(client):
     uuid = fake.uuid4()
-    with mock.patch("api.utils.db_utils.update_single") as mock_update:
+    with mock.patch("api.services.CustomerService.update") as mock_update:
         mock_update.return_value = get_customer()
         result = client.patch(
             f"/api/v1/customer/{uuid}/",
@@ -136,30 +120,15 @@ def test_customer_view_patch(client):
         assert mock_update.called
         assert result.status_code == 202
 
-    with mock.patch("api.utils.db_utils.update_single") as mock_update:
-        mock_update.return_value = {"errors": "test error"}
-        result = client.patch(
-            f"/api/v1/customer/{uuid}/",
-            json={"address_1": str(fake.street_address())},
-        )
-        assert mock_update.called
-        assert result.status_code == 400
-
 
 @pytest.mark.django_db
 def test_customer_view_delete(client):
     uuid = fake.uuid4()
-    with mock.patch("api.utils.db_utils.delete_single") as mock_delete:
+    with mock.patch("api.services.CustomerService.delete") as mock_delete:
         mock_delete.return_value = {"customer_uuid": uuid}
         result = client.delete(f"/api/v1/customer/{uuid}/")
         assert mock_delete.called
         assert result.status_code == 200
-
-    with mock.patch("api.utils.db_utils.delete_single") as mock_delete:
-        mock_delete.return_value = {"errors": "test error"}
-        result = client.delete(f"/api/v1/customer/{uuid}/")
-        assert mock_delete.called
-        assert result.status_code == 400
 
 
 @pytest.mark.django_db

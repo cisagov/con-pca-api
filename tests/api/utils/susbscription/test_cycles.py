@@ -1,12 +1,13 @@
 from src.api.utils.subscription import cycles
 from src.api.utils.generic import format_ztime
 from datetime import datetime, timedelta
+from unittest import mock
 
 
 def test_get_reported_emails():
     date = datetime.now()
     subscription = {
-        "gophish_campaign_list": [
+        "campaigns": [
             {
                 "campaign_id": 1,
                 "timeline": [
@@ -36,11 +37,13 @@ def test_get_reported_emails():
     assert result[0]["email_list"][0]["email"] == "test@test.com"
 
 
-def test_delete_reported_emails():
+@mock.patch("api.services.CampaignService.update")
+def test_delete_reported_emails(mock_update):
     date = datetime.now()
     subscription = {
-        "gophish_campaign_list": [
+        "campaigns": [
             {
+                "campaign_uuid": "test",
                 "campaign_id": 1,
                 "timeline": [
                     {
@@ -70,15 +73,18 @@ def test_delete_reported_emails():
             "delete_list": [{"campaign_id": 1, "email": "test@test.com"}],
         },
     )
-    assert len(subscription["gophish_campaign_list"][0]["timeline"]) == 0
+    assert len(subscription["campaigns"][0]["timeline"]) == 0
+    assert mock_update.called
 
 
-def test_update_reported_emails():
+@mock.patch("api.services.CampaignService.update")
+def test_update_reported_emails(mock_update):
     date = datetime.now().isoformat()
     new_date = (datetime.now() + timedelta(days=1)).isoformat()
     subscription = {
-        "gophish_campaign_list": [
+        "campaigns": [
             {
+                "campaign_uuid": "test",
                 "campaign_id": 1,
                 "timeline": [
                     {
@@ -114,13 +120,10 @@ def test_update_reported_emails():
             ],
         },
     )
-    assert subscription["gophish_campaign_list"][0]["timeline"][0][
-        "time"
-    ] == format_ztime(new_date)
-    assert len(subscription["gophish_campaign_list"][0]["timeline"]) == 2
-    assert subscription["gophish_campaign_list"][0]["timeline"][1][
-        "time"
-    ] == format_ztime(date)
+    assert subscription["campaigns"][0]["timeline"][0]["time"] == format_ztime(new_date)
+    assert len(subscription["campaigns"][0]["timeline"]) == 2
+    assert subscription["campaigns"][0]["timeline"][1]["time"] == format_ztime(date)
+    assert mock_update.called
 
 
 def test_override_total_reported():

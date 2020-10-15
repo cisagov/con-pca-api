@@ -7,7 +7,7 @@ fake = Faker()
 
 @pytest.mark.django_db
 def test_dhs_contact_list_view_get(client):
-    with mock.patch("api.utils.db_utils.get_list") as mock_get:
+    with mock.patch("api.services.DHSContactService.get_list") as mock_get:
         mock_get.return_value = []
         result = client.get("/api/v1/dhscontacts/")
         assert result.status_code == 200
@@ -16,7 +16,7 @@ def test_dhs_contact_list_view_get(client):
 
 @pytest.mark.django_db
 def test_dhs_contact_list_view_post(client):
-    with mock.patch("api.utils.db_utils.save_single") as mock_save:
+    with mock.patch("api.services.DHSContactService.save") as mock_save:
         data = {
             "first_name": fake.first_name(),
             "last_name": fake.last_name(),
@@ -30,7 +30,7 @@ def test_dhs_contact_list_view_post(client):
 
 @pytest.mark.django_db
 def test_dhs_contact_view_get(client):
-    with mock.patch("api.utils.db_utils.get_single") as mock_get:
+    with mock.patch("api.services.DHSContactService.get") as mock_get:
         uuid = fake.uuid4()
         mock_get.return_value = {
             "dhs_contact_uuid": uuid,
@@ -49,7 +49,7 @@ def test_dhs_contact_view_get(client):
 
 @pytest.mark.django_db
 def test_dhs_contact_view_patch(client):
-    with mock.patch("api.utils.db_utils.update_single") as mock_update:
+    with mock.patch("api.services.DHSContactService.update") as mock_update:
         uuid = fake.uuid4()
         mock_update.return_value = {
             "dhs_contact_uuid": uuid,
@@ -70,7 +70,7 @@ def test_dhs_contact_view_patch(client):
 
 @pytest.mark.django_db
 def test_dhs_contact_view_delete(client):
-    with mock.patch("api.utils.db_utils.delete_single") as mock_delete:
+    with mock.patch("api.services.DHSContactService.delete") as mock_delete:
         uuid = fake.uuid4()
         mock_delete.return_value = {"dhs_contact_uuid": uuid}
         response = client.delete(f"/api/v1/dhscontact/{uuid}/")

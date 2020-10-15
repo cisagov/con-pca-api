@@ -53,13 +53,9 @@ class SubscriptionsListView(APIView):
             campaigns = campaign_service.get_list(
                 parameters={"template_uuid": request.GET.get("template")}
             )
-            parameters[
-                {
-                    "subscription_uuid": {
-                        "$in": [c["subscription_uuid"] for c in campaigns]
-                    }
-                }
-            ]
+            parameters["subscription_uuid"] = {
+                "$in": [c["subscription_uuid"] for c in campaigns]
+            }
 
         if request.GET.get("dhs_contact"):
             parameters["dhs_contact_uuid"] = request.GET.get("dhs_contact")
