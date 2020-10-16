@@ -5,18 +5,13 @@ Here we create a GenericRepositoryInterface that wraps GenericRepository.
 GenericRepositoryInterface controlles direct db transations
 GenericRepository controlles db conectvivity and async transations
 """
-# Standard Python Libraries
 import asyncio
-import logging
 
-# Third-Party Libraries
 from bson.codec_options import CodecOptions
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from .tools import parse_datetime
 from .types import BooleanType, DateTimeType, FloatType, IntType
-
-logger = logging.getLogger(__name__)
 
 
 def format_params(model_cls=None, params=None):
@@ -208,7 +203,6 @@ class GenericRepository(object):
         )
         self.model_cls = model_cls
         self.uuid_name = uuid_name or f"{self.collection_name}_uuid"
-        self.logger = logging.getLogger(__name__)
 
     @staticmethod
     def document_to_object(document):

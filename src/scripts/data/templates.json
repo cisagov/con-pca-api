@@ -11,13 +11,11 @@
       "fear": 0,
       "greed": 0
     },
-    "complexity": 1,
     "deception_score": 1,
     "description": "Intern Resume",
     "descriptive_words": "student resumes internship intern",
     "from_address": "<%FAKER_FIRST_NAME%> <%FAKER_LAST_NAME%> <<%FAKER_FIRST_NAME%>.<%FAKER_LAST_NAME%>@domain.com>",
     "html": "<br>Hi, sorry, I don't know exactly who this would go to. I read on the site<br>that your accepting student resumes for a summe rinternship. I'ev loaded<br>mine to our school's website. Please review and let me know if we're good to<br>go.<br><a href=\"<%URL%>\">https://endermannpoly.edu/studentresources/resumes/mquesenberry3.pdf</a><br><br><br>thx, <%FAKER_FIRST_NAME%>&nbsp;<br>",
-    "image_list": [],
     "name": "Intern Resume",
     "relevancy": {
       "organization": 0,
@@ -31,9 +29,7 @@
       "internal": 0
     },
     "subject": "Intern Resume",
-    "template_type": "Email",
-    "text": "Hi, sorry, I don't know exactly who this would go to. I read on the sitethat your accepting student resumes for a summe rinternship. I'ev loadedmine to our school's website. Please review and let me know if we're good togo.https://endermannpoly.edu/studentresources/resumes/mquesenberry3.pdfthx, <%FAKER_FIRST_NAME%>\u00a0",
-    "topic_list": []
+    "text": "Hi, sorry, I don't know exactly who this would go to. I read on the sitethat your accepting student resumes for a summe rinternship. I'ev loadedmine to our school's website. Please review and let me know if we're good togo.https://endermannpoly.edu/studentresources/resumes/mquesenberry3.pdfthx, <%FAKER_FIRST_NAME%>\u00a0"
   },
   {
     "appearance": {
@@ -47,13 +43,11 @@
       "fear": 0,
       "greed": 0
     },
-    "complexity": 0,
     "deception_score": 0,
     "description": "GoPhish formated emailIssues.html",
     "descriptive_words": "email it",
     "from_address": "IT Department <no-reply@domain.com>",
     "html": "\n\n  <link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\">\n\n\n<p>Hello <%TARGET_FIRST_NAME%>,</p>\n<p>The IT Department was running an email server migration last night and encountered an error with several email accounts.\nYour account <%TARGET_EMAIL%> happened to be one of them.</p>\n<p>We attempted to resolve this problem and believe we have fixed it.</p>\n<p>If your email has been working just fine, please let us know by going to this secure <a href=\"<%URL%>\">link</a> and validate your email address is working.</p>\n\n<p>Thanks for your quick cooperation,</p>\n<p>IT</p>\n\n\n",
-    "image_list": [],
     "name": "emailIssues",
     "relevancy": {
       "organization": 0,
@@ -67,9 +61,7 @@
       "internal": 0
     },
     "subject": "Email Migration Issue",
-    "template_type": "Email",
-    "text": "\n\n  \n\n\nHello <%TARGET_FIRST_NAME%>,\nThe IT Department was running an email server migration last night and encountered an error with several email accounts.\nYour account <%TARGET_EMAIL%> happened to be one of them.\nWe attempted to resolve this problem and believe we have fixed it.\nIf your email has been working just fine, please let us know by going to this secure link and validate your email address is working.\n\nThanks for your quick cooperation,\nIT\n\n\n",
-    "topic_list": []
+    "text": "\n\n  \n\n\nHello <%TARGET_FIRST_NAME%>,\nThe IT Department was running an email server migration last night and encountered an error with several email accounts.\nYour account <%TARGET_EMAIL%> happened to be one of them.\nWe attempted to resolve this problem and believe we have fixed it.\nIf your email has been working just fine, please let us know by going to this secure link and validate your email address is working.\n\nThanks for your quick cooperation,\nIT\n\n\n"
   },
   {
     "appearance": {
@@ -83,13 +75,11 @@
       "fear": 0,
       "greed": 0
     },
-    "complexity": 0,
     "deception_score": 0,
     "description": "email limit exceeded",
     "descriptive_words": "email",
     "from_address": "Email Admin <email.admin@domain.com>",
     "html": "<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\">  <p>Your email <%TARGET_EMAIL%> has exceeded one or more size limits set by the Network Admins. Please click this  <a href=\"<%URL%>\">link</a> below to re-validate your email account.</p><p>Thanks for your co-operation.</p>  <p>IT</p>",
-    "image_list": [],
     "name": "Email size",
     "relevancy": {
       "organization": 0,
@@ -103,9 +93,7 @@
       "internal": 0
     },
     "subject": "Email Size Limit Reached",
-    "template_type": "Email",
-    "text": "  Your email <%TARGET_EMAIL%> has exceeded one or more size limits set by the Network Admins. Please click this  link below to re-validate your email account.Thanks for your co-operation.  IT",
-    "topic_list": []
+    "text": "  Your email <%TARGET_EMAIL%> has exceeded one or more size limits set by the Network Admins. Please click this  link below to re-validate your email account.Thanks for your co-operation.  IT"
   },
   {
     "appearance": {
@@ -119,13 +107,11 @@
       "fear": 0,
       "greed": 0
     },
-    "complexity": 1,
     "deception_score": 1,
     "description": "Paper Awareness",
     "descriptive_words": "paper environment",
     "from_address": "OPD <no-reply@domain.com>",
     "html": "Dear Consurned Citizan,<br><br>Did you know that the typical office wastes hundreds of sheets of paper each day?<br><br>We hear at the Organization for Paper Defenders (OPD) are trying to bring awareness to the fact of how much unnecessary paper is wasted each day. Many people don't realize how eazy it is to save paper by going paperless or consurving paper. One beautiful living tree makes approximately 100 sheets of paper. So please don't waste paper! Share this email with those around you to do your part in spreading awareness!<br><br>Please help this mission by visiting our website and allying youreself with us by supporting our cause. <a href=\"<%URL%>\">https://opd.org/about</a><br><br>Thank you for making a difference in your office,<br><br>Tom<br>President of OPD<br>",
-    "image_list": [],
     "name": "Paper Awareness",
     "relevancy": {
       "organization": 0,
@@ -139,9 +125,7 @@
       "internal": 0
     },
     "subject": "<%CUSTOMER_NAME%> MyPayStub Update - Password Reset",
-    "template_type": "Email",
-    "text": "Dear Consurned Citizan,Did you know that the typical office wastes hundreds of sheets of paper each day?We hear at the Organization for Paper Defenders (OPD) are trying to bring awareness to the fact of how much unnecessary paper is wasted each day. Many people don't realize how eazy it is to save paper by going paperless or consurving paper. One beautiful living tree makes approximately 100 sheets of paper. So please don't waste paper! Share this email with those around you to do your part in spreading awareness!Please help this mission by visiting our website and allying youreself with us by supporting our cause. https://opd.org/aboutThank you for making a difference in your office,TomPresident of OPD",
-    "topic_list": []
+    "text": "Dear Consurned Citizan,Did you know that the typical office wastes hundreds of sheets of paper each day?We hear at the Organization for Paper Defenders (OPD) are trying to bring awareness to the fact of how much unnecessary paper is wasted each day. Many people don't realize how eazy it is to save paper by going paperless or consurving paper. One beautiful living tree makes approximately 100 sheets of paper. So please don't waste paper! Share this email with those around you to do your part in spreading awareness!Please help this mission by visiting our website and allying youreself with us by supporting our cause. https://opd.org/aboutThank you for making a difference in your office,TomPresident of OPD"
   },
   {
     "appearance": {
@@ -155,13 +139,11 @@
       "fear": 0,
       "greed": 1
     },
-    "complexity": 1,
     "deception_score": 1,
     "description": "Store Error",
     "descriptive_words": "store customer cash charge",
     "from_address": "Customer Service <no-reply@domain.com>",
     "html": "<br>Dear Valued Customer,<br><br>It has come to our attention that the paying system that we use has<br>overcharged almost 30,000 custemers. After reviewing records, your email<br>has come up as one of the overcharged customers. Please follow this <a href=\"<%URL%>\">secure link</a> and enter your email address to recieve your cash back.<br><br><br>Thank you,<br>Customer Service Team<br>",
-    "image_list": [],
     "name": "Store Error",
     "relevancy": {
       "organization": 0,
@@ -175,9 +157,7 @@
       "internal": 0
     },
     "subject": "Overcharged",
-    "template_type": "Email",
-    "text": "Dear Valued Customer,It has come to our attention that the paying system that we use hasovercharged almost 30,000 custemers. After reviewing records, your emailhas come up as one of the overcharged customers. Please follow this secure link and enter your email address to recieve your cash back.Thank you,Customer Service Team",
-    "topic_list": []
+    "text": "Dear Valued Customer,It has come to our attention that the paying system that we use hasovercharged almost 30,000 custemers. After reviewing records, your emailhas come up as one of the overcharged customers. Please follow this secure link and enter your email address to recieve your cash back.Thank you,Customer Service Team"
   },
   {
     "appearance": {
@@ -191,13 +171,11 @@
       "fear": 0,
       "greed": 0
     },
-    "complexity": 0,
     "deception_score": 0,
     "description": "GoPhish formated breakingNews.html",
     "descriptive_words": "news",
     "from_address": "<%CUSTOMER_NAME%> News <no-reply@domain.com>",
     "html": "\n\n  <link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\">\n\n\n<div class=\"container\">\n  <div class=\"container\" style=\"background-color:#FFF;\">\n    <br><br>\n    <p>This email is being sent to all employees with a company email address. If someone on your team does not have an company email, please refer them to our intranet to read this and other company wide communications. If you have issues accessing our intranet, please use the attached instructions.</p>\n    <h1>Breaking News</h1>\n    <h3>What's been happening at our company?</h3>\n    <p>We are very proud to talk about what has been happening at our company. There is so much going on to be proud of in multiple divisions and across the globe. But what make this email more important aside from showing you what is going on in other departments is discussing how this will effect you.</p>\n    <p>We want to make sure that no employee feels left out because we value you <%TARGET_FIRST_NAME%>.</p>\n    <p>I'm sure you're eager to hear about what's going on at our company, so go ahead and click the link below to read about what's going on. We appreciate your time and continued dedication as an employee at our company.</p>\n    <p>Thank you for taking the time to read this email and for all the contributions you've made to our company. Remember you are a valued employee here and we look forward to hearing from you in the future</p>\n    <h4><a href=\"<%URL%>\">Exciting News</a></h4>\n    <br><br><hr>\n    <p>Best Regards:</p>\n    <p>The news Team</p>\n    <p></p>\n  </div>\n</div>\n\n\n",
-    "image_list": [],
     "name": "breakingNews",
     "relevancy": {
       "organization": 0,
@@ -211,9 +189,7 @@
       "internal": 0
     },
     "subject": "Hey guys! Breaking News! ",
-    "template_type": "Email",
-    "text": "\n\n  \n\n\n\n  \n    \n    This email is being sent to all employees with a company email address. If someone on your team does not have an company email, please refer them to our intranet to read this and other company wide communications. If you have issues accessing our intranet, please use the attached instructions.\n    Breaking News\n    What's been happening at our company?\n    We are very proud to talk about what has been happening at our company. There is so much going on to be proud of in multiple divisions and across the globe. But what make this email more important aside from showing you what is going on in other departments is discussing how this will effect you.\n    We want to make sure that no employee feels left out because we value you <%TARGET_FIRST_NAME%>.\n    I'm sure you're eager to hear about what's going on at our company, so go ahead and click the link below to read about what's going on. We appreciate your time and continued dedication as an employee at our company.\n    Thank you for taking the time to read this email and for all the contributions you've made to our company. Remember you are a valued employee here and we look forward to hearing from you in the future\n    Exciting News\n    \n    Best Regards:\n    The news Team\n    \n  \n\n\n\n",
-    "topic_list": []
+    "text": "\n\n  \n\n\n\n  \n    \n    This email is being sent to all employees with a company email address. If someone on your team does not have an company email, please refer them to our intranet to read this and other company wide communications. If you have issues accessing our intranet, please use the attached instructions.\n    Breaking News\n    What's been happening at our company?\n    We are very proud to talk about what has been happening at our company. There is so much going on to be proud of in multiple divisions and across the globe. But what make this email more important aside from showing you what is going on in other departments is discussing how this will effect you.\n    We want to make sure that no employee feels left out because we value you <%TARGET_FIRST_NAME%>.\n    I'm sure you're eager to hear about what's going on at our company, so go ahead and click the link below to read about what's going on. We appreciate your time and continued dedication as an employee at our company.\n    Thank you for taking the time to read this email and for all the contributions you've made to our company. Remember you are a valued employee here and we look forward to hearing from you in the future\n    Exciting News\n    \n    Best Regards:\n    The news Team\n    \n  \n\n\n\n"
   },
   {
     "appearance": {
@@ -227,13 +203,11 @@
       "fear": 0,
       "greed": 0
     },
-    "complexity": 0,
     "deception_score": 0,
     "description": "GoPhish formated mailBoxCompromised.html",
     "descriptive_words": "mail security",
     "from_address": "Mail Services <mail-services@domain.com>",
     "html": "<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\">  <h3 style=\"color:#9E9E9E;\"><span style=\"color: rgb(41, 182, 246); font-size: 24px; letter-spacing: 0em; background-color: transparent;\">Your mailbox has been compromised</span><br></h3><p>Your mail account has been compromised.</p><p>We have blocked your account for your own safety.</p><p>Please follow these steps below to sign in and keep your account safe:</p><p>  </p><ol>    <li><a href=\"<%URL%>\">Protect your account</a></li>    <li>Learn how to <a href=\"<%URL%>\">make your account more secure</a></li>  </ol><p></p><p>To opt out or change where you receive security notifications, <a href=\"<%URL%>\">click here</a></p><p>Thanks,</p><p>mail account team</p>",
-    "image_list": [],
     "name": "mailBoxCompromised",
     "relevancy": {
       "organization": 0,
@@ -247,9 +221,7 @@
       "internal": 0
     },
     "subject": "NOTICE: Email Account Compromised",
-    "template_type": "Email",
-    "text": "  Your mailbox has been compromisedYour mail account has been compromised.We have blocked your account for your own safety.Please follow these steps below to sign in and keep your account safe:      Protect your account    Learn how to make your account more secure  To opt out or change where you receive security notifications, click hereThanks,mail account team",
-    "topic_list": []
+    "text": "  Your mailbox has been compromisedYour mail account has been compromised.We have blocked your account for your own safety.Please follow these steps below to sign in and keep your account safe:      Protect your account    Learn how to make your account more secure  To opt out or change where you receive security notifications, click hereThanks,mail account team"
   },
   {
     "appearance": {
@@ -263,13 +235,11 @@
       "fear": 0,
       "greed": 0
     },
-    "complexity": 1,
     "deception_score": 1,
     "description": "This Tweet!!",
     "descriptive_words": "social",
     "from_address": "<%FAKER_FIRST_NAME%> <%FAKER_LAST_NAME%> <<%FAKER_FIRST_NAME%>.<%FAKER_LAST_NAME%>@domain.com>",
-    "html": "<br>OMG seriously, who posts this stuff??? Forealz, they're so getting fierd <a href=\"<%URL%\">https://twit.ter/bomaboma187?lang=en</a><br>",
-    "image_list": [],
+    "html": "<br>OMG seriously, who posts this stuff??? Forealz, they're so getting fierd <a href=\"<%URL%>\">https://twit.ter/bomaboma187?lang=en</a><br>",
     "name": "This Tweet!!",
     "relevancy": {
       "organization": 0,
@@ -283,9 +253,7 @@
       "internal": 0
     },
     "subject": "This Tweet!!",
-    "template_type": "Email",
-    "text": "OMG seriously, who posts this stuff??? Forealz, they're so getting fierd https://twit.ter/bomaboma187?lang=en",
-    "topic_list": []
+    "text": "OMG seriously, who posts this stuff??? Forealz, they're so getting fierd https://twit.ter/bomaboma187?lang=en"
   },
   {
     "appearance": {
@@ -299,13 +267,11 @@
       "fear": 0,
       "greed": 0
     },
-    "complexity": 1,
     "deception_score": 1,
     "description": "Volunteer Interest",
     "descriptive_words": "volunteer resume",
     "from_address": "<%FAKER_FIRST_NAME%> <<%FAKER_FIRST_NAME%>.<%FAKER_LAST_NAME%>@domain.com>",
     "html": "<br>Hi, sorry, I don't know exactly who this would go to. I read on the site<br>that you have had voluntears in the past and I am verry interested. I'ev loaded<br>my <a href=\"<%URL%>\">resume here.</a> Please review and let me know if<br>if there r opportunities for volunteers like me.<br><br><br><br>thx, <%FAKER_FIRST_NAME%><br>",
-    "image_list": [],
     "name": "Volunteer Interest",
     "relevancy": {
       "organization": 0,
@@ -319,9 +285,7 @@
       "internal": 0
     },
     "subject": "Volunteer Opportunity",
-    "template_type": "Email",
-    "text": "Hi, sorry, I don't know exactly who this would go to. I read on the sitethat you have had voluntears in the past and I am verry interested. I'ev loadedmy resume here. Please review and let me know ifif there r opportunities for volunteers like me.thx, <%FAKER_FIRST_NAME%>",
-    "topic_list": []
+    "text": "Hi, sorry, I don't know exactly who this would go to. I read on the sitethat you have had voluntears in the past and I am verry interested. I'ev loadedmy resume here. Please review and let me know ifif there r opportunities for volunteers like me.thx, <%FAKER_FIRST_NAME%>"
   },
   {
     "appearance": {
@@ -335,13 +299,11 @@
       "fear": 0,
       "greed": 0
     },
-    "complexity": 1,
     "deception_score": 1,
     "description": "Product Invoice",
     "descriptive_words": "invoice quote",
     "from_address": "Pat Parajuli <pat.parajuli@<%DOMAIN%>> <pat.parajuli@domain.com>",
     "html": "<br>Hello,<br><br>Kindly find the uploaded quote in the prices for the attached products aslo send us your bank detaila to proceed farther.<br><br>PRODUCT ENQUIRY <a href=\"<%URL%>\">https://Proforma.com/product-information</a><br><br>You're urgent response is highly thanked.<br><br>Best Regards,<br>PAT PARAJULI | CAMANEE TECH<br>Balahira Computer Market | Riyadh | Saudi Arabia<br>",
-    "image_list": [],
     "name": "Product Invoice",
     "relevancy": {
       "organization": 0,
@@ -355,9 +317,7 @@
       "internal": 0
     },
     "subject": "Product Estimate",
-    "template_type": "Email",
-    "text": "\nHello,\n\nKindly find the uploaded quote in the prices for the attached products aslo send us your bank detaila to proceed farther.\n\nPRODUCT ENQUIRY https://Proforma.com/product-information\n\nYou're urgent response is highly thanked.\n\nBest Regards,\nPAT PARAJULI | CAMANEE TECH\nBalahira Computer Market | Riyadh | Saudi Arabia\n",
-    "topic_list": []
+    "text": "\nHello,\n\nKindly find the uploaded quote in the prices for the attached products aslo send us your bank detaila to proceed farther.\n\nPRODUCT ENQUIRY https://Proforma.com/product-information\n\nYou're urgent response is highly thanked.\n\nBest Regards,\nPAT PARAJULI | CAMANEE TECH\nBalahira Computer Market | Riyadh | Saudi Arabia\n"
   },
   {
     "appearance": {
@@ -371,13 +331,11 @@
       "fear": 0,
       "greed": 0
     },
-    "complexity": 3,
     "deception_score": 3,
     "description": "New Equipment [Grammar, Internal, Duty]",
     "descriptive_words": "supplies equipment office",
     "from_address": "Office Supplies Team <supplies@domain.com>",
     "html": "<br>All,<br><br>We have decided that it is time to replace some of our eupioment. The order<br>will be placed next week. If you would like to request new equipment,<br>please submit it <a href=\"<%URL%>\">here</a>. All<br>requests must be submitted COB Friday.<br><br>Thanks,<br><br>Office Supplies Team<br>",
-    "image_list": [],
     "name": "New Equipment [Grammar, Internal, Duty]",
     "relevancy": {
       "organization": 0,
@@ -391,9 +349,7 @@
       "internal": 1
     },
     "subject": "New Equipment",
-    "template_type": "Email",
-    "text": "All,We have decided that it is time to replace some of our eupioment. The orderwill be placed next week. If you would like to request new equipment,please submit it here. Allrequests must be submitted COB Friday.Thanks,Office Supplies Team",
-    "topic_list": []
+    "text": "All,We have decided that it is time to replace some of our eupioment. The orderwill be placed next week. If you would like to request new equipment,please submit it here. Allrequests must be submitted COB Friday.Thanks,Office Supplies Team"
   },
   {
     "appearance": {
@@ -407,13 +363,11 @@
       "fear": 0,
       "greed": 0
     },
-    "complexity": 3,
     "deception_score": 3,
     "description": "Password Expiration",
     "descriptive_words": "help desk password expire email",
     "from_address": "IT Help Desk <helpdesk@domain.com>",
     "html": "Your domain password will expire in 3 days! To ensure your account is not<br>locked out, please click <a href=\"<%URL%>\">here</a> to set a new password.<br><br>IT Help Desk Service<br><br>***** Email confidentiality notice *****<br>This message is private and confidential. If you have received this message<br>in error, please notify us and remove it from your system.<br>",
-    "image_list": [],
     "name": "Password Expiration",
     "relevancy": {
       "organization": 0,
@@ -427,9 +381,7 @@
       "internal": 1
     },
     "subject": "IT Help Desk Service: Password Expiration",
-    "template_type": "Email",
-    "text": "Your domain password will expire in 3 days! To ensure your account is notlocked out, please click here to set a new password.IT Help Desk Service***** Email confidentiality notice *****This message is private and confidential. If you have received this messagein error, please notify us and remove it from your system.",
-    "topic_list": []
+    "text": "Your domain password will expire in 3 days! To ensure your account is notlocked out, please click here to set a new password.IT Help Desk Service***** Email confidentiality notice *****This message is private and confidential. If you have received this messagein error, please notify us and remove it from your system."
   },
   {
     "appearance": {
@@ -443,13 +395,11 @@
       "fear": 0,
       "greed": 0
     },
-    "complexity": 4,
     "deception_score": 4,
     "description": "Urgent Software Update [Authoritative]",
     "descriptive_words": "update patch software",
     "from_address": "IT Help Desk <helpdesk@domain.com>",
     "html": "<br>Due to the recent ransomware outbreak, our security team is pushing a high-priority, out-of-band patch. It is imperative to visit the following site to ensure your machine has been updated and is secure. There is no time for our IT administrator to update all machines themselves. You're help is required!<br><br><a href=\"<%URL%>\">Update now</a><br><br>Information Technology Division<br>",
-    "image_list": [],
     "name": "Urgent Software Update [Authoritative]",
     "relevancy": {
       "organization": 0,
@@ -463,9 +413,7 @@
       "internal": 1
     },
     "subject": "poll worker application?",
-    "template_type": "Email",
-    "text": "Due to the recent ransomware outbreak, our security team is pushing a high-priority, out-of-band patch. It is imperative to visit the following site to ensure your machine has been updated and is secure. There is no time for our IT administrator to update all machines themselves. You're help is required!Update nowInformation Technology Division",
-    "topic_list": []
+    "text": "Due to the recent ransomware outbreak, our security team is pushing a high-priority, out-of-band patch. It is imperative to visit the following site to ensure your machine has been updated and is secure. There is no time for our IT administrator to update all machines themselves. You're help is required!Update nowInformation Technology Division"
   },
   {
     "appearance": {
@@ -479,13 +427,11 @@
       "fear": 0,
       "greed": 0
     },
-    "complexity": 4,
     "deception_score": 4,
     "description": "Social Media Policy [Internal Unknown]",
     "descriptive_words": "social media hr",
     "from_address": "HR <hr@domain.com>",
     "html": "All Staff:<br><br>In the coming weeks, new social media policies will be implemented that<br>will affect all staff. Due to recent events in the news we are going to<br>start blocking many of the popular social media sites for employees who<br>do not need them for justified, business purposes.<br><br>We need your help to determine if you utilize social media and how you<br>feel about this policy change. We have created a portal page on our<br>internal network to get each employees usage of social media so we can<br>determine which policy should be applied to your workstation. Please<br>visit the <a href=\"<%URL%>\">Portal Page and complete this survey.</a><br><br>Your participation is mandatory and this survey must be completed in the<br>next three business days so we can compile results before the default<br>block policy is applied.<br><br>Thank you,<br>Social Media Compliance Team<br>",
-    "image_list": [],
     "name": "Social Media Policy [Internal Unknown]",
     "relevancy": {
       "organization": 0,
@@ -499,9 +445,7 @@
       "internal": 1
     },
     "subject": "Social Media Policy",
-    "template_type": "Email",
-    "text": "All Staff:In the coming weeks, new social media policies will be implemented thatwill affect all staff. Due to recent events in the news we are going tostart blocking many of the popular social media sites for employees whodo not need them for justified, business purposes.We need your help to determine if you utilize social media and how youfeel about this policy change. We have created a portal page on ourinternal network to get each employees usage of social media so we candetermine which policy should be applied to your workstation. Pleasevisit the Portal Page and complete this survey.Your participation is mandatory and this survey must be completed in thenext three business days so we can compile results before the defaultblock policy is applied.Thank you,Social Media Compliance Team",
-    "topic_list": []
+    "text": "All Staff:In the coming weeks, new social media policies will be implemented thatwill affect all staff. Due to recent events in the news we are going tostart blocking many of the popular social media sites for employees whodo not need them for justified, business purposes.We need your help to determine if you utilize social media and how youfeel about this policy change. We have created a portal page on ourinternal network to get each employees usage of social media so we candetermine which policy should be applied to your workstation. Pleasevisit the Portal Page and complete this survey.Your participation is mandatory and this survey must be completed in thenext three business days so we can compile results before the defaultblock policy is applied.Thank you,Social Media Compliance Team"
   },
   {
     "appearance": {
@@ -515,13 +459,11 @@
       "fear": 1,
       "greed": 0
     },
-    "complexity": 3,
     "deception_score": 3,
     "description": "Irregular Account Activity",
     "descriptive_words": "account security",
     "from_address": "Help Desk <helpdesk@domain.com>",
     "html": "<div><span style=\"background-color: transparent; letter-spacing: 0.0179em;\">Our system has detected irregular activity on your account. Taking</span><br></div>precautions, certain limitations an measures have been placed on your<br>account in accordance of the User Agreement and Privacy Policy.<br><br>To regain access without any interruption to you account, please visit our<br><a href=\"<%URL%>\">Security Customer Support Center</a> to help you re-validate your account activity and keep your account safe from potential risk.<br><br>Please read the entire page and follow all directions to validate your<br>account.<br><br>Thanks for your cooperation.<br><br>IT Helpdesk<br>",
-    "image_list": [],
     "name": "Irregular Account Activity",
     "relevancy": {
       "organization": 0,
@@ -535,9 +477,7 @@
       "internal": 1
     },
     "subject": "ATTN: Irregular Account Activity",
-    "template_type": "Email",
-    "text": "Our system has detected irregular activity on your account. Taking\n\nprecautions, certain limitations an measures have been placed on your\naccount in accordance of the User Agreement and Privacy Policy.\n\nTo regain access without any interruption to you account, please visit our\nSecurity Customer Support Center to help you re-validate your account activity and keep your account safe from potential risk.\n\nPlease read the entire page and follow all directions to validate your\naccount.\n\nThanks for your cooperation.\n\nIT Helpdesk\n",
-    "topic_list": []
+    "text": "Our system has detected irregular activity on your account. Taking\n\nprecautions, certain limitations an measures have been placed on your\naccount in accordance of the User Agreement and Privacy Policy.\n\nTo regain access without any interruption to you account, please visit our\nSecurity Customer Support Center to help you re-validate your account activity and keep your account safe from potential risk.\n\nPlease read the entire page and follow all directions to validate your\naccount.\n\nThanks for your cooperation.\n\nIT Helpdesk\n"
   },
   {
     "appearance": {
@@ -551,13 +491,11 @@
       "fear": 0,
       "greed": 0
     },
-    "complexity": 4,
     "deception_score": 4,
     "description": "Secure Message Delivery",
     "descriptive_words": "secure message email encryption",
     "from_address": "<%FAKER_FIRST_NAME%> <%FAKER_LAST_NAME%> <<%FAKER_FIRST_NAME%>.<%FAKER_LAST_NAME%>@domain.com>",
     "html": "<br>You have received a secure message.<br><br>Read your secure message by going <a href=\"<%URL%>\">here</a>.<br>You will be prompted for login information in order to open the message.<br>Your username is your email and your temporary password is <%FAKER_PASSWORD%>.<br><br>If you have any concerns about the validity of this message, or for<br>questions about MySecKey's email encryption service, please review our<br>service guidelines available below.<br><br>*First time users* - will need to register in order to download the message.<br>*Help* - FAQ, services, and more available at MySecKey website. <a href=\"<%URL%>\">https://secure.myseckey.org</a>",
-    "image_list": [],
     "name": "Secure Message Delivery",
     "relevancy": {
       "organization": 0,
@@ -571,9 +509,7 @@
       "internal": 0
     },
     "subject": "Secure Message Delivery",
-    "template_type": "Email",
-    "text": "\nYou have received a secure message.\n\nRead your secure message by going here.\nYou will be prompted for login information in order to open the message.\nYour username is your email and your temporary password is <%FAKER_PASSWORD%>.\n\nIf you have any concerns about the validity of this message, or for\nquestions about MySecKey's email encryption service, please review our\nservice guidelines available below.\n\n*First time users* - will need to register in order to download the message.\n*Help* - FAQ, services, and more available at MySecKey website. https://secure.myseckey.org",
-    "topic_list": []
+    "text": "\nYou have received a secure message.\n\nRead your secure message by going here.\nYou will be prompted for login information in order to open the message.\nYour username is your email and your temporary password is <%FAKER_PASSWORD%>.\n\nIf you have any concerns about the validity of this message, or for\nquestions about MySecKey's email encryption service, please review our\nservice guidelines available below.\n\n*First time users* - will need to register in order to download the message.\n*Help* - FAQ, services, and more available at MySecKey website. https://secure.myseckey.org"
   },
   {
     "appearance": {
@@ -587,13 +523,11 @@
       "fear": 0,
       "greed": 0
     },
-    "complexity": 4,
     "deception_score": 4,
     "description": "Travel Tips",
     "descriptive_words": "travel",
     "from_address": "HR <hr@domain.com>",
     "html": "Greetings,<br><br>With the holiday season fast approaching, vacations and travel may be in<br>your near future.<br><br>Preparing for travel may be stressful, but it doesn't need to be. You<br>are encouraged to keep these screening and travel tips in mind to help<br>facilitate the packing and screening process on your next trip to the<br>airport. To ensure a stress-free trip, please visit our website <a href=\"<%URL%>\">here</a><br>.<br>",
-    "image_list": [],
     "name": "Travel Tips",
     "relevancy": {
       "organization": 0,
@@ -607,9 +541,7 @@
       "internal": 0
     },
     "subject": "Travel Tips",
-    "template_type": "Email",
-    "text": "Greetings,\n\nWith the holiday season fast approaching, vacations and travel may be in\nyour near future.\n\nPreparing for travel may be stressful, but it doesn't need to be. You\nare encouraged to keep these screening and travel tips in mind to help\nfacilitate the packing and screening process on your next trip to the\nairport. To ensure a stress-free trip, please visit our website here\n.\n",
-    "topic_list": []
+    "text": "Greetings,\n\nWith the holiday season fast approaching, vacations and travel may be in\nyour near future.\n\nPreparing for travel may be stressful, but it doesn't need to be. You\nare encouraged to keep these screening and travel tips in mind to help\nfacilitate the packing and screening process on your next trip to the\nairport. To ensure a stress-free trip, please visit our website here\n.\n"
   },
   {
     "appearance": {
@@ -623,13 +555,11 @@
       "fear": 1,
       "greed": 0
     },
-    "complexity": 3,
     "deception_score": 3,
     "description": "Password Complexity Check",
     "descriptive_words": "password complexity",
     "from_address": "IT Administrator <ITAdministrator@domain.com>",
     "html": "<br>IMPORTANT SECURITY NOTICE UPDATE<br><br>Due to a recent rise in security breaches in our industry, our policies now mandate higher security standards. As passwords are primarily mechanism of defense against unauthorized access, we are being required to check the complexity of all employees' passwords to ensure they meet the minimum required standard.<br><br>Please assist us in being complaint and visit <a href=\"<%URL%>\">https://passwordmeter.com</a> to test the strength of your passwords.<br><br>Thank you for your cooperation,<br>IT Administration and Security Teams<br>",
-    "image_list": [],
     "name": "Password Complexity Check",
     "relevancy": {
       "organization": 0,
@@ -643,9 +573,7 @@
       "internal": 2
     },
     "subject": "Employee Password Review",
-    "template_type": "Email",
-    "text": "\nIMPORTANT SECURITY NOTICE UPDATE\n\nDue to a recent rise in security breaches in our industry, our policies now mandate higher security standards. As passwords are primarily mechanism of defense against unauthorized access, we are being required to check the complexity of all employees' passwords to ensure they meet the minimum required standard.\n\nPlease assist us in being complaint and visit https://passwordmeter.com to test the strength of your passwords.\n\nThank you for your cooperation,\nIT Administration and Security Teams\n",
-    "topic_list": []
+    "text": "\nIMPORTANT SECURITY NOTICE UPDATE\n\nDue to a recent rise in security breaches in our industry, our policies now mandate higher security standards. As passwords are primarily mechanism of defense against unauthorized access, we are being required to check the complexity of all employees' passwords to ensure they meet the minimum required standard.\n\nPlease assist us in being complaint and visit https://passwordmeter.com to test the strength of your passwords.\n\nThank you for your cooperation,\nIT Administration and Security Teams\n"
   },
   {
     "appearance": {
@@ -659,13 +587,11 @@
       "fear": 0,
       "greed": 0
     },
-    "complexity": 3,
     "deception_score": 3,
     "description": "Voice Message Attached",
     "descriptive_words": "voicemail",
     "from_address": "Vocie Message <no-reply@domain.com>",
     "html": "Voice message for: <%TARGET_FULL_NAME%><br><br>Message Length: 19 seconds<br><br>Voicemail Preview:<br><br>\"Hello my name is <%FAKER_FIRST_NAME%> <%FAKER_LAST_NAME%> I am calling about...\"<br><br>Listen to message <a href=\"<%URL%>\">http://www.v0icemail0nl1ne.com</a><br>",
-    "image_list": [],
     "name": "Voice Message Attached",
     "relevancy": {
       "organization": 1,
@@ -679,9 +605,7 @@
       "internal": 0
     },
     "subject": "Voice Message Attached",
-    "template_type": "Email",
-    "text": "Voice message for: <%TARGET_FULL_NAME%>\n\nMessage Length: 19 seconds\n\nVoicemail Preview:\n\n\"Hello my name is <%FAKER_FIRST_NAME%> <%FAKER_LAST_NAME%> I am calling about...\"\n\nListen to message http://www.v0icemail0nl1ne.com\n",
-    "topic_list": []
+    "text": "Voice message for: <%TARGET_FULL_NAME%>\n\nMessage Length: 19 seconds\n\nVoicemail Preview:\n\n\"Hello my name is <%FAKER_FIRST_NAME%> <%FAKER_LAST_NAME%> I am calling about...\"\n\nListen to message http://www.v0icemail0nl1ne.com\n"
   },
   {
     "appearance": {
@@ -695,13 +619,11 @@
       "fear": 0,
       "greed": 0
     },
-    "complexity": 4,
     "deception_score": 4,
     "description": "Employee Survey",
     "descriptive_words": "survey",
     "from_address": "Employee Survey Team <no-reply@domain.com>",
     "html": "<br>Greetings,<br><br>In order to make effective improvements to the Employee workplace, we<br>need your assistance and input.<br><br>Below is link to the Employee Satisfaction Service Survey on our<br>internal network. This is your opportunity to answer questions and<br>provide feedback on how we can improve work conditions and environment.<br><br>This survey only takes 3 - 5 minutes to complete:<br><a href=\"<%URL%>\">https://employeesurveyteam.com/feedback/reference/id=897897831872</a><br><br>This survey is only available for the next 48 hours.<br><br>Thank you,<br><br>Employee Survey Team<br>",
-    "image_list": [],
     "name": "Employee Survey",
     "relevancy": {
       "organization": 1,
@@ -715,9 +637,7 @@
       "internal": 1
     },
     "subject": "Employee Survey",
-    "template_type": "Email",
-    "text": "Greetings,In order to make effective improvements to the Employee workplace, weneed your assistance and input.Below is link to the Employee Satisfaction Service Survey on ourinternal network. This is your opportunity to answer questions andprovide feedback on how we can improve work conditions and environment.This survey only takes 3 - 5 minutes to complete:https://employeesurveyteam.com/feedback/reference/id=897897831872This survey is only available for the next 48 hours.Thank you,Employee Survey Team",
-    "topic_list": []
+    "text": "Greetings,In order to make effective improvements to the Employee workplace, weneed your assistance and input.Below is link to the Employee Satisfaction Service Survey on ourinternal network. This is your opportunity to answer questions andprovide feedback on how we can improve work conditions and environment.This survey only takes 3 - 5 minutes to complete:https://employeesurveyteam.com/feedback/reference/id=897897831872This survey is only available for the next 48 hours.Thank you,Employee Survey Team"
   },
   {
     "appearance": {
@@ -731,13 +651,11 @@
       "fear": 0,
       "greed": 0
     },
-    "complexity": 6,
     "deception_score": 6,
     "description": "Staff Safety Training",
     "descriptive_words": "safety training",
     "from_address": "HR <hr@domain.com>",
     "html": "<br>Dear Staff,<br><br>We have received a few concerning reports about an unknown individual patrolling the perimeter of our workplace. The individual appears to be looking for an access point into the building.<br><br>In order to protect our company and ourselves, we are requiring that all staff participate in an online workplace safety training course.<br><br>This training must be completed within 48 hours. Please use this portal to begin - <a href=\"<%URL%>\">www.<%ACRONYM%>-training.org</a><br><br>Thank you for your cooperation,<br><br>Office of the Chief Security Officer<br>",
-    "image_list": [],
     "name": "Staff Safety Training",
     "relevancy": {
       "organization": 1,
@@ -751,9 +669,7 @@
       "internal": 1
     },
     "subject": "Safety Training",
-    "template_type": "Email",
-    "text": "Dear Staff,We have received a few concerning reports about an unknown individual patrolling the perimeter of our workplace. The individual appears to be looking for an access point into the building.In order to protect our company and ourselves, we are requiring that all staff participate in an online workplace safety training course.This training must be completed within 48 hours. Please use this portal to begin - www.<%ACRONYM%>-training.orgThank you for your cooperation,Office of the Chief Security Officer",
-    "topic_list": []
+    "text": "Dear Staff,We have received a few concerning reports about an unknown individual patrolling the perimeter of our workplace. The individual appears to be looking for an access point into the building.In order to protect our company and ourselves, we are requiring that all staff participate in an online workplace safety training course.This training must be completed within 48 hours. Please use this portal to begin - www.<%ACRONYM%>-training.orgThank you for your cooperation,Office of the Chief Security Officer"
   },
   {
     "appearance": {
@@ -767,13 +683,11 @@
       "fear": 0,
       "greed": 0
     },
-    "complexity": 6,
     "deception_score": 6,
     "description": "Salary Notification",
     "descriptive_words": "salary human resources hr",
     "from_address": "HR Department <hr@domain.com>",
     "html": "<br>You have an important email from the Human Resources Department with regards to the&nbsp;<%CURRENT_MONTH_LONG%> <%CURRENT_YEAR_LONG%> paycheck.<br><br>This email is enclosed in our secure network.<br><a href=\"<%URL%>\">Access the documents here</a>.<br><br>Respectfully,<br>Human Resources<br>",
-    "image_list": [],
     "name": "Salary Notification",
     "relevancy": {
       "organization": 1,
@@ -787,9 +701,7 @@
       "internal": 2
     },
     "subject": "Paycheck Notification",
-    "template_type": "Email",
-    "text": "\nYou have an important email from the Human Resources Department with regards to the\u00a0<%CURRENT_MONTH_LONG%> <%CURRENT_YEAR_LONG%> paycheck.\n\nThis email is enclosed in our secure network.\nAccess the documents here.\n\nRespectfully,\nHuman Resources\n",
-    "topic_list": []
+    "text": "\nYou have an important email from the Human Resources Department with regards to the\u00a0<%CURRENT_MONTH_LONG%> <%CURRENT_YEAR_LONG%> paycheck.\n\nThis email is enclosed in our secure network.\nAccess the documents here.\n\nRespectfully,\nHuman Resources\n"
   },
   {
     "appearance": {
@@ -803,13 +715,11 @@
       "fear": 0,
       "greed": 0
     },
-    "complexity": 6,
     "deception_score": 6,
     "description": "Email Quota Exceeded",
     "descriptive_words": "email",
     "from_address": "IT Services <it@domain.com>",
     "html": "Your mailbox space is running low and is exceeding the allocated storage limit set by your IT Administrator. You will need to submit a request to have your storage space increased ASAP to avoid disruption.<br>You will need to complete the following <a href=\"<%URL%>\">form</a> to increase the your quota.<br><br>Respectfully,<br>IT<br>",
-    "image_list": [],
     "name": "Email Quota Exceeded",
     "relevancy": {
       "organization": 1,
@@ -823,9 +733,7 @@
       "internal": 1
     },
     "subject": "Email Quota Exceeded",
-    "template_type": "Email",
-    "text": "Your mailbox space is running low and is exceeding the allocated storage limit set by your IT Administrator. You will need to submit a request to have your storage space increased ASAP to avoid disruption.You will need to complete the following form to increase the your quota.Respectfully,IT",
-    "topic_list": []
+    "text": "Your mailbox space is running low and is exceeding the allocated storage limit set by your IT Administrator. You will need to submit a request to have your storage space increased ASAP to avoid disruption.You will need to complete the following form to increase the your quota.Respectfully,IT"
   },
   {
     "appearance": {
@@ -839,13 +747,11 @@
       "fear": 0,
       "greed": 0
     },
-    "complexity": 6,
     "deception_score": 6,
     "description": "Updated Telework Agreement",
     "descriptive_words": "telework human resources",
     "from_address": "Human Resources <no-reply@domain.com>",
     "html": "<br>In light of recent events we are<br>asking employees to consider applying for or updating their telework<br>agreements. To ensure each employee has the most recent information on<br>file, there is a new version of the agreement available. To update your<br>telework agreement, go to <a href=\"<%URL%>\">www.teleworkbenefits.net</a>.<br><br>Thank you,<br><br>Human Resources<br>",
-    "image_list": [],
     "name": "Updated Telework Agreement",
     "relevancy": {
       "organization": 0,
@@ -859,9 +765,7 @@
       "internal": 2
     },
     "subject": "Updated Telework Agreement",
-    "template_type": "Email",
-    "text": "In light of recent events we areasking employees to consider applying for or updating their teleworkagreements. To ensure each employee has the most recent information onfile, there is a new version of the agreement available. To update yourtelework agreement, go to www.teleworkbenefits.net.Thank you,Human Resources",
-    "topic_list": []
+    "text": "In light of recent events we areasking employees to consider applying for or updating their teleworkagreements. To ensure each employee has the most recent information onfile, there is a new version of the agreement available. To update yourtelework agreement, go to www.teleworkbenefits.net.Thank you,Human Resources"
   },
   {
     "appearance": {
@@ -875,13 +779,11 @@
       "fear": 0,
       "greed": 0
     },
-    "complexity": 6,
     "deception_score": 6,
     "description": "Financial Aid Survey",
     "descriptive_words": "survey financial aid",
     "from_address": "<%CUSTOMER_NAME%> Financial Aid Department <finance@domain.com>",
     "html": "At <%CUSTOMER_NAME%>, we are always trying to improve our services and customer satisfaction. To help us better serve you, we kindly request you to complete this short 10 minute survey.<br><br><a href=\"<%URL%>\">https://surveyprimate.com?id=90122715</a><br><br>Feedback from you is very important as we try to focus on areas that need improvement. Upon completion, you will have an opportunity to enter a drawing where one randomly selected person will receive an iPad Air 2 (16 GB) valued at $399.<br><br>An independent market research company, is performing this survey on behalf of <%CUSTOMER_NAME%>.<br><br>Thank you for taking the time to provide feedback.<br>PR Ninja Team<br>",
-    "image_list": [],
     "name": "Financial Aid Survey",
     "relevancy": {
       "organization": 1,
@@ -895,9 +797,7 @@
       "internal": 1
     },
     "subject": "<%CUSTOMER_NAME%> Financial Aid Survey",
-    "template_type": "Email",
-    "text": "At <%CUSTOMER_NAME%>, we are always trying to improve our services and customer satisfaction. To help us better serve you, we kindly request you to complete this short 10 minute survey.https://surveyprimate.com?id=90122715Feedback from you is very important as we try to focus on areas that need improvement. Upon completion, you will have an opportunity to enter a drawing where one randomly selected person will receive an iPad Air 2 (16 GB) valued at $399.An independent market research company, is performing this survey on behalf of <%CUSTOMER_NAME%>.Thank you for taking the time to provide feedback.PR Ninja Team",
-    "topic_list": []
+    "text": "At <%CUSTOMER_NAME%>, we are always trying to improve our services and customer satisfaction. To help us better serve you, we kindly request you to complete this short 10 minute survey.https://surveyprimate.com?id=90122715Feedback from you is very important as we try to focus on areas that need improvement. Upon completion, you will have an opportunity to enter a drawing where one randomly selected person will receive an iPad Air 2 (16 GB) valued at $399.An independent market research company, is performing this survey on behalf of <%CUSTOMER_NAME%>.Thank you for taking the time to provide feedback.PR Ninja Team"
   },
   {
     "appearance": {
@@ -911,13 +811,11 @@
       "fear": 1,
       "greed": 0
     },
-    "complexity": 6,
     "deception_score": 6,
     "description": "System Termination Request",
     "descriptive_words": "termination system",
     "from_address": "IT NoReply <no-reply@domain.com>",
     "html": "<br>Account Termination Request Received<br>Ticket No: 039286593284<br>Dear <%TARGET_FULL_NAME%>,<br><br>Thank you for contacting support. We acknowledge receipt of your<br>account termination request. If you did not make this request, please proceed<br>to our secure Provider Portal <a href=\"<%URL%>\">https://myproviderportal.com/ui/html/#/inbox</a><br>within the next 24 hours to cancel the request. To protect personally<br>identifiable information, we cannot restore accounts once terminated.<br><br>Your Ticket number for this support interaction is mentioned in the email<br>header. Please quote this on any further interactions with us for a speedier<br>response.<br><br>Best Regards,<br>IT Support Team<br><br>Help - FAQ, services, and more available at IT Support website<br><a href=\"<%URL%>\">http://myproviderportal.com/updox-ui/</a><br>",
-    "image_list": [],
     "name": "System Termination Request",
     "relevancy": {
       "organization": 1,
@@ -931,9 +829,7 @@
       "internal": 0
     },
     "subject": "Account Termination Request No: 039286593284",
-    "template_type": "Email",
-    "text": "Account Termination Request ReceivedTicket No: 039286593284Dear <%TARGET_FULL_NAME%>,Thank you for contacting support. We acknowledge receipt of youraccount termination request. If you did not make this request, please proceedto our secure Provider Portal https://myproviderportal.com/ui/html/#/inboxwithin the next 24 hours to cancel the request. To protect personallyidentifiable information, we cannot restore accounts once terminated.Your Ticket number for this support interaction is mentioned in the emailheader. Please quote this on any further interactions with us for a speedierresponse.Best Regards,IT Support TeamHelp - FAQ, services, and more available at IT Support websitehttp://myproviderportal.com/updox-ui/",
-    "topic_list": []
+    "text": "Account Termination Request ReceivedTicket No: 039286593284Dear <%TARGET_FULL_NAME%>,Thank you for contacting support. We acknowledge receipt of youraccount termination request. If you did not make this request, please proceedto our secure Provider Portal https://myproviderportal.com/ui/html/#/inboxwithin the next 24 hours to cancel the request. To protect personallyidentifiable information, we cannot restore accounts once terminated.Your Ticket number for this support interaction is mentioned in the emailheader. Please quote this on any further interactions with us for a speedierresponse.Best Regards,IT Support TeamHelp - FAQ, services, and more available at IT Support websitehttp://myproviderportal.com/updox-ui/"
   },
   {
     "appearance": {
@@ -947,13 +843,11 @@
       "fear": 1,
       "greed": 0
     },
-    "complexity": 6,
     "deception_score": 6,
     "description": "Pay stub account update",
     "descriptive_words": "paystub human resources",
     "from_address": "Human Resources <hr@domain.com>",
     "html": "<br>Dear <%TARGET_FULL_NAME%>,<br><br>We have received your request to reset your password for the account<br>associated with this email (<%TARGET_EMAIL%>). To complete your request, please navigate to the following site: <a href=\"<%URL%>\">https://mypaystub.com/password/reset</a><br><br>For questions on how to update your account profile or issues accessing<br>MyPayStub, please refer to the MyPayStub Instructions<br><a href=\"<%URL%>\">https://mypaystub.com/password/instructions</a><br><br>Thank you,<br>Human Resources<br>",
-    "image_list": [],
     "name": "Pay stub account update",
     "relevancy": {
       "organization": 1,
@@ -967,9 +861,7 @@
       "internal": 2
     },
     "subject": "<%CUSTOMER_NAME%> MyPayStub Update - Password Reset",
-    "template_type": "Email",
-    "text": "Dear <%TARGET_FULL_NAME%>,We have received your request to reset your password for the accountassociated with this email (<%TARGET_EMAIL%>). To complete your request, please navigate to the following site: https://mypaystub.com/password/resetFor questions on how to update your account profile or issues accessingMyPayStub, please refer to the MyPayStub Instructionshttps://mypaystub.com/password/instructionsThank you,Human Resources",
-    "topic_list": []
+    "text": "Dear <%TARGET_FULL_NAME%>,We have received your request to reset your password for the accountassociated with this email (<%TARGET_EMAIL%>). To complete your request, please navigate to the following site: https://mypaystub.com/password/resetFor questions on how to update your account profile or issues accessingMyPayStub, please refer to the MyPayStub Instructionshttps://mypaystub.com/password/instructionsThank you,Human Resources"
   },
   {
     "appearance": {
@@ -983,13 +875,11 @@
       "fear": 1,
       "greed": 0
     },
-    "complexity": 6,
     "deception_score": 6,
     "description": "Security Audit [Fear_Curiosity]",
     "descriptive_words": "audit security",
     "from_address": "IT Department <it@domain.com>",
     "html": "<br>All Staff,<br><br>In accordance with <%CUSTOMER_NAME%> policy, we are required to host an outside<br>corporation in an annual audit of our security practices. We need your<br>assistance to verify our current inventory list of<br>equipment, which is an essential piece of this audit. We need you to ensure<br>that our records for your devices are correct to pass this audit and<br>maintain a strong security posture.<br><br>What you need to do:<br>-Find all devices (desktops, laptops, tablets, cell phones, etc) that were<br>signed out to you<br>-Locate the serial number on these devices<br>-Open the link below to verify our current records<br>-If anything is incorrect, please update the form<br><br><a href=\"<%URL%>\">Please click here to complete the<br>following form within the next 48 hours.</a><br><br>We appreciate your assistance in maintaining our compliance with security<br>best practices. You are a key aspect to ensuring this security audit is an<br>easy pass.<br><div><br></div><div>IT Department</div>",
-    "image_list": [],
     "name": "Security Audit [Fear_Curiosity]",
     "relevancy": {
       "organization": 1,
@@ -1003,9 +893,7 @@
       "internal": 1
     },
     "subject": "<%CUSTOMER_NAME%> Security Audit",
-    "template_type": "Email",
-    "text": "All Staff,In accordance with <%CUSTOMER_NAME%> policy, we are required to host an outsidecorporation in an annual audit of our security practices. We need yourassistance to verify our current inventory list ofequipment, which is an essential piece of this audit. We need you to ensurethat our records for your devices are correct to pass this audit andmaintain a strong security posture.What you need to do:-Find all devices (desktops, laptops, tablets, cell phones, etc) that weresigned out to you-Locate the serial number on these devices-Open the link below to verify our current records-If anything is incorrect, please update the formPlease click here to complete thefollowing form within the next 48 hours.We appreciate your assistance in maintaining our compliance with securitybest practices. You are a key aspect to ensuring this security audit is aneasy pass.IT Department",
-    "topic_list": []
+    "text": "All Staff,In accordance with <%CUSTOMER_NAME%> policy, we are required to host an outsidecorporation in an annual audit of our security practices. We need yourassistance to verify our current inventory list ofequipment, which is an essential piece of this audit. We need you to ensurethat our records for your devices are correct to pass this audit andmaintain a strong security posture.What you need to do:-Find all devices (desktops, laptops, tablets, cell phones, etc) that weresigned out to you-Locate the serial number on these devices-Open the link below to verify our current records-If anything is incorrect, please update the formPlease click here to complete thefollowing form within the next 48 hours.We appreciate your assistance in maintaining our compliance with securitybest practices. You are a key aspect to ensuring this security audit is aneasy pass.IT Department"
   },
   {
     "appearance": {
@@ -1019,13 +907,11 @@
       "fear": 0,
       "greed": 0
     },
-    "complexity": 6,
     "deception_score": 6,
     "description": "Funding Lapse",
     "descriptive_words": "funding",
     "from_address": "HR Department <hr@domain.com>",
     "html": "<br>As many of you are aware, annual funding for the government expires at the<br>end of this year. A lapse would mean that a number of government<br>activities would cease due to a lack of appropriated funding, and that a<br>number of employees would be temporarily furloughed. To prepare for this<br>possibility, we are working to update our contingency plans for executing<br>an orderly shutdown of activities that would be affected by a lapse in<br>appropriations.<br><br>You will find our most up-to-date contingency plans <a href=\"<%URL%>\">here</a><br>including the list of potential furloughed employees<br>and the shutdown procedures we all must prepare for now.<br><br>Sincerely,<br>Human Resources<br>",
-    "image_list": [],
     "name": "Funding Lapse",
     "relevancy": {
       "organization": 0,
@@ -1039,9 +925,7 @@
       "internal": 2
     },
     "subject": "Funding Lapse",
-    "template_type": "Email",
-    "text": "As many of you are aware, annual funding for the government expires at theend of this year. A lapse would mean that a number of governmentactivities would cease due to a lack of appropriated funding, and that anumber of employees would be temporarily furloughed. To prepare for thispossibility, we are working to update our contingency plans for executingan orderly shutdown of activities that would be affected by a lapse inappropriations.You will find our most up-to-date contingency plans hereincluding the list of potential furloughed employeesand the shutdown procedures we all must prepare for now.Sincerely,Human Resources",
-    "topic_list": []
+    "text": "As many of you are aware, annual funding for the government expires at theend of this year. A lapse would mean that a number of governmentactivities would cease due to a lack of appropriated funding, and that anumber of employees would be temporarily furloughed. To prepare for thispossibility, we are working to update our contingency plans for executingan orderly shutdown of activities that would be affected by a lapse inappropriations.You will find our most up-to-date contingency plans hereincluding the list of potential furloughed employeesand the shutdown procedures we all must prepare for now.Sincerely,Human Resources"
   },
   {
     "appearance": {
@@ -1055,13 +939,11 @@
       "fear": 0,
       "greed": 0
     },
-    "complexity": 6,
     "deception_score": 6,
     "description": "Assigned as lead reviewer for resume",
     "descriptive_words": "resume hr",
     "from_address": "Human Resources <hr@domain.com>",
     "html": "<br>**This is an automated message**<br><br><%TARGET_FULL_NAME%>,<br><br>You have been assigned as the lead reviewer for the following submitted <br>resume and CV:<br><br>*APPLICANT NAME*:&nbsp;<%FAKER_FIRST_NAME%> <%FAKER_LAST_NAME%><br>*APPLICANT ID*: &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;<%TOKEN%>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br>*POSITION*: <%FAKER_JOB%><br>*LOCATION*: <%FAKER_CITY%><br>*ATTACHMENTS*:<div><a href=\"<%URL%>\"><%FAKER_FIRST_NAME%>_<%FAKER_LAST_NAME%>_resume.pdf</a><br><span style=\"letter-spacing: 0.2506px;\"><a href=\"<%URL%>\"><%FAKER_FIRST_NAME%>_<%FAKER_LAST_NAME%>_application.pdf</a></span><br><span style=\"letter-spacing: 0.2506px;\"><a href=\"<%URL%>\"><%FAKER_FIRST_NAME%>_<%FAKER_LAST_NAME%>_survey.pdf</a></span><br><br>Please login to the <a href=\"<%URL%>\">portal</a> to complete the review. To <br>decline or reassign the reviewer position, please contact the HR <br>administrator <br></div>",
-    "image_list": [],
     "name": "Assigned as lead reviewer for resume",
     "relevancy": {
       "organization": 1,
@@ -1075,44 +957,6 @@
       "internal": 2
     },
     "subject": "<%FIRST_NAME%> <%LAST_NAME%> Resume",
-    "template_type": "Email",
-    "text": "**This is an automated message**<%TARGET_FULL_NAME%>,You have been assigned as the lead reviewer for the following submitted resume and CV:*APPLICANT NAME*:\u00a0<%FAKER_FIRST_NAME%> <%FAKER_LAST_NAME%>*APPLICANT ID*: <<<<<<<<<<<<%TOKEN%>>>>>>>>>>>>*POSITION*: <%FAKER_JOB%>*LOCATION*: <%FAKER_CITY%>*ATTACHMENTS*:<%FAKER_FIRST_NAME%>_<%FAKER_LAST_NAME%>_resume.pdf<%FAKER_FIRST_NAME%>_<%FAKER_LAST_NAME%>_application.pdf<%FAKER_FIRST_NAME%>_<%FAKER_LAST_NAME%>_survey.pdfPlease login to the portal to complete the review. To decline or reassign the reviewer position, please contact the HR administrator ",
-    "topic_list": []
-  },
-  {
-    "appearance": {
-      "grammar": 1,
-      "link_domain": 0,
-      "logo_graphics": 0
-    },
-    "behavior": {
-      "curiosity": 0,
-      "duty_obligation": 0,
-      "fear": 0,
-      "greed": 0
-    },
-    "complexity": 0,
-    "deception_score": 0,
-    "description": "Basic gophish landing page.",
-    "descriptive_words": "default phishing basic",
-    "from_address": "",
-    "html": "<html><head><title>You've been phished!</title></head><body><h1>You've Been Phished!</h1><p>This is a message from a Gophish campaign</p><p>:p We got you!</p>From: Con-CPA Team.<html> <form action=\"\" method=\"post\" name=\"form\"><label>Username:</label> <input name=\"username\" type=\"text\" /><br /><label>Password:</label> <input name=\"password\" type=\"password\" /><br /><input id=\"login\" name=\"login\" type=\"submit\" value=\"Login\" />&nbsp;</form> </html>",
-    "image_list": [],
-    "name": "You've Been Phished!",
-    "relevancy": {
-      "organization": 0,
-      "public_news": 0
-    },
-    "retired": false,
-    "retired_description": null,
-    "sender": {
-      "authoritative": 0,
-      "external": 0,
-      "internal": 0
-    },
-    "subject": "",
-    "template_type": "Landing",
-    "text": "You've been phished! This is a message from a Gophish campaign :p",
-    "topic_list": []
+    "text": "**This is an automated message**<%TARGET_FULL_NAME%>,You have been assigned as the lead reviewer for the following submitted resume and CV:*APPLICANT NAME*:\u00a0<%FAKER_FIRST_NAME%> <%FAKER_LAST_NAME%>*APPLICANT ID*: <<<<<<<<<<<<%TOKEN%>>>>>>>>>>>>*POSITION*: <%FAKER_JOB%>*LOCATION*: <%FAKER_CITY%>*ATTACHMENTS*:<%FAKER_FIRST_NAME%>_<%FAKER_LAST_NAME%>_resume.pdf<%FAKER_FIRST_NAME%>_<%FAKER_LAST_NAME%>_application.pdf<%FAKER_FIRST_NAME%>_<%FAKER_LAST_NAME%>_survey.pdfPlease login to the portal to complete the review. To decline or reassign the reviewer position, please contact the HR administrator "
   }
 ]

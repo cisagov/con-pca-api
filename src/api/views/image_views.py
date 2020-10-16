@@ -1,9 +1,3 @@
-"""
-Image Views.
-
-This handles the api for all the Image urls.
-"""
-# Third-Party Libraries
 from api.utils.aws_utils import S3
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
@@ -12,18 +6,9 @@ from rest_framework.views import APIView
 
 
 class ImageView(APIView):
-    """
-    This is the ImageView APIView.
+    """ImageView."""
 
-    This handles the API for managing images.
-    """
-
-    @swagger_auto_schema(
-        responses={"200": "Image OK"},
-        security=[],
-        operation_id="Single Image",
-        operation_description="This handles the operation to upload a single image",
-    )
+    @swagger_auto_schema(operation_id="Single Image")
     def post(self, request, format=None):
         """Post method."""
         s3 = S3()

@@ -1,8 +1,10 @@
 """Tempalte Selector Util."""
 from api.manager import TemplateManager
-from api.utils.tag.tags import get_tags
 from api.utils.template.personalize import personalize_template
-from api.utils.template.templates import get_email_templates
+from api.services import TagService, TemplateService
+
+tag_service = TagService()
+tempalte_service = TemplateService()
 
 
 def get_num_templates_per_batch(diversity_level="moderate"):
@@ -83,7 +85,7 @@ def batch_templates(templates, num_per_batch, sub_levels: dict):
 def personalize_templates(customer, subscription, templates, sub_levels: dict):
     """Personalize_templates."""
     # Gets list of tags for personalizing
-    tags = get_tags()
+    tags = tag_service.get_list()
 
     for k in sub_levels.keys():
         # Get actual list of template data
@@ -111,7 +113,7 @@ def personalize_templates(customer, subscription, templates, sub_levels: dict):
 def personalize_template_batch(customer, subscription, sub_levels: dict):
     """Personalize_template_batch."""
     # Gets list of available email templates
-    templates = get_email_templates()
+    templates = tempalte_service.get_list({"retired": False})
 
     # Determines how many templates are available in each batch
     templates_per_batch = get_num_templates_per_batch()

@@ -8,11 +8,10 @@ from faker import Faker
 fake = Faker()
 
 
-@mock.patch("api.utils.db_utils.push_nested_item")
+@mock.patch("api.services.CampaignService.push_nested")
 def test_push_webhook(mock_push):
     webhooks.push_webhook(
         fake.uuid4(),
-        fake.pyint(),
         fake.email(),
         fake.paragraph(),
         fake.date_time(),

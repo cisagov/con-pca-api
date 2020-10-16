@@ -134,7 +134,6 @@
       "active": true,
       "customer_uuid": "changeme",
       "dhs_contact_uuid": "changeme",
-      "gophish_campaign_list": [],
       "keywords": "Serach terms keywords identifier",
       "name": "changme2",
       "primary_contact": {

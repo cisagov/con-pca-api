@@ -131,7 +131,6 @@ def create_templates():
 
         for template in templates:
             if not template["name"] in existing_names:
-                template["deception_score"] = template["complexity"]
                 resp = requests.post(
                     f"{LOCAL_URL}/api/v1/templates/",
                     json=template,

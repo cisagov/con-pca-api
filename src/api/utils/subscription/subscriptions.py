@@ -4,52 +4,18 @@ from datetime import datetime, timedelta
 from uuid import uuid4
 
 # Third-Party Libraries
-from api.models.subscription_models import SubscriptionModel, validate_subscription
-from api.utils import db_utils as db
 from notifications.views import EmailSender
 from api.utils.subscription.static import CYCLE_MINUTES, MONTHLY_MINUTES, YEARLY_MINUTES
-from api.serializers.subscriptions_serializers import (
-    SubscriptionPatchSerializer,
-    SubscriptionPostSerializer,
-)
+from api.services import SubscriptionService
 
-
-def get_subscription(subscription_uuid: str):
-    """Returns a subscription from database."""
-    return db.get_single(
-        subscription_uuid, "subscription", SubscriptionModel, validate_subscription
-    )
-
-
-def get_subscriptions(sub_filter=None):
-    """Returns list of subscriptions from database."""
-    return db.get_list(
-        sub_filter, "subscription", SubscriptionModel, validate_subscription
-    )
-
-
-def save_subscription(data):
-    return db.save_single(
-        SubscriptionPostSerializer(data).data,
-        "subscription",
-        SubscriptionModel,
-        validate_subscription,
-    )
-
-
-def update_subscription(subscription_uuid, data):
-    return db.update_single(
-        uuid=subscription_uuid,
-        put_data=SubscriptionPatchSerializer(data).data,
-        collection="subscription",
-        model=SubscriptionModel,
-        validation_model=validate_subscription,
-    )
+subscription_service = SubscriptionService()
 
 
 def create_subscription_name(customer: dict):
     """Returns a subscription name."""
-    subscriptions = get_subscriptions({"customer_uuid": customer["customer_uuid"]})
+    subscriptions = subscription_service.get_list(
+        {"customer_uuid": customer["customer_uuid"]}
+    )
 
     if not subscriptions:
         return f"{customer['identifier']}_1"

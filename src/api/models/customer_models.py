@@ -68,22 +68,6 @@ class CustomerModel(Model):
     lub_timestamp = DateTimeType()
 
 
-class TestModel(Model):
-    """
-    This is the Customer Model.
-
-    This controls all data needed in saving the model. Current fields are:
-    customer_uuid
-    name,
-
-    """
-
-    customer_uuid = UUIDType()
-    name = StringType()
-    sector = StringType()
-    industry = StringType()
-
-
 def validate_customer(data_object):
     """
     This is an the validate_subscription.
@@ -91,12 +75,3 @@ def validate_customer(data_object):
     This shows basic validation for the model.
     """
     return CustomerModel(data_object).validate()
-
-
-def validate_test(data_object):
-    """
-    This is an the validate_subscription.
-
-    This shows basic validation for the model.
-    """
-    return TestModel(data_object).validate()

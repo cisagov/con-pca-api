@@ -1,30 +1,10 @@
 """Tempalte Utils."""
-# Third-Party Libraries
-from api.models.template_models import (
-    TargetHistoryModel,
-    TemplateModel,
-    validate_history,
-    validate_template,
-)
-from api.utils import db_utils as db
 from api.utils.generic import format_ztime
+from api.services import TargetHistoryService
+
+target_history_service = TargetHistoryService()
 
 deception_level = {"high": 3, "moderate": 2, "low": 1}
-
-
-def get_email_templates():
-    """
-    Returns a list of unretired email templates from database.
-
-    Returns:
-        list: returns a list of unretired email templates
-    """
-    return db.get_list(
-        {"template_type": "Email", "retired": False},
-        "template",
-        TemplateModel,
-        validate_template,
-    )
 
 
 def update_target_history(campaign_info, seralized_data):
@@ -35,12 +15,7 @@ def update_target_history(campaign_info, seralized_data):
         seralized_data (dict): seralized_data
     """
     # check if email target exists, if not, create
-    document_list = db.get_list(
-        {"email": seralized_data["email"]},
-        "target",
-        TargetHistoryModel,
-        validate_history,
-    )
+    document_list = target_history_service.get_list({"email": seralized_data["email"]})
     if document_list:
         # If object exists, update with latest template info
         target = document_list[0]
@@ -57,13 +32,7 @@ def update_target_history(campaign_info, seralized_data):
                     "sent_timestamp": format_ztime(seralized_data["time"]),
                 }
             )
-            db.update_single(
-                target["target_uuid"],
-                target,
-                "target",
-                TargetHistoryModel,
-                validate_history,
-            )
+            target_history_service.update(target["target_uuid"], target)
     else:
         # create new target history if not exisiting
         targert_hist = {
@@ -75,15 +44,4 @@ def update_target_history(campaign_info, seralized_data):
                 }
             ],
         }
-        db.save_single(targert_hist, "target", TargetHistoryModel, validate_history)
-
-
-def get_subscription_templates(subscription):
-    return db.get_list(
-        parameters={
-            "template_uuid": {"$in": subscription.get("templates_selected_uuid_list")}
-        },
-        collection="template",
-        model=TemplateModel,
-        validation_model=validate_template,
-    )
+        target_history_service.save(targert_hist)

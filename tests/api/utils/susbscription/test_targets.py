@@ -40,12 +40,12 @@ def test_batch_targets():
 
 def test_get_target_available_templates():
     templates = ["a", "b", "c"]
-    with mock.patch("api.utils.db_utils.get_list", return_value=[]):
+    with mock.patch("api.services.TargetHistoryService.get_list", return_value=[]):
         result = targets.get_target_available_templates("test@test.com", templates)
         assert result == templates
 
     with mock.patch(
-        "api.utils.db_utils.get_list",
+        "api.services.TargetHistoryService.get_list",
         return_value=[{"history_list": [{"template_uuid": "a"}]}],
     ):
         result = targets.get_target_available_templates("test@test.com", templates)
@@ -54,7 +54,7 @@ def test_get_target_available_templates():
         assert "c" in result
 
     with mock.patch(
-        "api.utils.db_utils.get_list",
+        "api.services.TargetHistoryService.get_list",
         return_value=[
             {
                 "history_list": [
@@ -70,7 +70,7 @@ def test_get_target_available_templates():
 
 
 def test_assign_targets():
-    with mock.patch("api.utils.db_utils.get_list", return_value=[]):
+    with mock.patch("api.services.TargetHistoryService.get_list", return_value=[]):
         sub_level = {
             "template_uuids": ["a", "b", "c"],
             "targets": [{"email": fake.email()}, {"email": fake.email()}],

@@ -12,11 +12,12 @@ from api.utils.generic import format_ztime
 from api.utils.subscription.targets import assign_targets
 from api.utils.subscription.subscriptions import get_staggered_dates_in_range
 from api.utils.subscription.static import CAMPAIGN_MINUTES, DEFAULT_X_GOPHISH_CONTACT
-from api.utils.landing_pages import get_landing_page
 
-logger = logging.getLogger()
+from api.services import LandingPageService, CampaignService
 
 campaign_manager = CampaignManager()
+landing_page_service = LandingPageService()
+campaign_service = CampaignService()
 
 
 def generate_campaigns(subscription, landing_page, sub_levels, cycle_uuid):
@@ -81,7 +82,7 @@ def create_campaign(subscription, sub_level, landing_page, cycle_uuid):
 
         landing_page_name = landing_page
         if template.get("landing_page_uuid"):
-            template_lp = get_landing_page(template["landing_page_uuid"])
+            template_lp = landing_page_service.get(template["landing_page_uuid"])
             if template_lp:
                 landing_page_name = template_lp["name"]
 
@@ -129,31 +130,31 @@ def stop_campaign(campaign):
     # Delete Campaign
     try:
         campaign_manager.delete_campaign(campaign_id=campaign["campaign_id"])
-    except Exception as e:
-        logging.exception(e)
+    except Exception:
+        pass
 
     # Delete Templates
     try:
         campaign_manager.delete_email_template(
             template_id=campaign["email_template_id"]
         )
-    except Exception as e:
-        logging.exception(e)
+    except Exception:
+        pass
 
     # Delete Sending Profile
     try:
         campaign_manager.delete_sending_profile(smtp_id=campaign["smtp"]["id"])
-    except Exception as e:
-        logging.exception(e)
+    except Exception:
+        pass
 
     # Delete User Groups
     for group in campaign["groups"]:
         try:
             campaign_manager.delete_user_group(group_id=group["id"])
-        except Exception as e:
-            logging.exception(e)
+        except Exception:
+            pass
 
-    return campaign
+    campaign_service.update(campaign["campaign_uuid"], campaign)
 
 
 def __create_campaign(
@@ -225,7 +226,7 @@ def __create_campaign(
         "status": campaign.status,
         "results": [],
         "phish_results": default_phish_results,
-        "groups": [campaign_serializers.CampaignGroupSerializer(target_group).data],
+        "groups": [campaign_serializers.GoPhishGroupSerializer(target_group).data],
         "timeline": [
             {
                 "email": None,
@@ -235,7 +236,7 @@ def __create_campaign(
             }
         ],
         "target_email_list": targets,
-        "smtp": campaign_serializers.CampaignSmtpSerializer(campaign.smtp).data,
+        "smtp": campaign_serializers.GoPhishSmtpSerializer(campaign.smtp).data,
     }
 
 

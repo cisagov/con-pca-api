@@ -1,18 +1,15 @@
-from api.utils import db_utils as db
+from api.services import CampaignService
 
-from api.models.subscription_models import SubscriptionModel, validate_subscription
+campaign_service = CampaignService()
 
 
-def push_webhook(subscription_uuid, campaign_id, email, message, time, details):
+def push_webhook(campaign_uuid, email, message, time, details):
     data = {"email": email, "message": message, "time": time, "details": details}
-    return db.push_nested_item(
-        uuid=subscription_uuid,
-        field="gophish_campaign_list.$.timeline",
-        put_data=data,
-        collection="subscription",
-        model=SubscriptionModel,
-        validation_model=validate_subscription,
-        params={"gophish_campaign_list.campaign_id": campaign_id},
+
+    return campaign_service.push_nested(
+        uuid=campaign_uuid,
+        field="timeline",
+        data=data,
     )
 
 

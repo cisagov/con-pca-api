@@ -7,9 +7,6 @@ import numpy
 
 # Third-Party Libraries
 from api.manager import CampaignManager
-from api.models.landing_page_models import LandingPageModel, validate_landing_page
-from api.utils import db_utils as db
-from api.utils.customer.customers import get_customer
 from api.utils.subscription.campaigns import (
     generate_campaigns,
     stop_campaigns,
@@ -18,22 +15,27 @@ from api.utils.subscription.subscriptions import (
     calculate_subscription_start_end_date,
     init_subscription_tasks,
     create_subscription_name,
-    get_subscription,
     get_subscription_cycles,
     get_subscription_status,
     send_stop_notification,
-    update_subscription,
-    save_subscription,
     get_staggered_dates_in_range,
 )
 from api.utils.subscription.targets import batch_targets
 from api.utils.subscription.template_selector import personalize_template_batch
 from api.utils.template.templates import deception_level
-
-logger = logging.getLogger(__name__)
+from api.services import (
+    CustomerService,
+    SubscriptionService,
+    LandingPageService,
+    CampaignService,
+)
 
 # GoPhish Campaign Manager
 campaign_manager = CampaignManager()
+customer_service = CustomerService()
+subscription_service = SubscriptionService()
+landing_page_service = LandingPageService()
+campaign_service = CampaignService()
 
 
 def start_subscription(data=None, subscription_uuid=None, new_cycle=False):
@@ -48,12 +50,12 @@ def start_subscription(data=None, subscription_uuid=None, new_cycle=False):
         dict: returns response of updated/created subscription from database.
     """
     if subscription_uuid:
-        subscription = get_subscription(subscription_uuid)
+        subscription = subscription_service.get(subscription_uuid)
     else:
         subscription = data
 
     if new_cycle and subscription_uuid:
-        stop_campaigns(subscription["gophish_campaign_list"])
+        stop_campaigns(subscription["campaigns"])
 
     # calculate start and end date to subscription
     start_date, end_date = calculate_subscription_start_end_date(
@@ -61,7 +63,7 @@ def start_subscription(data=None, subscription_uuid=None, new_cycle=False):
     )
 
     # Get details for the customer that is attached to the subscription
-    customer = get_customer(subscription["customer_uuid"])
+    customer = customer_service.get(subscription["customer_uuid"])
 
     # Divide stagger each start date and randomize:
     if subscription["stagger_emails"]:
@@ -116,9 +118,7 @@ def start_subscription(data=None, subscription_uuid=None, new_cycle=False):
     landing_page = "Phished"
     parameters = {}
     parameters["is_default_template"] = True
-    landing_pages = db.get_list(
-        parameters, "landing_page", LandingPageModel, validate_landing_page
-    )
+    landing_pages = landing_page_service.get_list(parameters)
     for page in landing_pages:
         if page["is_default_template"]:
             landing_page = page["name"]
@@ -127,9 +127,6 @@ def start_subscription(data=None, subscription_uuid=None, new_cycle=False):
     new_gophish_campaigns = generate_campaigns(
         subscription, landing_page, sub_levels, cycle_uuid
     )
-    if "gophish_campaign_list" not in subscription:
-        subscription["gophish_campaign_list"] = []
-    subscription["gophish_campaign_list"].extend(new_gophish_campaigns)
 
     selected_templates = []
     for v in sub_levels.values():
@@ -150,14 +147,19 @@ def start_subscription(data=None, subscription_uuid=None, new_cycle=False):
     )
 
     if not subscription.get("tasks"):
-        logging.info("setting tasks")
         subscription["tasks"] = init_subscription_tasks(start_date)
 
     if subscription_uuid:
-        response = update_subscription(subscription_uuid, subscription)
+        response = subscription_service.update(subscription_uuid, subscription)
     else:
-        response = save_subscription(subscription)
+        print("SAVING SUBSCRIPTION")
+        response = subscription_service.save(subscription)
         response["name"] = subscription["name"]
+
+    for campaign in new_gophish_campaigns:
+        campaign["subscription_uuid"] = response["subscription_uuid"]
+        campaign["cycle_uuid"] = cycle_uuid
+        campaign_service.save(campaign)
 
     return response
 
@@ -168,7 +170,7 @@ def stop_subscription(subscription):
     Returns updated subscription.
     """
     # Stop Campaigns
-    stop_campaigns(subscription["gophish_campaign_list"])
+    stop_campaigns(subscription["campaigns"])
 
     # Remove subscription tasks from the scheduler
     subscription["tasks"] = []
@@ -185,6 +187,6 @@ def stop_subscription(subscription):
     except Exception as e:
         logging.exception(e)
 
-    resp = update_subscription(subscription["subscription_uuid"], subscription)
+    resp = subscription_service.update(subscription["subscription_uuid"], subscription)
 
     return resp

@@ -1,169 +1,130 @@
-"""
-GoPhish Campaign Serializers.
-
-These are Django Rest Framework Serializers.
-These are used for serializing data coming in from gophish.
-API Docs:
-https://docs.getgophish.com/api-documentation/campaigns
-"""
-# Third-Party Libraries
 from rest_framework import serializers
+from api.serializers.phishing_serializers import (
+    SubscriptionTargetSerializer,
+    PhishingResultsSerializer,
+)
 
 
-class CampaignResultSerializer(serializers.Serializer):
-    """
-    Campaign Results Serializer.
-
-    This is the data returned from Gophish's Campaigns API
-
-    id                   : string
-    first_name           : string
-    last_name            : string
-    position             : string
-    status               : string
-    ip                   : string
-    latitude             : float
-    longitude            : float
-    send_date            : string(datetime)
-    reported             : boolean
-    """
-
-    id = serializers.CharField()
-    first_name = serializers.CharField()
-    last_name = serializers.CharField()
-    position = serializers.CharField()
-    status = serializers.CharField()
-    ip = serializers.CharField()
-    latitude = serializers.FloatField(read_only=True)
-    longitude = serializers.FloatField(read_only=True)
-    send_date = serializers.DateTimeField(required=False)
-    reported = serializers.BooleanField(required=False)
-
-
-class CampaignGroupTargetSerializer(serializers.Serializer):
-    """
-    Campaign Group Target Serializer.
-
-    This is the data returned from Gophish's Campaigns API
-
-    email           : string
-    first_name      : string
-    last_name       : string
-    position        : string
-    """
-
-    email = serializers.EmailField()
-    first_name = serializers.CharField()
-    last_name = serializers.CharField()
-    position = serializers.CharField()
-
-
-class CampaignGroupSerializer(serializers.Serializer):
-    """
-    Campaign Groups Serializer.
-
-    This is the data returned from Gophish's Campaigns API
-
-    id              : int64
-    name            : string
-    targets         : array(Target)
-    modified_date   : string(datetime)
-    """
-
-    id = serializers.IntegerField(read_only=True)
-    name = serializers.CharField(required=True)
-    targets = CampaignGroupTargetSerializer(many=True)
-    modified_date = serializers.DateTimeField()
-
-
-class CampaignEventSerializer(serializers.Serializer):
-    """
-    Campaign Events Serializer.
-
-    This is the data returned from Gophish's Campaigns API
-
-    email                : string
-    time                 : string(datetime)
-    message              : string
-    details              : string(JSON)
-    """
-
-    email = serializers.EmailField()
-    time = serializers.DateTimeField()
-    message = serializers.CharField()
-    details = serializers.CharField()
-
-
-class CampaignSendingHeaderSerializer(serializers.Serializer):
-    """
-    This is the Sending Profile Header Model.
-
-    This hold the smtp profile headers
-    key                 : string
-    value               : string
-    """
-
+class SendingHeaderSerializer(serializers.Serializer):
     key = serializers.CharField(max_length=255)
     value = serializers.CharField(max_length=255)
 
 
-class CampaignSmtpSerializer(serializers.Serializer):
-    """
-    Campaign SMTP Serializer.
-
-    This is the data returned from Gophish's Campaigns API
-
-    id                 : int64
-    name               : string
-    host               : string
-    interface_type     : string
-    from_address       : string
-    ignore_cert_errors : boolean (default:false)
-    modified_date      : string(datetime)
-    headers            : array({key: string, value: string}) (optional)
-    """
-
-    id = serializers.IntegerField(read_only=True)
-    name = serializers.CharField(max_length=500)
+class GoPhishSmtpSerializer(serializers.Serializer):
+    id = serializers.IntegerField(default=0)
+    name = serializers.CharField(max_length=255)
     host = serializers.CharField(max_length=255)
     interface_type = serializers.CharField(max_length=255)
     from_address = serializers.CharField(max_length=255)
     ignore_cert_errors = serializers.BooleanField()
     modified_date = serializers.DateTimeField()
-    headers = CampaignSendingHeaderSerializer(many=True, required=False)
+    headers = SendingHeaderSerializer(many=True, required=False)
 
 
-class CampaignSerializer(serializers.Serializer):
-    """
-    Campaign Serializer.
+class GoPhishTimelineSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=False, allow_null=True, allow_blank=True)
+    time = serializers.DateTimeField()
+    message = serializers.CharField(max_length=255)
+    details = serializers.CharField(required=False, allow_null=True, allow_blank=True)
+    duplicate = serializers.BooleanField(required=False, allow_null=True)
 
-    This is the data returned from Gophish's Campaigns API
 
-    id                  : int64
-    name                : string
-    created_date        : string(datetime)
-    launch_date         : string(datetime)
-    send_by_date        : string(datetime)
-    completed_date      : string(datetime)
-    template            : Template
-    page                : Page
-    status              : string
-    results             : []Result
-    groups              : []Group
-    timeline            : []Event
-    smtp                : SMTP
-    url                 : string
-    """
+class GoPhishGroupSerializer(serializers.Serializer):
+    id = serializers.IntegerField(required=False)
+    name = serializers.CharField(max_length=255)
+    targets = SubscriptionTargetSerializer(many=True)
+    modified_date = serializers.DateTimeField()
 
-    id = serializers.IntegerField(read_only=True)
-    name = serializers.CharField(required=True, max_length=250)
+
+class GoPhishResultSerializer(serializers.Serializer):
+    id = serializers.CharField()
+    first_name = serializers.CharField(max_length=255)
+    last_name = serializers.CharField(max_length=255)
+    position = serializers.CharField()
+    status = serializers.CharField(max_length=255)
+    ip = serializers.CharField()
+    latitude = serializers.FloatField()
+    longitude = serializers.FloatField()
+    send_date = serializers.DateTimeField(required=False)
+    reported = serializers.BooleanField(required=False)
+
+
+class GoPhishCampaignsSerializer(serializers.Serializer):
+    campaign_uuid = serializers.UUIDField()
+    campaign_id = serializers.IntegerField(required=False)
+    subscription_uuid = serializers.UUIDField()
+    cycle_uuid = serializers.UUIDField()
+    name = serializers.CharField(max_length=100)
     created_date = serializers.DateTimeField()
     launch_date = serializers.DateTimeField()
-    send_by_date = serializers.DateTimeField()
-    completed_date = serializers.DateTimeField()
-    status = serializers.CharField(max_length=50)
-    url = serializers.CharField()
-    results = CampaignResultSerializer(many=True)
-    groups = CampaignGroupSerializer(many=True)
-    timeline = CampaignEventSerializer(many=True)
-    smtp = CampaignSmtpSerializer(required=False)
+    send_by_date = serializers.DateTimeField(required=False)
+    completed_date = serializers.DateTimeField(required=False, allow_null=True)
+    email_template = serializers.CharField(required=False)
+    email_template_id = serializers.IntegerField(required=False)
+    template_uuid = serializers.UUIDField()
+    deception_level = serializers.IntegerField(required=False)
+    landing_page_template = serializers.CharField(required=False)
+    status = serializers.CharField(max_length=255)
+    results = GoPhishResultSerializer(many=True)
+    phish_results = PhishingResultsSerializer()
+    phish_results_dirty = serializers.BooleanField(required=False)
+    groups = GoPhishGroupSerializer(many=True)
+    timeline = GoPhishTimelineSerializer(many=True)
+    target_email_list = SubscriptionTargetSerializer(many=True, required=False)
+    smtp = GoPhishSmtpSerializer(required=False)
+    created_by = serializers.CharField(max_length=200)
+    cb_timestamp = serializers.DateTimeField()
+    last_updated_by = serializers.CharField(max_length=200)
+    lub_timestamp = serializers.DateTimeField()
+
+
+class GoPhishCampaignsPostSerializer(serializers.Serializer):
+    campaign_id = serializers.IntegerField()
+    subscription_uuid = serializers.UUIDField()
+    cycle_uuid = serializers.UUIDField()
+    name = serializers.CharField(max_length=100)
+    created_date = serializers.DateTimeField()
+    launch_date = serializers.DateTimeField()
+    send_by_date = serializers.DateTimeField(required=False)
+    completed_date = serializers.DateTimeField(required=False, allow_null=True)
+    email_template = serializers.CharField(required=False)
+    email_template_id = serializers.IntegerField(required=False)
+    template_uuid = serializers.UUIDField()
+    deception_level = serializers.IntegerField(required=False)
+    landing_page_template = serializers.CharField(required=False)
+    status = serializers.CharField(max_length=255)
+    results = GoPhishResultSerializer(many=True)
+    phish_results = PhishingResultsSerializer()
+    phish_results_dirty = serializers.BooleanField(required=False)
+    groups = GoPhishGroupSerializer(many=True)
+    timeline = GoPhishTimelineSerializer(many=True)
+    target_email_list = SubscriptionTargetSerializer(many=True, required=False)
+    smtp = GoPhishSmtpSerializer(required=False)
+
+
+class GoPhishCampaignsPatchSerializer(serializers.Serializer):
+    campaign_id = serializers.IntegerField(required=False)
+    subscription_uuid = serializers.UUIDField(required=False)
+    cycle_uuid = serializers.UUIDField(required=False)
+    name = serializers.CharField(max_length=100, required=False)
+    created_date = serializers.DateTimeField(required=False)
+    launch_date = serializers.DateTimeField(required=False)
+    send_by_date = serializers.DateTimeField(required=False)
+    completed_date = serializers.DateTimeField(required=False, allow_null=True)
+    email_template = serializers.CharField(required=False)
+    email_template_id = serializers.IntegerField(required=False)
+    template_uuid = serializers.UUIDField(required=False)
+    deception_level = serializers.IntegerField(required=False)
+    landing_page_template = serializers.CharField(required=False)
+    status = serializers.CharField(max_length=255, required=False)
+    results = GoPhishResultSerializer(many=True, required=False)
+    phish_results = PhishingResultsSerializer(required=False)
+    phish_results_dirty = serializers.BooleanField(required=False)
+    groups = GoPhishGroupSerializer(many=True, required=False)
+    timeline = GoPhishTimelineSerializer(many=True, required=False)
+    target_email_list = SubscriptionTargetSerializer(many=True, required=False)
+    smtp = GoPhishSmtpSerializer(required=False)
+
+
+class GoPhishCampaignsResponseSerializer(serializers.Serializer):
+    campaign_uuid = serializers.UUIDField()

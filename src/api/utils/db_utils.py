@@ -62,16 +62,14 @@ def __get_service_loop(collection, model, validation_model):
     return service, loop
 
 
-def get_list(parameters, collection, model, validation_model, fields=None):
+def get_list(parameters, collection, model, validation_model):
     """
     Get_data private method.
 
     This handles getting the data from the db.
     """
     service, loop = __get_service_loop(collection, model, validation_model)
-    document_list = loop.run_until_complete(
-        service.filter_list(parameters=parameters, fields=fields)
-    )
+    document_list = loop.run_until_complete(service.filter_list(parameters=parameters))
     return document_list
 
 
@@ -159,17 +157,17 @@ def update_list_single(
     Example: uuid="123-123-123", field="timeline", put_data={...data...}, ...
     if params!=None:
         the db will query using extra params
-        {uuid="123-123-123", "gophish_campaign_list.campaign_id": 85}
+        {uuid="123-123-123", "campaigns.campaign_id": 85}
         then for a nested set:
-        field="gophish_campaign_list.$.timeline"
+        field="campaigns.$.timeline"
         and put_data = [value1,value2,...]
 
     Example call:
         update_list_single(
             uuid="123-123-123",
-            field="gophish_campaign_list.$.timeline",
+            field="campaigns.$.timeline",
             put_data=[<object>], "subscription", SubscriptionModel,validate_subscription,
-            params={"gophish_campaign_list.campaign_id": 85})
+            params={"campaigns.campaign_id": 85})
     """
     service, loop = __get_service_loop(collection, model, validation_model)
 
@@ -195,17 +193,17 @@ def update_nested_single(
     Example: uuid="123-123-123", field="timeline", put_data={...data...}, ...
     if params!=None:
         the db will query using extra params
-        {uuid="123-123-123", "gophish_campaign_list.campaign_id": 85}
+        {uuid="123-123-123", "campaigns.campaign_id": 85}
         then for a nested set:
-        field="gophish_campaign_list.$.timeline"
+        field="campaigns.$.timeline"
         and put_data = [value1,value2,...]
 
     Example call:
         update_list_single(
             uuid="123-123-123",
-            field="gophish_campaign_list.$.timeline",
+            field="campaigns.$.timeline",
             put_data=[<object>], "subscription", SubscriptionModel,validate_subscription,
-            params={"gophish_campaign_list.campaign_id": 85})
+            params={"campaigns.campaign_id": 85})
     """
     service, loop = __get_service_loop(collection, model, validation_model)
 
@@ -229,16 +227,6 @@ def delete_single(uuid, collection, model, validation_model):
 
     delete_response = loop.run_until_complete(service.delete(uuid=uuid))
     return delete_response
-
-
-def get_single_subscription_webhook(campaign_id, collection, model, validation_model):
-    """Get single subscription with campaign id."""
-    service, loop = __get_service_loop(collection, model, validation_model)
-    parameters = {"gophish_campaign_list.campaign_id": campaign_id}
-    subscription_list = loop.run_until_complete(
-        service.filter_list(parameters=parameters)
-    )
-    return next(iter(subscription_list), None)
 
 
 def update_single_webhook(subscription, collection, model, validation_model):

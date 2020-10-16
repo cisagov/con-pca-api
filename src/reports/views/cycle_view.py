@@ -1,34 +1,14 @@
-# Standard Python Libraries
 from datetime import datetime, timedelta
-import logging
-import base64
 
-# Third-Party Libraries
-# Local Libraries
-# Django Libraries
-from scipy.stats.mstats import gmean
 from api.manager import CampaignManager
-from api.models.customer_models import CustomerModel, validate_customer
-from api.models.subscription_models import SubscriptionModel, validate_subscription
-from api.models.customer_models import CustomerModel, validate_customer
-from api.models.dhs_models import DHSContactModel, validate_dhs_contact
-from api.models.recommendations_models import (
-    RecommendationsModel,
-    validate_recommendations,
-)
-from api.utils.db_utils import get_list, get_single
 from reports.utils import get_relevant_recommendations
 
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.views.generic import TemplateView
 
-
-# from . import views
 from reports.utils import (
     get_subscription_stats_for_cycle,
-    get_subscription_stats_for_month,
     get_related_subscription_stats,
     get_cycles_breakdown,
     get_template_details,
@@ -41,17 +21,23 @@ from reports.utils import (
     ratio_to_percent_zero_default,
     format_timedelta,
     get_statistic_from_region_group,
-    get_stats_low_med_high_by_level,
-    get_cycle_by_date_in_range,
     deception_stats_to_graph_format,
     set_cycle_quarters,
-    pprintItem,
 )
-
-logger = logging.getLogger(__name__)
+from api.services import (
+    RecommendationService,
+    SubscriptionService,
+    DHSContactService,
+    CustomerService,
+)
 
 # GoPhish API Manager
 campaign_manager = CampaignManager()
+
+recommendation_service = RecommendationService()
+subscription_service = SubscriptionService()
+dhs_contact_service = DHSContactService()
+customer_service = CustomerService()
 
 
 class CycleReportsView(APIView):
@@ -64,16 +50,8 @@ class CycleReportsView(APIView):
         start_date_param = self.kwargs["start_date"]
         start_date = datetime.strptime(start_date_param, "%Y-%m-%dT%H:%M:%S.%f%z")
         # Get targeted subscription and associated customer data
-        subscription = get_single(
-            subscription_uuid, "subscription", SubscriptionModel, validate_subscription
-        )
-
-        _customer = get_single(
-            subscription.get("customer_uuid"),
-            "customer",
-            CustomerModel,
-            validate_customer,
-        )
+        subscription = subscription_service.get(subscription_uuid)
+        _customer = customer_service.get(subscription.get("customer_uuid"))
 
         company = {
             "name": _customer.get("name"),
@@ -241,12 +219,7 @@ class CycleReportsView(APIView):
         }
 
         # ------
-        dhs_contact = get_single(
-            subscription.get("dhs_contact_uuid"),
-            "dhs_contact",
-            DHSContactModel,
-            validate_dhs_contact,
-        )
+        dhs_contact = dhs_contact_service.get(subscription.get("dhs_contact_uuid"))
         dhs_contact_name = (
             f"{dhs_contact.get('first_name')} {dhs_contact.get('last_name')}"
         )
@@ -256,11 +229,11 @@ class CycleReportsView(APIView):
         for campaign in subscription_stats["campaign_results"]:
             try:
                 first_click = campaign["campaign_stats"]["clicked"]["minimum"]
-            except:
+            except Exception:
                 first_click = timedelta()
             try:
                 first_report = campaign["campaign_stats"]["reported"]["minimum"]
-            except:
+            except Exception:
                 first_report = timedelta()
 
             difference = "N/A"
@@ -302,12 +275,7 @@ class CycleReportsView(APIView):
         # Get recommendations for campaign
         recommendation_uuids = get_relevant_recommendations(subscription_stats)
 
-        _recomendations = get_list(
-            None,
-            "recommendations",
-            RecommendationsModel,
-            validate_recommendations,
-        )
+        _recomendations = recommendation_service.get_list()
         recomendations = []
         for rec in _recomendations:
             if rec["recommendations_uuid"] in recommendation_uuids:
@@ -346,9 +314,7 @@ class CycleStatusView(APIView):
 
         # Get targeted subscription and associated customer data
         subscription_uuid = self.kwargs["subscription_uuid"]
-        subscription = get_single(
-            subscription_uuid, "subscription", SubscriptionModel, validate_subscription
-        )
+        subscription = subscription_service.get(subscription_uuid)
 
         # Get statistics for the specified subscription during the specified cycle
         subscription_stats = get_subscription_stats_for_cycle(subscription, cycle_uuid)

@@ -1,13 +1,6 @@
-from unittest import mock
 from faker import Faker
 
 from src.api.utils.customer import customers
-
-
-@mock.patch("api.utils.db_utils.get_single")
-def test_get_customer(mocked_get):
-    customers.get_customer("")
-    assert mocked_get.called
 
 
 def test_get_full_customer_address():

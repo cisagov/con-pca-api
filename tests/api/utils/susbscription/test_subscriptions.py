@@ -8,57 +8,9 @@ from unittest import mock
 fake = Faker()
 
 
-@mock.patch("api.utils.db_utils.get_single")
-def test_get_subscription(mocked_get):
-    subscriptions.get_subscription("test")
-    assert mocked_get.called
-
-
-@mock.patch("api.utils.db_utils.get_list")
-def test_get_subscriptions(mocked_list):
-    subscriptions.get_subscriptions("test")
-    assert mocked_list.called
-
-
-@mock.patch("api.utils.db_utils.save_single")
-def test_save_subscription(mocked_save):
-    subscription = {
-        "customer_uuid": fake.uuid4(),
-        "name": fake.word(),
-        "url": fake.url(),
-        "keywords": " ".join(fake.words()),
-        "start_date": fake.date_time(),
-        "primary_contact": {
-            "first_name": fake.first_name(),
-            "last_name": fake.last_name(),
-            "office_phone": fake.phone_number(),
-            "mobile_phone": fake.phone_number(),
-            "email": fake.email(),
-        },
-        "status": "In Progress",
-        "gophish_campaign_list": [],
-        "target_email_list": [],
-        "target_email_list_cached_copy": [],
-        "templates_selected_uuid_list": [],
-        "sending_profile_name": fake.word(),
-        "active": True,
-        "archived": False,
-        "manually_stopped": False,
-        "cycles": [],
-    }
-    subscriptions.save_subscription(subscription)
-    assert mocked_save.called
-
-
-@mock.patch("api.utils.db_utils.update_single")
-def test_update_subscription(mocked_update):
-    subscriptions.update_subscription("", {})
-    assert mocked_update.called
-
-
 def test_create_subscription_name():
     with mock.patch(
-        "api.utils.db_utils.get_list",
+        "api.services.SubscriptionService.get_list",
         return_value=[{"active": True, "name": "test_1.1"}],
     ) as mocked_get:
         customer = {"customer_uuid": "1", "identifier": "test"}
@@ -67,7 +19,7 @@ def test_create_subscription_name():
         assert mocked_get.called
 
     with mock.patch(
-        "api.utils.db_utils.get_list",
+        "api.services.SubscriptionService.get_list",
         return_value=[{"active": True, "name": "test_2.1"}],
     ) as mocked_get:
         customer = {"customer_uuid": "1", "identifier": "test"}
@@ -76,7 +28,7 @@ def test_create_subscription_name():
         assert mocked_get.called
 
     with mock.patch(
-        "api.utils.db_utils.get_list",
+        "api.services.SubscriptionService.get_list",
         return_value=[],
     ) as mocked_get:
         customer = {"customer_uuid": "1", "identifier": "test"}
@@ -85,7 +37,7 @@ def test_create_subscription_name():
         assert mocked_get.called
 
     with mock.patch(
-        "api.utils.db_utils.get_list",
+        "api.services.SubscriptionService.get_list",
         return_value=[
             {"active": True, "name": "test_1"},
             {"active": True, "name": "test_2"},

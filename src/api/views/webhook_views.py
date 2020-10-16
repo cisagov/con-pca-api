@@ -1,9 +1,6 @@
 """Webhook View."""
-# Standard Python Libraries
-import logging
 from datetime import datetime
 
-# Third-Party Libraries
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.response import Response
@@ -11,46 +8,30 @@ from rest_framework.views import APIView
 
 from api.manager import CampaignManager
 
-from api.models.subscription_models import SubscriptionModel, validate_subscription
-from api.serializers.subscriptions_serializers import (
-    SubscriptionPatchResponseSerializer,
-)
 from api.serializers import webhook_serializers
 
 from api.utils import webhooks
 from api.utils.generic import format_ztime
 from api.utils.template.templates import update_target_history
-from api.utils.db_utils import (
-    get_single_subscription_webhook,
-    update_nested_single,
-    update_single,
-)
+from api.services import SubscriptionService, CampaignService
 
-
-logger = logging.getLogger(__name__)
 manager = CampaignManager()
+subscription_service = SubscriptionService()
+campaign_service = CampaignService()
 
 
 class IncomingWebhookView(APIView):
-    """
-    This is the a Incoming Webhook View.
-
-    This handles Incoming Webhooks from gophish.
-    """
+    """This is the a IncomingWebhookView."""
 
     @swagger_auto_schema(
         request_body=webhook_serializers.InboundWebhookSerializer,
-        responses={"202": SubscriptionPatchResponseSerializer, "400": "Bad Request"},
-        security=[],
         operation_id="Incoming WebHook from gophish ",
-        operation_description=" This handles incoming webhooks from GoPhish Campaigns.",
     )
     def post(self, request):
         """Post method."""
         data = request.data.copy()
-        logger.info(
-            f"webhook post: campaign - {data['campaign_id']} | message - {data['message']}"
-        )
+        if data.get("message") == "Campaign Created" or data.get("success"):
+            return Response(status=status.HTTP_200_OK)
         return self.__handle_webhook_data(data)
 
     def is_duplicate_timeline_entry(self, timeline, webhook_data):
@@ -95,12 +76,12 @@ class IncomingWebhookView(APIView):
         if "message" in data:
             seralized = webhook_serializers.InboundWebhookSerializer(data)
             seralized_data = seralized.data
-            subscription = get_single_subscription_webhook(
-                seralized_data["campaign_id"],
-                "subscription",
-                SubscriptionModel,
-                validate_subscription,
-            )
+            campaign = campaign_service.get_list(
+                parameters={"campaign_id": seralized_data["campaign_id"]}
+            )[0]
+
+            subscription = subscription_service.get(campaign["subscription_uuid"])
+
             if subscription is None:
                 return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -116,20 +97,9 @@ class IncomingWebhookView(APIView):
                     subscription["status"] == "Queued"
                     and campaign_event == "Email Sent"
                 ):
-                    update_single(
-                        subscription["subscription_uuid"],
-                        {"status": "In Progress"},
-                        "subscription",
-                        SubscriptionModel,
-                        validate_subscription,
+                    subscription_service.update(
+                        subscription["subscription_uuid"], {"status": "In Progress"}
                     )
-
-                campaign = list(
-                    filter(
-                        lambda x: x["campaign_id"] == seralized_data["campaign_id"],
-                        subscription["gophish_campaign_list"],
-                    )
-                )[0]
 
                 # If there is not a corresponding opened event to a link being clicked, create one
                 if campaign_event == "Clicked Link":
@@ -137,8 +107,7 @@ class IncomingWebhookView(APIView):
                         campaign["timeline"], seralized_data["email"]
                     ):
                         webhooks.push_webhook(
-                            subscription_uuid=subscription["subscription_uuid"],
-                            campaign_id=campaign["campaign_id"],
+                            campaign_uuid=campaign["campaign_uuid"],
                             email=seralized_data["email"],
                             message="Email Opened",
                             time=datetime.now(),
@@ -147,8 +116,7 @@ class IncomingWebhookView(APIView):
 
                 # Add Timeline Data
                 webhooks.push_webhook(
-                    subscription_uuid=subscription["subscription_uuid"],
-                    campaign_id=campaign["campaign_id"],
+                    campaign_uuid=campaign["campaign_uuid"],
                     email=seralized_data["email"],
                     message=seralized_data["message"],
                     time=format_ztime(seralized_data["time"]),
@@ -156,28 +124,17 @@ class IncomingWebhookView(APIView):
                 )
 
                 # update campaign to be marked as dirty
-                update_nested_single(
-                    uuid=subscription["subscription_uuid"],
-                    field="gophish_campaign_list.$.phish_results_dirty",
-                    put_data=True,
-                    collection="subscription",
-                    model=SubscriptionModel,
-                    validation_model=validate_subscription,
-                    params={
-                        "gophish_campaign_list.campaign_id": campaign["campaign_id"]
-                    },
+                campaign_service.update(
+                    campaign["campaign_uuid"], {"phish_results_dirty": True}
                 )
 
                 # update cycle to be marked as dirty
                 for cycle in subscription["cycles"]:
                     if campaign["campaign_id"] in cycle["campaigns_in_cycle"]:
-                        update_nested_single(
+                        subscription_service.update_nested(
                             uuid=subscription["subscription_uuid"],
                             field="cycles.$.phish_results_dirty",
-                            put_data=True,
-                            collection="subscription",
-                            model=SubscriptionModel,
-                            validation_model=validate_subscription,
+                            data=True,
                             params={"cycles.cycle_uuid": cycle["cycle_uuid"]},
                         )
                 # update target history
