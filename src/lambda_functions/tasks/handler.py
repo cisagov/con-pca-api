@@ -1,7 +1,9 @@
+import logging
+
 from api.utils.subscription.static import YEARLY_MINUTES, MONTHLY_MINUTES, CYCLE_MINUTES
 from api.utils.subscription.subscriptions import send_start_notification
 from api.utils.subscription import actions
-from api.services import SubscriptionService
+from api.services import SubscriptionService, CampaignService
 
 from notifications.views import EmailSender
 
@@ -10,13 +12,17 @@ from uuid import uuid4
 
 from django.core.wsgi import get_wsgi_application
 
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
 application = get_wsgi_application()
 
 subscription_service = SubscriptionService()
+campaign_service = CampaignService()
 
 
 def lambda_handler(event, context):
-    print("Getting tasks to execute")
+    logger.info("Getting tasks to execute")
 
     subscriptions = subscription_service.get_list()
 
@@ -36,10 +42,13 @@ def lambda_handler(event, context):
                     scheduled_date.replace(tzinfo=None) < datetime.utcnow()
                     and not executed
                 ):
-                    print(f"Executing task {t}")
+                    logger.info(f"Executing task {t}")
 
                     # Execute Task
                     try:
+                        s["campaigns"] = campaign_service.get_list(
+                            {"subscription_uuid": s["subscription_uuid"]}
+                        )
                         execute_task(s, t["message_type"])
                         executed_count += 1
                         t["executed"] = True
@@ -52,18 +61,17 @@ def lambda_handler(event, context):
                             t["message_type"],
                         )
 
-                        print(f"Successfully executed task {t}")
+                        logger.info(f"Successfully executed task {t}")
 
                     except BaseException as e:
-                        print(e)
+                        logger.exception(e)
                         t["error"] = str(e)
                         update_task(s["subscription_uuid"], t)
 
-    print(f"{str(executed_count)} tasks executed")
+    logger.info(f"{str(executed_count)} tasks executed")
 
 
 def update_task(subscription_uuid, task):
-
     return subscription_service.update_nested(
         uuid=subscription_uuid,
         field="tasks.$",
@@ -73,7 +81,7 @@ def update_task(subscription_uuid, task):
 
 
 def add_new_task(subscription_uuid, scheduled_date, message_type):
-    print("checking for new task to add")
+    logger.info("checking for new task to add")
 
     new_date = {
         "monthly_report": scheduled_date + timedelta(minutes=MONTHLY_MINUTES),
@@ -90,7 +98,7 @@ def add_new_task(subscription_uuid, scheduled_date, message_type):
             "executed": False,
         }
 
-        print(f"Adding new task {task}")
+        logger.info(f"Adding new task {task}")
 
         return subscription_service.push_nested(
             uuid=subscription_uuid, field="tasks", data=task
