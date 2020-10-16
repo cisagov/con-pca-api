@@ -54,7 +54,7 @@ class SubscriptionsListView(APIView):
                 parameters={"template_uuid": request.GET.get("template")}
             )
             parameters["subscription_uuid"] = {
-                "$in": [c["subscription_uuid"] for c in campaigns]
+                "$in": [str(c["subscription_uuid"]) for c in campaigns]
             }
 
         if request.GET.get("dhs_contact"):

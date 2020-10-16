@@ -30,8 +30,6 @@ class IncomingWebhookView(APIView):
     def post(self, request):
         """Post method."""
         data = request.data.copy()
-        print("========WEBHOOK========")
-        print(data)
         if data.get("message") == "Campaign Created" or data.get("success"):
             return Response(status=status.HTTP_200_OK)
         return self.__handle_webhook_data(data)

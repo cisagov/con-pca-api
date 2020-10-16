@@ -239,7 +239,7 @@
     "description": "This Tweet!!",
     "descriptive_words": "social",
     "from_address": "<%FAKER_FIRST_NAME%> <%FAKER_LAST_NAME%> <<%FAKER_FIRST_NAME%>.<%FAKER_LAST_NAME%>@domain.com>",
-    "html": "<br>OMG seriously, who posts this stuff??? Forealz, they're so getting fierd <a href=\"<%URL%\">https://twit.ter/bomaboma187?lang=en</a><br>",
+    "html": "<br>OMG seriously, who posts this stuff??? Forealz, they're so getting fierd <a href=\"<%URL%>\">https://twit.ter/bomaboma187?lang=en</a><br>",
     "name": "This Tweet!!",
     "relevancy": {
       "organization": 0,
