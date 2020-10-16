@@ -40,7 +40,7 @@ class SubscriptionTasksSerializer(serializers.Serializer):
     scheduled_date = serializers.DateTimeField()
     executed = serializers.BooleanField(required=False)
     executed_date = serializers.DateTimeField(required=False, allow_null=True)
-    error = serializers.CharField(required=False, allow_null=True)
+    error = serializers.CharField(required=False, allow_null=True, allow_blank=True)
 
 
 class SubscriptionSerializer(serializers.Serializer):
