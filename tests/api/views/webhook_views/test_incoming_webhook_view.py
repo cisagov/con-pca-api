@@ -25,8 +25,31 @@ def web_hook_data_email_sent():
     }
 
 
+def web_hook_data_clicked_link():
+    return {
+        "campaign_id": 1234,
+        "email": "foo.bar@example.com",
+        "time": "2020-01-20T17:33:55.553906Z",
+        "message": "Clicked Link",
+        "details": "",
+    }
+
+
 def get_campaign_data():
-    return {"campaign_id": 1234, "subscription_uuid": "12345", "campaign_uuid": "1234"}
+    return {
+        "campaign_id": 1234,
+        "subscription_uuid": "12345",
+        "campaign_uuid": "1234",
+        "timeline": [
+            {
+                "email": None,
+                "time": {"$date": "2020-09-08T19:37:56.008Z"},
+                "message": "Campaign Created",
+                "details": "",
+                "duplicate": None,
+            }
+        ],
+    }
 
 
 def get_subscription_data():
@@ -90,5 +113,36 @@ def test_inbound_webhook_view_post_email_sent(client):
         assert mock_campaign_update.called
         assert mock_subscription_update_nested.called
         assert mock_update_target_history.called
+
+        assert result.status_code == 202
+
+
+@pytest.mark.django_db
+def test_inbound_webhook_view_post_clicked_link(client):
+    with mock.patch(
+        "api.services.CampaignService.get_list", return_value=[get_campaign_data()]
+    ) as mock_campaign_get_list, mock.patch(
+        "api.services.SubscriptionService.get", return_value=get_subscription_data()
+    ) as mock_subscription_data, mock.patch(
+        "api.services.SubscriptionService.update", return_value=None
+    ) as mock_subscription_update, mock.patch(
+        "api.utils.webhooks.push_webhook", return_value=None
+    ) as mock_webhook_push, mock.patch(
+        "api.services.CampaignService.update", return_value=None
+    ) as mock_campaign_update, mock.patch(
+        "api.services.SubscriptionService.update_nested", return_value=None
+    ) as mock_subscription_update_nested, mock.patch(
+        "api.utils.template.templates.update_target_history", return_value=None
+    ) as mock_update_target_history:
+
+        result = client.post("/api/v1/inboundwebhook/", web_hook_data_clicked_link())
+
+        assert mock_campaign_get_list.called
+        assert mock_subscription_data.called
+        assert not mock_subscription_update.called
+        assert mock_webhook_push.called
+        assert mock_campaign_update.called
+        assert mock_subscription_update_nested.called
+        assert not mock_update_target_history.called
 
         assert result.status_code == 202
