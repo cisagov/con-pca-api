@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from uuid import uuid4
 
 # Third-Party Libraries
-from notifications.views import EmailSender
+from api.notifications import EmailSender
 from api.utils.subscription.static import CYCLE_MINUTES, MONTHLY_MINUTES, YEARLY_MINUTES
 from api.services import SubscriptionService
 

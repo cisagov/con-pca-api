@@ -5,7 +5,7 @@ from api.utils.subscription.subscriptions import send_start_notification
 from api.utils.subscription import actions
 from api.services import SubscriptionService, CampaignService
 
-from notifications.views import EmailSender
+from api.notifications import EmailSender
 
 from datetime import datetime, timedelta
 from uuid import uuid4

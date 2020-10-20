@@ -69,7 +69,6 @@ INSTALLED_APPS = [
     "drf_yasg",
     # local
     "authentication",
-    "notifications",
     "reports",
     "api",
 ]
