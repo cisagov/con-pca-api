@@ -12,7 +12,7 @@ from api.serializers import webhook_serializers
 
 from api.utils import webhooks
 from api.utils.generic import format_ztime
-from api.utils.template.templates import update_target_history
+from api.utils.template import templates
 from api.services import SubscriptionService, CampaignService
 
 manager = CampaignManager()
@@ -140,7 +140,7 @@ class IncomingWebhookView(APIView):
                 # update target history
                 if campaign_event == "Email Sent":
                     # send campaign info and email gophish_campaign_data, seralized_data
-                    update_target_history(campaign, seralized_data)
+                    templates.update_target_history(campaign, seralized_data)
 
             return Response(status=status.HTTP_202_ACCEPTED)
 

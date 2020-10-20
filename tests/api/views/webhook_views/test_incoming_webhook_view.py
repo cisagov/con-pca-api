@@ -2,6 +2,8 @@ import pytest
 from unittest import mock
 from faker import Faker
 
+from src.api.views.webhook_views import IncomingWebhookView
+
 fake = Faker()
 
 
@@ -146,3 +148,111 @@ def test_inbound_webhook_view_post_clicked_link(client):
         assert not mock_update_target_history.called
 
         assert result.status_code == 202
+
+
+@pytest.mark.django_db
+def test_inbound_webhook_view_post_no_data(client):
+    result = client.post("/api/v1/inboundwebhook/", {})
+
+    assert result.status_code == 200
+
+
+def test_inbound_webhook_is_duplicate_timeline_entry():
+    timeline_non_match = [
+        {
+            "email": None,
+            "time": {"$date": "2020-09-08T19:37:56.008Z"},
+            "message": "Campaign Created",
+            "details": "",
+            "duplicate": None,
+        }
+    ]
+    webhook_data_non_match = {
+        "campaign_id": 1234,
+        "email": "foo.bar@example.com",
+        "time": "2020-01-20T17:33:55.553906Z",
+        "message": "Campaign Created",
+        "details": "",
+    }
+    result = IncomingWebhookView().is_duplicate_timeline_entry(
+        timeline_non_match, webhook_data_non_match
+    )
+    assert result == False
+
+    timeline_match = [
+        {
+            "email": "foo.bar@example.com",
+            "time": {"$date": "2020-09-08T19:37:56.008Z"},
+            "message": "Email Sent",
+            "details": "",
+            "duplicate": None,
+        }
+    ]
+    webhook_data_match = {
+        "campaign_id": 1234,
+        "email": "foo.bar@example.com",
+        "time": "2020-01-20T17:33:55.553906Z",
+        "message": "Email Sent",
+        "details": "",
+    }
+
+    result = IncomingWebhookView().is_duplicate_timeline_entry(
+        timeline_match, webhook_data_match
+    )
+    assert result == True
+
+
+def test_inbound_webhook_has_corresponding_opened_event():
+    timeline_non_match = [
+        {
+            "email": None,
+            "time": {"$date": "2020-09-08T19:37:56.008Z"},
+            "message": "Campaign Created",
+            "details": "",
+            "duplicate": None,
+        }
+    ]
+    webhook_data_non_match = {
+        "campaign_id": 1234,
+        "email": "foo.bar@example.com",
+        "time": "2020-01-20T17:33:55.553906Z",
+        "message": "Campaign Created",
+        "details": "",
+    }
+    result = IncomingWebhookView().has_corresponding_opened_event(
+        timeline_non_match, webhook_data_non_match
+    )
+    assert result == False
+
+    timeline_match = [
+        {
+            "email": "foo.bar@example.com",
+            "time": {"$date": "2020-09-08T19:37:56.008Z"},
+            "message": "Email Opened",
+            "details": "",
+            "duplicate": None,
+        }
+    ]
+    webhook_data_match = {
+        "campaign_id": 1234,
+        "email": "foo.bar@example.com",
+        "time": "2020-01-20T17:33:55.553906Z",
+        "message": "Email Opened",
+        "details": "",
+    }
+
+    result = IncomingWebhookView().has_corresponding_opened_event(
+        timeline_match, webhook_data_match
+    )
+    assert result == True
+
+
+def test_inbound_webhook_mark_phishing_results_dirty():
+    subscription = {
+        "cycles": [{"campaigns_in_cycle": [1234], "phish_results_dirty": False}]
+    }
+    campaign = {
+        "campaign_id": 1234,
+    }
+    IncomingWebhookView().mark_phishing_results_dirty(subscription, campaign)
+    assert subscription["cycles"][0]["phish_results_dirty"] == True
