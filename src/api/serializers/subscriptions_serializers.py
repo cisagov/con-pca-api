@@ -143,6 +143,7 @@ class SubscriptionPatchSerializer(serializers.Serializer):
     manually_stopped = serializers.BooleanField(required=False, default=False)
     cycles = CycleSerializer(required=False, many=True)
     email_report_history = SubscriptionEmailHistorySerializer(required=False, many=True)
+    stagger_emails = serializers.BooleanField(required=False)
 
 
 class SubscriptionResponseSerializer(serializers.Serializer):
