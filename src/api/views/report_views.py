@@ -13,7 +13,7 @@ from api.serializers.reports_serializers import (
 )
 from django.http import FileResponse, JsonResponse
 from drf_yasg.utils import swagger_auto_schema
-from notifications.views import EmailSender
+from api.notifications import EmailSender
 from reports.utils import (
     campaign_templates_to_string,
     get_cycles_breakdown,
