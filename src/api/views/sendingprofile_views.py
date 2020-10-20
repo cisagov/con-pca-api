@@ -98,3 +98,6 @@ class SendingProfileView(APIView):
         if attrName in d:
             return d[attrName]
         return orig
+
+    def testing__setAttribute(self, patch_data):
+        return self.__setAttribute("bar bar", patch_data, "username")
