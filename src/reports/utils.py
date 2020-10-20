@@ -1195,11 +1195,12 @@ def get_relevant_recommendations(subscription_stats):
                 if recommendation.get(matching_key) == sorted_template[2].get(
                     matching_key
                 ):
-                    tmp_uuid = recommendation.get("recommendations_uuid")
+                    tmp_uuid = str(recommendation.get("recommendations_uuid"))
                     if tmp_uuid in recommendations_uuid:
                         recommendations_uuid[tmp_uuid] += 1
                     else:
                         recommendations_uuid[tmp_uuid] = 1
+
     sorted_recommendations_uuid = sorted(
         recommendations_uuid, key=lambda x: x[1], reverse=True
     )
