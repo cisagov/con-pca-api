@@ -15,5 +15,5 @@ then
     python manage.py runserver 0.0.0.0:8000
 else
     echo "Serve using WSGI"
-    gunicorn --workers=$WORKERS --bind=0.0.0.0:8000 config.wsgi
+    gunicorn --workers=$WORKERS --bind=0.0.0.0:8000 --timeout 600 config.wsgi
 fi
