@@ -33,6 +33,8 @@ CORS_ORIGIN_ALLOW_ALL = True
 #     "http://localhost:8080",
 # ]
 
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5000000  # 5 MB
+
 DB_CONFIG = {
     "DB_HOST": os.getenv("DB_HOST"),
     "DB_USER": os.getenv("DB_USER"),
