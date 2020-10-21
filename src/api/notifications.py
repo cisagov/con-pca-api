@@ -1,17 +1,7 @@
-"""
-Notifications views.
-
-This is the core of gerating emails to send to
-contacts about reports and subscription updates.
-"""
-
-
-# Standard Python Libraries
 from datetime import datetime
 from email.mime.image import MIMEImage
 import logging
 
-# Third-Party Libraries
 from config import settings
 from django.core.mail.message import EmailMultiAlternatives
 from django.template.loader import render_to_string
