@@ -1,7 +1,7 @@
 from src.api.utils.subscription import subscriptions
 from faker import Faker
 from datetime import datetime, timedelta
-from src.api.utils.subscription.static import CYCLE_MINUTES
+from src.api.utils.subscription.static import CYCLE_MINUTES, DELAY_MINUTES
 
 from unittest import mock
 
@@ -59,21 +59,23 @@ def test_calculate_subscription_start_end_date():
     # greater than today's date
     start_date = datetime.now() + timedelta(days=3)
     start, end = subscriptions.calculate_subscription_start_end_date(start_date)
-    assert start == start_date + timedelta(minutes=1)
-    assert end == start_date + timedelta(minutes=1) + timedelta(minutes=CYCLE_MINUTES)
+    assert start == start_date + timedelta(minutes=DELAY_MINUTES)
+    assert end == start_date + timedelta(minutes=DELAY_MINUTES) + timedelta(
+        minutes=CYCLE_MINUTES
+    )
 
     # passing string to function
     start_date = datetime.now() + timedelta(hours=1)
     start, end = subscriptions.calculate_subscription_start_end_date(
         start_date.isoformat()
     )
-    assert start <= start_date + timedelta(minutes=1)
-    assert start > start_date - timedelta(minutes=3)
+    assert start <= start_date + timedelta(minutes=DELAY_MINUTES)
+    assert start > start_date - timedelta(minutes=(DELAY_MINUTES + 3))
 
 
 def test_get_subscription_status():
     result = subscriptions.get_subscription_status(
-        datetime.now() + timedelta(minutes=1)
+        datetime.now() + timedelta(minutes=DELAY_MINUTES)
     )
     assert result == "In Progress"
 

@@ -33,11 +33,9 @@ def batch_targets(subscription, sub_levels: dict):
     sub_levels["high"]["targets"] = batches[2]
 
 
-def get_target_available_templates(email, templates):
+def get_target_available_templates(email, history, templates):
     """Returns a list of avaiable template uuids."""
     # Check history of target
-    history = target_history_service.get_list({"email": email})
-
     # If no history, return all templates
     if not history:
         return templates
@@ -65,14 +63,16 @@ def assign_targets(sub_level):
     Returns:
         dict: updated sub_level
     """
+    target_emails = [target["email"] for target in sub_level["targets"]]
+    target_history = target_history_service.get_list({"email": {"$in": target_emails}})
+
     for target in sub_level["targets"]:
+        history = list(filter(lambda x: x["email"] == target["email"], target_history))
         available_templates = get_target_available_templates(
-            target["email"], sub_level["template_uuids"]
+            target["email"], history, sub_level["template_uuids"]
         )
-        randomized_templates = random.sample(
-            available_templates, len(available_templates)
-        )
-        selected_template = randomized_templates[0]
+        selected_template = random.choice(available_templates)
+
         if not sub_level["template_targets"].get(selected_template):
             sub_level["template_targets"][selected_template] = []
 
