@@ -12,7 +12,14 @@ service nginx start
 if [[ $DEBUG -eq 1 ]]
 then
     echo "Run server"
-    python manage.py runserver 0.0.0.0:8000
+    if [[ $PROFILE -eq 1 ]]
+    then
+        mkdir /tmp
+        mkdir /tmp/profile-data
+        python manage.py runprofileserver --use-cprofile --prof-path=/tmp/profile-data
+    else
+        python manage.py runserver 0.0.0.0:8000
+    fi
 else
     echo "Serve using WSGI"
     gunicorn --workers=$WORKERS --bind=0.0.0.0:8000 --timeout 600 config.wsgi

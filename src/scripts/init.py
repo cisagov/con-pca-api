@@ -179,16 +179,16 @@ def create_tags():
                 print(
                     f"Tag with uuid {resp_json['tag_definition_uuid']} has been created"
                 )
-        else:
-            existing_tag = list(
-                filter(lambda x: x["tag"] == tag["tag"], existing_tags)
-            )[0]
-            resp = requests.patch(
-                f"{LOCAL_URL}/api/v1/tag/{existing_tag['tag_definition_uuid']}/",
-                json=tag,
-                headers=get_headers(),
-            )
-            print(f"Updated tag, {tag['tag']}")
+        # else:
+        #     existing_tag = list(
+        #         filter(lambda x: x["tag"] == tag["tag"], existing_tags)
+        #     )[0]
+        #     resp = requests.patch(
+        #         f"{LOCAL_URL}/api/v1/tag/{existing_tag['tag_definition_uuid']}/",
+        #         json=tag,
+        #         headers=get_headers(),
+        #     )
+        #     print(f"Updated tag, {tag['tag']}")
 
     # Delete old tags
     for tag in existing_tags:
