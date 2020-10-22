@@ -40,22 +40,25 @@ def test_batch_targets():
 
 def test_get_target_available_templates():
     templates = ["a", "b", "c"]
-    with mock.patch("api.services.TargetHistoryService.get_list", return_value=[]):
-        result = targets.get_target_available_templates("test@test.com", templates)
-        assert result == templates
+    result = targets.get_target_available_templates(
+        "test@test.com",
+        [],
+        templates,
+    )
+    assert result == templates
 
-    with mock.patch(
-        "api.services.TargetHistoryService.get_list",
-        return_value=[{"history_list": [{"template_uuid": "a"}]}],
-    ):
-        result = targets.get_target_available_templates("test@test.com", templates)
-        assert "a" not in result
-        assert "b" in result
-        assert "c" in result
+    result = targets.get_target_available_templates(
+        "test@test.com",
+        [{"history_list": [{"template_uuid": "a"}]}],
+        templates,
+    )
+    assert "a" not in result
+    assert "b" in result
+    assert "c" in result
 
-    with mock.patch(
-        "api.services.TargetHistoryService.get_list",
-        return_value=[
+    result = targets.get_target_available_templates(
+        "test@test.com",
+        [
             {
                 "history_list": [
                     {"template_uuid": "a"},
@@ -64,9 +67,9 @@ def test_get_target_available_templates():
                 ]
             }
         ],
-    ):
-        result = targets.get_target_available_templates("test@test.com", templates)
-        assert result == templates
+        templates,
+    )
+    assert result == templates
 
 
 def test_assign_targets():
