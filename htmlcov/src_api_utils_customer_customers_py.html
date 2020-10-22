@@ -26,13 +26,13 @@
           alt="Show keyboard shortcuts"
         />
         <h2 class="stats">
-          13 statements &nbsp;
+          9 statements &nbsp;
           <button
             type="button"
             class="run shortkey_r button_toggle_run"
             title="Toggle lines run"
           >
-            13 run
+            9 run
           </button>
           <button
             type="button"
@@ -77,136 +77,29 @@
       <p id="t1" class="run">
         <span class="n"><a href="#t1">1</a></span
         ><span class="t"
-          ><span class="key">from</span> <span class="nam">api</span
-          ><span class="op">.</span><span class="nam">utils</span>
-          <span class="key">import</span> <span class="nam">db_utils</span>
-          <span class="key">as</span> <span class="nam">db</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t2" class="run">
-        <span class="n"><a href="#t2">2</a></span
-        ><span class="t"
-          ><span class="key">from</span> <span class="nam">api</span
-          ><span class="op">.</span><span class="nam">models</span
-          ><span class="op">.</span><span class="nam">customer_models</span>
-          <span class="key">import</span> <span class="nam">CustomerModel</span
-          ><span class="op">,</span>
-          <span class="nam">validate_customer</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t3" class="pln">
-        <span class="n"><a href="#t3">3</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t4" class="pln">
-        <span class="n"><a href="#t4">4</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t5" class="run">
-        <span class="n"><a href="#t5">5</a></span
-        ><span class="t"
-          ><span class="key">def</span> <span class="nam">get_customer</span
-          ><span class="op">(</span><span class="nam">customer_uuid</span
-          ><span class="op">:</span> <span class="nam">str</span
-          ><span class="op">)</span><span class="op">:</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t6" class="pln">
-        <span class="n"><a href="#t6">6</a></span
-        ><span class="t"> <span class="str">"""</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t7" class="pln">
-        <span class="n"><a href="#t7">7</a></span
-        ><span class="t"
-          ><span class="str"> Returns a customer from database</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t8" class="pln">
-        <span class="n"><a href="#t8">8</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t9" class="pln">
-        <span class="n"><a href="#t9">9</a></span
-        ><span class="t"><span class="str"> Parameters:</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t10" class="pln">
-        <span class="n"><a href="#t10">10</a></span
-        ><span class="t"
-          ><span class="str">
-            customer_uuid (str): uuid of customer to return.</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t11" class="pln">
-        <span class="n"><a href="#t11">11</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t12" class="pln">
-        <span class="n"><a href="#t12">12</a></span
-        ><span class="t"><span class="str"> Returns:</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t13" class="pln">
-        <span class="n"><a href="#t13">13</a></span
-        ><span class="t"
-          ><span class="str"> dict: returns a customer in dict format</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t14" class="pln">
-        <span class="n"><a href="#t14">14</a></span
-        ><span class="t"><span class="str"> """</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t15" class="run">
-        <span class="n"><a href="#t15">15</a></span
-        ><span class="t">
-          <span class="key">return</span> <span class="nam">db</span
-          ><span class="op">.</span><span class="nam">get_single</span
-          ><span class="op">(</span><span class="nam">customer_uuid</span
-          ><span class="op">,</span> <span class="str">"customer"</span
-          ><span class="op">,</span> <span class="nam">CustomerModel</span
-          ><span class="op">,</span> <span class="nam">validate_customer</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t16" class="pln">
-        <span class="n"><a href="#t16">16</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t17" class="pln">
-        <span class="n"><a href="#t17">17</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t18" class="run">
-        <span class="n"><a href="#t18">18</a></span
-        ><span class="t"
           ><span class="key">def</span>
           <span class="nam">get_full_customer_address</span
           ><span class="op">(</span><span class="nam">customer_info</span
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t19" class="pln">
-        <span class="n"><a href="#t19">19</a></span
+      <p id="t2" class="pln">
+        <span class="n"><a href="#t2">2</a></span
         ><span class="t"> <span class="str">"""</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t20" class="pln">
-        <span class="n"><a href="#t20">20</a></span
+      <p id="t3" class="pln">
+        <span class="n"><a href="#t3">3</a></span
         ><span class="t"
           ><span class="str"> Get_full_customer_address.</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t21" class="pln">
-        <span class="n"><a href="#t21">21</a></span
+      <p id="t4" class="pln">
+        <span class="n"><a href="#t4">4</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t22" class="pln">
-        <span class="n"><a href="#t22">22</a></span
+      <p id="t5" class="pln">
+        <span class="n"><a href="#t5">5</a></span
         ><span class="t"
           ><span class="str">
             When passed customer info, it will return an assemebed full
@@ -214,20 +107,20 @@
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t23" class="pln">
-        <span class="n"><a href="#t23">23</a></span
+      <p id="t6" class="pln">
+        <span class="n"><a href="#t6">6</a></span
         ><span class="t"><span class="str"> """</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t24" class="run">
-        <span class="n"><a href="#t24">24</a></span
+      <p id="t7" class="run">
+        <span class="n"><a href="#t7">7</a></span
         ><span class="t">
           <span class="nam">full_address</span> <span class="op">=</span>
           <span class="op">[</span><span class="op">]</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t25" class="run">
-        <span class="n"><a href="#t25">25</a></span
+      <p id="t8" class="run">
+        <span class="n"><a href="#t8">8</a></span
         ><span class="t">
           <span class="nam">full_address</span><span class="op">.</span
           ><span class="nam">append</span><span class="op">(</span
@@ -236,8 +129,8 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t26" class="run">
-        <span class="n"><a href="#t26">26</a></span
+      <p id="t9" class="run">
+        <span class="n"><a href="#t9">9</a></span
         ><span class="t">
           <span class="key">if</span> <span class="nam">customer_info</span
           ><span class="op">.</span><span class="nam">get</span
@@ -245,8 +138,8 @@
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t27" class="run">
-        <span class="n"><a href="#t27">27</a></span
+      <p id="t10" class="run">
+        <span class="n"><a href="#t10">10</a></span
         ><span class="t">
           <span class="nam">full_address</span><span class="op">.</span
           ><span class="nam">append</span><span class="op">(</span
@@ -255,8 +148,8 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t28" class="run">
-        <span class="n"><a href="#t28">28</a></span
+      <p id="t11" class="run">
+        <span class="n"><a href="#t11">11</a></span
         ><span class="t">
           <span class="nam">full_address</span><span class="op">.</span
           ><span class="nam">append</span><span class="op">(</span
@@ -265,8 +158,8 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t29" class="run">
-        <span class="n"><a href="#t29">29</a></span
+      <p id="t12" class="run">
+        <span class="n"><a href="#t12">12</a></span
         ><span class="t">
           <span class="nam">full_address</span><span class="op">.</span
           ><span class="nam">append</span><span class="op">(</span
@@ -275,8 +168,8 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t30" class="run">
-        <span class="n"><a href="#t30">30</a></span
+      <p id="t13" class="run">
+        <span class="n"><a href="#t13">13</a></span
         ><span class="t">
           <span class="nam">full_address</span><span class="op">.</span
           ><span class="nam">append</span><span class="op">(</span
@@ -285,12 +178,12 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t31" class="pln">
-        <span class="n"><a href="#t31">31</a></span
+      <p id="t14" class="pln">
+        <span class="n"><a href="#t14">14</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t32" class="run">
-        <span class="n"><a href="#t32">32</a></span
+      <p id="t15" class="run">
+        <span class="n"><a href="#t15">15</a></span
         ><span class="t">
           <span class="key">return</span> <span class="str">"\n"</span
           ><span class="op">.</span><span class="nam">join</span
@@ -305,7 +198,7 @@
           <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp;
           <a class="nav" href="https://coverage.readthedocs.io"
             >coverage.py v5.3</a
-          >, created at 2020-10-01 11:17 -0600
+          >, created at 2020-10-22 14:23 -0600
         </p>
       </div>
     </div>

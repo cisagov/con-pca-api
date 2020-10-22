@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=emulateIE7" />
-    <title>Coverage for src\api\models\customer_models.py: 95%</title>
+    <title>Coverage for src\api\models\customer_models.py: 97%</title>
     <link rel="stylesheet" href="style.css" type="text/css" />
     <script type="text/javascript" src="jquery.min.js"></script>
     <script type="text/javascript" src="jquery.hotkeys.js"></script>
@@ -18,7 +18,7 @@
       <div class="content">
         <h1>
           Coverage for <b>src\api\models\customer_models.py</b> :
-          <span class="pc_cov">95%</span>
+          <span class="pc_cov">97%</span>
         </h1>
         <img
           id="keyboard_icon"
@@ -26,20 +26,20 @@
           alt="Show keyboard shortcuts"
         />
         <h2 class="stats">
-          37 statements &nbsp;
+          30 statements &nbsp;
           <button
             type="button"
             class="run shortkey_r button_toggle_run"
             title="Toggle lines run"
           >
-            35 run
+            29 run
           </button>
           <button
             type="button"
             class="mis show_mis shortkey_m button_toggle_mis"
             title="Toggle lines missing"
           >
-            2 missing
+            1 missing
           </button>
           <button
             type="button"
@@ -548,9 +548,10 @@
       <p id="t71" class="run">
         <span class="n"><a href="#t71">71</a></span
         ><span class="t"
-          ><span class="key">class</span> <span class="nam">TestModel</span
-          ><span class="op">(</span><span class="nam">Model</span
-          ><span class="op">)</span><span class="op">:</span>&nbsp;</span
+          ><span class="key">def</span>
+          <span class="nam">validate_customer</span><span class="op">(</span
+          ><span class="nam">data_object</span><span class="op">)</span
+          ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t72" class="pln">
@@ -561,7 +562,8 @@
       <p id="t73" class="pln">
         <span class="n"><a href="#t73">73</a></span
         ><span class="t"
-          ><span class="str"> This is the Customer Model.</span>&nbsp;</span
+          ><span class="str"> This is an the validate_subscription.</span
+          >&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t74" class="pln">
@@ -571,170 +573,19 @@
       <p id="t75" class="pln">
         <span class="n"><a href="#t75">75</a></span
         ><span class="t"
-          ><span class="str">
-            This controls all data needed in saving the model. Current fields
-            are:</span
+          ><span class="str"> This shows basic validation for the model.</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t76" class="pln">
         <span class="n"><a href="#t76">76</a></span
-        ><span class="t"><span class="str"> customer_uuid</span>&nbsp;</span
+        ><span class="t"><span class="str"> """</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t77" class="pln">
+      <p id="t77" class="mis show_mis">
         <span class="n"><a href="#t77">77</a></span
-        ><span class="t"><span class="str"> name,</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t78" class="pln">
-        <span class="n"><a href="#t78">78</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t79" class="pln">
-        <span class="n"><a href="#t79">79</a></span
-        ><span class="t"><span class="str"> """</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t80" class="pln">
-        <span class="n"><a href="#t80">80</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t81" class="run">
-        <span class="n"><a href="#t81">81</a></span
-        ><span class="t">
-          <span class="nam">customer_uuid</span> <span class="op">=</span>
-          <span class="nam">UUIDType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t82" class="run">
-        <span class="n"><a href="#t82">82</a></span
-        ><span class="t">
-          <span class="nam">name</span> <span class="op">=</span>
-          <span class="nam">StringType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t83" class="run">
-        <span class="n"><a href="#t83">83</a></span
-        ><span class="t">
-          <span class="nam">sector</span> <span class="op">=</span>
-          <span class="nam">StringType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t84" class="run">
-        <span class="n"><a href="#t84">84</a></span
-        ><span class="t">
-          <span class="nam">industry</span> <span class="op">=</span>
-          <span class="nam">StringType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t85" class="pln">
-        <span class="n"><a href="#t85">85</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t86" class="pln">
-        <span class="n"><a href="#t86">86</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t87" class="run">
-        <span class="n"><a href="#t87">87</a></span
-        ><span class="t"
-          ><span class="key">def</span>
-          <span class="nam">validate_customer</span><span class="op">(</span
-          ><span class="nam">data_object</span><span class="op">)</span
-          ><span class="op">:</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t88" class="pln">
-        <span class="n"><a href="#t88">88</a></span
-        ><span class="t"> <span class="str">"""</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t89" class="pln">
-        <span class="n"><a href="#t89">89</a></span
-        ><span class="t"
-          ><span class="str"> This is an the validate_subscription.</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t90" class="pln">
-        <span class="n"><a href="#t90">90</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t91" class="pln">
-        <span class="n"><a href="#t91">91</a></span
-        ><span class="t"
-          ><span class="str"> This shows basic validation for the model.</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t92" class="pln">
-        <span class="n"><a href="#t92">92</a></span
-        ><span class="t"><span class="str"> """</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t93" class="mis show_mis">
-        <span class="n"><a href="#t93">93</a></span
         ><span class="t">
           <span class="key">return</span> <span class="nam">CustomerModel</span
-          ><span class="op">(</span><span class="nam">data_object</span
-          ><span class="op">)</span><span class="op">.</span
-          ><span class="nam">validate</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t94" class="pln">
-        <span class="n"><a href="#t94">94</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t95" class="pln">
-        <span class="n"><a href="#t95">95</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t96" class="run">
-        <span class="n"><a href="#t96">96</a></span
-        ><span class="t"
-          ><span class="key">def</span> <span class="nam">validate_test</span
-          ><span class="op">(</span><span class="nam">data_object</span
-          ><span class="op">)</span><span class="op">:</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t97" class="pln">
-        <span class="n"><a href="#t97">97</a></span
-        ><span class="t"> <span class="str">"""</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t98" class="pln">
-        <span class="n"><a href="#t98">98</a></span
-        ><span class="t"
-          ><span class="str"> This is an the validate_subscription.</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t99" class="pln">
-        <span class="n"><a href="#t99">99</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t100" class="pln">
-        <span class="n"><a href="#t100">100</a></span
-        ><span class="t"
-          ><span class="str"> This shows basic validation for the model.</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t101" class="pln">
-        <span class="n"><a href="#t101">101</a></span
-        ><span class="t"><span class="str"> """</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t102" class="mis show_mis">
-        <span class="n"><a href="#t102">102</a></span
-        ><span class="t">
-          <span class="key">return</span> <span class="nam">TestModel</span
           ><span class="op">(</span><span class="nam">data_object</span
           ><span class="op">)</span><span class="op">.</span
           ><span class="nam">validate</span><span class="op">(</span
@@ -748,7 +599,7 @@
           <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp;
           <a class="nav" href="https://coverage.readthedocs.io"
             >coverage.py v5.3</a
-          >, created at 2020-10-01 11:17 -0600
+          >, created at 2020-10-22 14:23 -0600
         </p>
       </div>
     </div>

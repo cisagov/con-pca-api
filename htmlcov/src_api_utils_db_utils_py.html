@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=emulateIE7" />
-    <title>Coverage for src\api\utils\db_utils.py: 25%</title>
+    <title>Coverage for src\api\utils\db_utils.py: 35%</title>
     <link rel="stylesheet" href="style.css" type="text/css" />
     <script type="text/javascript" src="jquery.min.js"></script>
     <script type="text/javascript" src="jquery.hotkeys.js"></script>
@@ -18,7 +18,7 @@
       <div class="content">
         <h1>
           Coverage for <b>src\api\utils\db_utils.py</b> :
-          <span class="pc_cov">25%</span>
+          <span class="pc_cov">35%</span>
         </h1>
         <img
           id="keyboard_icon"
@@ -26,20 +26,20 @@
           alt="Show keyboard shortcuts"
         />
         <h2 class="stats">
-          102 statements &nbsp;
+          97 statements &nbsp;
           <button
             type="button"
             class="run shortkey_r button_toggle_run"
             title="Toggle lines run"
           >
-            26 run
+            34 run
           </button>
           <button
             type="button"
             class="mis show_mis shortkey_m button_toggle_mis"
             title="Toggle lines missing"
           >
-            76 missing
+            63 missing
           </button>
           <button
             type="button"
@@ -222,7 +222,7 @@
         ><span class="t"><span class="str"> """</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t23" class="mis show_mis">
+      <p id="t23" class="run">
         <span class="n"><a href="#t23">23</a></span
         ><span class="t">
           <span class="nam">mongo_uri</span> <span class="op">=</span>
@@ -234,7 +234,7 @@
         <span class="n"><a href="#t24">24</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t25" class="mis show_mis">
+      <p id="t25" class="run">
         <span class="n"><a href="#t25">25</a></span
         ><span class="t">
           <span class="nam">service</span> <span class="op">=</span>
@@ -280,7 +280,7 @@
         <span class="n"><a href="#t31">31</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t32" class="mis show_mis">
+      <p id="t32" class="run">
         <span class="n"><a href="#t32">32</a></span
         ><span class="t">
           <span class="key">return</span>
@@ -475,7 +475,7 @@
         ><span class="t"><span class="str"> """</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t59" class="mis show_mis">
+      <p id="t59" class="run">
         <span class="n"><a href="#t59">59</a></span
         ><span class="t">
           <span class="nam">loop</span> <span class="op">=</span>
@@ -484,7 +484,7 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t60" class="mis show_mis">
+      <p id="t60" class="run">
         <span class="n"><a href="#t60">60</a></span
         ><span class="t">
           <span class="nam">asyncio</span><span class="op">.</span
@@ -492,7 +492,7 @@
           ><span class="nam">loop</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t61" class="mis show_mis">
+      <p id="t61" class="run">
         <span class="n"><a href="#t61">61</a></span
         ><span class="t">
           <span class="nam">service</span> <span class="op">=</span>
@@ -503,7 +503,7 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t62" class="mis show_mis">
+      <p id="t62" class="run">
         <span class="n"><a href="#t62">62</a></span
         ><span class="t">
           <span class="key">return</span> <span class="nam">service</span
@@ -526,8 +526,6 @@
           ><span class="op">,</span> <span class="nam">collection</span
           ><span class="op">,</span> <span class="nam">model</span
           ><span class="op">,</span> <span class="nam">validation_model</span
-          ><span class="op">,</span> <span class="nam">fields</span
-          ><span class="op">=</span><span class="key">None</span
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
@@ -575,43 +573,31 @@
         ><span class="t">
           <span class="nam">document_list</span> <span class="op">=</span>
           <span class="nam">loop</span><span class="op">.</span
-          ><span class="nam">run_until_complete</span
-          ><span class="op">(</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t73" class="pln">
-        <span class="n"><a href="#t73">73</a></span
-        ><span class="t">
-          <span class="nam">service</span><span class="op">.</span
+          ><span class="nam">run_until_complete</span><span class="op">(</span
+          ><span class="nam">service</span><span class="op">.</span
           ><span class="nam">filter_list</span><span class="op">(</span
           ><span class="nam">parameters</span><span class="op">=</span
-          ><span class="nam">parameters</span><span class="op">,</span>
-          <span class="nam">fields</span><span class="op">=</span
-          ><span class="nam">fields</span><span class="op">)</span>&nbsp;</span
+          ><span class="nam">parameters</span><span class="op">)</span
+          ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t74" class="pln">
-        <span class="n"><a href="#t74">74</a></span
-        ><span class="t"> <span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t75" class="mis show_mis">
-        <span class="n"><a href="#t75">75</a></span
+      <p id="t73" class="mis show_mis">
+        <span class="n"><a href="#t73">73</a></span
         ><span class="t">
           <span class="key">return</span>
           <span class="nam">document_list</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t76" class="pln">
+      <p id="t74" class="pln">
+        <span class="n"><a href="#t74">74</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t75" class="pln">
+        <span class="n"><a href="#t75">75</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t76" class="run">
         <span class="n"><a href="#t76">76</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t77" class="pln">
-        <span class="n"><a href="#t77">77</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t78" class="run">
-        <span class="n"><a href="#t78">78</a></span
         ><span class="t"
           ><span class="key">def</span> <span class="nam">save_single</span
           ><span class="op">(</span><span class="nam">post_data</span
@@ -621,41 +607,41 @@
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t79" class="pln">
-        <span class="n"><a href="#t79">79</a></span
+      <p id="t77" class="pln">
+        <span class="n"><a href="#t77">77</a></span
         ><span class="t"> <span class="str">"""</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t80" class="pln">
-        <span class="n"><a href="#t80">80</a></span
+      <p id="t78" class="pln">
+        <span class="n"><a href="#t78">78</a></span
         ><span class="t"><span class="str"> Save_data method.</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t81" class="pln">
-        <span class="n"><a href="#t81">81</a></span
+      <p id="t79" class="pln">
+        <span class="n"><a href="#t79">79</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t82" class="pln">
-        <span class="n"><a href="#t82">82</a></span
+      <p id="t80" class="pln">
+        <span class="n"><a href="#t80">80</a></span
         ><span class="t"
           ><span class="str"> This method takes in</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t83" class="pln">
-        <span class="n"><a href="#t83">83</a></span
+      <p id="t81" class="pln">
+        <span class="n"><a href="#t81">81</a></span
         ><span class="t"
           ><span class="str">
             post_data and saves it to the db with the required feilds.</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t84" class="pln">
-        <span class="n"><a href="#t84">84</a></span
+      <p id="t82" class="pln">
+        <span class="n"><a href="#t82">82</a></span
         ><span class="t"><span class="str"> """</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t85" class="mis show_mis">
-        <span class="n"><a href="#t85">85</a></span
+      <p id="t83" class="mis show_mis">
+        <span class="n"><a href="#t83">83</a></span
         ><span class="t">
           <span class="nam">service</span><span class="op">,</span>
           <span class="nam">loop</span> <span class="op">=</span>
@@ -666,8 +652,8 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t86" class="mis show_mis">
-        <span class="n"><a href="#t86">86</a></span
+      <p id="t84" class="mis show_mis">
+        <span class="n"><a href="#t84">84</a></span
         ><span class="t">
           <span class="nam">create_timestamp</span> <span class="op">=</span>
           <span class="nam">datetime</span><span class="op">.</span
@@ -676,15 +662,15 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t87" class="mis show_mis">
-        <span class="n"><a href="#t87">87</a></span
+      <p id="t85" class="mis show_mis">
+        <span class="n"><a href="#t85">85</a></span
         ><span class="t">
           <span class="nam">current_user</span> <span class="op">=</span>
           <span class="str">"dev user"</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t88" class="mis show_mis">
-        <span class="n"><a href="#t88">88</a></span
+      <p id="t86" class="mis show_mis">
+        <span class="n"><a href="#t86">86</a></span
         ><span class="t">
           <span class="nam">post_data</span><span class="op">[</span
           ><span class="str">"{}_uuid"</span><span class="op">.</span
@@ -697,8 +683,8 @@
           ><span class="op">)</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t89" class="mis show_mis">
-        <span class="n"><a href="#t89">89</a></span
+      <p id="t87" class="mis show_mis">
+        <span class="n"><a href="#t87">87</a></span
         ><span class="t">
           <span class="nam">post_data</span><span class="op">[</span
           ><span class="str">"created_by"</span><span class="op">]</span>
@@ -708,8 +694,8 @@
           <span class="nam">current_user</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t90" class="mis show_mis">
-        <span class="n"><a href="#t90">90</a></span
+      <p id="t88" class="mis show_mis">
+        <span class="n"><a href="#t88">88</a></span
         ><span class="t">
           <span class="nam">post_data</span><span class="op">[</span
           ><span class="str">"cb_timestamp"</span><span class="op">]</span>
@@ -719,12 +705,12 @@
           <span class="nam">create_timestamp</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t91" class="pln">
-        <span class="n"><a href="#t91">91</a></span
+      <p id="t89" class="pln">
+        <span class="n"><a href="#t89">89</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t92" class="mis show_mis">
-        <span class="n"><a href="#t92">92</a></span
+      <p id="t90" class="mis show_mis">
+        <span class="n"><a href="#t90">90</a></span
         ><span class="t">
           <span class="nam">created_response</span> <span class="op">=</span>
           <span class="nam">loop</span><span class="op">.</span
@@ -736,23 +722,23 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t93" class="mis show_mis">
-        <span class="n"><a href="#t93">93</a></span
+      <p id="t91" class="mis show_mis">
+        <span class="n"><a href="#t91">91</a></span
         ><span class="t">
           <span class="key">return</span>
           <span class="nam">created_response</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t94" class="pln">
+      <p id="t92" class="pln">
+        <span class="n"><a href="#t92">92</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t93" class="pln">
+        <span class="n"><a href="#t93">93</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t94" class="run">
         <span class="n"><a href="#t94">94</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t95" class="pln">
-        <span class="n"><a href="#t95">95</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t96" class="run">
-        <span class="n"><a href="#t96">96</a></span
         ><span class="t"
           ><span class="key">def</span> <span class="nam">get_single</span
           ><span class="op">(</span><span class="nam">uuid</span
@@ -762,35 +748,35 @@
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t97" class="pln">
-        <span class="n"><a href="#t97">97</a></span
+      <p id="t95" class="pln">
+        <span class="n"><a href="#t95">95</a></span
         ><span class="t"> <span class="str">"""</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t98" class="pln">
-        <span class="n"><a href="#t98">98</a></span
+      <p id="t96" class="pln">
+        <span class="n"><a href="#t96">96</a></span
         ><span class="t"
           ><span class="str"> Get_single method.</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t99" class="pln">
-        <span class="n"><a href="#t99">99</a></span
+      <p id="t97" class="pln">
+        <span class="n"><a href="#t97">97</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t100" class="pln">
-        <span class="n"><a href="#t100">100</a></span
+      <p id="t98" class="pln">
+        <span class="n"><a href="#t98">98</a></span
         ><span class="t"
           ><span class="str"> This handles getting the data from the db.</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t101" class="pln">
-        <span class="n"><a href="#t101">101</a></span
+      <p id="t99" class="pln">
+        <span class="n"><a href="#t99">99</a></span
         ><span class="t"><span class="str"> """</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t102" class="mis show_mis">
-        <span class="n"><a href="#t102">102</a></span
+      <p id="t100" class="run">
+        <span class="n"><a href="#t100">100</a></span
         ><span class="t">
           <span class="nam">service</span><span class="op">,</span>
           <span class="nam">loop</span> <span class="op">=</span>
@@ -801,8 +787,8 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t103" class="mis show_mis">
-        <span class="n"><a href="#t103">103</a></span
+      <p id="t101" class="run">
+        <span class="n"><a href="#t101">101</a></span
         ><span class="t">
           <span class="nam">document</span> <span class="op">=</span>
           <span class="nam">loop</span><span class="op">.</span
@@ -814,23 +800,23 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t104" class="mis show_mis">
-        <span class="n"><a href="#t104">104</a></span
+      <p id="t102" class="mis show_mis">
+        <span class="n"><a href="#t102">102</a></span
         ><span class="t">
           <span class="key">return</span>
           <span class="nam">document</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t105" class="pln">
+      <p id="t103" class="pln">
+        <span class="n"><a href="#t103">103</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t104" class="pln">
+        <span class="n"><a href="#t104">104</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t105" class="run">
         <span class="n"><a href="#t105">105</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t106" class="pln">
-        <span class="n"><a href="#t106">106</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t107" class="run">
-        <span class="n"><a href="#t107">107</a></span
         ><span class="t"
           ><span class="key">def</span> <span class="nam">update_single</span
           ><span class="op">(</span><span class="nam">uuid</span
@@ -841,35 +827,35 @@
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t108" class="pln">
-        <span class="n"><a href="#t108">108</a></span
+      <p id="t106" class="pln">
+        <span class="n"><a href="#t106">106</a></span
         ><span class="t"> <span class="str">"""</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t109" class="pln">
-        <span class="n"><a href="#t109">109</a></span
+      <p id="t107" class="pln">
+        <span class="n"><a href="#t107">107</a></span
         ><span class="t"
           ><span class="str"> Update_single method.</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t110" class="pln">
-        <span class="n"><a href="#t110">110</a></span
+      <p id="t108" class="pln">
+        <span class="n"><a href="#t108">108</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t111" class="pln">
-        <span class="n"><a href="#t111">111</a></span
+      <p id="t109" class="pln">
+        <span class="n"><a href="#t109">109</a></span
         ><span class="t"
           ><span class="str"> This handles getting the data from the db.</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t112" class="pln">
-        <span class="n"><a href="#t112">112</a></span
+      <p id="t110" class="pln">
+        <span class="n"><a href="#t110">110</a></span
         ><span class="t"><span class="str"> """</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t113" class="mis show_mis">
-        <span class="n"><a href="#t113">113</a></span
+      <p id="t111" class="mis show_mis">
+        <span class="n"><a href="#t111">111</a></span
         ><span class="t">
           <span class="nam">service</span><span class="op">,</span>
           <span class="nam">loop</span> <span class="op">=</span>
@@ -880,8 +866,8 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t114" class="mis show_mis">
-        <span class="n"><a href="#t114">114</a></span
+      <p id="t112" class="mis show_mis">
+        <span class="n"><a href="#t112">112</a></span
         ><span class="t">
           <span class="nam">updated_timestamp</span> <span class="op">=</span>
           <span class="nam">datetime</span><span class="op">.</span
@@ -890,19 +876,19 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t115" class="mis show_mis">
-        <span class="n"><a href="#t115">115</a></span
+      <p id="t113" class="mis show_mis">
+        <span class="n"><a href="#t113">113</a></span
         ><span class="t">
           <span class="nam">current_user</span> <span class="op">=</span>
           <span class="str">"dev user"</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t116" class="pln">
-        <span class="n"><a href="#t116">116</a></span
+      <p id="t114" class="pln">
+        <span class="n"><a href="#t114">114</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t117" class="mis show_mis">
-        <span class="n"><a href="#t117">117</a></span
+      <p id="t115" class="mis show_mis">
+        <span class="n"><a href="#t115">115</a></span
         ><span class="t">
           <span class="key">if</span> <span class="nam">isinstance</span
           ><span class="op">(</span><span class="nam">model</span
@@ -910,16 +896,16 @@
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t118" class="mis show_mis">
-        <span class="n"><a href="#t118">118</a></span
+      <p id="t116" class="mis show_mis">
+        <span class="n"><a href="#t116">116</a></span
         ><span class="t">
           <span class="nam">put_data</span><span class="op">[</span
           ><span class="str">"template_uuid"</span><span class="op">]</span>
           <span class="op">=</span> <span class="nam">uuid</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t119" class="mis show_mis">
-        <span class="n"><a href="#t119">119</a></span
+      <p id="t117" class="mis show_mis">
+        <span class="n"><a href="#t117">117</a></span
         ><span class="t">
           <span class="key">elif</span> <span class="nam">isinstance</span
           ><span class="op">(</span><span class="nam">model</span
@@ -927,8 +913,8 @@
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t120" class="mis show_mis">
-        <span class="n"><a href="#t120">120</a></span
+      <p id="t118" class="mis show_mis">
+        <span class="n"><a href="#t118">118</a></span
         ><span class="t">
           <span class="nam">put_data</span><span class="op">[</span
           ><span class="str">"subscription_uuid"</span
@@ -936,8 +922,8 @@
           <span class="nam">uuid</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t121" class="mis show_mis">
-        <span class="n"><a href="#t121">121</a></span
+      <p id="t119" class="mis show_mis">
+        <span class="n"><a href="#t119">119</a></span
         ><span class="t">
           <span class="key">elif</span> <span class="nam">isinstance</span
           ><span class="op">(</span><span class="nam">model</span
@@ -945,20 +931,20 @@
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t122" class="mis show_mis">
-        <span class="n"><a href="#t122">122</a></span
+      <p id="t120" class="mis show_mis">
+        <span class="n"><a href="#t120">120</a></span
         ><span class="t">
           <span class="nam">put_data</span><span class="op">[</span
           ><span class="str">"dhs_contact_uuid"</span><span class="op">]</span>
           <span class="op">=</span> <span class="nam">uuid</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t123" class="pln">
-        <span class="n"><a href="#t123">123</a></span
+      <p id="t121" class="pln">
+        <span class="n"><a href="#t121">121</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t124" class="mis show_mis">
-        <span class="n"><a href="#t124">124</a></span
+      <p id="t122" class="mis show_mis">
+        <span class="n"><a href="#t122">122</a></span
         ><span class="t">
           <span class="nam">put_data</span><span class="op">[</span
           ><span class="str">"last_updated_by"</span><span class="op">]</span>
@@ -966,8 +952,8 @@
           <span class="nam">current_user</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t125" class="mis show_mis">
-        <span class="n"><a href="#t125">125</a></span
+      <p id="t123" class="mis show_mis">
+        <span class="n"><a href="#t123">123</a></span
         ><span class="t">
           <span class="nam">put_data</span><span class="op">[</span
           ><span class="str">"lub_timestamp"</span><span class="op">]</span>
@@ -975,12 +961,12 @@
           <span class="nam">updated_timestamp</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t126" class="pln">
-        <span class="n"><a href="#t126">126</a></span
+      <p id="t124" class="pln">
+        <span class="n"><a href="#t124">124</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t127" class="mis show_mis">
-        <span class="n"><a href="#t127">127</a></span
+      <p id="t125" class="mis show_mis">
+        <span class="n"><a href="#t125">125</a></span
         ><span class="t">
           <span class="nam">document</span> <span class="op">=</span>
           <span class="nam">loop</span><span class="op">.</span
@@ -992,8 +978,8 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t128" class="mis show_mis">
-        <span class="n"><a href="#t128">128</a></span
+      <p id="t126" class="mis show_mis">
+        <span class="n"><a href="#t126">126</a></span
         ><span class="t">
           <span class="nam">document</span><span class="op">.</span
           ><span class="nam">update</span><span class="op">(</span
@@ -1001,8 +987,8 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t129" class="mis show_mis">
-        <span class="n"><a href="#t129">129</a></span
+      <p id="t127" class="mis show_mis">
+        <span class="n"><a href="#t127">127</a></span
         ><span class="t">
           <span class="nam">update_response</span> <span class="op">=</span>
           <span class="nam">loop</span><span class="op">.</span
@@ -1013,45 +999,45 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t130" class="mis show_mis">
-        <span class="n"><a href="#t130">130</a></span
+      <p id="t128" class="mis show_mis">
+        <span class="n"><a href="#t128">128</a></span
         ><span class="t">
           <span class="key">if</span> <span class="str">"errors"</span>
           <span class="key">in</span> <span class="nam">update_response</span
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t131" class="mis show_mis">
-        <span class="n"><a href="#t131">131</a></span
+      <p id="t129" class="mis show_mis">
+        <span class="n"><a href="#t129">129</a></span
         ><span class="t">
           <span class="key">return</span>
           <span class="nam">update_response</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t132" class="mis show_mis">
-        <span class="n"><a href="#t132">132</a></span
+      <p id="t130" class="mis show_mis">
+        <span class="n"><a href="#t130">130</a></span
         ><span class="t">
           <span class="key">return</span>
           <span class="nam">document</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t133" class="pln">
+      <p id="t131" class="pln">
+        <span class="n"><a href="#t131">131</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t132" class="pln">
+        <span class="n"><a href="#t132">132</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t133" class="run">
         <span class="n"><a href="#t133">133</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t134" class="pln">
-        <span class="n"><a href="#t134">134</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t135" class="run">
-        <span class="n"><a href="#t135">135</a></span
         ><span class="t"
           ><span class="key">def</span> <span class="nam">push_nested_item</span
           ><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t136" class="pln">
-        <span class="n"><a href="#t136">136</a></span
+      <p id="t134" class="pln">
+        <span class="n"><a href="#t134">134</a></span
         ><span class="t">
           <span class="nam">uuid</span><span class="op">,</span>
           <span class="nam">field</span><span class="op">,</span>
@@ -1063,14 +1049,14 @@
           ><span class="key">None</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t137" class="pln">
-        <span class="n"><a href="#t137">137</a></span
+      <p id="t135" class="pln">
+        <span class="n"><a href="#t135">135</a></span
         ><span class="t"
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t138" class="mis show_mis">
-        <span class="n"><a href="#t138">138</a></span
+      <p id="t136" class="mis show_mis">
+        <span class="n"><a href="#t136">136</a></span
         ><span class="t">
           <span class="nam">service</span><span class="op">,</span>
           <span class="nam">loop</span> <span class="op">=</span>
@@ -1081,12 +1067,12 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t139" class="pln">
-        <span class="n"><a href="#t139">139</a></span
+      <p id="t137" class="pln">
+        <span class="n"><a href="#t137">137</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t140" class="mis show_mis">
-        <span class="n"><a href="#t140">140</a></span
+      <p id="t138" class="mis show_mis">
+        <span class="n"><a href="#t138">138</a></span
         ><span class="t">
           <span class="nam">list_update_object</span> <span class="op">=</span>
           <span class="op">{</span><span class="nam">field</span
@@ -1094,12 +1080,12 @@
           ><span class="op">}</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t141" class="pln">
-        <span class="n"><a href="#t141">141</a></span
+      <p id="t139" class="pln">
+        <span class="n"><a href="#t139">139</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t142" class="mis show_mis">
-        <span class="n"><a href="#t142">142</a></span
+      <p id="t140" class="mis show_mis">
+        <span class="n"><a href="#t140">140</a></span
         ><span class="t">
           <span class="nam">update_response</span> <span class="op">=</span>
           <span class="nam">loop</span><span class="op">.</span
@@ -1107,8 +1093,8 @@
           ><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t143" class="pln">
-        <span class="n"><a href="#t143">143</a></span
+      <p id="t141" class="pln">
+        <span class="n"><a href="#t141">141</a></span
         ><span class="t">
           <span class="nam">service</span><span class="op">.</span
           ><span class="nam">push_nested_item</span><span class="op">(</span
@@ -1117,55 +1103,55 @@
           <span class="nam">params</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t144" class="pln">
-        <span class="n"><a href="#t144">144</a></span
+      <p id="t142" class="pln">
+        <span class="n"><a href="#t142">142</a></span
         ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t145" class="pln">
-        <span class="n"><a href="#t145">145</a></span
+      <p id="t143" class="pln">
+        <span class="n"><a href="#t143">143</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t146" class="mis show_mis">
-        <span class="n"><a href="#t146">146</a></span
+      <p id="t144" class="mis show_mis">
+        <span class="n"><a href="#t144">144</a></span
         ><span class="t">
           <span class="key">if</span> <span class="str">"errors"</span>
           <span class="key">in</span> <span class="nam">update_response</span
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t147" class="mis show_mis">
+      <p id="t145" class="mis show_mis">
+        <span class="n"><a href="#t145">145</a></span
+        ><span class="t">
+          <span class="key">return</span>
+          <span class="nam">update_response</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t146" class="mis show_mis">
+        <span class="n"><a href="#t146">146</a></span
+        ><span class="t">
+          <span class="key">return</span>
+          <span class="nam">update_response</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t147" class="pln">
         <span class="n"><a href="#t147">147</a></span
-        ><span class="t">
-          <span class="key">return</span>
-          <span class="nam">update_response</span>&nbsp;</span
-        ><span class="r"></span>
+        ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t148" class="mis show_mis">
+      <p id="t148" class="pln">
         <span class="n"><a href="#t148">148</a></span
-        ><span class="t">
-          <span class="key">return</span>
-          <span class="nam">update_response</span>&nbsp;</span
-        ><span class="r"></span>
+        ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t149" class="pln">
+      <p id="t149" class="run">
         <span class="n"><a href="#t149">149</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t150" class="pln">
-        <span class="n"><a href="#t150">150</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t151" class="run">
-        <span class="n"><a href="#t151">151</a></span
         ><span class="t"
           ><span class="key">def</span>
           <span class="nam">update_list_single</span
           ><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t152" class="pln">
-        <span class="n"><a href="#t152">152</a></span
+      <p id="t150" class="pln">
+        <span class="n"><a href="#t150">150</a></span
         ><span class="t">
           <span class="nam">uuid</span><span class="op">,</span>
           <span class="nam">field</span><span class="op">,</span>
@@ -1177,21 +1163,33 @@
           ><span class="key">None</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t153" class="pln">
-        <span class="n"><a href="#t153">153</a></span
+      <p id="t151" class="pln">
+        <span class="n"><a href="#t151">151</a></span
         ><span class="t"
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t154" class="pln">
-        <span class="n"><a href="#t154">154</a></span
+      <p id="t152" class="pln">
+        <span class="n"><a href="#t152">152</a></span
         ><span class="t"> <span class="str">"""</span>&nbsp;</span
         ><span class="r"></span>
+      </p>
+      <p id="t153" class="pln">
+        <span class="n"><a href="#t153">153</a></span
+        ><span class="t"
+          ><span class="str"> Update_list_single method.</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t154" class="pln">
+        <span class="n"><a href="#t154">154</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
       <p id="t155" class="pln">
         <span class="n"><a href="#t155">155</a></span
         ><span class="t"
-          ><span class="str"> Update_list_single method.</span>&nbsp;</span
+          ><span class="str">
+            This builds $addToSet object for db, updates, then returns.</span
+          >&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t156" class="pln">
@@ -1202,93 +1200,79 @@
         <span class="n"><a href="#t157">157</a></span
         ><span class="t"
           ><span class="str">
-            This builds $addToSet object for db, updates, then returns.</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t158" class="pln">
-        <span class="n"><a href="#t158">158</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t159" class="pln">
-        <span class="n"><a href="#t159">159</a></span
-        ><span class="t"
-          ><span class="str">
             Example: uuid="123-123-123", field="timeline",
             put_data={...data...}, ...</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t160" class="pln">
-        <span class="n"><a href="#t160">160</a></span
+      <p id="t158" class="pln">
+        <span class="n"><a href="#t158">158</a></span
         ><span class="t"><span class="str"> if params!=None:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t161" class="pln">
-        <span class="n"><a href="#t161">161</a></span
+      <p id="t159" class="pln">
+        <span class="n"><a href="#t159">159</a></span
         ><span class="t"
           ><span class="str"> the db will query using extra params</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
+      <p id="t160" class="pln">
+        <span class="n"><a href="#t160">160</a></span
+        ><span class="t"
+          ><span class="str">
+            {uuid="123-123-123", "campaigns.campaign_id": 85}</span
+          >&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t161" class="pln">
+        <span class="n"><a href="#t161">161</a></span
+        ><span class="t"
+          ><span class="str"> then for a nested set:</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
       <p id="t162" class="pln">
         <span class="n"><a href="#t162">162</a></span
         ><span class="t"
-          ><span class="str">
-            {uuid="123-123-123", "gophish_campaign_list.campaign_id": 85}</span
-          >&nbsp;</span
+          ><span class="str"> field="campaigns.$.timeline"</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t163" class="pln">
         <span class="n"><a href="#t163">163</a></span
         ><span class="t"
-          ><span class="str"> then for a nested set:</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t164" class="pln">
-        <span class="n"><a href="#t164">164</a></span
-        ><span class="t"
-          ><span class="str"> field="gophish_campaign_list.$.timeline"</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t165" class="pln">
-        <span class="n"><a href="#t165">165</a></span
-        ><span class="t"
           ><span class="str"> and put_data = [value1,value2,...]</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
+      <p id="t164" class="pln">
+        <span class="n"><a href="#t164">164</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t165" class="pln">
+        <span class="n"><a href="#t165">165</a></span
+        ><span class="t"><span class="str"> Example call:</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
       <p id="t166" class="pln">
         <span class="n"><a href="#t166">166</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
+        ><span class="t"
+          ><span class="str"> update_list_single(</span>&nbsp;</span
+        ><span class="r"></span>
       </p>
       <p id="t167" class="pln">
         <span class="n"><a href="#t167">167</a></span
-        ><span class="t"><span class="str"> Example call:</span>&nbsp;</span
+        ><span class="t"
+          ><span class="str"> uuid="123-123-123",</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t168" class="pln">
         <span class="n"><a href="#t168">168</a></span
         ><span class="t"
-          ><span class="str"> update_list_single(</span>&nbsp;</span
+          ><span class="str"> field="campaigns.$.timeline",</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t169" class="pln">
         <span class="n"><a href="#t169">169</a></span
-        ><span class="t"
-          ><span class="str"> uuid="123-123-123",</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t170" class="pln">
-        <span class="n"><a href="#t170">170</a></span
-        ><span class="t"
-          ><span class="str"> field="gophish_campaign_list.$.timeline",</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t171" class="pln">
-        <span class="n"><a href="#t171">171</a></span
         ><span class="t"
           ><span class="str">
             put_data=[&lt;object>], "subscription",
@@ -1296,21 +1280,20 @@
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t172" class="pln">
-        <span class="n"><a href="#t172">172</a></span
+      <p id="t170" class="pln">
+        <span class="n"><a href="#t170">170</a></span
         ><span class="t"
-          ><span class="str">
-            params={"gophish_campaign_list.campaign_id": 85})</span
+          ><span class="str"> params={"campaigns.campaign_id": 85})</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t173" class="pln">
-        <span class="n"><a href="#t173">173</a></span
+      <p id="t171" class="pln">
+        <span class="n"><a href="#t171">171</a></span
         ><span class="t"><span class="str"> """</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t174" class="mis show_mis">
-        <span class="n"><a href="#t174">174</a></span
+      <p id="t172" class="mis show_mis">
+        <span class="n"><a href="#t172">172</a></span
         ><span class="t">
           <span class="nam">service</span><span class="op">,</span>
           <span class="nam">loop</span> <span class="op">=</span>
@@ -1321,12 +1304,12 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t175" class="pln">
-        <span class="n"><a href="#t175">175</a></span
+      <p id="t173" class="pln">
+        <span class="n"><a href="#t173">173</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t176" class="mis show_mis">
-        <span class="n"><a href="#t176">176</a></span
+      <p id="t174" class="mis show_mis">
+        <span class="n"><a href="#t174">174</a></span
         ><span class="t">
           <span class="nam">list_update_object</span> <span class="op">=</span>
           <span class="op">{</span><span class="nam">field</span
@@ -1336,12 +1319,12 @@
           ><span class="op">}</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t177" class="pln">
-        <span class="n"><a href="#t177">177</a></span
+      <p id="t175" class="pln">
+        <span class="n"><a href="#t175">175</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t178" class="mis show_mis">
-        <span class="n"><a href="#t178">178</a></span
+      <p id="t176" class="mis show_mis">
+        <span class="n"><a href="#t176">176</a></span
         ><span class="t">
           <span class="nam">update_response</span> <span class="op">=</span>
           <span class="nam">loop</span><span class="op">.</span
@@ -1349,8 +1332,8 @@
           ><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t179" class="pln">
-        <span class="n"><a href="#t179">179</a></span
+      <p id="t177" class="pln">
+        <span class="n"><a href="#t177">177</a></span
         ><span class="t">
           <span class="nam">service</span><span class="op">.</span
           ><span class="nam">update_list</span><span class="op">(</span
@@ -1359,55 +1342,55 @@
           <span class="nam">params</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t180" class="pln">
-        <span class="n"><a href="#t180">180</a></span
+      <p id="t178" class="pln">
+        <span class="n"><a href="#t178">178</a></span
         ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t181" class="pln">
-        <span class="n"><a href="#t181">181</a></span
+      <p id="t179" class="pln">
+        <span class="n"><a href="#t179">179</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t182" class="mis show_mis">
-        <span class="n"><a href="#t182">182</a></span
+      <p id="t180" class="mis show_mis">
+        <span class="n"><a href="#t180">180</a></span
         ><span class="t">
           <span class="key">if</span> <span class="str">"errors"</span>
           <span class="key">in</span> <span class="nam">update_response</span
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t183" class="mis show_mis">
+      <p id="t181" class="mis show_mis">
+        <span class="n"><a href="#t181">181</a></span
+        ><span class="t">
+          <span class="key">return</span>
+          <span class="nam">update_response</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t182" class="mis show_mis">
+        <span class="n"><a href="#t182">182</a></span
+        ><span class="t">
+          <span class="key">return</span>
+          <span class="nam">update_response</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t183" class="pln">
         <span class="n"><a href="#t183">183</a></span
-        ><span class="t">
-          <span class="key">return</span>
-          <span class="nam">update_response</span>&nbsp;</span
-        ><span class="r"></span>
+        ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t184" class="mis show_mis">
+      <p id="t184" class="pln">
         <span class="n"><a href="#t184">184</a></span
-        ><span class="t">
-          <span class="key">return</span>
-          <span class="nam">update_response</span>&nbsp;</span
-        ><span class="r"></span>
+        ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t185" class="pln">
+      <p id="t185" class="run">
         <span class="n"><a href="#t185">185</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t186" class="pln">
-        <span class="n"><a href="#t186">186</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t187" class="run">
-        <span class="n"><a href="#t187">187</a></span
         ><span class="t"
           ><span class="key">def</span>
           <span class="nam">update_nested_single</span
           ><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t188" class="pln">
-        <span class="n"><a href="#t188">188</a></span
+      <p id="t186" class="pln">
+        <span class="n"><a href="#t186">186</a></span
         ><span class="t">
           <span class="nam">uuid</span><span class="op">,</span>
           <span class="nam">field</span><span class="op">,</span>
@@ -1419,21 +1402,33 @@
           ><span class="key">None</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t189" class="pln">
-        <span class="n"><a href="#t189">189</a></span
+      <p id="t187" class="pln">
+        <span class="n"><a href="#t187">187</a></span
         ><span class="t"
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t190" class="pln">
-        <span class="n"><a href="#t190">190</a></span
+      <p id="t188" class="pln">
+        <span class="n"><a href="#t188">188</a></span
         ><span class="t"> <span class="str">"""</span>&nbsp;</span
         ><span class="r"></span>
+      </p>
+      <p id="t189" class="pln">
+        <span class="n"><a href="#t189">189</a></span
+        ><span class="t"
+          ><span class="str"> Update_list_single method.</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t190" class="pln">
+        <span class="n"><a href="#t190">190</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
       <p id="t191" class="pln">
         <span class="n"><a href="#t191">191</a></span
         ><span class="t"
-          ><span class="str"> Update_list_single method.</span>&nbsp;</span
+          ><span class="str">
+            This builds $addToSet object for db, updates, then returns.</span
+          >&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t192" class="pln">
@@ -1444,93 +1439,79 @@
         <span class="n"><a href="#t193">193</a></span
         ><span class="t"
           ><span class="str">
-            This builds $addToSet object for db, updates, then returns.</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t194" class="pln">
-        <span class="n"><a href="#t194">194</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t195" class="pln">
-        <span class="n"><a href="#t195">195</a></span
-        ><span class="t"
-          ><span class="str">
             Example: uuid="123-123-123", field="timeline",
             put_data={...data...}, ...</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t196" class="pln">
-        <span class="n"><a href="#t196">196</a></span
+      <p id="t194" class="pln">
+        <span class="n"><a href="#t194">194</a></span
         ><span class="t"><span class="str"> if params!=None:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t197" class="pln">
-        <span class="n"><a href="#t197">197</a></span
+      <p id="t195" class="pln">
+        <span class="n"><a href="#t195">195</a></span
         ><span class="t"
           ><span class="str"> the db will query using extra params</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
+      <p id="t196" class="pln">
+        <span class="n"><a href="#t196">196</a></span
+        ><span class="t"
+          ><span class="str">
+            {uuid="123-123-123", "campaigns.campaign_id": 85}</span
+          >&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t197" class="pln">
+        <span class="n"><a href="#t197">197</a></span
+        ><span class="t"
+          ><span class="str"> then for a nested set:</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
       <p id="t198" class="pln">
         <span class="n"><a href="#t198">198</a></span
         ><span class="t"
-          ><span class="str">
-            {uuid="123-123-123", "gophish_campaign_list.campaign_id": 85}</span
-          >&nbsp;</span
+          ><span class="str"> field="campaigns.$.timeline"</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t199" class="pln">
         <span class="n"><a href="#t199">199</a></span
         ><span class="t"
-          ><span class="str"> then for a nested set:</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t200" class="pln">
-        <span class="n"><a href="#t200">200</a></span
-        ><span class="t"
-          ><span class="str"> field="gophish_campaign_list.$.timeline"</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t201" class="pln">
-        <span class="n"><a href="#t201">201</a></span
-        ><span class="t"
           ><span class="str"> and put_data = [value1,value2,...]</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
+      <p id="t200" class="pln">
+        <span class="n"><a href="#t200">200</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t201" class="pln">
+        <span class="n"><a href="#t201">201</a></span
+        ><span class="t"><span class="str"> Example call:</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
       <p id="t202" class="pln">
         <span class="n"><a href="#t202">202</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
+        ><span class="t"
+          ><span class="str"> update_list_single(</span>&nbsp;</span
+        ><span class="r"></span>
       </p>
       <p id="t203" class="pln">
         <span class="n"><a href="#t203">203</a></span
-        ><span class="t"><span class="str"> Example call:</span>&nbsp;</span
+        ><span class="t"
+          ><span class="str"> uuid="123-123-123",</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t204" class="pln">
         <span class="n"><a href="#t204">204</a></span
         ><span class="t"
-          ><span class="str"> update_list_single(</span>&nbsp;</span
+          ><span class="str"> field="campaigns.$.timeline",</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t205" class="pln">
         <span class="n"><a href="#t205">205</a></span
-        ><span class="t"
-          ><span class="str"> uuid="123-123-123",</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t206" class="pln">
-        <span class="n"><a href="#t206">206</a></span
-        ><span class="t"
-          ><span class="str"> field="gophish_campaign_list.$.timeline",</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t207" class="pln">
-        <span class="n"><a href="#t207">207</a></span
         ><span class="t"
           ><span class="str">
             put_data=[&lt;object>], "subscription",
@@ -1538,21 +1519,20 @@
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t208" class="pln">
-        <span class="n"><a href="#t208">208</a></span
+      <p id="t206" class="pln">
+        <span class="n"><a href="#t206">206</a></span
         ><span class="t"
-          ><span class="str">
-            params={"gophish_campaign_list.campaign_id": 85})</span
+          ><span class="str"> params={"campaigns.campaign_id": 85})</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t209" class="pln">
-        <span class="n"><a href="#t209">209</a></span
+      <p id="t207" class="pln">
+        <span class="n"><a href="#t207">207</a></span
         ><span class="t"><span class="str"> """</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t210" class="mis show_mis">
-        <span class="n"><a href="#t210">210</a></span
+      <p id="t208" class="mis show_mis">
+        <span class="n"><a href="#t208">208</a></span
         ><span class="t">
           <span class="nam">service</span><span class="op">,</span>
           <span class="nam">loop</span> <span class="op">=</span>
@@ -1561,6 +1541,19 @@
           <span class="nam">model</span><span class="op">,</span>
           <span class="nam">validation_model</span
           ><span class="op">)</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t209" class="pln">
+        <span class="n"><a href="#t209">209</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t210" class="mis show_mis">
+        <span class="n"><a href="#t210">210</a></span
+        ><span class="t">
+          <span class="nam">list_update_object</span> <span class="op">=</span>
+          <span class="op">{</span><span class="nam">field</span
+          ><span class="op">:</span> <span class="nam">put_data</span
+          ><span class="op">}</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t211" class="pln">
@@ -1570,27 +1563,14 @@
       <p id="t212" class="mis show_mis">
         <span class="n"><a href="#t212">212</a></span
         ><span class="t">
-          <span class="nam">list_update_object</span> <span class="op">=</span>
-          <span class="op">{</span><span class="nam">field</span
-          ><span class="op">:</span> <span class="nam">put_data</span
-          ><span class="op">}</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t213" class="pln">
-        <span class="n"><a href="#t213">213</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t214" class="mis show_mis">
-        <span class="n"><a href="#t214">214</a></span
-        ><span class="t">
           <span class="nam">update_response</span> <span class="op">=</span>
           <span class="nam">loop</span><span class="op">.</span
           ><span class="nam">run_until_complete</span
           ><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t215" class="pln">
-        <span class="n"><a href="#t215">215</a></span
+      <p id="t213" class="pln">
+        <span class="n"><a href="#t213">213</a></span
         ><span class="t">
           <span class="nam">service</span><span class="op">.</span
           ><span class="nam">update_nested_single</span><span class="op">(</span
@@ -1599,43 +1579,43 @@
           <span class="nam">params</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t216" class="pln">
-        <span class="n"><a href="#t216">216</a></span
+      <p id="t214" class="pln">
+        <span class="n"><a href="#t214">214</a></span
         ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t217" class="mis show_mis">
-        <span class="n"><a href="#t217">217</a></span
+      <p id="t215" class="mis show_mis">
+        <span class="n"><a href="#t215">215</a></span
         ><span class="t">
           <span class="key">if</span> <span class="str">"errors"</span>
           <span class="key">in</span> <span class="nam">update_response</span
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t218" class="mis show_mis">
+      <p id="t216" class="mis show_mis">
+        <span class="n"><a href="#t216">216</a></span
+        ><span class="t">
+          <span class="key">return</span>
+          <span class="nam">update_response</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t217" class="mis show_mis">
+        <span class="n"><a href="#t217">217</a></span
+        ><span class="t">
+          <span class="key">return</span>
+          <span class="nam">update_response</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t218" class="pln">
         <span class="n"><a href="#t218">218</a></span
-        ><span class="t">
-          <span class="key">return</span>
-          <span class="nam">update_response</span>&nbsp;</span
-        ><span class="r"></span>
+        ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t219" class="mis show_mis">
+      <p id="t219" class="pln">
         <span class="n"><a href="#t219">219</a></span
-        ><span class="t">
-          <span class="key">return</span>
-          <span class="nam">update_response</span>&nbsp;</span
-        ><span class="r"></span>
+        ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t220" class="pln">
+      <p id="t220" class="run">
         <span class="n"><a href="#t220">220</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t221" class="pln">
-        <span class="n"><a href="#t221">221</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t222" class="run">
-        <span class="n"><a href="#t222">222</a></span
         ><span class="t"
           ><span class="key">def</span> <span class="nam">delete_single</span
           ><span class="op">(</span><span class="nam">uuid</span
@@ -1645,35 +1625,35 @@
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t223" class="pln">
-        <span class="n"><a href="#t223">223</a></span
+      <p id="t221" class="pln">
+        <span class="n"><a href="#t221">221</a></span
         ><span class="t"> <span class="str">"""</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t224" class="pln">
-        <span class="n"><a href="#t224">224</a></span
+      <p id="t222" class="pln">
+        <span class="n"><a href="#t222">222</a></span
         ><span class="t"
           ><span class="str"> Delete_single method.</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t225" class="pln">
-        <span class="n"><a href="#t225">225</a></span
+      <p id="t223" class="pln">
+        <span class="n"><a href="#t223">223</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t226" class="pln">
-        <span class="n"><a href="#t226">226</a></span
+      <p id="t224" class="pln">
+        <span class="n"><a href="#t224">224</a></span
         ><span class="t"
           ><span class="str"> This handles getting the data from the db.</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t227" class="pln">
-        <span class="n"><a href="#t227">227</a></span
+      <p id="t225" class="pln">
+        <span class="n"><a href="#t225">225</a></span
         ><span class="t"><span class="str"> """</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t228" class="mis show_mis">
-        <span class="n"><a href="#t228">228</a></span
+      <p id="t226" class="mis show_mis">
+        <span class="n"><a href="#t226">226</a></span
         ><span class="t">
           <span class="nam">service</span><span class="op">,</span>
           <span class="nam">loop</span> <span class="op">=</span>
@@ -1684,12 +1664,12 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t229" class="pln">
-        <span class="n"><a href="#t229">229</a></span
+      <p id="t227" class="pln">
+        <span class="n"><a href="#t227">227</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t230" class="mis show_mis">
-        <span class="n"><a href="#t230">230</a></span
+      <p id="t228" class="mis show_mis">
+        <span class="n"><a href="#t228">228</a></span
         ><span class="t">
           <span class="nam">delete_response</span> <span class="op">=</span>
           <span class="nam">loop</span><span class="op">.</span
@@ -1701,107 +1681,23 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t231" class="mis show_mis">
-        <span class="n"><a href="#t231">231</a></span
+      <p id="t229" class="mis show_mis">
+        <span class="n"><a href="#t229">229</a></span
         ><span class="t">
           <span class="key">return</span>
           <span class="nam">delete_response</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t232" class="pln">
+      <p id="t230" class="pln">
+        <span class="n"><a href="#t230">230</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t231" class="pln">
+        <span class="n"><a href="#t231">231</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t232" class="run">
         <span class="n"><a href="#t232">232</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t233" class="pln">
-        <span class="n"><a href="#t233">233</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t234" class="run">
-        <span class="n"><a href="#t234">234</a></span
-        ><span class="t"
-          ><span class="key">def</span>
-          <span class="nam">get_single_subscription_webhook</span
-          ><span class="op">(</span><span class="nam">campaign_id</span
-          ><span class="op">,</span> <span class="nam">collection</span
-          ><span class="op">,</span> <span class="nam">model</span
-          ><span class="op">,</span> <span class="nam">validation_model</span
-          ><span class="op">)</span><span class="op">:</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t235" class="pln">
-        <span class="n"><a href="#t235">235</a></span
-        ><span class="t">
-          <span class="str"
-            >"""Get single subscription with campaign id."""</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t236" class="mis show_mis">
-        <span class="n"><a href="#t236">236</a></span
-        ><span class="t">
-          <span class="nam">service</span><span class="op">,</span>
-          <span class="nam">loop</span> <span class="op">=</span>
-          <span class="nam">__get_service_loop</span><span class="op">(</span
-          ><span class="nam">collection</span><span class="op">,</span>
-          <span class="nam">model</span><span class="op">,</span>
-          <span class="nam">validation_model</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t237" class="mis show_mis">
-        <span class="n"><a href="#t237">237</a></span
-        ><span class="t">
-          <span class="nam">parameters</span> <span class="op">=</span>
-          <span class="op">{</span
-          ><span class="str">"gophish_campaign_list.campaign_id"</span
-          ><span class="op">:</span> <span class="nam">campaign_id</span
-          ><span class="op">}</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t238" class="mis show_mis">
-        <span class="n"><a href="#t238">238</a></span
-        ><span class="t">
-          <span class="nam">subscription_list</span> <span class="op">=</span>
-          <span class="nam">loop</span><span class="op">.</span
-          ><span class="nam">run_until_complete</span
-          ><span class="op">(</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t239" class="pln">
-        <span class="n"><a href="#t239">239</a></span
-        ><span class="t">
-          <span class="nam">service</span><span class="op">.</span
-          ><span class="nam">filter_list</span><span class="op">(</span
-          ><span class="nam">parameters</span><span class="op">=</span
-          ><span class="nam">parameters</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t240" class="pln">
-        <span class="n"><a href="#t240">240</a></span
-        ><span class="t"> <span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t241" class="mis show_mis">
-        <span class="n"><a href="#t241">241</a></span
-        ><span class="t">
-          <span class="key">return</span> <span class="nam">next</span
-          ><span class="op">(</span><span class="nam">iter</span
-          ><span class="op">(</span><span class="nam">subscription_list</span
-          ><span class="op">)</span><span class="op">,</span>
-          <span class="key">None</span><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t242" class="pln">
-        <span class="n"><a href="#t242">242</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t243" class="pln">
-        <span class="n"><a href="#t243">243</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t244" class="run">
-        <span class="n"><a href="#t244">244</a></span
         ><span class="t"
           ><span class="key">def</span>
           <span class="nam">update_single_webhook</span><span class="op">(</span
@@ -1812,16 +1708,16 @@
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t245" class="pln">
-        <span class="n"><a href="#t245">245</a></span
+      <p id="t233" class="pln">
+        <span class="n"><a href="#t233">233</a></span
         ><span class="t">
           <span class="str"
             >"""Update single subscription with webhook user."""</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t246" class="mis show_mis">
-        <span class="n"><a href="#t246">246</a></span
+      <p id="t234" class="mis show_mis">
+        <span class="n"><a href="#t234">234</a></span
         ><span class="t">
           <span class="nam">service</span><span class="op">,</span>
           <span class="nam">loop</span> <span class="op">=</span>
@@ -1832,23 +1728,23 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t247" class="mis show_mis">
-        <span class="n"><a href="#t247">247</a></span
+      <p id="t235" class="mis show_mis">
+        <span class="n"><a href="#t235">235</a></span
         ><span class="t">
           <span class="nam">put_data</span> <span class="op">=</span>
           <span class="op">{</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t248" class="pln">
-        <span class="n"><a href="#t248">248</a></span
+      <p id="t236" class="pln">
+        <span class="n"><a href="#t236">236</a></span
         ><span class="t">
           <span class="str">"last_updated_by"</span><span class="op">:</span>
           <span class="str">"webhook"</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t249" class="pln">
-        <span class="n"><a href="#t249">249</a></span
+      <p id="t237" class="pln">
+        <span class="n"><a href="#t237">237</a></span
         ><span class="t">
           <span class="str">"lub_timestamp"</span><span class="op">:</span>
           <span class="nam">datetime</span><span class="op">.</span
@@ -1857,13 +1753,13 @@
           ><span class="op">)</span><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t250" class="pln">
-        <span class="n"><a href="#t250">250</a></span
+      <p id="t238" class="pln">
+        <span class="n"><a href="#t238">238</a></span
         ><span class="t"> <span class="op">}</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t251" class="mis show_mis">
-        <span class="n"><a href="#t251">251</a></span
+      <p id="t239" class="mis show_mis">
+        <span class="n"><a href="#t239">239</a></span
         ><span class="t">
           <span class="nam">subscription</span><span class="op">.</span
           ><span class="nam">update</span><span class="op">(</span
@@ -1871,8 +1767,8 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t252" class="mis show_mis">
-        <span class="n"><a href="#t252">252</a></span
+      <p id="t240" class="mis show_mis">
+        <span class="n"><a href="#t240">240</a></span
         ><span class="t">
           <span class="nam">update_response</span> <span class="op">=</span>
           <span class="nam">loop</span><span class="op">.</span
@@ -1883,38 +1779,38 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t253" class="mis show_mis">
-        <span class="n"><a href="#t253">253</a></span
+      <p id="t241" class="mis show_mis">
+        <span class="n"><a href="#t241">241</a></span
         ><span class="t">
           <span class="key">if</span> <span class="str">"errors"</span>
           <span class="key">in</span> <span class="nam">update_response</span
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t254" class="mis show_mis">
-        <span class="n"><a href="#t254">254</a></span
+      <p id="t242" class="mis show_mis">
+        <span class="n"><a href="#t242">242</a></span
         ><span class="t">
           <span class="key">return</span>
           <span class="nam">update_response</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t255" class="mis show_mis">
-        <span class="n"><a href="#t255">255</a></span
+      <p id="t243" class="mis show_mis">
+        <span class="n"><a href="#t243">243</a></span
         ><span class="t">
           <span class="key">return</span>
           <span class="nam">subscription</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t256" class="pln">
-        <span class="n"><a href="#t256">256</a></span
+      <p id="t244" class="pln">
+        <span class="n"><a href="#t244">244</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t257" class="pln">
-        <span class="n"><a href="#t257">257</a></span
+      <p id="t245" class="pln">
+        <span class="n"><a href="#t245">245</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t258" class="run">
-        <span class="n"><a href="#t258">258</a></span
+      <p id="t246" class="run">
+        <span class="n"><a href="#t246">246</a></span
         ><span class="t"
           ><span class="key">def</span> <span class="nam">exists</span
           ><span class="op">(</span><span class="nam">parameters</span
@@ -1924,16 +1820,16 @@
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t259" class="pln">
-        <span class="n"><a href="#t259">259</a></span
+      <p id="t247" class="pln">
+        <span class="n"><a href="#t247">247</a></span
         ><span class="t">
           <span class="str"
             >"""Check if item exists for given parameter."""</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t260" class="mis show_mis">
-        <span class="n"><a href="#t260">260</a></span
+      <p id="t248" class="mis show_mis">
+        <span class="n"><a href="#t248">248</a></span
         ><span class="t">
           <span class="nam">service</span><span class="op">,</span>
           <span class="nam">loop</span> <span class="op">=</span>
@@ -1944,12 +1840,12 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t261" class="pln">
-        <span class="n"><a href="#t261">261</a></span
+      <p id="t249" class="pln">
+        <span class="n"><a href="#t249">249</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t262" class="mis show_mis">
-        <span class="n"><a href="#t262">262</a></span
+      <p id="t250" class="mis show_mis">
+        <span class="n"><a href="#t250">250</a></span
         ><span class="t">
           <span class="nam">document_list</span> <span class="op">=</span>
           <span class="nam">loop</span><span class="op">.</span
@@ -1961,22 +1857,22 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t263" class="mis show_mis">
-        <span class="n"><a href="#t263">263</a></span
+      <p id="t251" class="mis show_mis">
+        <span class="n"><a href="#t251">251</a></span
         ><span class="t">
           <span class="key">if</span> <span class="nam">document_list</span
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t264" class="mis show_mis">
-        <span class="n"><a href="#t264">264</a></span
+      <p id="t252" class="mis show_mis">
+        <span class="n"><a href="#t252">252</a></span
         ><span class="t">
           <span class="key">return</span>
           <span class="key">True</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t265" class="mis show_mis">
-        <span class="n"><a href="#t265">265</a></span
+      <p id="t253" class="mis show_mis">
+        <span class="n"><a href="#t253">253</a></span
         ><span class="t">
           <span class="key">return</span>
           <span class="key">False</span>&nbsp;</span
@@ -1989,7 +1885,7 @@
           <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp;
           <a class="nav" href="https://coverage.readthedocs.io"
             >coverage.py v5.3</a
-          >, created at 2020-10-01 11:17 -0600
+          >, created at 2020-10-22 14:23 -0600
         </p>
       </div>
     </div>

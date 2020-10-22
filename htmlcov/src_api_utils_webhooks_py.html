@@ -78,9 +78,9 @@
         <span class="n"><a href="#t1">1</a></span
         ><span class="t"
           ><span class="key">from</span> <span class="nam">api</span
-          ><span class="op">.</span><span class="nam">utils</span>
-          <span class="key">import</span> <span class="nam">db_utils</span>
-          <span class="key">as</span> <span class="nam">db</span>&nbsp;</span
+          ><span class="op">.</span><span class="nam">services</span>
+          <span class="key">import</span>
+          <span class="nam">CampaignService</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t2" class="pln">
@@ -90,12 +90,9 @@
       <p id="t3" class="run">
         <span class="n"><a href="#t3">3</a></span
         ><span class="t"
-          ><span class="key">from</span> <span class="nam">api</span
-          ><span class="op">.</span><span class="nam">models</span
-          ><span class="op">.</span><span class="nam">subscription_models</span>
-          <span class="key">import</span>
-          <span class="nam">SubscriptionModel</span><span class="op">,</span>
-          <span class="nam">validate_subscription</span>&nbsp;</span
+          ><span class="nam">campaign_service</span> <span class="op">=</span>
+          <span class="nam">CampaignService</span><span class="op">(</span
+          ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t4" class="pln">
@@ -110,8 +107,7 @@
         <span class="n"><a href="#t6">6</a></span
         ><span class="t"
           ><span class="key">def</span> <span class="nam">push_webhook</span
-          ><span class="op">(</span><span class="nam">subscription_uuid</span
-          ><span class="op">,</span> <span class="nam">campaign_id</span
+          ><span class="op">(</span><span class="nam">campaign_uuid</span
           ><span class="op">,</span> <span class="nam">email</span
           ><span class="op">,</span> <span class="nam">message</span
           ><span class="op">,</span> <span class="nam">time</span
@@ -134,86 +130,57 @@
           ><span class="op">}</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t8" class="run">
+      <p id="t8" class="pln">
         <span class="n"><a href="#t8">8</a></span
-        ><span class="t">
-          <span class="key">return</span> <span class="nam">db</span
-          ><span class="op">.</span><span class="nam">push_nested_item</span
-          ><span class="op">(</span>&nbsp;</span
-        ><span class="r"></span>
+        ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t9" class="pln">
+      <p id="t9" class="run">
         <span class="n"><a href="#t9">9</a></span
         ><span class="t">
-          <span class="nam">uuid</span><span class="op">=</span
-          ><span class="nam">subscription_uuid</span
-          ><span class="op">,</span>&nbsp;</span
+          <span class="key">return</span>
+          <span class="nam">campaign_service</span><span class="op">.</span
+          ><span class="nam">push_nested</span
+          ><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t10" class="pln">
         <span class="n"><a href="#t10">10</a></span
         ><span class="t">
-          <span class="nam">field</span><span class="op">=</span
-          ><span class="str">"gophish_campaign_list.$.timeline"</span
+          <span class="nam">uuid</span><span class="op">=</span
+          ><span class="nam">campaign_uuid</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t11" class="pln">
         <span class="n"><a href="#t11">11</a></span
         ><span class="t">
-          <span class="nam">put_data</span><span class="op">=</span
-          ><span class="nam">data</span><span class="op">,</span>&nbsp;</span
+          <span class="nam">field</span><span class="op">=</span
+          ><span class="str">"timeline"</span
+          ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t12" class="pln">
         <span class="n"><a href="#t12">12</a></span
         ><span class="t">
-          <span class="nam">collection</span><span class="op">=</span
-          ><span class="str">"subscription"</span
-          ><span class="op">,</span>&nbsp;</span
+          <span class="nam">data</span><span class="op">=</span
+          ><span class="nam">data</span><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t13" class="pln">
         <span class="n"><a href="#t13">13</a></span
-        ><span class="t">
-          <span class="nam">model</span><span class="op">=</span
-          ><span class="nam">SubscriptionModel</span
-          ><span class="op">,</span>&nbsp;</span
+        ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t14" class="pln">
         <span class="n"><a href="#t14">14</a></span
-        ><span class="t">
-          <span class="nam">validation_model</span><span class="op">=</span
-          ><span class="nam">validate_subscription</span
-          ><span class="op">,</span>&nbsp;</span
-        ><span class="r"></span>
+        ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
       <p id="t15" class="pln">
         <span class="n"><a href="#t15">15</a></span
-        ><span class="t">
-          <span class="nam">params</span><span class="op">=</span
-          ><span class="op">{</span
-          ><span class="str">"gophish_campaign_list.campaign_id"</span
-          ><span class="op">:</span> <span class="nam">campaign_id</span
-          ><span class="op">}</span><span class="op">,</span>&nbsp;</span
-        ><span class="r"></span>
+        ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t16" class="pln">
+      <p id="t16" class="run">
         <span class="n"><a href="#t16">16</a></span
-        ><span class="t"> <span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t17" class="pln">
-        <span class="n"><a href="#t17">17</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t18" class="pln">
-        <span class="n"><a href="#t18">18</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t19" class="run">
-        <span class="n"><a href="#t19">19</a></span
         ><span class="t"
           ><span class="key">def</span>
           <span class="nam">check_opened_event</span><span class="op">(</span
@@ -222,21 +189,21 @@
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t20" class="run">
-        <span class="n"><a href="#t20">20</a></span
+      <p id="t17" class="run">
+        <span class="n"><a href="#t17">17</a></span
         ><span class="t">
           <span class="nam">opened</span> <span class="op">=</span>
           <span class="nam">list</span><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t21" class="pln">
-        <span class="n"><a href="#t21">21</a></span
+      <p id="t18" class="pln">
+        <span class="n"><a href="#t18">18</a></span
         ><span class="t">
           <span class="nam">filter</span><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t22" class="pln">
-        <span class="n"><a href="#t22">22</a></span
+      <p id="t19" class="pln">
+        <span class="n"><a href="#t19">19</a></span
         ><span class="t">
           <span class="key">lambda</span> <span class="nam">x</span
           ><span class="op">:</span> <span class="nam">x</span
@@ -250,18 +217,18 @@
           <span class="nam">timeline</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t23" class="pln">
-        <span class="n"><a href="#t23">23</a></span
+      <p id="t20" class="pln">
+        <span class="n"><a href="#t20">20</a></span
         ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t24" class="pln">
-        <span class="n"><a href="#t24">24</a></span
+      <p id="t21" class="pln">
+        <span class="n"><a href="#t21">21</a></span
         ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t25" class="run">
-        <span class="n"><a href="#t25">25</a></span
+      <p id="t22" class="run">
+        <span class="n"><a href="#t22">22</a></span
         ><span class="t">
           <span class="key">return</span> <span class="nam">bool</span
           ><span class="op">(</span><span class="nam">opened</span
@@ -275,7 +242,7 @@
           <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp;
           <a class="nav" href="https://coverage.readthedocs.io"
             >coverage.py v5.3</a
-          >, created at 2020-10-01 11:17 -0600
+          >, created at 2020-10-22 14:23 -0600
         </p>
       </div>
     </div>
