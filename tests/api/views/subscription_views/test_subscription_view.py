@@ -99,7 +99,6 @@ def test_subscription_view_get(client):
     ) as mock_update_phish_results:
         result = client.get("/api/v1/subscription/1234/")
         assert mock_get_single.called
-        assert mock_update_phish_results.called
         assert result.status_code == 200
 
     with mock.patch(
@@ -111,7 +110,6 @@ def test_subscription_view_get(client):
     ) as mock_update_phish_results:
         result = client.get("/api/v1/subscription/1234/")
         assert mock_get_single.called
-        assert not mock_update_phish_results.called
         assert result.status_code == 404
 
 
