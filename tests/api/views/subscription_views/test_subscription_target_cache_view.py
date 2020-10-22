@@ -80,12 +80,21 @@ def subscription():
     }
 
 
+def target_update_data():
+    return {
+        "first_name": "foo",
+        "last_name": "bar",
+        "position": "CTO",
+        "email": "foo.bar@test.com",
+    }
+
+
 @pytest.mark.django_db
-def test_subscription_view_template_list_get(client):
+def test_subscription_view_target_cache_get(client):
     with mock.patch(
-        "api.services.SubscriptionService.get_list",
-        return_value=[subscription()],
-    ) as mock_get_list:
-        result = client.get("/api/v1/subscription/template/1234/")
-        assert mock_get_list.called
-        assert result.status_code == 200
+        "api.services.SubscriptionService.update",
+        return_value=subscription(),
+    ) as mock_update:
+        result = client.post("/api/v1/subscription/targetcache/1234/", {})
+        assert mock_update.called
+        assert result.status_code == 202

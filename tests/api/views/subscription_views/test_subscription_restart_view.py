@@ -81,11 +81,11 @@ def subscription():
 
 
 @pytest.mark.django_db
-def test_subscription_view_template_list_get(client):
+def test_subscription_view_restart_get(client):
     with mock.patch(
-        "api.services.SubscriptionService.get_list",
-        return_value=[subscription()],
-    ) as mock_get_list:
-        result = client.get("/api/v1/subscription/template/1234/")
-        assert mock_get_list.called
-        assert result.status_code == 200
+        "api.utils.subscription.actions.start_subscription",
+        return_value=subscription(),
+    ) as mock_stop_subs:
+        result = client.get("/api/v1/subscription/restart/1234/")
+
+        assert result.status_code == 202
