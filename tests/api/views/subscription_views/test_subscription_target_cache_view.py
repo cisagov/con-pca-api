@@ -6,10 +6,6 @@ from faker import Faker
 fake = Faker()
 
 
-def campaign():
-    return {"subscription_uuid": "1234", "campaign_uuid": "12334"}
-
-
 def subscription():
     return {
         "subscription_uuid": "12334",
@@ -84,66 +80,21 @@ def subscription():
     }
 
 
-def subscription_patch():
-    return {"customer_uuid": "12345"}
+def target_update_data():
+    return {
+        "first_name": "foo",
+        "last_name": "bar",
+        "position": "CTO",
+        "email": "foo.bar@test.com",
+    }
 
 
 @pytest.mark.django_db
-def test_subscription_view_get(client):
-    with mock.patch(
-        "api.services.SubscriptionService.get",
-        return_value=subscription(),
-    ) as mock_get_single, mock.patch(
-        "reports.utils.update_phish_results",
-        return_value=None,
-    ) as mock_update_phish_results:
-        result = client.get("/api/v1/subscription/1234/")
-        assert mock_get_single.called
-        assert result.status_code == 200
-
-    with mock.patch(
-        "api.services.SubscriptionService.get",
-        return_value=None,
-    ) as mock_get_single, mock.patch(
-        "reports.utils.update_phish_results",
-        return_value=None,
-    ) as mock_update_phish_results:
-        result = client.get("/api/v1/subscription/1234/")
-        assert mock_get_single.called
-        assert result.status_code == 404
-
-
-@pytest.mark.django_db
-def test_subscription_view_patch(client):
+def test_subscription_view_target_cache_get(client):
     with mock.patch(
         "api.services.SubscriptionService.update",
         return_value=subscription(),
-    ) as mock_update_single:
-        result = client.patch(
-            "/api/v1/subscription/1234/",
-            subscription_patch(),
-            content_type="application/json",
-        )
-        assert mock_update_single.called
+    ) as mock_update:
+        result = client.post("/api/v1/subscription/targetcache/1234/", {})
+        assert mock_update.called
         assert result.status_code == 202
-
-
-@pytest.mark.django_db
-def test_subscription_view_delete(client):
-    with mock.patch(
-        "api.services.SubscriptionService.delete",
-        return_value={"subscription_uuid": "1234"},
-    ) as mock_delete_single, mock.patch(
-        "api.services.SubscriptionService.get",
-        return_value=subscription(),
-    ) as mock_get_single, mock.patch(
-        "api.services.CampaignService.get_list",
-        return_value=[campaign()],
-    ) as mock_campaign_list, mock.patch(
-        "api.services.CampaignService.delete",
-        return_value=None,
-    ) as mock_campaign_list:
-        result = client.delete("/api/v1/subscription/1234/")
-        assert mock_get_single.called
-        assert mock_delete_single.called
-        assert result.status_code == 200
