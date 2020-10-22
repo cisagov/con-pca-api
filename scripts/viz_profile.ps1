@@ -1,0 +1,6 @@
+param
+(
+    $profile
+)
+
+snakeviz $profile

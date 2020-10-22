@@ -5,7 +5,12 @@ from uuid import uuid4
 
 # Third-Party Libraries
 from api.notifications import EmailSender
-from api.utils.subscription.static import CYCLE_MINUTES, MONTHLY_MINUTES, YEARLY_MINUTES
+from api.utils.subscription.static import (
+    CYCLE_MINUTES,
+    MONTHLY_MINUTES,
+    YEARLY_MINUTES,
+    DELAY_MINUTES,
+)
 from api.services import SubscriptionService
 
 subscription_service = SubscriptionService()
@@ -36,7 +41,7 @@ def calculate_subscription_start_end_date(start_date):
     if start_date.replace(tzinfo=None) < now:
         start_date = now
 
-    start_date = start_date + timedelta(minutes=1)
+    start_date = start_date + timedelta(minutes=DELAY_MINUTES)
     end_date = start_date + timedelta(minutes=CYCLE_MINUTES)
 
     return start_date, end_date
@@ -44,7 +49,7 @@ def calculate_subscription_start_end_date(start_date):
 
 def get_subscription_status(start_date):
     """Returns status for subscription based upon start date."""
-    if start_date <= (datetime.now() + timedelta(minutes=1)):
+    if start_date <= (datetime.now() + timedelta(minutes=DELAY_MINUTES)):
         return "In Progress"
     else:
         return "Queued"

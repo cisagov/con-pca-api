@@ -13,6 +13,7 @@ services:
       - mongodb
     volumes:
       - ./src:/app
+      - ./.profile-data:/tmp/profile-data
     env_file:
       - .env
     networks:

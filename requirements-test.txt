@@ -10,3 +10,4 @@ pytest-env
 pytest-mock
 pytest-pythonpath
 radon
+snakeviz
