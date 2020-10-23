@@ -186,3 +186,10 @@ def test_monthly_view_get(client):
         assert mock_get_dhs_list.called
 
         assert result.status_code == 202
+
+        result = client.get("/reports/1234/monthly/2020-12-07T19:37:54.960Z/1234/")
+        assert mock_get_sub_single.called
+        assert mock_get_customer_list.called
+        assert mock_get_dhs_list.called
+
+        assert result.status_code == 202
