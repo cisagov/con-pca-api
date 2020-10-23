@@ -1,6 +1,7 @@
 import pytest
 from unittest import mock
 from faker import Faker
+from io import BytesIO
 
 
 fake = Faker()
@@ -163,7 +164,7 @@ def get_recommendation():
 
 
 @pytest.mark.django_db
-def test_subscription_stop_view_get(client):
+def test_report_view_get(client):
     with mock.patch(
         "api.services.SubscriptionService.get",
         return_value=subscription(),
