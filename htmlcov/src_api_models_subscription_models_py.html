@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=emulateIE7" />
-    <title>Coverage for src\api\models\subscription_models.py: 99%</title>
+    <title>Coverage for src\api\models\subscription_models.py: 98%</title>
     <link rel="stylesheet" href="style.css" type="text/css" />
     <script type="text/javascript" src="jquery.min.js"></script>
     <script type="text/javascript" src="jquery.hotkeys.js"></script>
@@ -18,7 +18,7 @@
       <div class="content">
         <h1>
           Coverage for <b>src\api\models\subscription_models.py</b> :
-          <span class="pc_cov">99%</span>
+          <span class="pc_cov">98%</span>
         </h1>
         <img
           id="keyboard_icon"
@@ -26,13 +26,13 @@
           alt="Show keyboard shortcuts"
         />
         <h2 class="stats">
-          125 statements &nbsp;
+          60 statements &nbsp;
           <button
             type="button"
             class="run shortkey_r button_toggle_run"
             title="Toggle lines run"
           >
-            124 run
+            59 run
           </button>
           <button
             type="button"
@@ -131,37 +131,42 @@
       <p id="t9" class="run">
         <span class="n"><a href="#t9">9</a></span
         ><span class="t"
+          ><span class="key">from</span> <span class="nam">api</span
+          ><span class="op">.</span><span class="nam">models</span
+          ><span class="op">.</span><span class="nam">phishing_models</span>
+          <span class="key">import</span>
+          <span class="nam">SubscriptionTargetModel</span
+          ><span class="op">,</span>
+          <span class="nam">PhishingResultsModel</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t10" class="run">
+        <span class="n"><a href="#t10">10</a></span
+        ><span class="t"
           ><span class="key">from</span> <span class="nam">database</span
           ><span class="op">.</span><span class="nam">repository</span
           ><span class="op">.</span><span class="nam">types</span>
           <span class="key">import</span> <span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t10" class="pln">
-        <span class="n"><a href="#t10">10</a></span
-        ><span class="t">
-          <span class="nam">BooleanType</span
-          ><span class="op">,</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
       <p id="t11" class="pln">
         <span class="n"><a href="#t11">11</a></span
         ><span class="t">
-          <span class="nam">DateTimeType</span
+          <span class="nam">BooleanType</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t12" class="pln">
         <span class="n"><a href="#t12">12</a></span
         ><span class="t">
-          <span class="nam">EmailType</span
+          <span class="nam">DateTimeType</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t13" class="pln">
         <span class="n"><a href="#t13">13</a></span
         ><span class="t">
-          <span class="nam">FloatType</span
+          <span class="nam">EmailType</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
@@ -315,7 +320,7 @@
         <span class="n"><a href="#t37">37</a></span
         ><span class="t"
           ><span class="key">class</span>
-          <span class="nam">SubscriptionTargetModel</span
+          <span class="nam">SubscriptionClicksModel</span
           ><span class="op">(</span><span class="nam">Model</span
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
@@ -328,7 +333,8 @@
       <p id="t39" class="pln">
         <span class="n"><a href="#t39">39</a></span
         ><span class="t"
-          ><span class="str"> This is the Target Model.</span>&nbsp;</span
+          ><span class="str"> This is the SubscriptionClicks Model.</span
+          >&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t40" class="pln">
@@ -339,76 +345,69 @@
         <span class="n"><a href="#t41">41</a></span
         ><span class="t"
           ><span class="str">
-            This controls all data needed in saving the model. Current fields
-            are:</span
+            This is a format to hold target information in the subscription
+            model.</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t42" class="pln">
         <span class="n"><a href="#t42">42</a></span
-        ><span class="t"
-          ><span class="str"> first_name = StringType()</span>&nbsp;</span
+        ><span class="t"><span class="str"> """</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t43" class="pln">
         <span class="n"><a href="#t43">43</a></span
-        ><span class="t"
-          ><span class="str"> last_name = StringType()</span>&nbsp;</span
-        ><span class="r"></span>
+        ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t44" class="pln">
+      <p id="t44" class="run">
         <span class="n"><a href="#t44">44</a></span
-        ><span class="t"
-          ><span class="str"> position = StringType()</span>&nbsp;</span
+        ><span class="t">
+          <span class="nam">source_ip</span> <span class="op">=</span>
+          <span class="nam">StringType</span><span class="op">(</span
+          ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t45" class="pln">
+      <p id="t45" class="run">
         <span class="n"><a href="#t45">45</a></span
-        ><span class="t"
-          ><span class="str"> email = EmailType(required=True)</span
-          >&nbsp;</span
+        ><span class="t">
+          <span class="nam">timestamp</span> <span class="op">=</span>
+          <span class="nam">DateTimeType</span><span class="op">(</span
+          ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t46" class="pln">
+      <p id="t46" class="run">
         <span class="n"><a href="#t46">46</a></span
-        ><span class="t"><span class="str"> """</span>&nbsp;</span
+        ><span class="t">
+          <span class="nam">target_uuid</span> <span class="op">=</span>
+          <span class="nam">UUIDType</span><span class="op">(</span
+          ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t47" class="pln">
         <span class="n"><a href="#t47">47</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t48" class="run">
+      <p id="t48" class="pln">
         <span class="n"><a href="#t48">48</a></span
-        ><span class="t">
-          <span class="nam">first_name</span> <span class="op">=</span>
-          <span class="nam">StringType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
+        ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
       <p id="t49" class="run">
         <span class="n"><a href="#t49">49</a></span
-        ><span class="t">
-          <span class="nam">last_name</span> <span class="op">=</span>
-          <span class="nam">StringType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
+        ><span class="t"
+          ><span class="key">class</span> <span class="nam">CycleModel</span
+          ><span class="op">(</span><span class="nam">Model</span
+          ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t50" class="run">
+      <p id="t50" class="pln">
         <span class="n"><a href="#t50">50</a></span
-        ><span class="t">
-          <span class="nam">position</span> <span class="op">=</span>
-          <span class="nam">StringType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
+        ><span class="t"> <span class="str">"""</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t51" class="run">
+      <p id="t51" class="pln">
         <span class="n"><a href="#t51">51</a></span
-        ><span class="t">
-          <span class="nam">email</span> <span class="op">=</span>
-          <span class="nam">EmailType</span><span class="op">(</span
-          ><span class="nam">required</span><span class="op">=</span
-          ><span class="key">True</span><span class="op">)</span>&nbsp;</span
+        ><span class="t"
+          ><span class="str"> This is the Cycle Model.</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t52" class="pln">
@@ -417,1195 +416,60 @@
       </p>
       <p id="t53" class="pln">
         <span class="n"><a href="#t53">53</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t54" class="run">
-        <span class="n"><a href="#t54">54</a></span
-        ><span class="t"
-          ><span class="key">class</span>
-          <span class="nam">SubscriptionClicksModel</span
-          ><span class="op">(</span><span class="nam">Model</span
-          ><span class="op">)</span><span class="op">:</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t55" class="pln">
-        <span class="n"><a href="#t55">55</a></span
-        ><span class="t"> <span class="str">"""</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t56" class="pln">
-        <span class="n"><a href="#t56">56</a></span
-        ><span class="t"
-          ><span class="str"> This is the SubscriptionClicks Model.</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t57" class="pln">
-        <span class="n"><a href="#t57">57</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t58" class="pln">
-        <span class="n"><a href="#t58">58</a></span
-        ><span class="t"
-          ><span class="str">
-            This is a format to hold target information in the subscription
-            model.</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t59" class="pln">
-        <span class="n"><a href="#t59">59</a></span
-        ><span class="t"><span class="str"> """</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t60" class="pln">
-        <span class="n"><a href="#t60">60</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t61" class="run">
-        <span class="n"><a href="#t61">61</a></span
-        ><span class="t">
-          <span class="nam">source_ip</span> <span class="op">=</span>
-          <span class="nam">StringType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t62" class="run">
-        <span class="n"><a href="#t62">62</a></span
-        ><span class="t">
-          <span class="nam">timestamp</span> <span class="op">=</span>
-          <span class="nam">DateTimeType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t63" class="run">
-        <span class="n"><a href="#t63">63</a></span
-        ><span class="t">
-          <span class="nam">target_uuid</span> <span class="op">=</span>
-          <span class="nam">UUIDType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t64" class="pln">
-        <span class="n"><a href="#t64">64</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t65" class="pln">
-        <span class="n"><a href="#t65">65</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t66" class="run">
-        <span class="n"><a href="#t66">66</a></span
-        ><span class="t"
-          ><span class="key">class</span>
-          <span class="nam">GoPhishResultModel</span><span class="op">(</span
-          ><span class="nam">Model</span><span class="op">)</span
-          ><span class="op">:</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t67" class="pln">
-        <span class="n"><a href="#t67">67</a></span
-        ><span class="t"> <span class="str">"""</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t68" class="pln">
-        <span class="n"><a href="#t68">68</a></span
-        ><span class="t"
-          ><span class="str"> This is the GoPhish Result Model.</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t69" class="pln">
-        <span class="n"><a href="#t69">69</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t70" class="pln">
-        <span class="n"><a href="#t70">70</a></span
-        ><span class="t"
-          ><span class="str">
-            This is a format to hold target information in the subscription
-            model.</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t71" class="pln">
-        <span class="n"><a href="#t71">71</a></span
-        ><span class="t"><span class="str"> id : int64</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t72" class="pln">
-        <span class="n"><a href="#t72">72</a></span
-        ><span class="t"
-          ><span class="str"> first_name : string</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t73" class="pln">
-        <span class="n"><a href="#t73">73</a></span
-        ><span class="t"
-          ><span class="str"> last_name : string</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t74" class="pln">
-        <span class="n"><a href="#t74">74</a></span
-        ><span class="t"><span class="str"> position : string</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t75" class="pln">
-        <span class="n"><a href="#t75">75</a></span
-        ><span class="t"><span class="str"> status : string</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t76" class="pln">
-        <span class="n"><a href="#t76">76</a></span
-        ><span class="t"><span class="str"> ip : string</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t77" class="pln">
-        <span class="n"><a href="#t77">77</a></span
-        ><span class="t"><span class="str"> latitude : float</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t78" class="pln">
-        <span class="n"><a href="#t78">78</a></span
-        ><span class="t"><span class="str"> longitude : float</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t79" class="pln">
-        <span class="n"><a href="#t79">79</a></span
-        ><span class="t"
-          ><span class="str"> send_date : string(datetime)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t80" class="pln">
-        <span class="n"><a href="#t80">80</a></span
-        ><span class="t"
-          ><span class="str"> reported : boolean</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t81" class="pln">
-        <span class="n"><a href="#t81">81</a></span
-        ><span class="t"><span class="str"> """</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t82" class="pln">
-        <span class="n"><a href="#t82">82</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t83" class="run">
-        <span class="n"><a href="#t83">83</a></span
-        ><span class="t">
-          <span class="nam">id</span> <span class="op">=</span>
-          <span class="nam">StringType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t84" class="run">
-        <span class="n"><a href="#t84">84</a></span
-        ><span class="t">
-          <span class="nam">first_name</span> <span class="op">=</span>
-          <span class="nam">StringType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t85" class="run">
-        <span class="n"><a href="#t85">85</a></span
-        ><span class="t">
-          <span class="nam">last_name</span> <span class="op">=</span>
-          <span class="nam">StringType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t86" class="run">
-        <span class="n"><a href="#t86">86</a></span
-        ><span class="t">
-          <span class="nam">position</span> <span class="op">=</span>
-          <span class="nam">StringType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t87" class="run">
-        <span class="n"><a href="#t87">87</a></span
-        ><span class="t">
-          <span class="nam">status</span> <span class="op">=</span>
-          <span class="nam">StringType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t88" class="run">
-        <span class="n"><a href="#t88">88</a></span
-        ><span class="t">
-          <span class="nam">ip</span> <span class="op">=</span>
-          <span class="nam">StringType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t89" class="run">
-        <span class="n"><a href="#t89">89</a></span
-        ><span class="t">
-          <span class="nam">latitude</span> <span class="op">=</span>
-          <span class="nam">FloatType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t90" class="run">
-        <span class="n"><a href="#t90">90</a></span
-        ><span class="t">
-          <span class="nam">longitude</span> <span class="op">=</span>
-          <span class="nam">FloatType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t91" class="run">
-        <span class="n"><a href="#t91">91</a></span
-        ><span class="t">
-          <span class="nam">send_date</span> <span class="op">=</span>
-          <span class="nam">DateTimeType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t92" class="run">
-        <span class="n"><a href="#t92">92</a></span
-        ><span class="t">
-          <span class="nam">reported</span> <span class="op">=</span>
-          <span class="nam">BooleanType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t93" class="pln">
-        <span class="n"><a href="#t93">93</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t94" class="pln">
-        <span class="n"><a href="#t94">94</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t95" class="run">
-        <span class="n"><a href="#t95">95</a></span
-        ><span class="t"
-          ><span class="key">class</span>
-          <span class="nam">GoPhishGroupModel</span><span class="op">(</span
-          ><span class="nam">Model</span><span class="op">)</span
-          ><span class="op">:</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t96" class="pln">
-        <span class="n"><a href="#t96">96</a></span
-        ><span class="t"> <span class="str">"""</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t97" class="pln">
-        <span class="n"><a href="#t97">97</a></span
-        ><span class="t"
-          ><span class="str"> This is the SubscriptionClicks Model.</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t98" class="pln">
-        <span class="n"><a href="#t98">98</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t99" class="pln">
-        <span class="n"><a href="#t99">99</a></span
-        ><span class="t"
-          ><span class="str">
-            This is a format to hold target information in the subscription
-            model.</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t100" class="pln">
-        <span class="n"><a href="#t100">100</a></span
-        ><span class="t"><span class="str"> id : int64</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t101" class="pln">
-        <span class="n"><a href="#t101">101</a></span
-        ><span class="t"><span class="str"> name : string</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t102" class="pln">
-        <span class="n"><a href="#t102">102</a></span
-        ><span class="t"
-          ><span class="str"> targets : array(Target)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t103" class="pln">
-        <span class="n"><a href="#t103">103</a></span
-        ><span class="t"
-          ><span class="str"> modified_date : string(datetime)</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t104" class="pln">
-        <span class="n"><a href="#t104">104</a></span
-        ><span class="t"><span class="str"> """</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t105" class="pln">
-        <span class="n"><a href="#t105">105</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t106" class="run">
-        <span class="n"><a href="#t106">106</a></span
-        ><span class="t">
-          <span class="nam">id</span> <span class="op">=</span>
-          <span class="nam">IntType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t107" class="run">
-        <span class="n"><a href="#t107">107</a></span
-        ><span class="t">
-          <span class="nam">name</span> <span class="op">=</span>
-          <span class="nam">StringType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t108" class="run">
-        <span class="n"><a href="#t108">108</a></span
-        ><span class="t">
-          <span class="nam">targets</span> <span class="op">=</span>
-          <span class="nam">ListType</span><span class="op">(</span
-          ><span class="nam">ModelType</span><span class="op">(</span
-          ><span class="nam">SubscriptionTargetModel</span
-          ><span class="op">)</span><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t109" class="run">
-        <span class="n"><a href="#t109">109</a></span
-        ><span class="t">
-          <span class="nam">modified_date</span> <span class="op">=</span>
-          <span class="nam">DateTimeType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t110" class="pln">
-        <span class="n"><a href="#t110">110</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t111" class="pln">
-        <span class="n"><a href="#t111">111</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t112" class="run">
-        <span class="n"><a href="#t112">112</a></span
-        ><span class="t"
-          ><span class="key">class</span>
-          <span class="nam">GoPhishTimelineModel</span><span class="op">(</span
-          ><span class="nam">Model</span><span class="op">)</span
-          ><span class="op">:</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t113" class="pln">
-        <span class="n"><a href="#t113">113</a></span
-        ><span class="t"> <span class="str">"""</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t114" class="pln">
-        <span class="n"><a href="#t114">114</a></span
-        ><span class="t"
-          ><span class="str"> This is the GoPhish Timeline Model.</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t115" class="pln">
-        <span class="n"><a href="#t115">115</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t116" class="pln">
-        <span class="n"><a href="#t116">116</a></span
-        ><span class="t"
-          ><span class="str">
-            This is a format to hold target information in the subscription
-            model.</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t117" class="pln">
-        <span class="n"><a href="#t117">117</a></span
-        ><span class="t"><span class="str"> email : string</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t118" class="pln">
-        <span class="n"><a href="#t118">118</a></span
-        ><span class="t"
-          ><span class="str"> time : string(datetime)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t119" class="pln">
-        <span class="n"><a href="#t119">119</a></span
-        ><span class="t"><span class="str"> message : string</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t120" class="pln">
-        <span class="n"><a href="#t120">120</a></span
-        ><span class="t"
-          ><span class="str"> details : string(JSON)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t121" class="pln">
-        <span class="n"><a href="#t121">121</a></span
-        ><span class="t"><span class="str"> """</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t122" class="pln">
-        <span class="n"><a href="#t122">122</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t123" class="run">
-        <span class="n"><a href="#t123">123</a></span
-        ><span class="t">
-          <span class="nam">email</span> <span class="op">=</span>
-          <span class="nam">StringType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t124" class="run">
-        <span class="n"><a href="#t124">124</a></span
-        ><span class="t">
-          <span class="nam">time</span> <span class="op">=</span>
-          <span class="nam">DateTimeType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t125" class="run">
-        <span class="n"><a href="#t125">125</a></span
-        ><span class="t">
-          <span class="nam">message</span> <span class="op">=</span>
-          <span class="nam">StringType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t126" class="run">
-        <span class="n"><a href="#t126">126</a></span
-        ><span class="t">
-          <span class="nam">details</span> <span class="op">=</span>
-          <span class="nam">StringType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t127" class="run">
-        <span class="n"><a href="#t127">127</a></span
-        ><span class="t">
-          <span class="nam">duplicate</span> <span class="op">=</span>
-          <span class="nam">BooleanType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t128" class="pln">
-        <span class="n"><a href="#t128">128</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t129" class="pln">
-        <span class="n"><a href="#t129">129</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t130" class="run">
-        <span class="n"><a href="#t130">130</a></span
-        ><span class="t"
-          ><span class="key">class</span>
-          <span class="nam">PhishingResultsModel</span><span class="op">(</span
-          ><span class="nam">Model</span><span class="op">)</span
-          ><span class="op">:</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t131" class="pln">
-        <span class="n"><a href="#t131">131</a></span
-        ><span class="t"> <span class="str">"""</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t132" class="pln">
-        <span class="n"><a href="#t132">132</a></span
-        ><span class="t"
-          ><span class="str"> This is the Cycle Model.</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t133" class="pln">
-        <span class="n"><a href="#t133">133</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t134" class="pln">
-        <span class="n"><a href="#t134">134</a></span
-        ><span class="t"
-          ><span class="str">
-            This hold the results for each campaign. Filled by webhook response
-            data</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t135" class="pln">
-        <span class="n"><a href="#t135">135</a></span
-        ><span class="t"><span class="str"> """</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t136" class="pln">
-        <span class="n"><a href="#t136">136</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t137" class="run">
-        <span class="n"><a href="#t137">137</a></span
-        ><span class="t">
-          <span class="nam">sent</span> <span class="op">=</span>
-          <span class="nam">IntType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t138" class="run">
-        <span class="n"><a href="#t138">138</a></span
-        ><span class="t">
-          <span class="nam">opened</span> <span class="op">=</span>
-          <span class="nam">IntType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t139" class="run">
-        <span class="n"><a href="#t139">139</a></span
-        ><span class="t">
-          <span class="nam">clicked</span> <span class="op">=</span>
-          <span class="nam">IntType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t140" class="run">
-        <span class="n"><a href="#t140">140</a></span
-        ><span class="t">
-          <span class="nam">submitted</span> <span class="op">=</span>
-          <span class="nam">IntType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t141" class="run">
-        <span class="n"><a href="#t141">141</a></span
-        ><span class="t">
-          <span class="nam">reported</span> <span class="op">=</span>
-          <span class="nam">IntType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t142" class="pln">
-        <span class="n"><a href="#t142">142</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t143" class="pln">
-        <span class="n"><a href="#t143">143</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t144" class="run">
-        <span class="n"><a href="#t144">144</a></span
-        ><span class="t"
-          ><span class="key">class</span>
-          <span class="nam">SendingHeaderModel</span><span class="op">(</span
-          ><span class="nam">Model</span><span class="op">)</span
-          ><span class="op">:</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t145" class="pln">
-        <span class="n"><a href="#t145">145</a></span
-        ><span class="t"> <span class="str">"""</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t146" class="pln">
-        <span class="n"><a href="#t146">146</a></span
-        ><span class="t"
-          ><span class="str"> This is the Sending Profile Header Model.</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t147" class="pln">
-        <span class="n"><a href="#t147">147</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t148" class="pln">
-        <span class="n"><a href="#t148">148</a></span
-        ><span class="t"
-          ><span class="str"> This hold the smtp profile headers</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t149" class="pln">
-        <span class="n"><a href="#t149">149</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t150" class="pln">
-        <span class="n"><a href="#t150">150</a></span
-        ><span class="t"><span class="str"> key : string</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t151" class="pln">
-        <span class="n"><a href="#t151">151</a></span
-        ><span class="t"><span class="str"> value : string</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t152" class="pln">
-        <span class="n"><a href="#t152">152</a></span
-        ><span class="t"><span class="str"> """</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t153" class="pln">
-        <span class="n"><a href="#t153">153</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t154" class="run">
-        <span class="n"><a href="#t154">154</a></span
-        ><span class="t">
-          <span class="nam">key</span> <span class="op">=</span>
-          <span class="nam">StringType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t155" class="run">
-        <span class="n"><a href="#t155">155</a></span
-        ><span class="t">
-          <span class="nam">value</span> <span class="op">=</span>
-          <span class="nam">StringType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t156" class="pln">
-        <span class="n"><a href="#t156">156</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t157" class="pln">
-        <span class="n"><a href="#t157">157</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t158" class="run">
-        <span class="n"><a href="#t158">158</a></span
-        ><span class="t"
-          ><span class="key">class</span>
-          <span class="nam">GoPhishSmtpModel</span><span class="op">(</span
-          ><span class="nam">Model</span><span class="op">)</span
-          ><span class="op">:</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t159" class="pln">
-        <span class="n"><a href="#t159">159</a></span
-        ><span class="t"> <span class="str">"""</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t160" class="pln">
-        <span class="n"><a href="#t160">160</a></span
-        ><span class="t"
-          ><span class="str"> This is the GoPhish SMTP Model.</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t161" class="pln">
-        <span class="n"><a href="#t161">161</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t162" class="pln">
-        <span class="n"><a href="#t162">162</a></span
-        ><span class="t"
-          ><span class="str">
-            This hold the smtp profile for each campaign.</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t163" class="pln">
-        <span class="n"><a href="#t163">163</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t164" class="pln">
-        <span class="n"><a href="#t164">164</a></span
-        ><span class="t"><span class="str"> id : int64</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t165" class="pln">
-        <span class="n"><a href="#t165">165</a></span
-        ><span class="t"><span class="str"> name : string</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t166" class="pln">
-        <span class="n"><a href="#t166">166</a></span
-        ><span class="t"><span class="str"> host : string</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t167" class="pln">
-        <span class="n"><a href="#t167">167</a></span
-        ><span class="t"
-          ><span class="str"> interface_type : string</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t168" class="pln">
-        <span class="n"><a href="#t168">168</a></span
-        ><span class="t"
-          ><span class="str"> from_address : string</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t169" class="pln">
-        <span class="n"><a href="#t169">169</a></span
-        ><span class="t"
-          ><span class="str"> ignore_cert_errors : boolean (default:false)</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t170" class="pln">
-        <span class="n"><a href="#t170">170</a></span
-        ><span class="t"
-          ><span class="str"> modified_date : string(datetime)</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t171" class="pln">
-        <span class="n"><a href="#t171">171</a></span
-        ><span class="t"
-          ><span class="str">
-            headers : array({key: string, value: string}) (optional)</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t172" class="pln">
-        <span class="n"><a href="#t172">172</a></span
-        ><span class="t"><span class="str"> """</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t173" class="pln">
-        <span class="n"><a href="#t173">173</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t174" class="run">
-        <span class="n"><a href="#t174">174</a></span
-        ><span class="t">
-          <span class="nam">id</span> <span class="op">=</span>
-          <span class="nam">IntType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t175" class="run">
-        <span class="n"><a href="#t175">175</a></span
-        ><span class="t">
-          <span class="nam">name</span> <span class="op">=</span>
-          <span class="nam">StringType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t176" class="run">
-        <span class="n"><a href="#t176">176</a></span
-        ><span class="t">
-          <span class="nam">host</span> <span class="op">=</span>
-          <span class="nam">StringType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t177" class="run">
-        <span class="n"><a href="#t177">177</a></span
-        ><span class="t">
-          <span class="nam">interface_type</span> <span class="op">=</span>
-          <span class="nam">StringType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t178" class="run">
-        <span class="n"><a href="#t178">178</a></span
-        ><span class="t">
-          <span class="nam">from_address</span> <span class="op">=</span>
-          <span class="nam">StringType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t179" class="run">
-        <span class="n"><a href="#t179">179</a></span
-        ><span class="t">
-          <span class="nam">ignore_cert_errors</span> <span class="op">=</span>
-          <span class="nam">BooleanType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t180" class="run">
-        <span class="n"><a href="#t180">180</a></span
-        ><span class="t">
-          <span class="nam">modified_date</span> <span class="op">=</span>
-          <span class="nam">DateTimeType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t181" class="run">
-        <span class="n"><a href="#t181">181</a></span
-        ><span class="t">
-          <span class="nam">headers</span> <span class="op">=</span>
-          <span class="nam">ListType</span><span class="op">(</span
-          ><span class="nam">ModelType</span><span class="op">(</span
-          ><span class="nam">SendingHeaderModel</span><span class="op">)</span
-          ><span class="op">,</span> <span class="nam">default</span
-          ><span class="op">=</span><span class="op">[</span
-          ><span class="op">]</span><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t182" class="pln">
-        <span class="n"><a href="#t182">182</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t183" class="pln">
-        <span class="n"><a href="#t183">183</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t184" class="run">
-        <span class="n"><a href="#t184">184</a></span
-        ><span class="t"
-          ><span class="key">class</span>
-          <span class="nam">GoPhishCampaignsModel</span><span class="op">(</span
-          ><span class="nam">Model</span><span class="op">)</span
-          ><span class="op">:</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t185" class="pln">
-        <span class="n"><a href="#t185">185</a></span
-        ><span class="t"> <span class="str">"""</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t186" class="pln">
-        <span class="n"><a href="#t186">186</a></span
-        ><span class="t"
-          ><span class="str"> This is the GoPhish Campaigns Model.</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t187" class="pln">
-        <span class="n"><a href="#t187">187</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t188" class="pln">
-        <span class="n"><a href="#t188">188</a></span
-        ><span class="t"
-          ><span class="str">
-            This is a format to hold GophishCampaign information in the
-            subscription model.</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t189" class="pln">
-        <span class="n"><a href="#t189">189</a></span
-        ><span class="t"><span class="str"> id : int64</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t190" class="pln">
-        <span class="n"><a href="#t190">190</a></span
-        ><span class="t"><span class="str"> name : string</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t191" class="pln">
-        <span class="n"><a href="#t191">191</a></span
-        ><span class="t"
-          ><span class="str"> created_date : string(datetime)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t192" class="pln">
-        <span class="n"><a href="#t192">192</a></span
-        ><span class="t"
-          ><span class="str"> launch_date : string(datetime)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t193" class="pln">
-        <span class="n"><a href="#t193">193</a></span
-        ><span class="t"
-          ><span class="str"> send_by_date : string(datetime)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t194" class="pln">
-        <span class="n"><a href="#t194">194</a></span
-        ><span class="t"
-          ><span class="str"> completed_date : string(datetime)</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t195" class="pln">
-        <span class="n"><a href="#t195">195</a></span
-        ><span class="t"
-          ><span class="str"> template : Template</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t196" class="pln">
-        <span class="n"><a href="#t196">196</a></span
-        ><span class="t"><span class="str"> page : Page</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t197" class="pln">
-        <span class="n"><a href="#t197">197</a></span
-        ><span class="t"><span class="str"> status : string</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t198" class="pln">
-        <span class="n"><a href="#t198">198</a></span
-        ><span class="t"
-          ><span class="str"> results : []Result</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t199" class="pln">
-        <span class="n"><a href="#t199">199</a></span
-        ><span class="t"><span class="str"> groups : []Group</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t200" class="pln">
-        <span class="n"><a href="#t200">200</a></span
-        ><span class="t"
-          ><span class="str"> timeline : []Event</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t201" class="pln">
-        <span class="n"><a href="#t201">201</a></span
-        ><span class="t"><span class="str"> smtp : STMP</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t202" class="pln">
-        <span class="n"><a href="#t202">202</a></span
-        ><span class="t"><span class="str"> """</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t203" class="pln">
-        <span class="n"><a href="#t203">203</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t204" class="run">
-        <span class="n"><a href="#t204">204</a></span
-        ><span class="t">
-          <span class="nam">campaign_id</span> <span class="op">=</span>
-          <span class="nam">IntType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t205" class="run">
-        <span class="n"><a href="#t205">205</a></span
-        ><span class="t">
-          <span class="nam">name</span> <span class="op">=</span>
-          <span class="nam">StringType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t206" class="run">
-        <span class="n"><a href="#t206">206</a></span
-        ><span class="t">
-          <span class="nam">created_date</span> <span class="op">=</span>
-          <span class="nam">DateTimeType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t207" class="run">
-        <span class="n"><a href="#t207">207</a></span
-        ><span class="t">
-          <span class="nam">launch_date</span> <span class="op">=</span>
-          <span class="nam">DateTimeType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t208" class="run">
-        <span class="n"><a href="#t208">208</a></span
-        ><span class="t">
-          <span class="nam">send_by_date</span> <span class="op">=</span>
-          <span class="nam">DateTimeType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t209" class="run">
-        <span class="n"><a href="#t209">209</a></span
-        ><span class="t">
-          <span class="nam">completed_date</span> <span class="op">=</span>
-          <span class="nam">DateTimeType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t210" class="run">
-        <span class="n"><a href="#t210">210</a></span
-        ><span class="t">
-          <span class="nam">email_template</span> <span class="op">=</span>
-          <span class="nam">StringType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t211" class="run">
-        <span class="n"><a href="#t211">211</a></span
-        ><span class="t">
-          <span class="nam">email_template_id</span> <span class="op">=</span>
-          <span class="nam">IntType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t212" class="run">
-        <span class="n"><a href="#t212">212</a></span
-        ><span class="t">
-          <span class="nam">template_uuid</span> <span class="op">=</span>
-          <span class="nam">UUIDType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t213" class="run">
-        <span class="n"><a href="#t213">213</a></span
-        ><span class="t">
-          <span class="nam">deception_level</span> <span class="op">=</span>
-          <span class="nam">IntType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t214" class="run">
-        <span class="n"><a href="#t214">214</a></span
-        ><span class="t">
-          <span class="nam">landing_page_template</span>
-          <span class="op">=</span> <span class="nam">StringType</span
-          ><span class="op">(</span><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t215" class="run">
-        <span class="n"><a href="#t215">215</a></span
-        ><span class="t">
-          <span class="nam">status</span> <span class="op">=</span>
-          <span class="nam">StringType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t216" class="run">
-        <span class="n"><a href="#t216">216</a></span
-        ><span class="t">
-          <span class="nam">results</span> <span class="op">=</span>
-          <span class="nam">ListType</span><span class="op">(</span
-          ><span class="nam">ModelType</span><span class="op">(</span
-          ><span class="nam">GoPhishResultModel</span><span class="op">)</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t217" class="run">
-        <span class="n"><a href="#t217">217</a></span
-        ><span class="t">
-          <span class="nam">phish_results</span> <span class="op">=</span>
-          <span class="nam">ModelType</span><span class="op">(</span
-          ><span class="nam">PhishingResultsModel</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t218" class="run">
-        <span class="n"><a href="#t218">218</a></span
-        ><span class="t">
-          <span class="nam">phish_results_dirty</span>
-          <span class="op">=</span> <span class="nam">BooleanType</span
-          ><span class="op">(</span><span class="nam">default</span
-          ><span class="op">=</span><span class="key">False</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t219" class="run">
-        <span class="n"><a href="#t219">219</a></span
-        ><span class="t">
-          <span class="nam">groups</span> <span class="op">=</span>
-          <span class="nam">ListType</span><span class="op">(</span
-          ><span class="nam">ModelType</span><span class="op">(</span
-          ><span class="nam">GoPhishGroupModel</span><span class="op">)</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t220" class="run">
-        <span class="n"><a href="#t220">220</a></span
-        ><span class="t">
-          <span class="nam">timeline</span> <span class="op">=</span>
-          <span class="nam">ListType</span><span class="op">(</span
-          ><span class="nam">ModelType</span><span class="op">(</span
-          ><span class="nam">GoPhishTimelineModel</span><span class="op">)</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t221" class="run">
-        <span class="n"><a href="#t221">221</a></span
-        ><span class="t">
-          <span class="nam">target_email_list</span> <span class="op">=</span>
-          <span class="nam">ListType</span><span class="op">(</span
-          ><span class="nam">ModelType</span><span class="op">(</span
-          ><span class="nam">SubscriptionTargetModel</span
-          ><span class="op">)</span><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t222" class="run">
-        <span class="n"><a href="#t222">222</a></span
-        ><span class="t">
-          <span class="nam">smtp</span> <span class="op">=</span>
-          <span class="nam">ModelType</span><span class="op">(</span
-          ><span class="nam">GoPhishSmtpModel</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t223" class="pln">
-        <span class="n"><a href="#t223">223</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t224" class="pln">
-        <span class="n"><a href="#t224">224</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t225" class="run">
-        <span class="n"><a href="#t225">225</a></span
-        ><span class="t"
-          ><span class="key">class</span> <span class="nam">CycleModel</span
-          ><span class="op">(</span><span class="nam">Model</span
-          ><span class="op">)</span><span class="op">:</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t226" class="pln">
-        <span class="n"><a href="#t226">226</a></span
-        ><span class="t"> <span class="str">"""</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t227" class="pln">
-        <span class="n"><a href="#t227">227</a></span
-        ><span class="t"
-          ><span class="str"> This is the Cycle Model.</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t228" class="pln">
-        <span class="n"><a href="#t228">228</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t229" class="pln">
-        <span class="n"><a href="#t229">229</a></span
         ><span class="t"
           ><span class="str">
             This tracks the quarterly cycle and the campaigns involved</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t230" class="pln">
-        <span class="n"><a href="#t230">230</a></span
+      <p id="t54" class="pln">
+        <span class="n"><a href="#t54">54</a></span
         ><span class="t"><span class="str"> in each cycle.</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t231" class="pln">
-        <span class="n"><a href="#t231">231</a></span
+      <p id="t55" class="pln">
+        <span class="n"><a href="#t55">55</a></span
         ><span class="t"><span class="str"> """</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t232" class="pln">
-        <span class="n"><a href="#t232">232</a></span
+      <p id="t56" class="pln">
+        <span class="n"><a href="#t56">56</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t233" class="run">
-        <span class="n"><a href="#t233">233</a></span
+      <p id="t57" class="run">
+        <span class="n"><a href="#t57">57</a></span
         ><span class="t">
           <span class="nam">cycle_uuid</span> <span class="op">=</span>
           <span class="nam">StringType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t234" class="run">
-        <span class="n"><a href="#t234">234</a></span
+      <p id="t58" class="run">
+        <span class="n"><a href="#t58">58</a></span
         ><span class="t">
           <span class="nam">start_date</span> <span class="op">=</span>
           <span class="nam">DateTimeType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t235" class="run">
-        <span class="n"><a href="#t235">235</a></span
+      <p id="t59" class="run">
+        <span class="n"><a href="#t59">59</a></span
         ><span class="t">
           <span class="nam">end_date</span> <span class="op">=</span>
           <span class="nam">DateTimeType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t236" class="run">
-        <span class="n"><a href="#t236">236</a></span
+      <p id="t60" class="run">
+        <span class="n"><a href="#t60">60</a></span
         ><span class="t">
           <span class="nam">active</span> <span class="op">=</span>
           <span class="nam">BooleanType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t237" class="run">
-        <span class="n"><a href="#t237">237</a></span
+      <p id="t61" class="run">
+        <span class="n"><a href="#t61">61</a></span
         ><span class="t">
           <span class="nam">campaigns_in_cycle</span> <span class="op">=</span>
           <span class="nam">ListType</span><span class="op">(</span
@@ -1613,8 +477,8 @@
           ><span class="op">)</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t238" class="run">
-        <span class="n"><a href="#t238">238</a></span
+      <p id="t62" class="run">
+        <span class="n"><a href="#t62">62</a></span
         ><span class="t">
           <span class="nam">phish_results</span> <span class="op">=</span>
           <span class="nam">ModelType</span><span class="op">(</span
@@ -1622,8 +486,8 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t239" class="run">
-        <span class="n"><a href="#t239">239</a></span
+      <p id="t63" class="run">
+        <span class="n"><a href="#t63">63</a></span
         ><span class="t">
           <span class="nam">phish_results_dirty</span>
           <span class="op">=</span> <span class="nam">BooleanType</span
@@ -1632,24 +496,24 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t240" class="run">
-        <span class="n"><a href="#t240">240</a></span
+      <p id="t64" class="run">
+        <span class="n"><a href="#t64">64</a></span
         ><span class="t">
           <span class="nam">override_total_reported</span>
           <span class="op">=</span> <span class="nam">IntType</span
           ><span class="op">(</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t241" class="pln">
-        <span class="n"><a href="#t241">241</a></span
+      <p id="t65" class="pln">
+        <span class="n"><a href="#t65">65</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t242" class="pln">
-        <span class="n"><a href="#t242">242</a></span
+      <p id="t66" class="pln">
+        <span class="n"><a href="#t66">66</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t243" class="run">
-        <span class="n"><a href="#t243">243</a></span
+      <p id="t67" class="run">
+        <span class="n"><a href="#t67">67</a></span
         ><span class="t"
           ><span class="key">class</span>
           <span class="nam">ScheduledTaskModel</span><span class="op">(</span
@@ -1657,96 +521,96 @@
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t244" class="pln">
-        <span class="n"><a href="#t244">244</a></span
+      <p id="t68" class="pln">
+        <span class="n"><a href="#t68">68</a></span
         ><span class="t"> <span class="str">"""</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t245" class="pln">
-        <span class="n"><a href="#t245">245</a></span
+      <p id="t69" class="pln">
+        <span class="n"><a href="#t69">69</a></span
         ><span class="t"
           ><span class="str"> This is the Scheduled Task Model.</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t246" class="pln">
-        <span class="n"><a href="#t246">246</a></span
+      <p id="t70" class="pln">
+        <span class="n"><a href="#t70">70</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t247" class="pln">
-        <span class="n"><a href="#t247">247</a></span
+      <p id="t71" class="pln">
+        <span class="n"><a href="#t71">71</a></span
         ><span class="t"
           ><span class="str"> This keeps track of a list of active tasks.</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t248" class="pln">
-        <span class="n"><a href="#t248">248</a></span
+      <p id="t72" class="pln">
+        <span class="n"><a href="#t72">72</a></span
         ><span class="t"><span class="str"> """</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t249" class="pln">
-        <span class="n"><a href="#t249">249</a></span
+      <p id="t73" class="pln">
+        <span class="n"><a href="#t73">73</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t250" class="run">
-        <span class="n"><a href="#t250">250</a></span
+      <p id="t74" class="run">
+        <span class="n"><a href="#t74">74</a></span
         ><span class="t">
           <span class="nam">task_uuid</span> <span class="op">=</span>
           <span class="nam">StringType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t251" class="run">
-        <span class="n"><a href="#t251">251</a></span
+      <p id="t75" class="run">
+        <span class="n"><a href="#t75">75</a></span
         ><span class="t">
           <span class="nam">message_type</span> <span class="op">=</span>
           <span class="nam">StringType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t252" class="run">
-        <span class="n"><a href="#t252">252</a></span
+      <p id="t76" class="run">
+        <span class="n"><a href="#t76">76</a></span
         ><span class="t">
           <span class="nam">scheduled_date</span> <span class="op">=</span>
           <span class="nam">DateTimeType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t253" class="run">
-        <span class="n"><a href="#t253">253</a></span
+      <p id="t77" class="run">
+        <span class="n"><a href="#t77">77</a></span
         ><span class="t">
           <span class="nam">executed</span> <span class="op">=</span>
           <span class="nam">BooleanType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t254" class="run">
-        <span class="n"><a href="#t254">254</a></span
+      <p id="t78" class="run">
+        <span class="n"><a href="#t78">78</a></span
         ><span class="t">
           <span class="nam">executed_date</span> <span class="op">=</span>
           <span class="nam">DateTimeType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t255" class="run">
-        <span class="n"><a href="#t255">255</a></span
+      <p id="t79" class="run">
+        <span class="n"><a href="#t79">79</a></span
         ><span class="t">
           <span class="nam">error</span> <span class="op">=</span>
           <span class="nam">StringType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t256" class="pln">
-        <span class="n"><a href="#t256">256</a></span
+      <p id="t80" class="pln">
+        <span class="n"><a href="#t80">80</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t257" class="pln">
-        <span class="n"><a href="#t257">257</a></span
+      <p id="t81" class="pln">
+        <span class="n"><a href="#t81">81</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t258" class="run">
-        <span class="n"><a href="#t258">258</a></span
+      <p id="t82" class="run">
+        <span class="n"><a href="#t82">82</a></span
         ><span class="t"
           ><span class="key">class</span>
           <span class="nam">SubscriptionModel</span><span class="op">(</span
@@ -1754,68 +618,68 @@
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t259" class="pln">
-        <span class="n"><a href="#t259">259</a></span
+      <p id="t83" class="pln">
+        <span class="n"><a href="#t83">83</a></span
         ><span class="t"> <span class="str">"""</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t260" class="pln">
-        <span class="n"><a href="#t260">260</a></span
+      <p id="t84" class="pln">
+        <span class="n"><a href="#t84">84</a></span
         ><span class="t"
           ><span class="str"> This is the Subscription Model.</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t261" class="pln">
-        <span class="n"><a href="#t261">261</a></span
+      <p id="t85" class="pln">
+        <span class="n"><a href="#t85">85</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t262" class="pln">
-        <span class="n"><a href="#t262">262</a></span
+      <p id="t86" class="pln">
+        <span class="n"><a href="#t86">86</a></span
         ><span class="t"
           ><span class="str">
             This controls all data needed in saving the model.</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t263" class="pln">
-        <span class="n"><a href="#t263">263</a></span
+      <p id="t87" class="pln">
+        <span class="n"><a href="#t87">87</a></span
         ><span class="t"><span class="str"> """</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t264" class="pln">
-        <span class="n"><a href="#t264">264</a></span
+      <p id="t88" class="pln">
+        <span class="n"><a href="#t88">88</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t265" class="pln">
-        <span class="n"><a href="#t265">265</a></span
+      <p id="t89" class="pln">
+        <span class="n"><a href="#t89">89</a></span
         ><span class="t">
           <span class="com"># created by mongodb</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t266" class="run">
-        <span class="n"><a href="#t266">266</a></span
+      <p id="t90" class="run">
+        <span class="n"><a href="#t90">90</a></span
         ><span class="t">
           <span class="nam">subscription_uuid</span> <span class="op">=</span>
           <span class="nam">UUIDType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t267" class="pln">
-        <span class="n"><a href="#t267">267</a></span
+      <p id="t91" class="pln">
+        <span class="n"><a href="#t91">91</a></span
         ><span class="t">
           <span class="com"># values being passed in.</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t268" class="run">
-        <span class="n"><a href="#t268">268</a></span
+      <p id="t92" class="run">
+        <span class="n"><a href="#t92">92</a></span
         ><span class="t">
           <span class="nam">customer_uuid</span> <span class="op">=</span>
           <span class="nam">UUIDType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t269" class="run">
-        <span class="n"><a href="#t269">269</a></span
+      <p id="t93" class="run">
+        <span class="n"><a href="#t93">93</a></span
         ><span class="t">
           <span class="nam">tasks</span> <span class="op">=</span>
           <span class="nam">ListType</span><span class="op">(</span
@@ -1824,88 +688,56 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t270" class="run">
-        <span class="n"><a href="#t270">270</a></span
+      <p id="t94" class="run">
+        <span class="n"><a href="#t94">94</a></span
         ><span class="t">
           <span class="nam">name</span> <span class="op">=</span>
           <span class="nam">StringType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t271" class="run">
-        <span class="n"><a href="#t271">271</a></span
+      <p id="t95" class="run">
+        <span class="n"><a href="#t95">95</a></span
         ><span class="t">
           <span class="nam">url</span> <span class="op">=</span>
           <span class="nam">StringType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t272" class="run">
-        <span class="n"><a href="#t272">272</a></span
+      <p id="t96" class="run">
+        <span class="n"><a href="#t96">96</a></span
         ><span class="t">
           <span class="nam">target_domain</span> <span class="op">=</span>
           <span class="nam">StringType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t273" class="run">
-        <span class="n"><a href="#t273">273</a></span
+      <p id="t97" class="run">
+        <span class="n"><a href="#t97">97</a></span
         ><span class="t">
           <span class="nam">keywords</span> <span class="op">=</span>
           <span class="nam">StringType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t274" class="run">
-        <span class="n"><a href="#t274">274</a></span
+      <p id="t98" class="run">
+        <span class="n"><a href="#t98">98</a></span
         ><span class="t">
           <span class="nam">start_date</span> <span class="op">=</span>
           <span class="nam">DateTimeType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t275" class="pln">
-        <span class="n"><a href="#t275">275</a></span
-        ><span class="t">
-          <span class="com"
-            ># commented out fields for now are unused for the time</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t276" class="run">
-        <span class="n"><a href="#t276">276</a></span
+      <p id="t99" class="run">
+        <span class="n"><a href="#t99">99</a></span
         ><span class="t">
           <span class="nam">end_date</span> <span class="op">=</span>
           <span class="nam">DateTimeType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t277" class="pln">
-        <span class="n"><a href="#t277">277</a></span
-        ><span class="t">
-          <span class="com"># report_count = IntType()</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t278" class="run">
-        <span class="n"><a href="#t278">278</a></span
-        ><span class="t">
-          <span class="nam">gophish_campaign_list</span>
-          <span class="op">=</span> <span class="nam">ListType</span
-          ><span class="op">(</span><span class="nam">ModelType</span
-          ><span class="op">(</span
-          ><span class="nam">GoPhishCampaignsModel</span
-          ><span class="op">)</span><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t279" class="pln">
-        <span class="n"><a href="#t279">279</a></span
-        ><span class="t">
-          <span class="com"># first_report_timestamp = DateTimeType()</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t280" class="run">
-        <span class="n"><a href="#t280">280</a></span
+      <p id="t100" class="run">
+        <span class="n"><a href="#t100">100</a></span
         ><span class="t">
           <span class="nam">primary_contact</span> <span class="op">=</span>
           <span class="nam">ModelType</span><span class="op">(</span
@@ -1913,24 +745,24 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t281" class="run">
-        <span class="n"><a href="#t281">281</a></span
+      <p id="t101" class="run">
+        <span class="n"><a href="#t101">101</a></span
         ><span class="t">
           <span class="nam">dhs_contact_uuid</span> <span class="op">=</span>
           <span class="nam">UUIDType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t282" class="run">
-        <span class="n"><a href="#t282">282</a></span
+      <p id="t102" class="run">
+        <span class="n"><a href="#t102">102</a></span
         ><span class="t">
           <span class="nam">status</span> <span class="op">=</span>
           <span class="nam">StringType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t283" class="run">
-        <span class="n"><a href="#t283">283</a></span
+      <p id="t103" class="run">
+        <span class="n"><a href="#t103">103</a></span
         ><span class="t">
           <span class="nam">target_email_list</span> <span class="op">=</span>
           <span class="nam">ListType</span><span class="op">(</span
@@ -1939,8 +771,8 @@
           ><span class="op">)</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t284" class="run">
-        <span class="n"><a href="#t284">284</a></span
+      <p id="t104" class="run">
+        <span class="n"><a href="#t104">104</a></span
         ><span class="t">
           <span class="nam">target_email_list_cached_copy</span>
           <span class="op">=</span> <span class="nam">ListType</span
@@ -1950,33 +782,33 @@
           ><span class="op">)</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t285" class="run">
-        <span class="n"><a href="#t285">285</a></span
+      <p id="t105" class="run">
+        <span class="n"><a href="#t105">105</a></span
         ><span class="t">
           <span class="nam">templates_selected_uuid_list</span>
           <span class="op">=</span> <span class="nam">ListType</span
-          ><span class="op">(</span><span class="nam">StringType</span
+          ><span class="op">(</span><span class="nam">UUIDType</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t286" class="run">
-        <span class="n"><a href="#t286">286</a></span
+      <p id="t106" class="run">
+        <span class="n"><a href="#t106">106</a></span
         ><span class="t">
           <span class="nam">sending_profile_name</span>
           <span class="op">=</span> <span class="nam">StringType</span
           ><span class="op">(</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t287" class="run">
-        <span class="n"><a href="#t287">287</a></span
+      <p id="t107" class="run">
+        <span class="n"><a href="#t107">107</a></span
         ><span class="t">
           <span class="nam">active</span> <span class="op">=</span>
           <span class="nam">BooleanType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t288" class="run">
-        <span class="n"><a href="#t288">288</a></span
+      <p id="t108" class="run">
+        <span class="n"><a href="#t108">108</a></span
         ><span class="t">
           <span class="nam">archived</span> <span class="op">=</span>
           <span class="nam">BooleanType</span><span class="op">(</span
@@ -1984,8 +816,8 @@
           ><span class="key">False</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t289" class="run">
-        <span class="n"><a href="#t289">289</a></span
+      <p id="t109" class="run">
+        <span class="n"><a href="#t109">109</a></span
         ><span class="t">
           <span class="nam">manually_stopped</span> <span class="op">=</span>
           <span class="nam">BooleanType</span><span class="op">(</span
@@ -1993,8 +825,8 @@
           ><span class="key">False</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t290" class="run">
-        <span class="n"><a href="#t290">290</a></span
+      <p id="t110" class="run">
+        <span class="n"><a href="#t110">110</a></span
         ><span class="t">
           <span class="nam">cycles</span> <span class="op">=</span>
           <span class="nam">ListType</span><span class="op">(</span
@@ -2003,16 +835,16 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t291" class="run">
-        <span class="n"><a href="#t291">291</a></span
+      <p id="t111" class="run">
+        <span class="n"><a href="#t111">111</a></span
         ><span class="t">
           <span class="nam">email_report_history</span>
           <span class="op">=</span> <span class="nam">ListType</span
           ><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t292" class="pln">
-        <span class="n"><a href="#t292">292</a></span
+      <p id="t112" class="pln">
+        <span class="n"><a href="#t112">112</a></span
         ><span class="t">
           <span class="nam">ModelType</span><span class="op">(</span
           ><span class="nam">SubscriptionEmailHistoryModel</span
@@ -2021,67 +853,67 @@
           ><span class="op">[</span><span class="op">]</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t293" class="pln">
-        <span class="n"><a href="#t293">293</a></span
+      <p id="t113" class="pln">
+        <span class="n"><a href="#t113">113</a></span
         ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t294" class="run">
-        <span class="n"><a href="#t294">294</a></span
+      <p id="t114" class="run">
+        <span class="n"><a href="#t114">114</a></span
         ><span class="t">
           <span class="nam">stagger_emails</span> <span class="op">=</span>
           <span class="nam">BooleanType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t295" class="pln">
-        <span class="n"><a href="#t295">295</a></span
+      <p id="t115" class="pln">
+        <span class="n"><a href="#t115">115</a></span
         ><span class="t">
           <span class="com"># db data tracking added below</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t296" class="run">
-        <span class="n"><a href="#t296">296</a></span
+      <p id="t116" class="run">
+        <span class="n"><a href="#t116">116</a></span
         ><span class="t">
           <span class="nam">created_by</span> <span class="op">=</span>
           <span class="nam">StringType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t297" class="run">
-        <span class="n"><a href="#t297">297</a></span
+      <p id="t117" class="run">
+        <span class="n"><a href="#t117">117</a></span
         ><span class="t">
           <span class="nam">cb_timestamp</span> <span class="op">=</span>
           <span class="nam">DateTimeType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t298" class="run">
-        <span class="n"><a href="#t298">298</a></span
+      <p id="t118" class="run">
+        <span class="n"><a href="#t118">118</a></span
         ><span class="t">
           <span class="nam">last_updated_by</span> <span class="op">=</span>
           <span class="nam">StringType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t299" class="run">
-        <span class="n"><a href="#t299">299</a></span
+      <p id="t119" class="run">
+        <span class="n"><a href="#t119">119</a></span
         ><span class="t">
           <span class="nam">lub_timestamp</span> <span class="op">=</span>
           <span class="nam">DateTimeType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t300" class="pln">
-        <span class="n"><a href="#t300">300</a></span
+      <p id="t120" class="pln">
+        <span class="n"><a href="#t120">120</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t301" class="pln">
-        <span class="n"><a href="#t301">301</a></span
+      <p id="t121" class="pln">
+        <span class="n"><a href="#t121">121</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t302" class="run">
-        <span class="n"><a href="#t302">302</a></span
+      <p id="t122" class="run">
+        <span class="n"><a href="#t122">122</a></span
         ><span class="t"
           ><span class="key">def</span>
           <span class="nam">validate_subscription</span><span class="op">(</span
@@ -2089,36 +921,36 @@
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t303" class="pln">
-        <span class="n"><a href="#t303">303</a></span
+      <p id="t123" class="pln">
+        <span class="n"><a href="#t123">123</a></span
         ><span class="t"> <span class="str">"""</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t304" class="pln">
-        <span class="n"><a href="#t304">304</a></span
+      <p id="t124" class="pln">
+        <span class="n"><a href="#t124">124</a></span
         ><span class="t"
           ><span class="str"> This is an the validate_subscription.</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t305" class="pln">
-        <span class="n"><a href="#t305">305</a></span
+      <p id="t125" class="pln">
+        <span class="n"><a href="#t125">125</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t306" class="pln">
-        <span class="n"><a href="#t306">306</a></span
+      <p id="t126" class="pln">
+        <span class="n"><a href="#t126">126</a></span
         ><span class="t"
           ><span class="str"> This shows basic validation for the model.</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t307" class="pln">
-        <span class="n"><a href="#t307">307</a></span
+      <p id="t127" class="pln">
+        <span class="n"><a href="#t127">127</a></span
         ><span class="t"><span class="str"> """</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t308" class="mis show_mis">
-        <span class="n"><a href="#t308">308</a></span
+      <p id="t128" class="mis show_mis">
+        <span class="n"><a href="#t128">128</a></span
         ><span class="t">
           <span class="key">return</span>
           <span class="nam">SubscriptionModel</span><span class="op">(</span
@@ -2134,7 +966,7 @@
           <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp;
           <a class="nav" href="https://coverage.readthedocs.io"
             >coverage.py v5.3</a
-          >, created at 2020-10-01 11:17 -0600
+          >, created at 2020-10-22 14:23 -0600
         </p>
       </div>
     </div>

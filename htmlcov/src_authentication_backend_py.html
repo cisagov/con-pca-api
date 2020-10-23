@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=emulateIE7" />
-    <title>Coverage for src\authentication\backend.py: 33%</title>
+    <title>Coverage for src\authentication\backend.py: 84%</title>
     <link rel="stylesheet" href="style.css" type="text/css" />
     <script type="text/javascript" src="jquery.min.js"></script>
     <script type="text/javascript" src="jquery.hotkeys.js"></script>
@@ -18,7 +18,7 @@
       <div class="content">
         <h1>
           Coverage for <b>src\authentication\backend.py</b> :
-          <span class="pc_cov">33%</span>
+          <span class="pc_cov">84%</span>
         </h1>
         <img
           id="keyboard_icon"
@@ -26,20 +26,20 @@
           alt="Show keyboard shortcuts"
         />
         <h2 class="stats">
-          72 statements &nbsp;
+          69 statements &nbsp;
           <button
             type="button"
             class="run shortkey_r button_toggle_run"
             title="Toggle lines run"
           >
-            24 run
+            58 run
           </button>
           <button
             type="button"
             class="mis show_mis shortkey_m button_toggle_mis"
             title="Toggle lines missing"
           >
-            48 missing
+            11 missing
           </button>
           <button
             type="button"
@@ -87,28 +87,28 @@
         <span class="n"><a href="#t2">2</a></span
         ><span class="t"
           ><span class="key">import</span>
-          <span class="nam">logging</span>&nbsp;</span
+          <span class="nam">time</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t3" class="run">
         <span class="n"><a href="#t3">3</a></span
         ><span class="t"
           ><span class="key">import</span>
-          <span class="nam">time</span>&nbsp;</span
+          <span class="nam">hmac</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t4" class="run">
         <span class="n"><a href="#t4">4</a></span
         ><span class="t"
           ><span class="key">import</span>
-          <span class="nam">hmac</span>&nbsp;</span
+          <span class="nam">hashlib</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t5" class="run">
         <span class="n"><a href="#t5">5</a></span
         ><span class="t"
           ><span class="key">import</span>
-          <span class="nam">hashlib</span>&nbsp;</span
+          <span class="nam">os</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t6" class="pln">
@@ -190,26 +190,12 @@
         <span class="n"><a href="#t15">15</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t16" class="run">
+      <p id="t16" class="pln">
         <span class="n"><a href="#t16">16</a></span
-        ><span class="t"
-          ><span class="nam">logger</span> <span class="op">=</span>
-          <span class="nam">logging</span><span class="op">.</span
-          ><span class="nam">getLogger</span><span class="op">(</span
-          ><span class="nam">__name__</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
+        ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t17" class="pln">
+      <p id="t17" class="run">
         <span class="n"><a href="#t17">17</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t18" class="pln">
-        <span class="n"><a href="#t18">18</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t19" class="run">
-        <span class="n"><a href="#t19">19</a></span
         ><span class="t"
           ><span class="key">class</span>
           <span class="nam">JSONWebTokenAuthentication</span
@@ -217,8 +203,8 @@
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t20" class="pln">
-        <span class="n"><a href="#t20">20</a></span
+      <p id="t18" class="pln">
+        <span class="n"><a href="#t18">18</a></span
         ><span class="t">
           <span class="str"
             >"""Token based authentication using the JSON Web Token
@@ -226,12 +212,12 @@
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t21" class="pln">
-        <span class="n"><a href="#t21">21</a></span
+      <p id="t19" class="pln">
+        <span class="n"><a href="#t19">19</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t22" class="run">
-        <span class="n"><a href="#t22">22</a></span
+      <p id="t20" class="run">
+        <span class="n"><a href="#t20">20</a></span
         ><span class="t">
           <span class="key">def</span> <span class="nam">authenticate</span
           ><span class="op">(</span><span class="nam">self</span
@@ -239,15 +225,21 @@
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t23" class="pln">
-        <span class="n"><a href="#t23">23</a></span
+      <p id="t21" class="pln">
+        <span class="n"><a href="#t21">21</a></span
         ><span class="t">
           <span class="str">"""Entrypoint for Django Rest Framework"""</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t24" class="run">
-        <span class="n"><a href="#t24">24</a></span
+      <p id="t22" class="pln">
+        <span class="n"><a href="#t22">22</a></span
+        ><span class="t">
+          <span class="com"># Gophish Authentication</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t23" class="run">
+        <span class="n"><a href="#t23">23</a></span
         ><span class="t">
           <span class="nam">gp_sign</span> <span class="op">=</span>
           <span class="nam">request</span><span class="op">.</span
@@ -257,15 +249,15 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t25" class="run">
-        <span class="n"><a href="#t25">25</a></span
+      <p id="t24" class="run">
+        <span class="n"><a href="#t24">24</a></span
         ><span class="t">
           <span class="key">if</span> <span class="nam">gp_sign</span
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t26" class="mis show_mis">
-        <span class="n"><a href="#t26">26</a></span
+      <p id="t25" class="run">
+        <span class="n"><a href="#t25">25</a></span
         ><span class="t">
           <span class="nam">gp_sign</span> <span class="op">=</span>
           <span class="nam">gp_sign</span><span class="op">.</span
@@ -275,16 +267,16 @@
           ><span class="num">1</span><span class="op">]</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t27" class="mis show_mis">
-        <span class="n"><a href="#t27">27</a></span
+      <p id="t26" class="run">
+        <span class="n"><a href="#t26">26</a></span
         ><span class="t">
           <span class="nam">digest</span> <span class="op">=</span>
           <span class="nam">hmac</span><span class="op">.</span
           ><span class="nam">new</span><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t28" class="pln">
-        <span class="n"><a href="#t28">28</a></span
+      <p id="t27" class="pln">
+        <span class="n"><a href="#t27">27</a></span
         ><span class="t">
           <span class="nam">settings</span><span class="op">.</span
           ><span class="nam">LOCAL_API_KEY</span><span class="op">.</span
@@ -296,24 +288,24 @@
           ><span class="nam">sha256</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t29" class="pln">
-        <span class="n"><a href="#t29">29</a></span
+      <p id="t28" class="pln">
+        <span class="n"><a href="#t28">28</a></span
         ><span class="t">
           <span class="op">)</span><span class="op">.</span
           ><span class="nam">hexdigest</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t30" class="mis show_mis">
-        <span class="n"><a href="#t30">30</a></span
+      <p id="t29" class="run">
+        <span class="n"><a href="#t29">29</a></span
         ><span class="t">
           <span class="key">if</span> <span class="nam">digest</span>
           <span class="op">==</span> <span class="nam">gp_sign</span
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t31" class="mis show_mis">
-        <span class="n"><a href="#t31">31</a></span
+      <p id="t30" class="run">
+        <span class="n"><a href="#t30">30</a></span
         ><span class="t">
           <span class="nam">user</span> <span class="op">=</span>
           <span class="op">{</span><span class="str">"username"</span
@@ -324,32 +316,41 @@
           ><span class="op">}</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t32" class="mis show_mis">
-        <span class="n"><a href="#t32">32</a></span
+      <p id="t31" class="run">
+        <span class="n"><a href="#t31">31</a></span
         ><span class="t">
           <span class="nam">token</span> <span class="op">=</span>
           <span class="str">"Empty token"</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t33" class="mis show_mis">
-        <span class="n"><a href="#t33">33</a></span
+      <p id="t32" class="run">
+        <span class="n"><a href="#t32">32</a></span
         ><span class="t">
           <span class="key">return</span> <span class="op">(</span
           ><span class="nam">user</span><span class="op">,</span>
           <span class="nam">token</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
+      <p id="t33" class="pln">
+        <span class="n"><a href="#t33">33</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
       <p id="t34" class="pln">
         <span class="n"><a href="#t34">34</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
+        ><span class="t">
+          <span class="com"># Development Authentication</span>&nbsp;</span
+        ><span class="r"></span>
       </p>
       <p id="t35" class="run">
         <span class="n"><a href="#t35">35</a></span
         ><span class="t">
-          <span class="key">if</span> <span class="nam">settings</span
-          ><span class="op">.</span
-          ><span class="nam">COGNITO_DEPLOYMENT_MODE</span>
-          <span class="op">==</span> <span class="str">"Development"</span
+          <span class="key">if</span> <span class="nam">os</span
+          ><span class="op">.</span><span class="nam">environ</span
+          ><span class="op">.</span><span class="nam">get</span
+          ><span class="op">(</span
+          ><span class="str">"COGNITO_DEPLOYMENT_MODE"</span
+          ><span class="op">)</span> <span class="op">==</span>
+          <span class="str">"Development"</span
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
@@ -380,21 +381,31 @@
           <span class="nam">token</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t39" class="mis show_mis">
+      <p id="t39" class="pln">
         <span class="n"><a href="#t39">39</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t40" class="pln">
+        <span class="n"><a href="#t40">40</a></span
+        ><span class="t">
+          <span class="com"># Local Authentication</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t41" class="run">
+        <span class="n"><a href="#t41">41</a></span
         ><span class="t">
           <span class="key">if</span> <span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t40" class="pln">
-        <span class="n"><a href="#t40">40</a></span
+      <p id="t42" class="pln">
+        <span class="n"><a href="#t42">42</a></span
         ><span class="t">
           <span class="nam">settings</span><span class="op">.</span
           ><span class="nam">LOCAL_API_KEY</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t41" class="pln">
-        <span class="n"><a href="#t41">41</a></span
+      <p id="t43" class="pln">
+        <span class="n"><a href="#t43">43</a></span
         ><span class="t">
           <span class="key">and</span>
           <span class="nam">get_authorization_header</span
@@ -406,14 +417,14 @@
           ><span class="nam">LOCAL_API_KEY</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t42" class="pln">
-        <span class="n"><a href="#t42">42</a></span
+      <p id="t44" class="pln">
+        <span class="n"><a href="#t44">44</a></span
         ><span class="t">
           <span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t43" class="mis show_mis">
-        <span class="n"><a href="#t43">43</a></span
+      <p id="t45" class="run">
+        <span class="n"><a href="#t45">45</a></span
         ><span class="t">
           <span class="nam">user</span> <span class="op">=</span>
           <span class="op">{</span><span class="str">"username"</span
@@ -424,40 +435,47 @@
           ><span class="op">}</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t44" class="mis show_mis">
-        <span class="n"><a href="#t44">44</a></span
+      <p id="t46" class="run">
+        <span class="n"><a href="#t46">46</a></span
         ><span class="t">
           <span class="nam">token</span> <span class="op">=</span>
           <span class="str">"Empty token"</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t45" class="mis show_mis">
-        <span class="n"><a href="#t45">45</a></span
+      <p id="t47" class="run">
+        <span class="n"><a href="#t47">47</a></span
         ><span class="t">
           <span class="key">return</span> <span class="op">(</span
           ><span class="nam">user</span><span class="op">,</span>
           <span class="nam">token</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t46" class="pln">
-        <span class="n"><a href="#t46">46</a></span
+      <p id="t48" class="pln">
+        <span class="n"><a href="#t48">48</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t47" class="mis show_mis">
-        <span class="n"><a href="#t47">47</a></span
+      <p id="t49" class="pln">
+        <span class="n"><a href="#t49">49</a></span
+        ><span class="t">
+          <span class="com"># Reports authentication with bearer</span
+          >&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t50" class="run">
+        <span class="n"><a href="#t50">50</a></span
         ><span class="t">
           <span class="key">if</span> <span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t48" class="pln">
-        <span class="n"><a href="#t48">48</a></span
+      <p id="t51" class="pln">
+        <span class="n"><a href="#t51">51</a></span
         ><span class="t">
           <span class="nam">settings</span><span class="op">.</span
           ><span class="nam">LOCAL_API_KEY</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t49" class="pln">
-        <span class="n"><a href="#t49">49</a></span
+      <p id="t52" class="pln">
+        <span class="n"><a href="#t52">52</a></span
         ><span class="t">
           <span class="key">and</span>
           <span class="nam">get_authorization_header</span
@@ -471,22 +489,22 @@
           ><span class="num">1</span><span class="op">]</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t50" class="pln">
-        <span class="n"><a href="#t50">50</a></span
+      <p id="t53" class="pln">
+        <span class="n"><a href="#t53">53</a></span
         ><span class="t">
           <span class="op">==</span> <span class="nam">settings</span
           ><span class="op">.</span
           ><span class="nam">LOCAL_API_KEY</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t51" class="pln">
-        <span class="n"><a href="#t51">51</a></span
+      <p id="t54" class="pln">
+        <span class="n"><a href="#t54">54</a></span
         ><span class="t">
           <span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t52" class="mis show_mis">
-        <span class="n"><a href="#t52">52</a></span
+      <p id="t55" class="run">
+        <span class="n"><a href="#t55">55</a></span
         ><span class="t">
           <span class="nam">user</span> <span class="op">=</span>
           <span class="op">{</span><span class="str">"usuername"</span
@@ -497,27 +515,27 @@
           ><span class="op">}</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t53" class="mis show_mis">
-        <span class="n"><a href="#t53">53</a></span
+      <p id="t56" class="run">
+        <span class="n"><a href="#t56">56</a></span
         ><span class="t">
           <span class="nam">token</span> <span class="op">=</span>
           <span class="str">"Empty token"</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t54" class="mis show_mis">
-        <span class="n"><a href="#t54">54</a></span
+      <p id="t57" class="run">
+        <span class="n"><a href="#t57">57</a></span
         ><span class="t">
           <span class="key">return</span> <span class="op">(</span
           ><span class="nam">user</span><span class="op">,</span>
           <span class="nam">token</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t55" class="pln">
-        <span class="n"><a href="#t55">55</a></span
+      <p id="t58" class="pln">
+        <span class="n"><a href="#t58">58</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t56" class="mis show_mis">
-        <span class="n"><a href="#t56">56</a></span
+      <p id="t59" class="run">
+        <span class="n"><a href="#t59">59</a></span
         ><span class="t">
           <span class="nam">jwt_token</span> <span class="op">=</span>
           <span class="nam">self</span><span class="op">.</span
@@ -525,40 +543,40 @@
           ><span class="nam">request</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t57" class="mis show_mis">
-        <span class="n"><a href="#t57">57</a></span
+      <p id="t60" class="run">
+        <span class="n"><a href="#t60">60</a></span
         ><span class="t">
           <span class="key">if</span> <span class="nam">jwt_token</span>
           <span class="key">is</span> <span class="key">None</span
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t58" class="mis show_mis">
-        <span class="n"><a href="#t58">58</a></span
+      <p id="t61" class="mis show_mis">
+        <span class="n"><a href="#t61">61</a></span
         ><span class="t">
           <span class="key">raise</span> <span class="nam">exceptions</span
           ><span class="op">.</span><span class="nam">AuthenticationFailed</span
           ><span class="op">(</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t59" class="pln">
-        <span class="n"><a href="#t59">59</a></span
+      <p id="t62" class="pln">
+        <span class="n"><a href="#t62">62</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t60" class="pln">
-        <span class="n"><a href="#t60">60</a></span
+      <p id="t63" class="pln">
+        <span class="n"><a href="#t63">63</a></span
         ><span class="t">
           <span class="com"># Authenticate token</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t61" class="mis show_mis">
-        <span class="n"><a href="#t61">61</a></span
+      <p id="t64" class="run">
+        <span class="n"><a href="#t64">64</a></span
         ><span class="t">
           <span class="key">try</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t62" class="mis show_mis">
-        <span class="n"><a href="#t62">62</a></span
+      <p id="t65" class="run">
+        <span class="n"><a href="#t65">65</a></span
         ><span class="t">
           <span class="nam">token_validator</span> <span class="op">=</span>
           <span class="nam">self</span><span class="op">.</span
@@ -566,8 +584,8 @@
           ><span class="nam">request</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t63" class="mis show_mis">
-        <span class="n"><a href="#t63">63</a></span
+      <p id="t66" class="run">
+        <span class="n"><a href="#t66">66</a></span
         ><span class="t">
           <span class="nam">jwt_payload</span> <span class="op">=</span>
           <span class="nam">token_validator</span><span class="op">.</span
@@ -576,33 +594,33 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t64" class="mis show_mis">
-        <span class="n"><a href="#t64">64</a></span
+      <p id="t67" class="mis show_mis">
+        <span class="n"><a href="#t67">67</a></span
         ><span class="t">
           <span class="key">except</span> <span class="nam">TokenError</span
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t65" class="mis show_mis">
-        <span class="n"><a href="#t65">65</a></span
+      <p id="t68" class="mis show_mis">
+        <span class="n"><a href="#t68">68</a></span
         ><span class="t">
           <span class="key">raise</span> <span class="nam">exceptions</span
           ><span class="op">.</span><span class="nam">AuthenticationFailed</span
           ><span class="op">(</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t66" class="pln">
-        <span class="n"><a href="#t66">66</a></span
+      <p id="t69" class="pln">
+        <span class="n"><a href="#t69">69</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t67" class="pln">
-        <span class="n"><a href="#t67">67</a></span
+      <p id="t70" class="pln">
+        <span class="n"><a href="#t70">70</a></span
         ><span class="t">
           <span class="com"># Ensure jwt is not expired</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t68" class="mis show_mis">
-        <span class="n"><a href="#t68">68</a></span
+      <p id="t71" class="run">
+        <span class="n"><a href="#t71">71</a></span
         ><span class="t">
           <span class="key">if</span> <span class="op">(</span
           ><span class="nam">jwt_payload</span><span class="op">[</span
@@ -616,23 +634,16 @@
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t69" class="mis show_mis">
-        <span class="n"><a href="#t69">69</a></span
+      <p id="t72" class="run">
+        <span class="n"><a href="#t72">72</a></span
         ><span class="t">
           <span class="nam">msg</span> <span class="op">=</span>
           <span class="str">"Token has expired, please log back in"</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t70" class="mis show_mis">
-        <span class="n"><a href="#t70">70</a></span
-        ><span class="t">
-          <span class="nam">print</span><span class="op">(</span
-          ><span class="nam">msg</span><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t71" class="mis show_mis">
-        <span class="n"><a href="#t71">71</a></span
+      <p id="t73" class="run">
+        <span class="n"><a href="#t73">73</a></span
         ><span class="t">
           <span class="key">raise</span> <span class="nam">exceptions</span
           ><span class="op">.</span><span class="nam">AuthenticationFailed</span
@@ -640,54 +651,53 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t72" class="mis show_mis">
-        <span class="n"><a href="#t72">72</a></span
+      <p id="t74" class="pln">
+        <span class="n"><a href="#t74">74</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t75" class="run">
+        <span class="n"><a href="#t75">75</a></span
         ><span class="t">
           <span class="key">if</span> <span class="nam">jwt_payload</span
           ><span class="op">[</span><span class="str">"client_id"</span
           ><span class="op">]</span> <span class="op">!=</span>
-          <span class="nam">settings</span><span class="op">.</span
-          ><span class="nam">COGNITO_AUDIENCE</span
+          <span class="nam">os</span><span class="op">.</span
+          ><span class="nam">environ</span><span class="op">.</span
+          ><span class="nam">get</span><span class="op">(</span
+          ><span class="str">"COGNITO_AUDIENCE"</span><span class="op">)</span
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t73" class="mis show_mis">
-        <span class="n"><a href="#t73">73</a></span
+      <p id="t76" class="run">
+        <span class="n"><a href="#t76">76</a></span
         ><span class="t">
           <span class="nam">msg</span> <span class="op">=</span>
           <span class="nam">_</span><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t74" class="pln">
-        <span class="n"><a href="#t74">74</a></span
+      <p id="t77" class="pln">
+        <span class="n"><a href="#t77">77</a></span
         ><span class="t">
           <span class="str"
             >"Client_ID does not match the applications, please"</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t75" class="pln">
-        <span class="n"><a href="#t75">75</a></span
+      <p id="t78" class="pln">
+        <span class="n"><a href="#t78">78</a></span
         ><span class="t">
           <span class="str"
             >"ensure you are logged into the correct AWS account"</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t76" class="pln">
-        <span class="n"><a href="#t76">76</a></span
+      <p id="t79" class="pln">
+        <span class="n"><a href="#t79">79</a></span
         ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t77" class="mis show_mis">
-        <span class="n"><a href="#t77">77</a></span
-        ><span class="t">
-          <span class="nam">print</span><span class="op">(</span
-          ><span class="nam">msg</span><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t78" class="mis show_mis">
-        <span class="n"><a href="#t78">78</a></span
+      <p id="t80" class="run">
+        <span class="n"><a href="#t80">80</a></span
         ><span class="t">
           <span class="key">raise</span> <span class="nam">exceptions</span
           ><span class="op">.</span><span class="nam">AuthenticationFailed</span
@@ -695,19 +705,19 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t79" class="pln">
-        <span class="n"><a href="#t79">79</a></span
+      <p id="t81" class="pln">
+        <span class="n"><a href="#t81">81</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t80" class="pln">
-        <span class="n"><a href="#t80">80</a></span
+      <p id="t82" class="pln">
+        <span class="n"><a href="#t82">82</a></span
         ><span class="t">
           <span class="com"># USER_MODEL = self.get_user_model()</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t81" class="pln">
-        <span class="n"><a href="#t81">81</a></span
+      <p id="t83" class="pln">
+        <span class="n"><a href="#t83">83</a></span
         ><span class="t">
           <span class="com"
             ># user =
@@ -715,23 +725,23 @@
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t82" class="mis show_mis">
-        <span class="n"><a href="#t82">82</a></span
+      <p id="t84" class="run">
+        <span class="n"><a href="#t84">84</a></span
         ><span class="t">
           <span class="key">if</span> <span class="str">"cognito:groups"</span>
           <span class="key">in</span> <span class="nam">jwt_payload</span
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t83" class="mis show_mis">
-        <span class="n"><a href="#t83">83</a></span
+      <p id="t85" class="run">
+        <span class="n"><a href="#t85">85</a></span
         ><span class="t">
           <span class="nam">user</span> <span class="op">=</span>
           <span class="op">{</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t84" class="pln">
-        <span class="n"><a href="#t84">84</a></span
+      <p id="t86" class="pln">
+        <span class="n"><a href="#t86">86</a></span
         ><span class="t">
           <span class="str">"username"</span><span class="op">:</span>
           <span class="nam">jwt_payload</span><span class="op">[</span
@@ -739,8 +749,8 @@
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t85" class="pln">
-        <span class="n"><a href="#t85">85</a></span
+      <p id="t87" class="pln">
+        <span class="n"><a href="#t87">87</a></span
         ><span class="t">
           <span class="str">"groups"</span><span class="op">:</span>
           <span class="nam">jwt_payload</span><span class="op">[</span
@@ -748,19 +758,19 @@
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t86" class="pln">
-        <span class="n"><a href="#t86">86</a></span
+      <p id="t88" class="pln">
+        <span class="n"><a href="#t88">88</a></span
         ><span class="t"> <span class="op">}</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t87" class="pln">
-        <span class="n"><a href="#t87">87</a></span
+      <p id="t89" class="pln">
+        <span class="n"><a href="#t89">89</a></span
         ><span class="t">
           <span class="key">else</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t88" class="mis show_mis">
-        <span class="n"><a href="#t88">88</a></span
+      <p id="t90" class="run">
+        <span class="n"><a href="#t90">90</a></span
         ><span class="t">
           <span class="nam">user</span> <span class="op">=</span>
           <span class="op">{</span><span class="str">"username"</span
@@ -771,8 +781,8 @@
           <span class="str">"None"</span><span class="op">}</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t89" class="mis show_mis">
-        <span class="n"><a href="#t89">89</a></span
+      <p id="t91" class="run">
+        <span class="n"><a href="#t91">91</a></span
         ><span class="t">
           <span class="key">return</span> <span class="op">(</span
           ><span class="nam">user</span><span class="op">,</span>
@@ -780,20 +790,20 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t90" class="pln">
-        <span class="n"><a href="#t90">90</a></span
+      <p id="t92" class="pln">
+        <span class="n"><a href="#t92">92</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t91" class="run">
-        <span class="n"><a href="#t91">91</a></span
+      <p id="t93" class="run">
+        <span class="n"><a href="#t93">93</a></span
         ><span class="t">
           <span class="key">def</span> <span class="nam">get_user_model</span
           ><span class="op">(</span><span class="nam">self</span
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t92" class="mis show_mis">
-        <span class="n"><a href="#t92">92</a></span
+      <p id="t94" class="mis show_mis">
+        <span class="n"><a href="#t94">94</a></span
         ><span class="t">
           <span class="nam">user_model</span> <span class="op">=</span>
           <span class="nam">getattr</span><span class="op">(</span
@@ -804,8 +814,8 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t93" class="mis show_mis">
-        <span class="n"><a href="#t93">93</a></span
+      <p id="t95" class="mis show_mis">
+        <span class="n"><a href="#t95">95</a></span
         ><span class="t">
           <span class="key">return</span> <span class="nam">django_apps</span
           ><span class="op">.</span><span class="nam">get_model</span
@@ -815,12 +825,12 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t94" class="pln">
-        <span class="n"><a href="#t94">94</a></span
+      <p id="t96" class="pln">
+        <span class="n"><a href="#t96">96</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t95" class="run">
-        <span class="n"><a href="#t95">95</a></span
+      <p id="t97" class="run">
+        <span class="n"><a href="#t97">97</a></span
         ><span class="t">
           <span class="key">def</span> <span class="nam">get_jwt_token</span
           ><span class="op">(</span><span class="nam">self</span
@@ -828,8 +838,8 @@
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t96" class="mis show_mis">
-        <span class="n"><a href="#t96">96</a></span
+      <p id="t98" class="run">
+        <span class="n"><a href="#t98">98</a></span
         ><span class="t">
           <span class="nam">auth</span> <span class="op">=</span>
           <span class="nam">get_authorization_header</span
@@ -839,8 +849,8 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t97" class="mis show_mis">
-        <span class="n"><a href="#t97">97</a></span
+      <p id="t99" class="run">
+        <span class="n"><a href="#t99">99</a></span
         ><span class="t">
           <span class="key">if</span> <span class="key">not</span>
           <span class="nam">auth</span> <span class="key">or</span>
@@ -853,19 +863,19 @@
           <span class="str">"bearer"</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t98" class="mis show_mis">
-        <span class="n"><a href="#t98">98</a></span
+      <p id="t100" class="mis show_mis">
+        <span class="n"><a href="#t100">100</a></span
         ><span class="t">
           <span class="key">return</span>
           <span class="key">None</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t99" class="pln">
-        <span class="n"><a href="#t99">99</a></span
+      <p id="t101" class="pln">
+        <span class="n"><a href="#t101">101</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t100" class="mis show_mis">
-        <span class="n"><a href="#t100">100</a></span
+      <p id="t102" class="run">
+        <span class="n"><a href="#t102">102</a></span
         ><span class="t">
           <span class="key">if</span> <span class="nam">len</span
           ><span class="op">(</span><span class="nam">auth</span
@@ -873,8 +883,8 @@
           <span class="num">1</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t101" class="mis show_mis">
-        <span class="n"><a href="#t101">101</a></span
+      <p id="t103" class="mis show_mis">
+        <span class="n"><a href="#t103">103</a></span
         ><span class="t">
           <span class="nam">msg</span> <span class="op">=</span>
           <span class="nam">_</span><span class="op">(</span
@@ -883,8 +893,8 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t102" class="mis show_mis">
-        <span class="n"><a href="#t102">102</a></span
+      <p id="t104" class="mis show_mis">
+        <span class="n"><a href="#t104">104</a></span
         ><span class="t">
           <span class="key">raise</span> <span class="nam">exceptions</span
           ><span class="op">.</span><span class="nam">AuthenticationFailed</span
@@ -892,8 +902,8 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t103" class="mis show_mis">
-        <span class="n"><a href="#t103">103</a></span
+      <p id="t105" class="run">
+        <span class="n"><a href="#t105">105</a></span
         ><span class="t">
           <span class="key">elif</span> <span class="nam">len</span
           ><span class="op">(</span><span class="nam">auth</span
@@ -901,51 +911,39 @@
           <span class="num">2</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t104" class="mis show_mis">
-        <span class="n"><a href="#t104">104</a></span
+      <p id="t106" class="mis show_mis">
+        <span class="n"><a href="#t106">106</a></span
         ><span class="t">
           <span class="nam">msg</span> <span class="op">=</span>
           <span class="nam">_</span><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t105" class="pln">
-        <span class="n"><a href="#t105">105</a></span
+      <p id="t107" class="pln">
+        <span class="n"><a href="#t107">107</a></span
         ><span class="t">
           <span class="str"
             >"Invalid Authorization header. Credentials string "</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t106" class="pln">
-        <span class="n"><a href="#t106">106</a></span
+      <p id="t108" class="pln">
+        <span class="n"><a href="#t108">108</a></span
         ><span class="t">
           <span class="str">"should not contain spaces."</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t107" class="pln">
-        <span class="n"><a href="#t107">107</a></span
+      <p id="t109" class="pln">
+        <span class="n"><a href="#t109">109</a></span
         ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t108" class="mis show_mis">
-        <span class="n"><a href="#t108">108</a></span
+      <p id="t110" class="mis show_mis">
+        <span class="n"><a href="#t110">110</a></span
         ><span class="t">
           <span class="key">raise</span> <span class="nam">exceptions</span
           ><span class="op">.</span><span class="nam">AuthenticationFailed</span
           ><span class="op">(</span><span class="nam">msg</span
           ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t109" class="pln">
-        <span class="n"><a href="#t109">109</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t110" class="mis show_mis">
-        <span class="n"><a href="#t110">110</a></span
-        ><span class="t">
-          <span class="key">return</span> <span class="nam">auth</span
-          ><span class="op">[</span><span class="num">1</span
-          ><span class="op">]</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t111" class="pln">
@@ -955,6 +953,18 @@
       <p id="t112" class="run">
         <span class="n"><a href="#t112">112</a></span
         ><span class="t">
+          <span class="key">return</span> <span class="nam">auth</span
+          ><span class="op">[</span><span class="num">1</span
+          ><span class="op">]</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t113" class="pln">
+        <span class="n"><a href="#t113">113</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t114" class="run">
+        <span class="n"><a href="#t114">114</a></span
+        ><span class="t">
           <span class="key">def</span>
           <span class="nam">get_token_validator</span><span class="op">(</span
           ><span class="nam">self</span><span class="op">,</span>
@@ -962,48 +972,49 @@
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t113" class="mis show_mis">
-        <span class="n"><a href="#t113">113</a></span
+      <p id="t115" class="run">
+        <span class="n"><a href="#t115">115</a></span
         ><span class="t">
           <span class="key">return</span> <span class="nam">TokenValidator</span
           ><span class="op">(</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t114" class="pln">
-        <span class="n"><a href="#t114">114</a></span
-        ><span class="t">
-          <span class="nam">settings</span><span class="op">.</span
-          ><span class="nam">COGNITO_AWS_REGION</span
-          ><span class="op">,</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t115" class="pln">
-        <span class="n"><a href="#t115">115</a></span
-        ><span class="t">
-          <span class="nam">settings</span><span class="op">.</span
-          ><span class="nam">COGNITO_USER_POOL</span
-          ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t116" class="pln">
         <span class="n"><a href="#t116">116</a></span
         ><span class="t">
           <span class="nam">settings</span><span class="op">.</span
-          ><span class="nam">COGNITO_AUDIENCE</span
+          ><span class="nam">COGNITO_AWS_REGION</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t117" class="pln">
         <span class="n"><a href="#t117">117</a></span
-        ><span class="t"> <span class="op">)</span>&nbsp;</span
+        ><span class="t">
+          <span class="nam">settings</span><span class="op">.</span
+          ><span class="nam">COGNITO_USER_POOL</span
+          ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t118" class="pln">
         <span class="n"><a href="#t118">118</a></span
+        ><span class="t">
+          <span class="nam">os</span><span class="op">.</span
+          ><span class="nam">getenv</span><span class="op">(</span
+          ><span class="str">"COGNITO_AUDIENCE"</span><span class="op">)</span
+          ><span class="op">,</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t119" class="pln">
+        <span class="n"><a href="#t119">119</a></span
+        ><span class="t"> <span class="op">)</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t120" class="pln">
+        <span class="n"><a href="#t120">120</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t119" class="run">
-        <span class="n"><a href="#t119">119</a></span
+      <p id="t121" class="run">
+        <span class="n"><a href="#t121">121</a></span
         ><span class="t">
           <span class="key">def</span>
           <span class="nam">authenticate_header</span><span class="op">(</span
@@ -1012,13 +1023,13 @@
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t120" class="pln">
-        <span class="n"><a href="#t120">120</a></span
+      <p id="t122" class="pln">
+        <span class="n"><a href="#t122">122</a></span
         ><span class="t"> <span class="str">"""</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t121" class="pln">
-        <span class="n"><a href="#t121">121</a></span
+      <p id="t123" class="pln">
+        <span class="n"><a href="#t123">123</a></span
         ><span class="t"
           ><span class="str">
             Method required by the DRF in order to return 401 responses for
@@ -1026,8 +1037,8 @@
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t122" class="pln">
-        <span class="n"><a href="#t122">122</a></span
+      <p id="t124" class="pln">
+        <span class="n"><a href="#t124">124</a></span
         ><span class="t"
           ><span class="str">
             More details in
@@ -1035,13 +1046,13 @@
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t123" class="pln">
-        <span class="n"><a href="#t123">123</a></span
+      <p id="t125" class="pln">
+        <span class="n"><a href="#t125">125</a></span
         ><span class="t"><span class="str"> """</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t124" class="mis show_mis">
-        <span class="n"><a href="#t124">124</a></span
+      <p id="t126" class="mis show_mis">
+        <span class="n"><a href="#t126">126</a></span
         ><span class="t">
           <span class="key">return</span>
           <span class="str">"Bearer: api"</span>&nbsp;</span
@@ -1054,7 +1065,7 @@
           <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp;
           <a class="nav" href="https://coverage.readthedocs.io"
             >coverage.py v5.3</a
-          >, created at 2020-10-01 11:17 -0600
+          >, created at 2020-10-22 14:23 -0600
         </p>
       </div>
     </div>

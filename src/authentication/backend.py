@@ -1,8 +1,8 @@
 # Based on https://github.com/labd/django-cognito-jwt under MIT license
-import logging
 import time
 import hmac
 import hashlib
+import os
 
 from django.apps import apps as django_apps
 from config import settings
@@ -13,14 +13,13 @@ from rest_framework.authentication import BaseAuthentication, get_authorization_
 
 from authentication.validator import TokenError, TokenValidator
 
-logger = logging.getLogger(__name__)
-
 
 class JSONWebTokenAuthentication(BaseAuthentication):
     """Token based authentication using the JSON Web Token standard."""
 
     def authenticate(self, request):
         """Entrypoint for Django Rest Framework"""
+        # Gophish Authentication
         gp_sign = request.headers.get("X-Gophish-Signature")
         if gp_sign:
             gp_sign = gp_sign.split("=")[-1]
@@ -32,10 +31,13 @@ class JSONWebTokenAuthentication(BaseAuthentication):
                 token = "Empty token"
                 return (user, token)
 
-        if settings.COGNITO_DEPLOYMENT_MODE == "Development":
+        # Development Authentication
+        if os.environ.get("COGNITO_DEPLOYMENT_MODE") == "Development":
             user = {"username": "developer user", "groups": {"develop"}}
             token = "Empty token"
             return (user, token)
+
+        # Local Authentication
         if (
             settings.LOCAL_API_KEY
             and get_authorization_header(request).decode() == settings.LOCAL_API_KEY
@@ -44,6 +46,7 @@ class JSONWebTokenAuthentication(BaseAuthentication):
             token = "Empty token"
             return (user, token)
 
+        # Reports authentication with bearer
         if (
             settings.LOCAL_API_KEY
             and get_authorization_header(request).decode().split(" ")[-1]
@@ -67,14 +70,13 @@ class JSONWebTokenAuthentication(BaseAuthentication):
         # Ensure jwt is not expired
         if (jwt_payload["exp"] - int(time.time())) < 0:
             msg = "Token has expired, please log back in"
-            print(msg)
             raise exceptions.AuthenticationFailed(msg)
-        if jwt_payload["client_id"] != settings.COGNITO_AUDIENCE:
+
+        if jwt_payload["client_id"] != os.environ.get("COGNITO_AUDIENCE"):
             msg = _(
                 "Client_ID does not match the applications, please"
                 "ensure you are logged into the correct AWS account"
             )
-            print(msg)
             raise exceptions.AuthenticationFailed(msg)
 
         # USER_MODEL = self.get_user_model()
@@ -113,7 +115,7 @@ class JSONWebTokenAuthentication(BaseAuthentication):
         return TokenValidator(
             settings.COGNITO_AWS_REGION,
             settings.COGNITO_USER_POOL,
-            settings.COGNITO_AUDIENCE,
+            os.environ.get("COGNITO_AUDIENCE"),
         )
 
     def authenticate_header(self, request):

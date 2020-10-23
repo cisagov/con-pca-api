@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=emulateIE7" />
-    <title>Coverage for src\api\views\customer_views.py: 100%</title>
+    <title>Coverage for src\api\views\tag_views.py: 50%</title>
     <link rel="stylesheet" href="style.css" type="text/css" />
     <script type="text/javascript" src="jquery.min.js"></script>
     <script type="text/javascript" src="jquery.hotkeys.js"></script>
@@ -17,8 +17,8 @@
     <div id="header">
       <div class="content">
         <h1>
-          Coverage for <b>src\api\views\customer_views.py</b> :
-          <span class="pc_cov">100%</span>
+          Coverage for <b>src\api\views\tag_views.py</b> :
+          <span class="pc_cov">50%</span>
         </h1>
         <img
           id="keyboard_icon"
@@ -26,20 +26,20 @@
           alt="Show keyboard shortcuts"
         />
         <h2 class="stats">
-          45 statements &nbsp;
+          40 statements &nbsp;
           <button
             type="button"
             class="run shortkey_r button_toggle_run"
             title="Toggle lines run"
           >
-            45 run
+            20 run
           </button>
           <button
             type="button"
             class="mis show_mis shortkey_m button_toggle_mis"
             title="Toggle lines missing"
           >
-            0 missing
+            20 missing
           </button>
           <button
             type="button"
@@ -81,7 +81,7 @@
       </p>
       <p id="t2" class="pln">
         <span class="n"><a href="#t2">2</a></span
-        ><span class="t"><span class="str">Customer Views.</span>&nbsp;</span
+        ><span class="t"><span class="str">Tag Views.</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t3" class="pln">
@@ -91,8 +91,7 @@
       <p id="t4" class="pln">
         <span class="n"><a href="#t4">4</a></span
         ><span class="t"
-          ><span class="str"
-            >This handles the api for all the Template urls.</span
+          ><span class="str">This handles the api for all the Tag urls.</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
@@ -106,42 +105,43 @@
         ><span class="t"
           ><span class="key">from</span> <span class="nam">api</span
           ><span class="op">.</span><span class="nam">serializers</span
-          ><span class="op">.</span
-          ><span class="nam">customer_serializers</span>
+          ><span class="op">.</span><span class="nam">tag_serializers</span>
           <span class="key">import</span> <span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t7" class="pln">
         <span class="n"><a href="#t7">7</a></span
         ><span class="t">
-          <span class="nam">CustomerPatchSerializer</span
+          <span class="nam">TagPatchSerializer</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t8" class="pln">
         <span class="n"><a href="#t8">8</a></span
         ><span class="t">
-          <span class="nam">CustomerPostSerializer</span
+          <span class="nam">TagPostSerializer</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t9" class="pln">
         <span class="n"><a href="#t9">9</a></span
         ><span class="t">
-          <span class="nam">CustomerQuerySerializer</span
+          <span class="nam">TagQuerySerializer</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t10" class="pln">
         <span class="n"><a href="#t10">10</a></span
-        ><span class="t">
-          <span class="nam">SectorGetSerializer</span
-          ><span class="op">,</span>&nbsp;</span
+        ><span class="t"><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t11" class="pln">
+      <p id="t11" class="run">
         <span class="n"><a href="#t11">11</a></span
-        ><span class="t"><span class="op">)</span>&nbsp;</span
+        ><span class="t"
+          ><span class="key">from</span> <span class="nam">api</span
+          ><span class="op">.</span><span class="nam">services</span>
+          <span class="key">import</span>
+          <span class="nam">TagService</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t12" class="run">
@@ -149,10 +149,10 @@
         ><span class="t"
           ><span class="key">from</span> <span class="nam">api</span
           ><span class="op">.</span><span class="nam">utils</span
-          ><span class="op">.</span
-          ><span class="nam">sector_industry_utils</span>
+          ><span class="op">.</span><span class="nam">tag</span
+          ><span class="op">.</span><span class="nam">tags</span>
           <span class="key">import</span>
-          <span class="nam">get_sectors_industries</span>&nbsp;</span
+          <span class="nam">check_tag_format</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t13" class="run">
@@ -191,84 +191,96 @@
           <span class="nam">APIView</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t17" class="run">
+      <p id="t17" class="pln">
         <span class="n"><a href="#t17">17</a></span
-        ><span class="t"
-          ><span class="key">from</span> <span class="nam">api</span
-          ><span class="op">.</span><span class="nam">services</span>
-          <span class="key">import</span>
-          <span class="nam">CustomerService</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t18" class="pln">
-        <span class="n"><a href="#t18">18</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t19" class="run">
-        <span class="n"><a href="#t19">19</a></span
+      <p id="t18" class="run">
+        <span class="n"><a href="#t18">18</a></span
         ><span class="t"
-          ><span class="nam">customer_service</span> <span class="op">=</span>
-          <span class="nam">CustomerService</span><span class="op">(</span
+          ><span class="nam">tag_service</span> <span class="op">=</span>
+          <span class="nam">TagService</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
+      </p>
+      <p id="t19" class="pln">
+        <span class="n"><a href="#t19">19</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
       <p id="t20" class="pln">
         <span class="n"><a href="#t20">20</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t21" class="pln">
+      <p id="t21" class="run">
         <span class="n"><a href="#t21">21</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t22" class="run">
-        <span class="n"><a href="#t22">22</a></span
         ><span class="t"
-          ><span class="key">class</span>
-          <span class="nam">CustomerListView</span><span class="op">(</span
-          ><span class="nam">APIView</span><span class="op">)</span
-          ><span class="op">:</span>&nbsp;</span
+          ><span class="key">class</span> <span class="nam">TagsView</span
+          ><span class="op">(</span><span class="nam">APIView</span
+          ><span class="op">)</span><span class="op">:</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t22" class="pln">
+        <span class="n"><a href="#t22">22</a></span
+        ><span class="t"> <span class="str">"""</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t23" class="pln">
         <span class="n"><a href="#t23">23</a></span
-        ><span class="t">
-          <span class="str">""" CustomerListView """</span>&nbsp;</span
+        ><span class="t"
+          ><span class="str"> This is the Tags View APIView.</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t24" class="pln">
         <span class="n"><a href="#t24">24</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t25" class="run">
+      <p id="t25" class="pln">
         <span class="n"><a href="#t25">25</a></span
+        ><span class="t"
+          ><span class="str">
+            This returns all Tags or POST to create a tag.</span
+          >&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t26" class="pln">
+        <span class="n"><a href="#t26">26</a></span
+        ><span class="t"><span class="str"> """</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t27" class="pln">
+        <span class="n"><a href="#t27">27</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t28" class="run">
+        <span class="n"><a href="#t28">28</a></span
         ><span class="t">
           <span class="op">@</span><span class="nam">swagger_auto_schema</span
           ><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t26" class="pln">
-        <span class="n"><a href="#t26">26</a></span
+      <p id="t29" class="pln">
+        <span class="n"><a href="#t29">29</a></span
         ><span class="t">
           <span class="nam">query_serializer</span><span class="op">=</span
-          ><span class="nam">CustomerQuerySerializer</span
+          ><span class="nam">TagQuerySerializer</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t27" class="pln">
-        <span class="n"><a href="#t27">27</a></span
+      <p id="t30" class="pln">
+        <span class="n"><a href="#t30">30</a></span
         ><span class="t">
           <span class="nam">operation_id</span><span class="op">=</span
-          ><span class="str">"List of Customers"</span
+          ><span class="str">"Get all template tags"</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t28" class="pln">
-        <span class="n"><a href="#t28">28</a></span
+      <p id="t31" class="pln">
+        <span class="n"><a href="#t31">31</a></span
         ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t29" class="run">
-        <span class="n"><a href="#t29">29</a></span
+      <p id="t32" class="run">
+        <span class="n"><a href="#t32">32</a></span
         ><span class="t">
           <span class="key">def</span> <span class="nam">get</span
           ><span class="op">(</span><span class="nam">self</span
@@ -276,41 +288,40 @@
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t30" class="pln">
-        <span class="n"><a href="#t30">30</a></span
+      <p id="t33" class="pln">
+        <span class="n"><a href="#t33">33</a></span
         ><span class="t"> <span class="str">"""Get method."""</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t31" class="run">
-        <span class="n"><a href="#t31">31</a></span
+      <p id="t34" class="mis show_mis">
+        <span class="n"><a href="#t34">34</a></span
         ><span class="t">
           <span class="nam">serializer</span> <span class="op">=</span>
-          <span class="nam">CustomerQuerySerializer</span
-          ><span class="op">(</span><span class="nam">request</span
-          ><span class="op">.</span><span class="nam">GET</span
-          ><span class="op">.</span><span class="nam">dict</span
-          ><span class="op">(</span><span class="op">)</span
-          ><span class="op">)</span>&nbsp;</span
+          <span class="nam">TagQuerySerializer</span><span class="op">(</span
+          ><span class="nam">request</span><span class="op">.</span
+          ><span class="nam">GET</span><span class="op">.</span
+          ><span class="nam">dict</span><span class="op">(</span
+          ><span class="op">)</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t32" class="run">
-        <span class="n"><a href="#t32">32</a></span
+      <p id="t35" class="mis show_mis">
+        <span class="n"><a href="#t35">35</a></span
         ><span class="t">
           <span class="nam">parameters</span> <span class="op">=</span>
           <span class="nam">serializer</span><span class="op">.</span
           ><span class="nam">data</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t33" class="run">
-        <span class="n"><a href="#t33">33</a></span
+      <p id="t36" class="mis show_mis">
+        <span class="n"><a href="#t36">36</a></span
         ><span class="t">
           <span class="key">if</span> <span class="key">not</span>
           <span class="nam">parameters</span
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t34" class="run">
-        <span class="n"><a href="#t34">34</a></span
+      <p id="t37" class="mis show_mis">
+        <span class="n"><a href="#t37">37</a></span
         ><span class="t">
           <span class="nam">parameters</span> <span class="op">=</span>
           <span class="nam">request</span><span class="op">.</span
@@ -319,79 +330,76 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t35" class="pln">
-        <span class="n"><a href="#t35">35</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t36" class="run">
-        <span class="n"><a href="#t36">36</a></span
+      <p id="t38" class="mis show_mis">
+        <span class="n"><a href="#t38">38</a></span
         ><span class="t">
-          <span class="nam">customer_list</span> <span class="op">=</span>
-          <span class="nam">customer_service</span><span class="op">.</span
+          <span class="nam">tag_list</span> <span class="op">=</span>
+          <span class="nam">tag_service</span><span class="op">.</span
           ><span class="nam">get_list</span><span class="op">(</span
           ><span class="nam">parameters</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t37" class="run">
-        <span class="n"><a href="#t37">37</a></span
+      <p id="t39" class="mis show_mis">
+        <span class="n"><a href="#t39">39</a></span
         ><span class="t">
           <span class="key">return</span> <span class="nam">Response</span
-          ><span class="op">(</span><span class="nam">customer_list</span
+          ><span class="op">(</span><span class="nam">tag_list</span
+          ><span class="op">,</span> <span class="nam">status</span
+          ><span class="op">=</span><span class="nam">status</span
+          ><span class="op">.</span><span class="nam">HTTP_200_OK</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t38" class="pln">
-        <span class="n"><a href="#t38">38</a></span
+      <p id="t40" class="pln">
+        <span class="n"><a href="#t40">40</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t39" class="run">
-        <span class="n"><a href="#t39">39</a></span
+      <p id="t41" class="run">
+        <span class="n"><a href="#t41">41</a></span
         ><span class="t">
           <span class="op">@</span><span class="nam">swagger_auto_schema</span
           ><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t40" class="pln">
-        <span class="n"><a href="#t40">40</a></span
-        ><span class="t">
-          <span class="nam">request_body</span><span class="op">=</span
-          ><span class="nam">CustomerPostSerializer</span
-          ><span class="op">,</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t41" class="pln">
-        <span class="n"><a href="#t41">41</a></span
-        ><span class="t">
-          <span class="nam">operation_id</span><span class="op">=</span
-          ><span class="str">"Create Customer"</span
-          ><span class="op">,</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
       <p id="t42" class="pln">
         <span class="n"><a href="#t42">42</a></span
-        ><span class="t"> <span class="op">)</span>&nbsp;</span
+        ><span class="t">
+          <span class="nam">request_body</span><span class="op">=</span
+          ><span class="nam">TagPostSerializer</span
+          ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t43" class="run">
+      <p id="t43" class="pln">
         <span class="n"><a href="#t43">43</a></span
         ><span class="t">
-          <span class="key">def</span> <span class="nam">post</span
-          ><span class="op">(</span><span class="nam">self</span
-          ><span class="op">,</span> <span class="nam">request</span
-          ><span class="op">,</span> <span class="nam">format</span
-          ><span class="op">=</span><span class="key">None</span
-          ><span class="op">)</span><span class="op">:</span>&nbsp;</span
+          <span class="nam">operation_id</span><span class="op">=</span
+          ><span class="str">"Create Tag"</span
+          ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t44" class="pln">
         <span class="n"><a href="#t44">44</a></span
-        ><span class="t">
-          <span class="str">"""Post method."""</span>&nbsp;</span
+        ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t45" class="run">
         <span class="n"><a href="#t45">45</a></span
+        ><span class="t">
+          <span class="key">def</span> <span class="nam">post</span
+          ><span class="op">(</span><span class="nam">self</span
+          ><span class="op">,</span> <span class="nam">request</span
+          ><span class="op">)</span><span class="op">:</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t46" class="pln">
+        <span class="n"><a href="#t46">46</a></span
+        ><span class="t">
+          <span class="str">"""Post Method."""</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t47" class="mis show_mis">
+        <span class="n"><a href="#t47">47</a></span
         ><span class="t">
           <span class="nam">post_data</span> <span class="op">=</span>
           <span class="nam">request</span><span class="op">.</span
@@ -400,94 +408,113 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t46" class="pln">
-        <span class="n"><a href="#t46">46</a></span
-        ><span class="t">
-          <span class="com"
-            ># Check for existing customer with the same name and identifier
-            pair</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t47" class="run">
-        <span class="n"><a href="#t47">47</a></span
-        ><span class="t">
-          <span class="nam">customer_filter</span> <span class="op">=</span>
-          <span class="op">{</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
       <p id="t48" class="pln">
         <span class="n"><a href="#t48">48</a></span
-        ><span class="t">
-          <span class="str">"identifier"</span><span class="op">:</span>
-          <span class="nam">post_data</span><span class="op">[</span
-          ><span class="str">"identifier"</span><span class="op">]</span
-          ><span class="op">,</span>&nbsp;</span
-        ><span class="r"></span>
+        ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t49" class="pln">
+      <p id="t49" class="mis show_mis">
         <span class="n"><a href="#t49">49</a></span
         ><span class="t">
-          <span class="str">"name"</span><span class="op">:</span>
-          <span class="nam">post_data</span><span class="op">[</span
-          ><span class="str">"name"</span><span class="op">]</span
-          ><span class="op">,</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t50" class="pln">
-        <span class="n"><a href="#t50">50</a></span
-        ><span class="t"> <span class="op">}</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t51" class="run">
-        <span class="n"><a href="#t51">51</a></span
-        ><span class="t">
-          <span class="key">if</span> <span class="nam">customer_service</span
-          ><span class="op">.</span><span class="nam">exists</span
-          ><span class="op">(</span><span class="nam">customer_filter</span
+          <span class="key">if</span> <span class="key">not</span>
+          <span class="nam">check_tag_format</span><span class="op">(</span
+          ><span class="nam">post_data</span><span class="op">[</span
+          ><span class="str">"tag"</span><span class="op">]</span
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t52" class="run">
-        <span class="n"><a href="#t52">52</a></span
+      <p id="t50" class="mis show_mis">
+        <span class="n"><a href="#t50">50</a></span
         ><span class="t">
           <span class="key">return</span> <span class="nam">Response</span
           ><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
+      <p id="t51" class="pln">
+        <span class="n"><a href="#t51">51</a></span
+        ><span class="t">
+          <span class="op">{</span><span class="str">"error"</span
+          ><span class="op">:</span>
+          <span class="str">"incorrect tag format"</span
+          ><span class="op">}</span><span class="op">,</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t52" class="pln">
+        <span class="n"><a href="#t52">52</a></span
+        ><span class="t">
+          <span class="nam">status</span><span class="op">=</span
+          ><span class="nam">status</span><span class="op">.</span
+          ><span class="nam">HTTP_400_BAD_REQUEST</span
+          ><span class="op">,</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
       <p id="t53" class="pln">
         <span class="n"><a href="#t53">53</a></span
-        ><span class="t">
-          <span class="str">"User with that identifier already exists"</span
-          ><span class="op">,</span>&nbsp;</span
+        ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t54" class="pln">
         <span class="n"><a href="#t54">54</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t55" class="mis show_mis">
+        <span class="n"><a href="#t55">55</a></span
         ><span class="t">
-          <span class="nam">status</span><span class="op">=</span
-          ><span class="nam">status</span><span class="op">.</span
-          ><span class="nam">HTTP_202_ACCEPTED</span
+          <span class="key">if</span> <span class="nam">tag_service</span
+          ><span class="op">.</span><span class="nam">exists</span
+          ><span class="op">(</span><span class="op">{</span
+          ><span class="str">"tag"</span><span class="op">:</span>
+          <span class="nam">post_data</span><span class="op">[</span
+          ><span class="str">"tag"</span><span class="op">]</span
+          ><span class="op">}</span><span class="op">)</span
+          ><span class="op">:</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t56" class="mis show_mis">
+        <span class="n"><a href="#t56">56</a></span
+        ><span class="t">
+          <span class="key">return</span> <span class="nam">Response</span
+          ><span class="op">(</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t57" class="pln">
+        <span class="n"><a href="#t57">57</a></span
+        ><span class="t">
+          <span class="op">{</span><span class="str">"error"</span
+          ><span class="op">:</span>
+          <span class="str">"Tag already exists"</span><span class="op">}</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t55" class="pln">
-        <span class="n"><a href="#t55">55</a></span
+      <p id="t58" class="pln">
+        <span class="n"><a href="#t58">58</a></span
+        ><span class="t">
+          <span class="nam">status</span><span class="op">=</span
+          ><span class="nam">status</span><span class="op">.</span
+          ><span class="nam">HTTP_409_CONFLICT</span
+          ><span class="op">,</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t59" class="pln">
+        <span class="n"><a href="#t59">59</a></span
         ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t56" class="run">
-        <span class="n"><a href="#t56">56</a></span
+      <p id="t60" class="pln">
+        <span class="n"><a href="#t60">60</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t61" class="mis show_mis">
+        <span class="n"><a href="#t61">61</a></span
         ><span class="t">
           <span class="nam">created_response</span> <span class="op">=</span>
-          <span class="nam">customer_service</span><span class="op">.</span
+          <span class="nam">tag_service</span><span class="op">.</span
           ><span class="nam">save</span><span class="op">(</span
           ><span class="nam">post_data</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t57" class="run">
-        <span class="n"><a href="#t57">57</a></span
+      <p id="t62" class="mis show_mis">
+        <span class="n"><a href="#t62">62</a></span
         ><span class="t">
           <span class="key">return</span> <span class="nam">Response</span
           ><span class="op">(</span><span class="nam">created_response</span
@@ -497,124 +524,123 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t58" class="pln">
-        <span class="n"><a href="#t58">58</a></span
+      <p id="t63" class="pln">
+        <span class="n"><a href="#t63">63</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t59" class="pln">
-        <span class="n"><a href="#t59">59</a></span
+      <p id="t64" class="pln">
+        <span class="n"><a href="#t64">64</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t60" class="run">
-        <span class="n"><a href="#t60">60</a></span
+      <p id="t65" class="run">
+        <span class="n"><a href="#t65">65</a></span
         ><span class="t"
-          ><span class="key">class</span> <span class="nam">CustomerView</span
+          ><span class="key">class</span> <span class="nam">TagView</span
           ><span class="op">(</span><span class="nam">APIView</span
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t61" class="pln">
-        <span class="n"><a href="#t61">61</a></span
-        ><span class="t">
-          <span class="str">""" CustomerView """</span>&nbsp;</span
+      <p id="t66" class="pln">
+        <span class="n"><a href="#t66">66</a></span
+        ><span class="t"> <span class="str">"""TagView."""</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t62" class="pln">
-        <span class="n"><a href="#t62">62</a></span
+      <p id="t67" class="pln">
+        <span class="n"><a href="#t67">67</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t63" class="run">
-        <span class="n"><a href="#t63">63</a></span
+      <p id="t68" class="run">
+        <span class="n"><a href="#t68">68</a></span
         ><span class="t">
           <span class="op">@</span><span class="nam">swagger_auto_schema</span
           ><span class="op">(</span><span class="nam">operation_id</span
-          ><span class="op">=</span
-          ><span class="str">"Get single Customer"</span
+          ><span class="op">=</span><span class="str">"Get single Tag"</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t64" class="run">
-        <span class="n"><a href="#t64">64</a></span
+      <p id="t69" class="run">
+        <span class="n"><a href="#t69">69</a></span
         ><span class="t">
           <span class="key">def</span> <span class="nam">get</span
           ><span class="op">(</span><span class="nam">self</span
           ><span class="op">,</span> <span class="nam">request</span
-          ><span class="op">,</span> <span class="nam">customer_uuid</span
+          ><span class="op">,</span> <span class="nam">tag_uuid</span
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t65" class="pln">
-        <span class="n"><a href="#t65">65</a></span
-        ><span class="t"> <span class="str">""" GET """</span>&nbsp;</span
+      <p id="t70" class="pln">
+        <span class="n"><a href="#t70">70</a></span
+        ><span class="t"> <span class="str">"""Get method."""</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t66" class="run">
-        <span class="n"><a href="#t66">66</a></span
+      <p id="t71" class="mis show_mis">
+        <span class="n"><a href="#t71">71</a></span
         ><span class="t">
-          <span class="nam">customer</span> <span class="op">=</span>
-          <span class="nam">customer_service</span><span class="op">.</span
+          <span class="nam">tag</span> <span class="op">=</span>
+          <span class="nam">tag_service</span><span class="op">.</span
           ><span class="nam">get</span><span class="op">(</span
-          ><span class="nam">customer_uuid</span
+          ><span class="nam">tag_uuid</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t67" class="run">
-        <span class="n"><a href="#t67">67</a></span
+      <p id="t72" class="mis show_mis">
+        <span class="n"><a href="#t72">72</a></span
         ><span class="t">
           <span class="key">return</span> <span class="nam">Response</span
-          ><span class="op">(</span><span class="nam">customer</span
+          ><span class="op">(</span><span class="nam">tag</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t68" class="pln">
-        <span class="n"><a href="#t68">68</a></span
+      <p id="t73" class="pln">
+        <span class="n"><a href="#t73">73</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t69" class="run">
-        <span class="n"><a href="#t69">69</a></span
+      <p id="t74" class="run">
+        <span class="n"><a href="#t74">74</a></span
         ><span class="t">
           <span class="op">@</span><span class="nam">swagger_auto_schema</span
           ><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t70" class="pln">
-        <span class="n"><a href="#t70">70</a></span
+      <p id="t75" class="pln">
+        <span class="n"><a href="#t75">75</a></span
         ><span class="t">
           <span class="nam">request_body</span><span class="op">=</span
-          ><span class="nam">CustomerPatchSerializer</span
+          ><span class="nam">TagPatchSerializer</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t71" class="pln">
-        <span class="n"><a href="#t71">71</a></span
+      <p id="t76" class="pln">
+        <span class="n"><a href="#t76">76</a></span
         ><span class="t">
           <span class="nam">operation_id</span><span class="op">=</span
-          ><span class="str">"Update and Patch single Customer"</span
+          ><span class="str">"Update and Patch single Tag"</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t72" class="pln">
-        <span class="n"><a href="#t72">72</a></span
+      <p id="t77" class="pln">
+        <span class="n"><a href="#t77">77</a></span
         ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t73" class="run">
-        <span class="n"><a href="#t73">73</a></span
+      <p id="t78" class="run">
+        <span class="n"><a href="#t78">78</a></span
         ><span class="t">
           <span class="key">def</span> <span class="nam">patch</span
           ><span class="op">(</span><span class="nam">self</span
           ><span class="op">,</span> <span class="nam">request</span
-          ><span class="op">,</span> <span class="nam">customer_uuid</span
+          ><span class="op">,</span> <span class="nam">tag_uuid</span
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t74" class="pln">
-        <span class="n"><a href="#t74">74</a></span
-        ><span class="t"> <span class="str">""" PATCH """</span>&nbsp;</span
+      <p id="t79" class="pln">
+        <span class="n"><a href="#t79">79</a></span
+        ><span class="t">
+          <span class="str">"""Patch method."""</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t75" class="run">
-        <span class="n"><a href="#t75">75</a></span
+      <p id="t80" class="mis show_mis">
+        <span class="n"><a href="#t80">80</a></span
         ><span class="t">
           <span class="nam">put_data</span> <span class="op">=</span>
           <span class="nam">request</span><span class="op">.</span
@@ -623,18 +649,18 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t76" class="run">
-        <span class="n"><a href="#t76">76</a></span
+      <p id="t81" class="mis show_mis">
+        <span class="n"><a href="#t81">81</a></span
         ><span class="t">
           <span class="nam">updated_response</span> <span class="op">=</span>
-          <span class="nam">customer_service</span><span class="op">.</span
+          <span class="nam">tag_service</span><span class="op">.</span
           ><span class="nam">update</span><span class="op">(</span
-          ><span class="nam">customer_uuid</span><span class="op">,</span>
+          ><span class="nam">tag_uuid</span><span class="op">,</span>
           <span class="nam">put_data</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t77" class="run">
-        <span class="n"><a href="#t77">77</a></span
+      <p id="t82" class="mis show_mis">
+        <span class="n"><a href="#t82">82</a></span
         ><span class="t">
           <span class="key">return</span> <span class="nam">Response</span
           ><span class="op">(</span><span class="nam">updated_response</span
@@ -644,152 +670,54 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t78" class="pln">
-        <span class="n"><a href="#t78">78</a></span
+      <p id="t83" class="pln">
+        <span class="n"><a href="#t83">83</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t79" class="run">
-        <span class="n"><a href="#t79">79</a></span
+      <p id="t84" class="run">
+        <span class="n"><a href="#t84">84</a></span
         ><span class="t">
           <span class="op">@</span><span class="nam">swagger_auto_schema</span
           ><span class="op">(</span><span class="nam">operation_id</span
           ><span class="op">=</span
-          ><span class="str">"Delete single Customer"</span
+          ><span class="str">"Delete single Template"</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t80" class="run">
-        <span class="n"><a href="#t80">80</a></span
+      <p id="t85" class="run">
+        <span class="n"><a href="#t85">85</a></span
         ><span class="t">
           <span class="key">def</span> <span class="nam">delete</span
           ><span class="op">(</span><span class="nam">self</span
           ><span class="op">,</span> <span class="nam">request</span
-          ><span class="op">,</span> <span class="nam">customer_uuid</span
+          ><span class="op">,</span> <span class="nam">tag_uuid</span
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t81" class="pln">
-        <span class="n"><a href="#t81">81</a></span
-        ><span class="t"> <span class="str">""" DELETE """</span>&nbsp;</span
+      <p id="t86" class="pln">
+        <span class="n"><a href="#t86">86</a></span
+        ><span class="t">
+          <span class="str">"""Delete method."""</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t82" class="run">
-        <span class="n"><a href="#t82">82</a></span
+      <p id="t87" class="mis show_mis">
+        <span class="n"><a href="#t87">87</a></span
         ><span class="t">
           <span class="nam">delete_response</span> <span class="op">=</span>
-          <span class="nam">customer_service</span><span class="op">.</span
+          <span class="nam">tag_service</span><span class="op">.</span
           ><span class="nam">delete</span><span class="op">(</span
-          ><span class="nam">customer_uuid</span
+          ><span class="nam">tag_uuid</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t83" class="run">
-        <span class="n"><a href="#t83">83</a></span
+      <p id="t88" class="mis show_mis">
+        <span class="n"><a href="#t88">88</a></span
         ><span class="t">
           <span class="key">return</span> <span class="nam">Response</span
           ><span class="op">(</span><span class="nam">delete_response</span
           ><span class="op">,</span> <span class="nam">status</span
           ><span class="op">=</span><span class="nam">status</span
           ><span class="op">.</span><span class="nam">HTTP_200_OK</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t84" class="pln">
-        <span class="n"><a href="#t84">84</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t85" class="pln">
-        <span class="n"><a href="#t85">85</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t86" class="run">
-        <span class="n"><a href="#t86">86</a></span
-        ><span class="t"
-          ><span class="key">class</span>
-          <span class="nam">SectorIndustryView</span><span class="op">(</span
-          ><span class="nam">APIView</span><span class="op">)</span
-          ><span class="op">:</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t87" class="pln">
-        <span class="n"><a href="#t87">87</a></span
-        ><span class="t">
-          <span class="str">""" SectoryIndustryView """</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t88" class="pln">
-        <span class="n"><a href="#t88">88</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t89" class="run">
-        <span class="n"><a href="#t89">89</a></span
-        ><span class="t">
-          <span class="op">@</span><span class="nam">swagger_auto_schema</span
-          ><span class="op">(</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t90" class="pln">
-        <span class="n"><a href="#t90">90</a></span
-        ><span class="t">
-          <span class="nam">responses</span><span class="op">=</span
-          ><span class="op">{</span><span class="str">"200"</span
-          ><span class="op">:</span> <span class="nam">SectorGetSerializer</span
-          ><span class="op">,</span> <span class="str">"400"</span
-          ><span class="op">:</span> <span class="str">"Bad Request"</span
-          ><span class="op">}</span><span class="op">,</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t91" class="pln">
-        <span class="n"><a href="#t91">91</a></span
-        ><span class="t">
-          <span class="nam">operation_id</span><span class="op">=</span
-          ><span class="str">"Get all Sectors"</span
-          ><span class="op">,</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t92" class="pln">
-        <span class="n"><a href="#t92">92</a></span
-        ><span class="t"> <span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t93" class="run">
-        <span class="n"><a href="#t93">93</a></span
-        ><span class="t">
-          <span class="key">def</span> <span class="nam">get</span
-          ><span class="op">(</span><span class="nam">self</span
-          ><span class="op">,</span> <span class="nam">request</span
-          ><span class="op">)</span><span class="op">:</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t94" class="pln">
-        <span class="n"><a href="#t94">94</a></span
-        ><span class="t"> <span class="str">""" GET """</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t95" class="run">
-        <span class="n"><a href="#t95">95</a></span
-        ><span class="t">
-          <span class="nam">sectors_industries</span> <span class="op">=</span>
-          <span class="nam">get_sectors_industries</span
-          ><span class="op">(</span><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t96" class="run">
-        <span class="n"><a href="#t96">96</a></span
-        ><span class="t">
-          <span class="nam">serializer</span> <span class="op">=</span>
-          <span class="nam">SectorGetSerializer</span><span class="op">(</span
-          ><span class="nam">sectors_industries</span><span class="op">,</span>
-          <span class="nam">many</span><span class="op">=</span
-          ><span class="key">True</span><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t97" class="run">
-        <span class="n"><a href="#t97">97</a></span
-        ><span class="t">
-          <span class="key">return</span> <span class="nam">Response</span
-          ><span class="op">(</span><span class="nam">serializer</span
-          ><span class="op">.</span><span class="nam">data</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
