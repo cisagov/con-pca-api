@@ -80,11 +80,6 @@ class IncomingWebhookView(APIView):
                 parameters={"campaign_id": seralized_data["campaign_id"]}
             )[0]
 
-            subscription = subscription_service.get(campaign["subscription_uuid"])
-
-            if subscription is None:
-                return Response(status=status.HTTP_404_NOT_FOUND)
-
             campaign_event = seralized_data["message"]
             if campaign_event in [
                 "Email Sent",
@@ -93,14 +88,6 @@ class IncomingWebhookView(APIView):
                 "Submitted Data",
                 "Email Reported",
             ]:
-                if (
-                    subscription["status"] == "Queued"
-                    and campaign_event == "Email Sent"
-                ):
-                    subscription_service.update(
-                        subscription["subscription_uuid"], {"status": "In Progress"}
-                    )
-
                 # If there is not a corresponding opened event to a link being clicked, create one
                 if campaign_event == "Clicked Link":
                     if not webhooks.check_opened_event(
@@ -129,14 +116,13 @@ class IncomingWebhookView(APIView):
                 )
 
                 # update cycle to be marked as dirty
-                for cycle in subscription["cycles"]:
-                    if campaign["campaign_id"] in cycle["campaigns_in_cycle"]:
-                        subscription_service.update_nested(
-                            uuid=subscription["subscription_uuid"],
-                            field="cycles.$.phish_results_dirty",
-                            data=True,
-                            params={"cycles.cycle_uuid": cycle["cycle_uuid"]},
-                        )
+                subscription_service.update_nested(
+                    uuid=campaign["subscription_uuid"],
+                    field="cycles.$.phish_results_dirty",
+                    data=True,
+                    params={"cycles.cycle_uuid": campaign["cycle_uuid"]},
+                )
+
                 # update target history
                 if campaign_event == "Email Sent":
                     # send campaign info and email gophish_campaign_data, seralized_data

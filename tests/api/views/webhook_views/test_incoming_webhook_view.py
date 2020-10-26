@@ -42,6 +42,7 @@ def get_campaign_data():
         "campaign_id": 1234,
         "subscription_uuid": "12345",
         "campaign_uuid": "1234",
+        "cycle_uuid": "123456",
         "timeline": [
             {
                 "email": None,
@@ -76,78 +77,53 @@ def test_inbound_webhook_view_post_campaign_created(client):
 
 
 @pytest.mark.django_db
-def test_inbound_webhook_view_post_email_sent_not_found(client):
-    with mock.patch(
-        "api.services.CampaignService.get_list", return_value=[get_campaign_data()]
-    ) as mock_get_list, mock.patch(
-        "api.services.SubscriptionService.get", return_value=None
-    ) as mock_sub_data:
-        result = client.post("/api/v1/inboundwebhook/", web_hook_data_email_sent())
-        assert mock_get_list.called
-        assert mock_sub_data.called
-        assert result.status_code == 404
+@mock.patch("api.services.CampaignService.get_list", return_value=[get_campaign_data()])
+@mock.patch("api.utils.webhooks.push_webhook")
+@mock.patch("api.services.CampaignService.update")
+@mock.patch("api.services.SubscriptionService.update_nested")
+@mock.patch("api.utils.template.templates.update_target_history", return_value=None)
+def test_inbound_webhook_view_post_email_sent(
+    mock_update_target_history,
+    mock_subscription_update_nested,
+    mock_campaign_update,
+    mock_webhook_push,
+    mock_campaign_get_list,
+    client,
+):
+    result = client.post("/api/v1/inboundwebhook/", web_hook_data_email_sent())
+
+    assert mock_campaign_get_list.called
+    assert mock_webhook_push.called
+    assert mock_campaign_update.called
+    assert mock_subscription_update_nested.called
+    assert mock_update_target_history.called
+
+    assert result.status_code == 202
 
 
 @pytest.mark.django_db
-def test_inbound_webhook_view_post_email_sent(client):
-    with mock.patch(
-        "api.services.CampaignService.get_list", return_value=[get_campaign_data()]
-    ) as mock_campaign_get_list, mock.patch(
-        "api.services.SubscriptionService.get", return_value=get_subscription_data()
-    ) as mock_subscription_data, mock.patch(
-        "api.services.SubscriptionService.update", return_value=None
-    ) as mock_subscription_update, mock.patch(
-        "api.utils.webhooks.push_webhook", return_value=None
-    ) as mock_webhook_push, mock.patch(
-        "api.services.CampaignService.update", return_value=None
-    ) as mock_campaign_update, mock.patch(
-        "api.services.SubscriptionService.update_nested", return_value=None
-    ) as mock_subscription_update_nested, mock.patch(
-        "api.utils.template.templates.update_target_history", return_value=None
-    ) as mock_update_target_history:
+@mock.patch("api.services.CampaignService.get_list", return_value=[get_campaign_data()])
+@mock.patch("api.utils.webhooks.push_webhook")
+@mock.patch("api.services.CampaignService.update")
+@mock.patch("api.services.SubscriptionService.update_nested")
+@mock.patch("api.utils.template.templates.update_target_history", return_value=None)
+def test_inbound_webhook_view_post_clicked_link(
+    mock_update_target_history,
+    mock_subscription_update_nested,
+    mock_campaign_update,
+    mock_webhook_push,
+    mock_campaign_get_list,
+    client,
+):
+    result = client.post("/api/v1/inboundwebhook/", web_hook_data_clicked_link())
 
-        result = client.post("/api/v1/inboundwebhook/", web_hook_data_email_sent())
+    assert mock_campaign_get_list.called
+    assert mock_webhook_push.called
+    assert mock_campaign_update.called
+    assert mock_subscription_update_nested.called
+    assert not mock_update_target_history.called
 
-        assert mock_campaign_get_list.called
-        assert mock_subscription_data.called
-        assert mock_subscription_update.called
-        assert mock_webhook_push.called
-        assert mock_campaign_update.called
-        assert mock_subscription_update_nested.called
-        assert mock_update_target_history.called
-
-        assert result.status_code == 202
-
-
-@pytest.mark.django_db
-def test_inbound_webhook_view_post_clicked_link(client):
-    with mock.patch(
-        "api.services.CampaignService.get_list", return_value=[get_campaign_data()]
-    ) as mock_campaign_get_list, mock.patch(
-        "api.services.SubscriptionService.get", return_value=get_subscription_data()
-    ) as mock_subscription_data, mock.patch(
-        "api.services.SubscriptionService.update", return_value=None
-    ) as mock_subscription_update, mock.patch(
-        "api.utils.webhooks.push_webhook", return_value=None
-    ) as mock_webhook_push, mock.patch(
-        "api.services.CampaignService.update", return_value=None
-    ) as mock_campaign_update, mock.patch(
-        "api.services.SubscriptionService.update_nested", return_value=None
-    ) as mock_subscription_update_nested, mock.patch(
-        "api.utils.template.templates.update_target_history", return_value=None
-    ) as mock_update_target_history:
-
-        result = client.post("/api/v1/inboundwebhook/", web_hook_data_clicked_link())
-
-        assert mock_campaign_get_list.called
-        assert mock_subscription_data.called
-        assert not mock_subscription_update.called
-        assert mock_webhook_push.called
-        assert mock_campaign_update.called
-        assert mock_subscription_update_nested.called
-        assert not mock_update_target_history.called
-
-        assert result.status_code == 202
+    assert result.status_code == 202
 
 
 @pytest.mark.django_db
@@ -177,7 +153,7 @@ def test_inbound_webhook_is_duplicate_timeline_entry():
     result = IncomingWebhookView().is_duplicate_timeline_entry(
         timeline_non_match, webhook_data_non_match
     )
-    assert result == False
+    assert result is False
 
     timeline_match = [
         {
@@ -199,7 +175,7 @@ def test_inbound_webhook_is_duplicate_timeline_entry():
     result = IncomingWebhookView().is_duplicate_timeline_entry(
         timeline_match, webhook_data_match
     )
-    assert result == True
+    assert result is True
 
 
 def test_inbound_webhook_has_corresponding_opened_event():
@@ -222,7 +198,7 @@ def test_inbound_webhook_has_corresponding_opened_event():
     result = IncomingWebhookView().has_corresponding_opened_event(
         timeline_non_match, webhook_data_non_match
     )
-    assert result == False
+    assert result is False
 
     timeline_match = [
         {
@@ -244,7 +220,7 @@ def test_inbound_webhook_has_corresponding_opened_event():
     result = IncomingWebhookView().has_corresponding_opened_event(
         timeline_match, webhook_data_match
     )
-    assert result == True
+    assert result is True
 
 
 def test_inbound_webhook_mark_phishing_results_dirty():
@@ -255,4 +231,4 @@ def test_inbound_webhook_mark_phishing_results_dirty():
         "campaign_id": 1234,
     }
     IncomingWebhookView().mark_phishing_results_dirty(subscription, campaign)
-    assert subscription["cycles"][0]["phish_results_dirty"] == True
+    assert subscription["cycles"][0]["phish_results_dirty"] is True
