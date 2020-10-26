@@ -95,6 +95,11 @@ class SystemReportsView(APIView):
         gov_group_stats["tribal_stats"]["customer_count"] = tribal_customers
         gov_group_stats["private_stats"]["customer_count"] = private_customers
 
+        if "average" in consolidated_stats["clicked"]:
+            avgTimeToClick = format_timedelta(consolidated_stats["clicked"]["average"])
+        else:
+            avgTimeToClick = None
+
         context = {
             "customers_enrolled": len(customers),
             "monthly_reports_sent": monthly_reports_sent,
@@ -109,7 +114,7 @@ class SystemReportsView(APIView):
                 "clicked_ratio"
             ],
             "average_time_to_click_all_customers": consolidated_stats["clicked"],
-            "avgTimeToClick": format_timedelta(consolidated_stats["clicked"]["average"])
+            "avgTimeToClick": avgTimeToClick
             # ["clicked"]["average"],
         }
 

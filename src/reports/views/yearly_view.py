@@ -6,7 +6,6 @@ from api.services import (
     DHSContactService,
     RecommendationService,
 )
-from reports.utils import get_relevant_recommendations
 
 from rest_framework import status
 from rest_framework.response import Response
@@ -25,6 +24,7 @@ from reports.utils import (
     cycle_stats_to_click_rate_vs_report_rate,
     determine_trend,
     get_yearly_start_dates,
+    get_relevant_recommendations,
 )
 
 # GoPhish API Manager
