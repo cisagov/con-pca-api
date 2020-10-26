@@ -120,6 +120,9 @@ def execute_task(subscription, message_type):
 
 def start_subscription_email(subscription):
     send_start_notification(subscription)
+    subscription_service.update(
+        subscription["subscription_uuid"], {"status": "In Progress"}
+    )
 
 
 def start_subscription_cycle(subscription):
