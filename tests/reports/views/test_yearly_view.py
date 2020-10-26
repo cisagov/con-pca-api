@@ -78,7 +78,9 @@ def subscription():
                 "start_date": datetime(
                     2020, 7, 7, 19, 37, 54, 960000, tzinfo=timezone.utc
                 ),
-                "end_date": datetime(2020, 10, 30, 5, 49, 2),
+                "end_date": datetime(
+                    2020, 10, 30, 5, 49, 2, 960000, tzinfo=timezone.utc
+                ),
                 "active": True,
                 "campaigns_in_cycle": [1],
                 "phish_results": {
@@ -90,6 +92,7 @@ def subscription():
                 },
                 "phish_results_dirty": False,
                 "override_total_reported": -1,
+                "campaign_list": [],
             }
         ],
         "campaigns": [],
@@ -192,6 +195,25 @@ def generate_subscription_stat_details():
     }
 
 
+def template():
+    return {
+        "appearance": {"grammar": 0, "link_domain": 1, "logo_graphics": 0},
+        "behavior": {"curiosity": 1, "duty_obligation": 0, "fear": 0, "greed": 0},
+        "deception_score": 1,
+        "description": "Intern Resume",
+        "descriptive_words": "student resumes internship intern",
+        "from_address": "<%FAKER_FIRST_NAME%> <%FAKER_LAST_NAME%> <<%FAKER_FIRST_NAME%>.<%FAKER_LAST_NAME%>@domain.com>",
+        "html": "<br>Hi, sorry, I don't know exactly who this would go to. I read on the site<br>that your accepting student resumes for a summe rinternship. I'ev loaded<br>mine to our school's website. Please review and let me know if we're good to<br>go.<br><a href=\"<%URL%>\">https://endermannpoly.edu/studentresources/resumes/mquesenberry3.pdf</a><br><br><br>thx, <%FAKER_FIRST_NAME%>&nbsp;<br>",
+        "name": "Intern Resume",
+        "relevancy": {"organization": 0, "public_news": 0},
+        "retired": False,
+        "retired_description": "",
+        "sender": {"authoritative": 0, "external": 0, "internal": 0},
+        "subject": "Intern Resume",
+        "text": "Hi, sorry, I don't know exactly who this would go to. I read on the sitethat your accepting student resumes for a summe rinternship. I'ev loadedmine to our school's website. Please review and let me know if we're good togo.https://endermannpoly.edu/studentresources/resumes/mquesenberry3.pdfthx, <%FAKER_FIRST_NAME%>\u00a0",
+    }
+
+
 @pytest.mark.django_db
 @mock.patch("api.services.SubscriptionService.get", return_value=subscription())
 @mock.patch("api.services.SubscriptionService.get_list", return_value=[subscription()])
@@ -202,6 +224,7 @@ def generate_subscription_stat_details():
 @mock.patch(
     "api.services.RecommendationService.get_list", return_value=[get_recommendation()]
 )
+@mock.patch("api.services.TemplateService.get_list", return_value=[template()])
 @mock.patch(
     "reports.utils.get_yearly_start_dates",
     return_value=(fake.date_time(), fake.date_time()),
@@ -220,6 +243,7 @@ def test_year_view_get(
     mock_dhs_contact_get,
     mock_dhs_contact_get_list,
     mock_recommendation_get_list,
+    mock_template_get_list,
     mock_get_yearly_start_dates,
     mock_get_subscription_stats_for_yearly,
     mock_get_template_details,
@@ -227,10 +251,5 @@ def test_year_view_get(
     client,
 ):
     result = client.get("/reports/1234/yearly/2020-07-30T19:37:54.960Z/")
-
-    assert mock_subscription_get_list.called
-    assert mock_customer_get_list.called
-    assert mock_dhs_contact_get.called
-    assert mock_recommendation_get_list.called
 
     assert result.status_code == 202
