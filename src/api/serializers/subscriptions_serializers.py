@@ -127,7 +127,7 @@ class SubscriptionPatchSerializer(serializers.Serializer):
     start_date = serializers.DateTimeField(required=False)
     end_date = serializers.DateTimeField(required=False)
     primary_contact = CustomerContactSerializer(required=False)
-    dhs_contact_uuid = serializers.UUIDField()
+    dhs_contact_uuid = serializers.UUIDField(required=False)
     status = serializers.CharField(required=False, max_length=100)
     target_email_list = SubscriptionTargetSerializer(required=False, many=True)
     target_email_list_cached_copy = SubscriptionTargetSerializer(
