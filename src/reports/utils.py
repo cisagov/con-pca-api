@@ -1373,6 +1373,9 @@ def determine_trend(cycle_stats):
 
 def get_yearly_start_dates(subscription, target_date):
     # target_cycle = get_cycle_by_date_in_range(subscription,target_date)
+    # defaulting to None since this was commented out.
+    target_cycle = None
+    start_date = end_date = ""
     for cycle in subscription["cycles"]:
         if cycle["start_date"] == target_date:
             target_cycle = cycle
@@ -1387,10 +1390,5 @@ def get_yearly_start_dates(subscription, target_date):
         for cycle in cycles_in_range:
             if cycle["start_date"] < start_date:
                 start_date = cycle["start_date"]
-
-    if not start_date:
-        start_date = ""
-    if not end_date:
-        end_date = ""
 
     return (start_date, end_date)
