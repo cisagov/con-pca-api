@@ -43,7 +43,7 @@ class LandingPageResponseSerializer(serializers.Serializer):
 
 
 class LandingPageStopResponseSerializer(serializers.Serializer):
-    template = LandingPageSerializer()
+    landing_page = LandingPageSerializer()
     subscriptions = SubscriptionSerializer(many=True)
 
 
