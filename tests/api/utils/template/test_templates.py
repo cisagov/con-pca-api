@@ -4,10 +4,9 @@ from datetime import datetime
 from src.api.utils.template import templates
 
 
-@mock.patch("api.services.TargetHistoryService.get_list", return_value=[])
-@mock.patch("api.services.TargetHistoryService.update")
+@mock.patch("api.services.TargetHistoryService.exists", return_value=False)
 @mock.patch("api.services.TargetHistoryService.save")
-def test_update_target_history_no_history(mocked_save, mocked_update, mocked_get_list):
+def test_update_target_history_no_history(mocked_save, mock_exists):
     """
     If a target has no history.
     New history doc will be saved.
@@ -16,20 +15,23 @@ def test_update_target_history_no_history(mocked_save, mocked_update, mocked_get
         {"template_uuid": "1"},
         {"email": "test@test.com", "time": datetime.now().isoformat()},
     )
-    assert mocked_get_list.called
-    assert not mocked_update.called
+    assert mock_exists.called
     assert mocked_save.called
 
 
+@mock.patch("api.services.TargetHistoryService.exists", return_value=True)
 @mock.patch(
     "api.services.TargetHistoryService.get_list",
-    return_value=[{"email": "test@test.com", "history_list": [{"template_uuid": "1"}]}],
+    return_value=[
+        {
+            "target_uuid": "1234",
+            "email": "test@test.com",
+            "history_list": [{"template_uuid": "1"}],
+        }
+    ],
 )
-@mock.patch("api.services.TargetHistoryService.update")
-@mock.patch("api.services.TargetHistoryService.save")
-def test_update_target_history_with_history(
-    mocked_save, mocked_update, mocked_get_list
-):
+@mock.patch("api.services.TargetHistoryService.push_nested")
+def test_update_target_history_with_history(mocked_push, mocked_get_list, mock_exists):
     """
     If a target has history with the same template,
     no history will be added.
@@ -38,34 +40,6 @@ def test_update_target_history_with_history(
         {"template_uuid": "1"},
         {"email": "test@test.com", "time": datetime.now().isoformat()},
     )
+    assert mock_exists.called
     assert mocked_get_list.called
-    assert not mocked_update.called
-    assert not mocked_save.called
-
-
-@mock.patch(
-    "api.services.TargetHistoryService.get_list",
-    return_value=[
-        {
-            "target_uuid": "1",
-            "email": "test@test.com",
-            "history_list": [{"template_uuid": "2"}],
-        }
-    ],
-)
-@mock.patch("api.services.TargetHistoryService.update")
-@mock.patch("api.services.TargetHistoryService.save")
-def test_update_target_history_with_history_other(
-    mocked_save, mocked_update, mocked_get_list
-):
-    """
-    If a target has history with another template,
-    a new history will be added.
-    """
-    templates.update_target_history(
-        {"template_uuid": "1"},
-        {"email": "test@test.com", "time": datetime.now().isoformat()},
-    )
-    assert mocked_get_list.called
-    assert mocked_update.called
-    assert not mocked_save.called
+    assert mocked_push.called

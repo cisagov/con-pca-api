@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=emulateIE7" />
-    <title>Coverage for src\reports\views\yearly_view.py: 36%</title>
+    <title>Coverage for src\reports\views\yearly_view.py: 98%</title>
     <link rel="stylesheet" href="style.css" type="text/css" />
     <script type="text/javascript" src="jquery.min.js"></script>
     <script type="text/javascript" src="jquery.hotkeys.js"></script>
@@ -18,7 +18,7 @@
       <div class="content">
         <h1>
           Coverage for <b>src\reports\views\yearly_view.py</b> :
-          <span class="pc_cov">36%</span>
+          <span class="pc_cov">98%</span>
         </h1>
         <img
           id="keyboard_icon"
@@ -26,20 +26,20 @@
           alt="Show keyboard shortcuts"
         />
         <h2 class="stats">
-          42 statements &nbsp;
+          41 statements &nbsp;
           <button
             type="button"
             class="run shortkey_r button_toggle_run"
             title="Toggle lines run"
           >
-            15 run
+            40 run
           </button>
           <button
             type="button"
             class="mis show_mis shortkey_m button_toggle_mis"
             title="Toggle lines missing"
           >
-            27 missing
+            1 missing
           </button>
           <button
             type="button"
@@ -132,21 +132,12 @@
         ><span class="t"><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t9" class="run">
+      <p id="t9" class="pln">
         <span class="n"><a href="#t9">9</a></span
-        ><span class="t"
-          ><span class="key">from</span> <span class="nam">reports</span
-          ><span class="op">.</span><span class="nam">utils</span>
-          <span class="key">import</span>
-          <span class="nam">get_relevant_recommendations</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t10" class="pln">
-        <span class="n"><a href="#t10">10</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t11" class="run">
-        <span class="n"><a href="#t11">11</a></span
+      <p id="t10" class="run">
+        <span class="n"><a href="#t10">10</a></span
         ><span class="t"
           ><span class="key">from</span>
           <span class="nam">rest_framework</span>
@@ -154,8 +145,8 @@
           <span class="nam">status</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t12" class="run">
-        <span class="n"><a href="#t12">12</a></span
+      <p id="t11" class="run">
+        <span class="n"><a href="#t11">11</a></span
         ><span class="t"
           ><span class="key">from</span> <span class="nam">rest_framework</span
           ><span class="op">.</span><span class="nam">response</span>
@@ -163,8 +154,8 @@
           <span class="nam">Response</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t13" class="run">
-        <span class="n"><a href="#t13">13</a></span
+      <p id="t12" class="run">
+        <span class="n"><a href="#t12">12</a></span
         ><span class="t"
           ><span class="key">from</span> <span class="nam">rest_framework</span
           ><span class="op">.</span><span class="nam">views</span>
@@ -172,99 +163,106 @@
           <span class="nam">APIView</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t14" class="pln">
-        <span class="n"><a href="#t14">14</a></span
+      <p id="t13" class="pln">
+        <span class="n"><a href="#t13">13</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t15" class="run">
-        <span class="n"><a href="#t15">15</a></span
+      <p id="t14" class="run">
+        <span class="n"><a href="#t14">14</a></span
         ><span class="t"
           ><span class="key">from</span> <span class="nam">reports</span
           ><span class="op">.</span><span class="nam">utils</span>
           <span class="key">import</span> <span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
+      <p id="t15" class="pln">
+        <span class="n"><a href="#t15">15</a></span
+        ><span class="t">
+          <span class="nam">get_subscription_stats_for_yearly</span
+          ><span class="op">,</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
       <p id="t16" class="pln">
         <span class="n"><a href="#t16">16</a></span
         ><span class="t">
-          <span class="nam">get_subscription_stats_for_yearly</span
+          <span class="nam">get_related_subscription_stats</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t17" class="pln">
         <span class="n"><a href="#t17">17</a></span
         ><span class="t">
-          <span class="nam">get_related_subscription_stats</span
+          <span class="nam">get_template_details</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t18" class="pln">
         <span class="n"><a href="#t18">18</a></span
         ><span class="t">
-          <span class="nam">get_template_details</span
+          <span class="nam">get_statistic_from_group</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t19" class="pln">
         <span class="n"><a href="#t19">19</a></span
         ><span class="t">
-          <span class="nam">get_statistic_from_group</span
+          <span class="nam">ratio_to_percent</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t20" class="pln">
         <span class="n"><a href="#t20">20</a></span
         ><span class="t">
-          <span class="nam">ratio_to_percent</span
+          <span class="nam">format_timedelta</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t21" class="pln">
         <span class="n"><a href="#t21">21</a></span
         ><span class="t">
-          <span class="nam">format_timedelta</span
+          <span class="nam">get_statistic_from_region_group</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t22" class="pln">
         <span class="n"><a href="#t22">22</a></span
         ><span class="t">
-          <span class="nam">get_statistic_from_region_group</span
+          <span class="nam">set_cycle_quarters</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t23" class="pln">
         <span class="n"><a href="#t23">23</a></span
         ><span class="t">
-          <span class="nam">set_cycle_quarters</span
+          <span class="nam">cycle_stats_to_percentage_trend_graph_data</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t24" class="pln">
         <span class="n"><a href="#t24">24</a></span
         ><span class="t">
-          <span class="nam">cycle_stats_to_percentage_trend_graph_data</span
+          <span class="nam">cycle_stats_to_click_rate_vs_report_rate</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t25" class="pln">
         <span class="n"><a href="#t25">25</a></span
         ><span class="t">
-          <span class="nam">cycle_stats_to_click_rate_vs_report_rate</span
+          <span class="nam">determine_trend</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t26" class="pln">
         <span class="n"><a href="#t26">26</a></span
         ><span class="t">
-          <span class="nam">determine_trend</span
+          <span class="nam">get_yearly_start_dates</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t27" class="pln">
         <span class="n"><a href="#t27">27</a></span
         ><span class="t">
-          <span class="nam">get_yearly_start_dates</span
+          <span class="nam">get_relevant_recommendations</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
@@ -371,7 +369,7 @@
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t44" class="mis show_mis">
+      <p id="t44" class="run">
         <span class="n"><a href="#t44">44</a></span
         ><span class="t">
           <span class="nam">subscription_uuid</span> <span class="op">=</span>
@@ -381,7 +379,7 @@
           ><span class="op">]</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t45" class="mis show_mis">
+      <p id="t45" class="run">
         <span class="n"><a href="#t45">45</a></span
         ><span class="t">
           <span class="nam">start_date_param</span> <span class="op">=</span>
@@ -391,7 +389,7 @@
           ><span class="op">]</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t46" class="mis show_mis">
+      <p id="t46" class="run">
         <span class="n"><a href="#t46">46</a></span
         ><span class="t">
           <span class="nam">start_date</span> <span class="op">=</span>
@@ -402,7 +400,7 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t47" class="mis show_mis">
+      <p id="t47" class="run">
         <span class="n"><a href="#t47">47</a></span
         ><span class="t">
           <span class="nam">subscription</span> <span class="op">=</span>
@@ -412,7 +410,7 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t48" class="mis show_mis">
+      <p id="t48" class="run">
         <span class="n"><a href="#t48">48</a></span
         ><span class="t">
           <span class="nam">customer</span> <span class="op">=</span>
@@ -428,7 +426,7 @@
         <span class="n"><a href="#t49">49</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t50" class="mis show_mis">
+      <p id="t50" class="run">
         <span class="n"><a href="#t50">50</a></span
         ><span class="t">
           <span class="nam">dhs_contact</span> <span class="op">=</span>
@@ -444,7 +442,7 @@
         <span class="n"><a href="#t51">51</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t52" class="mis show_mis">
+      <p id="t52" class="run">
         <span class="n"><a href="#t52">52</a></span
         ><span class="t">
           <span class="nam">cycles</span> <span class="op">=</span>
@@ -453,7 +451,7 @@
           ><span class="op">]</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t53" class="mis show_mis">
+      <p id="t53" class="run">
         <span class="n"><a href="#t53">53</a></span
         ><span class="t">
           <span class="nam">set_cycle_quarters</span><span class="op">(</span
@@ -473,7 +471,7 @@
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t56" class="mis show_mis">
+      <p id="t56" class="run">
         <span class="n"><a href="#t56">56</a></span
         ><span class="t">
           <span class="nam">target_count</span> <span class="op">=</span>
@@ -487,7 +485,7 @@
         <span class="n"><a href="#t57">57</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t58" class="mis show_mis">
+      <p id="t58" class="run">
         <span class="n"><a href="#t58">58</a></span
         ><span class="t">
           <span class="nam">yearly_start_date</span><span class="op">,</span>
@@ -529,7 +527,7 @@
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t64" class="mis show_mis">
+      <p id="t64" class="run">
         <span class="n"><a href="#t64">64</a></span
         ><span class="t">
           <span class="nam">subscription_stats</span><span class="op">,</span>
@@ -548,7 +546,7 @@
         ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t67" class="mis show_mis">
+      <p id="t67" class="run">
         <span class="n"><a href="#t67">67</a></span
         ><span class="t">
           <span class="nam">region_stats</span> <span class="op">=</span>
@@ -557,7 +555,7 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t68" class="mis show_mis">
+      <p id="t68" class="run">
         <span class="n"><a href="#t68">68</a></span
         ><span class="t">
           <span class="nam">percentage_trends_data</span>
@@ -576,7 +574,7 @@
         ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t71" class="mis show_mis">
+      <p id="t71" class="run">
         <span class="n"><a href="#t71">71</a></span
         ><span class="t">
           <span class="nam">clickrate_vs_reportrate_data</span>
@@ -595,7 +593,7 @@
         ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t74" class="mis show_mis">
+      <p id="t74" class="run">
         <span class="n"><a href="#t74">74</a></span
         ><span class="t">
           <span class="nam">trend</span> <span class="op">=</span>
@@ -608,7 +606,7 @@
         <span class="n"><a href="#t75">75</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t76" class="mis show_mis">
+      <p id="t76" class="run">
         <span class="n"><a href="#t76">76</a></span
         ><span class="t">
           <span class="nam">customer_address</span> <span class="op">=</span>
@@ -677,7 +675,7 @@
         <span class="n"><a href="#t85">85</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t86" class="mis show_mis">
+      <p id="t86" class="run">
         <span class="n"><a href="#t86">86</a></span
         ><span class="t">
           <span class="nam">metrics</span> <span class="op">=</span>
@@ -1063,7 +1061,7 @@
         ><span class="t"> <span class="op">}</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t141" class="mis show_mis">
+      <p id="t141" class="run">
         <span class="n"><a href="#t141">141</a></span
         ><span class="t">
           <span class="nam">get_template_details</span><span class="op">(</span
@@ -1072,7 +1070,7 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t142" class="mis show_mis">
+      <p id="t142" class="run">
         <span class="n"><a href="#t142">142</a></span
         ><span class="t">
           <span class="nam">recommendation_uuids</span>
@@ -1086,7 +1084,7 @@
         <span class="n"><a href="#t143">143</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t144" class="mis show_mis">
+      <p id="t144" class="run">
         <span class="n"><a href="#t144">144</a></span
         ><span class="t">
           <span class="nam">_recomendations</span> <span class="op">=</span>
@@ -1095,14 +1093,14 @@
           ><span class="op">(</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t145" class="mis show_mis">
+      <p id="t145" class="run">
         <span class="n"><a href="#t145">145</a></span
         ><span class="t">
           <span class="nam">recomendations</span> <span class="op">=</span>
           <span class="op">[</span><span class="op">]</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t146" class="mis show_mis">
+      <p id="t146" class="run">
         <span class="n"><a href="#t146">146</a></span
         ><span class="t">
           <span class="key">for</span> <span class="nam">rec</span>
@@ -1110,7 +1108,7 @@
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t147" class="mis show_mis">
+      <p id="t147" class="run">
         <span class="n"><a href="#t147">147</a></span
         ><span class="t">
           <span class="key">if</span> <span class="nam">rec</span
@@ -1133,7 +1131,7 @@
         <span class="n"><a href="#t149">149</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t150" class="mis show_mis">
+      <p id="t150" class="run">
         <span class="n"><a href="#t150">150</a></span
         ><span class="t">
           <span class="nam">primary_contact</span> <span class="op">=</span>
@@ -1143,7 +1141,7 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t151" class="mis show_mis">
+      <p id="t151" class="run">
         <span class="n"><a href="#t151">151</a></span
         ><span class="t">
           <span class="nam">context</span> <span class="op">=</span>
@@ -1358,7 +1356,7 @@
         <span class="n"><a href="#t178">178</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t179" class="mis show_mis">
+      <p id="t179" class="run">
         <span class="n"><a href="#t179">179</a></span
         ><span class="t">
           <span class="key">return</span> <span class="nam">Response</span
@@ -1376,7 +1374,7 @@
           <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp;
           <a class="nav" href="https://coverage.readthedocs.io"
             >coverage.py v5.3</a
-          >, created at 2020-10-22 14:23 -0600
+          >, created at 2020-10-28 09:16 -0600
         </p>
       </div>
     </div>
