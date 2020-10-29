@@ -25,13 +25,15 @@ try:
 except Exception:
     print("Error getting hostname. Probably running in AWS.")
 
-CORS_ORIGIN_ALLOW_ALL = True
+if DEBUG == 1:
+    CORS_ORIGIN_ALLOW_ALL = True
+else:
+    CORS_ORIGIN_ALLOW_ALL = False
 
-# CORS_ORIGIN_WHITELIST = [
-#     "http://localhost:4200",
-#     "https://localhost:3333",
-#     "http://localhost:8080",
-# ]
+CORS_ORIGIN_WHITELIST = os.environ.get("CORS_ORIGIN_WHITELIST", "").split(",")
+CORS_ALLOWED_ORIGIN_REGEXES = os.environ.get("CORS_ALLOWED_ORIGIN_REGEXES", "").split(
+    ","
+)
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 5000000  # 5 MB
 
