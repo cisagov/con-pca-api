@@ -435,39 +435,45 @@ def get_subscription_stats_for_yearly(
         end_date = utc.localize(end_date)
 
     # Get all cycles that have a date that lies within the given time gap
-    cycles_in_year = []
+
+    cycles_in_year = list(
+        filter(
+            lambda x: cycle_in_yearly_timespan(
+                x["start_date"], x["end_date"], start_date, end_date
+            ),
+            subscription["cycles"],
+        )
+    )
+
+    _check_for_missing_values(cycles_in_year)
+
     campaigns_in_year = []
-    for cycle in subscription["cycles"]:
-        if cycle_in_yearly_timespan(
-            cycle["start_date"], cycle["end_date"], start_date, end_date
-        ):
-            cycles_in_year.append(cycle)
-            for campaign in cycle["campaigns_in_cycle"]:
-                campaigns_in_year.append(campaign)
-                if "campaigns" not in cycle:
-                    cycle["campaigns"] = []
-                cycle["campaigns"].append(campaign)
+    for cycle in cycles_in_year:
+        for campaign in cycle["campaigns_in_cycle"]:
+            campaigns_in_year.append(campaign)
+            cycle["campaigns"].append(campaign)
 
-    campaigns_no_dupliactes = []
-    for campaign in campaigns_in_year:
-        if campaign not in campaigns_no_dupliactes:
-            campaigns_no_dupliactes.append(campaign)
-
-    campaigns_in_year = campaigns_no_dupliactes
+    campaigns_in_year = list(dict.fromkeys(campaigns_in_year))
 
     # Get all the campaigns for the specified cycle from the campaigns
 
     # Get the campaign info from the campaigns, and store in aggregate array
     # and hte cycle specific array
-    campaigns_in_time_gap = []
+
+    campaigns_in_time_gap = list(
+        filter(
+            lambda x: x["campaign_id"] in campaigns_in_year, subscription["campaigns"]
+        )
+    )
+
     for campaign in subscription["campaigns"]:
-        if campaign["campaign_id"] in campaigns_in_year:
-            campaigns_in_time_gap.append(campaign)
-        for cycle in cycles_in_year:
-            if campaign["campaign_id"] in cycle["campaigns"]:
-                if "campaign_list" not in cycle:
-                    cycle["campaign_list"] = []
-                cycle["campaign_list"].append(campaign)
+        campaigns_in_cycle = list(
+            filter(
+                lambda cycle: campaign["campaign_id"] in cycle["campaigns"],
+                cycles_in_year,
+            )
+        )
+        cycle["campaign_list"].extend(campaigns_in_cycle)
 
     # Loop through all campaigns in cycle. Check for unique moments, and appending to campaign_timeline_summary
     campaign_timeline_summary = []
@@ -540,6 +546,14 @@ def get_subscription_stats_for_yearly(
         ),
         cycles_in_year,
     )
+
+
+def _check_for_missing_values(cycles_in_year):
+    for cycle in cycles_in_year:
+        if "campaigns" not in cycle:
+            cycle["campaigns"] = []
+        if "campaign_list" not in cycle:
+            cycle["campaign_list"] = []
 
 
 def get_override_total_reported_for_campagin(subscription, campaign):
