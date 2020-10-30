@@ -510,7 +510,7 @@ def get_subscription_stats_for_yearly(
         reported_override_val_total,
     ) = _get_campaign_results(campaigns_in_time_gap, subscription)
 
-    _get_cycle_results(cycles_in_year)
+    _get_cycle_results(cycles_in_year, reported_override_val)
 
     return (
         generate_subscription_stat_details(
@@ -520,7 +520,7 @@ def get_subscription_stats_for_yearly(
     )
 
 
-def _get_cycle_results(cycles_in_year):
+def _get_cycle_results(cycles_in_year, reported_override_val):
     for cycle in cycles_in_year:
         cycle_timeline_summary = []
         cycle_results = []
