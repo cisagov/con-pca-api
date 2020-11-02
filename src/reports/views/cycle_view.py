@@ -82,19 +82,19 @@ class CycleReportsView(APIView):
         set_cycle_quarters(cycles)
 
         current_cycle = None
-        for cycle in subscription["cycles"]:
-            if cycle["start_date"] == start_date:
-                current_cycle = cycle
-                break
-            else:
-                current_cycle = get_closest_cycle_within_day_range(
-                    subscription, start_date
-                )
+
+        cycles_filter = list(filter(lambda x: x["start_date"] == start_date, cycles))
+
+        if cycles_filter:
+            current_cycle = cycles_filter[0]
+        else:
+            current_cycle = get_closest_cycle_within_day_range(subscription, start_date)
+
         # if cycle is None:
         #     return "Cycle not found"
         dates = {
-            "start": cycle["start_date"],
-            "end": cycle["end_date"],
+            "start": current_cycle["start_date"],
+            "end": current_cycle["end_date"],
         }
 
         # Get statistics for the specified subscription during the specified cycle
@@ -225,28 +225,7 @@ class CycleReportsView(APIView):
         )
         primary_contact = subscription.get("primary_contact")
 
-        click_time_vs_report_time = []
-        for campaign in subscription_stats["campaign_results"]:
-            try:
-                first_click = campaign["campaign_stats"]["clicked"]["minimum"]
-            except Exception:
-                first_click = timedelta()
-            try:
-                first_report = campaign["campaign_stats"]["reported"]["minimum"]
-            except Exception:
-                first_report = timedelta()
-
-            difference = "N/A"
-            if first_click > timedelta() and first_report > timedelta():
-                difference = format_timedelta(first_click - first_report)
-            click_time_vs_report_time.append(
-                {
-                    "level": campaign["deception_level"],
-                    "time_to_first_click": format_timedelta(first_click),
-                    "time_to_first_report": format_timedelta(first_report),
-                    "difference": difference,
-                }
-            )
+        click_time_vs_report_time = self._click_time_vs_report_time(subscription_stats)
 
         templates_by_group = []
 
@@ -302,6 +281,31 @@ class CycleReportsView(APIView):
         context["recommendations"] = recomendations
 
         return Response(context, status=status.HTTP_202_ACCEPTED)
+
+    def _click_time_vs_report_time(self, subscription_stats):
+        click_time_vs_report_time = []
+        for campaign in subscription_stats["campaign_results"]:
+            try:
+                first_click = campaign["campaign_stats"]["clicked"]["minimum"]
+            except Exception:
+                first_click = timedelta()
+            try:
+                first_report = campaign["campaign_stats"]["reported"]["minimum"]
+            except Exception:
+                first_report = timedelta()
+
+            difference = "N/A"
+            if first_click > timedelta() and first_report > timedelta():
+                difference = format_timedelta(first_click - first_report)
+            click_time_vs_report_time.append(
+                {
+                    "level": campaign["deception_level"],
+                    "time_to_first_click": format_timedelta(first_click),
+                    "time_to_first_report": format_timedelta(first_report),
+                    "difference": difference,
+                }
+            )
+        return click_time_vs_report_time
 
 
 class CycleStatusView(APIView):

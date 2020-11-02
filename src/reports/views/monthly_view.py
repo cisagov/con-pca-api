@@ -164,18 +164,24 @@ class MonthlyReportsView(APIView):
         self.getTemplateClickedIndicators(subscription_stats)
 
         active_cycle = subscription["cycles"][0]
-        for cycle in subscription["cycles"]:
-            if cycle["cycle_uuid"] == cycle_uuid:
-                active_cycle = cycle
 
-        active_campaigns = []
-        for campaign in subscription["campaigns"]:
-            if campaign["campaign_id"] in active_cycle["campaigns_in_cycle"]:
-                active_campaigns.append(campaign)
+        cycles_filter = list(
+            filter(lambda x: x["cycle_uuid"] == cycle_uuid, subscription["cycles"])
+        )
 
-        target_count = 0
-        for campaign in active_campaigns:
-            target_count += len(campaign["target_email_list"])
+        if cycles_filter:
+            active_cycle = cycles_filter[0]
+
+        active_campaigns = list(
+            filter(
+                lambda x: x["campaign_id"] == active_cycle["campaigns_in_cycle"],
+                subscription["campaigns"],
+            )
+        )
+
+        target_count = sum(
+            [len(campaign["target_email_list"]) for campaign in active_campaigns]
+        )
 
         opened = get_statistic_from_group(
             subscription_stats, "stats_all", "opened", "count"
@@ -212,20 +218,14 @@ class MonthlyReportsView(APIView):
             "total_users_targeted": total,
             "number_of_email_sent_overall": sent,
             "number_of_clicked_emails": clicked,
-            "percent_of_clicked_emails": 0
-            if sent == 0
-            else round(float(clicked or 0) / float(1 if sent is None else sent), 2),
+            "percent_of_clicked_emails": self._get_percent_rate(sent, clicked),
             "number_of_opened_emails": opened,
             "number_of_phished_users_overall": total,
             "percent_of_phished_users_overall": round(
                 float(clicked or 0) / float(1 if total is None else total), 2
             ),
             "number_of_reports_to_helpdesk": reported,
-            "percent_report_rate": 0
-            if opened == 0
-            else round(
-                float(reported or 0) / float(1 if opened is None else opened), 2
-            ),
+            "percent_report_rate": self._get_percent_rate(opened, reported),
             "reports_to_clicks_ratio": get_reports_to_click(subscription_stats),
             "avg_time_to_first_click": get_statistic_from_group(
                 subscription_stats, "stats_all", "clicked", "average"
@@ -233,17 +233,21 @@ class MonthlyReportsView(APIView):
             "avg_time_to_first_report": get_statistic_from_group(
                 subscription_stats, "stats_all", "reported", "average"
             ),
-            "ratio_reports_to_clicks": 0
-            if clicked == 0
-            else round(
-                float(reported or 0) / float(1 if clicked is None else clicked), 2
-            ),
+            "ratio_reports_to_clicks": self._get_percent_rate(clicked, reported),
             "start_date": active_cycle["start_date"],
             "end_date": display_end_date,
             "target_count": target_count,
         }
 
         return metrics, subscription_stats
+
+    def _get_percent_rate(self, value, reported):
+        percent_rate = (
+            0
+            if value == 0
+            else round(float(reported or 0) / float(1 if value is None else value), 2)
+        )
+        return percent_rate
 
     def get(self, request, **kwargs):
         subscription_uuid = self.kwargs["subscription_uuid"]

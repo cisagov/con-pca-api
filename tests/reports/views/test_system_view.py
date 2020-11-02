@@ -165,10 +165,98 @@ def get_customer():
     }
 
 
+def get_campaign():
+    return {
+        "campaign_uuid": "629ccd2a-1b4d-4bd8-b076-32db9725674e",
+        "campaign_id": 1,
+        "subscription_uuid": "9e97f76f-3010-4bbf-9910-133426fad9d6",
+        "cycle_uuid": "1deff1a1-a6b4-4a21-8d45-4cbc17a33741",
+        "name": "Slug Coding_1.3.0.SystemTerminationRequest.2020-10-30.2020-12-29",
+        "created_date": "2020-10-30T16:16:48.008Z",
+        "launch_date": "2020-10-30T16:17:46.751Z",
+        "send_by_date": "2020-12-29T16:17:46.751Z",
+        "completed_date": None,
+        "email_template": "Slug Coding_1.3.0.SystemTerminationRequest",
+        "email_template_id": 1,
+        "template_uuid": "d8df8bc1-ea8c-4533-9a13-3466b2da9d48",
+        "deception_level": 3,
+        "landing_page_template": "default",
+        "status": "Queued",
+        "results": [],
+        "phish_results": {
+            "sent": 0,
+            "opened": 0,
+            "clicked": 0,
+            "submitted": 0,
+            "reported": 0,
+        },
+        "phish_results_dirty": True,
+        "groups": [
+            {
+                "id": 1,
+                "name": "Slug Coding_1.Targets.3.0",
+                "targets": [
+                    {
+                        "first_name": "one",
+                        "last_name": "test",
+                        "position": "ceo",
+                        "email": "test1@example.com",
+                    }
+                ],
+                "modified_date": "2020-10-30T16:16:48.805Z",
+            }
+        ],
+        "timeline": [
+            {
+                "email": None,
+                "time": "2020-10-30T16:16:48.008Z",
+                "message": "Campaign Created",
+                "details": "",
+                "duplicate": None,
+            },
+            {
+                "email": "test1@example.com",
+                "time": "2020-10-30T16:17:54.008Z",
+                "message": "Email Sent",
+                "details": "",
+                "duplicate": None,
+            },
+        ],
+        "target_email_list": [
+            {
+                "first_name": "one",
+                "last_name": "test",
+                "position": "ceo",
+                "email": "test1@example.com",
+            }
+        ],
+        "smtp": {
+            "id": 3,
+            "name": "Slug Coding_1.3.0.SystemTerminationRequest.2020-10-30.2020-12-29",
+            "host": "smtp.mailgun.org:465",
+            "interface_type": "SMTP",
+            "from_address": "IT NoReply <no-reply@inltesting.xyz>",
+            "ignore_cert_errors": True,
+            "modified_date": "2020-10-30T16:16:49.000Z",
+            "headers": [
+                {"key": "X-Gophish-Contact", "value": "vulnerability@cisa.dhs.gov"},
+                {"key": "DHS-PHISH", "value": "1deff1a1-a6b4-4a21-8d45-4cbc17a33741"},
+            ],
+        },
+        "created_by": "dev user",
+        "cb_timestamp": "2020-10-30T16:16:49.870Z",
+        "last_updated_by": "dev user",
+        "lub_timestamp": "2020-10-30T16:17:54.927Z",
+    }
+
+
 @pytest.mark.django_db
 @mock.patch("api.services.SubscriptionService.get_list", return_value=[subscription()])
 @mock.patch("api.services.CustomerService.get_list", return_value=[get_customer()])
-def test_system_view_get(mock_subscription_get_list, mock_customer_get_list, client):
+@mock.patch("api.services.CampaignService.get_list", return_value=[get_campaign()])
+def test_system_view_get(
+    mock_subscription_get_list, mock_customer_get_list, mock_campaign_get_list, client
+):
     result = client.get("/reports/aggregate/")
 
     assert mock_subscription_get_list.called
