@@ -1,4 +1,6 @@
 import logging
+import json
+import dateutil.parser
 
 from api.utils.subscription.static import YEARLY_MINUTES, MONTHLY_MINUTES, CYCLE_MINUTES
 from api.utils.subscription.subscriptions import send_start_notification
@@ -22,53 +24,30 @@ campaign_service = CampaignService()
 
 
 def lambda_handler(event, context):
-    logger.info("Getting tasks to execute")
+    for record in event["Records"]:
+        payload = json.loads(record["body"])
+        subscription_uuid = payload["subscription_uuid"]
+        task = payload["task"]
 
-    subscriptions = subscription_service.get_list()
+        logger.info(f"Executing task {task}")
+        subscription = subscription_service.get(subscription_uuid)
 
-    executed_count = 0
+        task["scheduled_date"] = dateutil.parser.parse(task["scheduled_date"])
 
-    for s in subscriptions:
-        tasks = s.get("tasks")
-        if tasks:
-            for t in tasks:
-                scheduled_date = t.get("scheduled_date")
-                if not scheduled_date:
-                    scheduled_date = datetime.now() + timedelta(days=1)
-
-                executed = t.get("executed")
-
-                if (
-                    scheduled_date.replace(tzinfo=None) < datetime.utcnow()
-                    and not executed
-                ):
-                    logger.info(f"Executing task {t}")
-
-                    # Execute Task
-                    try:
-                        s["campaigns"] = campaign_service.get_list(
-                            {"subscription_uuid": s["subscription_uuid"]}
-                        )
-                        execute_task(s, t["message_type"])
-                        executed_count += 1
-                        t["executed"] = True
-                        t["error"] = ""
-                        t["executed_date"] = datetime.now()
-                        update_task(s["subscription_uuid"], t)
-                        add_new_task(
-                            s["subscription_uuid"],
-                            t["scheduled_date"],
-                            t["message_type"],
-                        )
-
-                        logger.info(f"Successfully executed task {t}")
-
-                    except BaseException as e:
-                        logger.exception(e)
-                        t["error"] = str(e)
-                        update_task(s["subscription_uuid"], t)
-
-    logger.info(f"{str(executed_count)} tasks executed")
+        try:
+            execute_task(subscription, task["message_type"])
+            task["executed"] = True
+            task["error"] = ""
+            task["executed_date"] = datetime.now()
+            update_task(subscription_uuid, task)
+            add_new_task(
+                subscription_uuid, task["scheduled_date"], task["message_type"]
+            )
+            logger.info(f"Successfully executed task {task}")
+        except BaseException as e:
+            logger.exception(e)
+            task["error"] = str(e)
+            update_task(subscription_uuid, task)
 
 
 def update_task(subscription_uuid, task):

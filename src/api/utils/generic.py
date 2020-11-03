@@ -53,3 +53,10 @@ def customer_spoof_email(customer_info):
         fake.first_name().lower(), fake.last_name().lower(), customer_domain
     )
     return spoof_email
+
+
+def format_json(o):
+    if isinstance(o, datetime):
+        return o.isoformat()
+    else:
+        return str(o)
