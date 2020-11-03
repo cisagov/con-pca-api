@@ -203,6 +203,15 @@ class GenericRepository(object):
         )
         self.model_cls = model_cls
         self.uuid_name = uuid_name or f"{self.collection_name}_uuid"
+        self.collection.create_index(self.uuid_name)
+        if self.collection_name == "campaign":
+            self.collection.create_index("campaign_id")
+            self.collection.create_index("subscription_uuid")
+            self.collection.create_index("cycle_uuid")
+        elif self.collection_name == "target":
+            self.collection.create_index("email")
+        elif self.collection_name == "subscription":
+            self.collection.create_index("customer_uuid")
 
     @staticmethod
     def document_to_object(document):
