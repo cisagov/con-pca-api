@@ -19,7 +19,7 @@ subscription_service = SubscriptionService()
 def create_subscription_name(customer: dict):
     """Returns a subscription name."""
     subscriptions = subscription_service.get_list(
-        {"customer_uuid": customer["customer_uuid"]}
+        {"customer_uuid": str(customer["customer_uuid"])}
     )
 
     if not subscriptions:
