@@ -210,6 +210,8 @@ class GenericRepository(object):
             self.collection.create_index("cycle_uuid")
         elif self.collection_name == "target":
             self.collection.create_index("email")
+        elif self.collection_name == "subscription":
+            self.collection.create_index("customer_uuid")
 
     @staticmethod
     def document_to_object(document):
