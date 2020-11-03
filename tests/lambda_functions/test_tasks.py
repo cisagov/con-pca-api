@@ -1,4 +1,4 @@
-from src.lambda_functions.tasks import handler
+from src.lambda_functions.tasks import process_tasks as handler
 from unittest import mock
 from faker import Faker
 from datetime import datetime
