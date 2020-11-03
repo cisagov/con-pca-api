@@ -15,7 +15,7 @@ logger.setLevel(logging.INFO)
 application = get_wsgi_application()
 
 
-def lambda_handler():
+def lambda_handler(event, context):
     logger.info("Getting tasks to queue")
     tasks = get_tasks_to_queue()
 
