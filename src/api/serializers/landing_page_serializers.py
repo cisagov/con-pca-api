@@ -42,11 +42,6 @@ class LandingPageResponseSerializer(serializers.Serializer):
     landing_page_uuid = serializers.UUIDField()
 
 
-class LandingPageStopResponseSerializer(serializers.Serializer):
-    landing_page = LandingPageSerializer()
-    subscriptions = SubscriptionSerializer(many=True)
-
-
 class LandingPageQuerySerializer(serializers.Serializer):
     gophish_template_id = serializers.IntegerField(required=False)
     name = serializers.CharField(required=False)
