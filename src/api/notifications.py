@@ -160,12 +160,12 @@ class EmailSender:
                     end_date.split(".")[0], "%Y-%m-%dT%H:%M:%S"
                 )
 
+        # Required to convert list of UUID's to strings for DB query
+        uuid_string_list = list(
+            map(str, self.subscription.get("templates_selected_uuid_list", []))
+        )
         templates = template_service.get_list(
-            {
-                "template_uuid": {
-                    "$in": self.subscription.get("templates_selected_uuid_list")
-                }
-            }
+            parameters={"template_uuid": {"$in": uuid_string_list}}
         )
         phishing_email = list(
             filter(
@@ -191,7 +191,7 @@ class EmailSender:
             "phishing_email": phishing_email,
             "email_count": email_count,
             "dhs_contact": dhs_contact,
-            "phishing_domain": phishing_email.split("@")[-1],
+            "phishing_domain": phishing_email.split("@")[-1].replace(">", ""),
             "x_gophish_contact": DEFAULT_X_GOPHISH_CONTACT,
         }
 
