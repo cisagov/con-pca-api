@@ -51,14 +51,6 @@ def calculate_subscription_start_end_date(start_date):
     return start_date, end_date
 
 
-def get_subscription_status(start_date):
-    """Returns status for subscription based upon start date."""
-    if start_date <= (datetime.now() + timedelta(minutes=DELAY_MINUTES)):
-        return "In Progress"
-    else:
-        return "Queued"
-
-
 def get_subscription_cycles(campaigns, start_date, end_date, new_uuid):
     """Returns cycle data for a subscription."""
     campaigns_in_cycle = [c["campaign_id"] for c in campaigns]

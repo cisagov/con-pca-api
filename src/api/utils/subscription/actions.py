@@ -12,7 +12,6 @@ from api.utils.subscription.subscriptions import (
     init_subscription_tasks,
     create_subscription_name,
     get_subscription_cycles,
-    get_subscription_status,
     send_stop_notification,
     get_staggered_dates_in_range,
 )
@@ -141,7 +140,7 @@ def start_subscription(subscription_uuid, new_cycle=False):
     subscription["templates_selected_uuid_list"] = selected_templates
 
     subscription["end_date"] = end_date.strftime("%Y-%m-%dT%H:%M:%S")
-    subscription["status"] = get_subscription_status(start_date)
+    subscription["status"] = "In Progress"
     if not subscription.get("cycles"):
         subscription["cycles"] = []
     subscription["cycles"].append(
