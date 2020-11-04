@@ -58,6 +58,14 @@ class DBService:
             logging.exception(e)
             raise e
 
+    def convert_fields(self, fields):
+        if not fields:
+            return None
+        result = {}
+        for field in fields:
+            result[field] = 1
+        return result
+
     def delete(self, uuid):
         resp = db.delete_single(
             uuid=str(uuid),
@@ -65,28 +73,30 @@ class DBService:
             model=self.model,
             validation_model=self.validation,
         )
-        serializer = self.response_serializer(data=resp)
-        self.validate_serializer(serializer)
-        return serializer.validated_data
+        serializer = self.response_serializer(resp)
+        return serializer.data
 
-    def get(self, uuid):
+    def get(self, uuid, fields=None):
+        fields = self.convert_fields(fields)
         result = db.get_single(
             uuid=str(uuid),
             collection=self.collection,
             model=self.model,
             validation_model=self.validation,
+            fields=fields,
         )
         serializer = self.model_serializer(data=result)
         self.validate_serializer(serializer)
-
         return serializer.validated_data
 
-    def get_list(self, parameters=None):
+    def get_list(self, parameters=None, fields=None):
+        fields = self.convert_fields(fields)
         result = db.get_list(
             parameters=parameters,
             collection=self.collection,
             model=self.model,
             validation_model=self.validation,
+            fields=fields,
         )
         serializer = self.model_serializer(data=result, many=True)
         self.validate_serializer(serializer)
@@ -105,9 +115,8 @@ class DBService:
             if result.get("errors"):
                 logging.error(result.get("errors"))
                 raise Exception(result.get("errors"))
-        serializer = self.response_serializer(data=result)
-        self.validate_serializer(serializer)
-        return serializer.validated_data
+        serializer = self.response_serializer(result)
+        return serializer.data
 
     def update(self, uuid, data):
         serializer = self.update_serializer(data=data)

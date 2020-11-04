@@ -103,14 +103,14 @@ class GenericRepositoryInterface(object):
         """
         return self.repository.count(parameters or {})
 
-    def get(self, uuid):
+    def get(self, uuid, fields=None):
         """
         Get.
 
         Takes in uuid and send to repository.
         Returns exisiting object with given uuid.
         """
-        return self.repository.get(uuid)
+        return self.repository.get(uuid, fields or {})
 
     def create(self, generic_object):
         """
@@ -258,14 +258,17 @@ class GenericRepository(object):
             result.append(document)
         return result
 
-    async def get(self, uuid):
+    async def get(self, uuid, fields=None):
         """
         Get.
 
         Generic method that can be used to get a
         single document by a given uuid.
         """
-        fields = {"_id": 0}
+        if fields is not None:
+            fields["_id"] = 0
+        elif 0 in fields.values():
+            fields = {"_id": 0}
         return await self.collection.find_one({self.uuid_name: uuid}, fields)
 
     async def create(self, object):
