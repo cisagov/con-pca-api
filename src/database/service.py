@@ -43,13 +43,13 @@ class Service:
         """
         return await self.service.filter(parameters, fields)
 
-    async def get(self, uuid):
+    async def get(self, uuid, fields=None):
         """
         Get.
 
         Given a uuid of object, will return document with unique uuid.
         """
-        return await self.service.get(uuid)
+        return await self.service.get(uuid, fields)
 
     async def create(self, to_create):
         """

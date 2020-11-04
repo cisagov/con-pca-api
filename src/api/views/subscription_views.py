@@ -31,11 +31,7 @@ campaign_service = CampaignService()
 
 
 class SubscriptionsListView(APIView):
-    """
-    This is the SubscriptionsListView APIView.
-
-    This handles the API to get a List of Subscriptions.
-    """
+    """SubscriptionsListView."""
 
     @swagger_auto_schema(operation_id="List of Subscriptions")
     def get(self, request):
@@ -60,7 +56,21 @@ class SubscriptionsListView(APIView):
         if request.GET.get("dhs_contact"):
             parameters["dhs_contact_uuid"] = request.GET.get("dhs_contact")
 
-        subscription_list = subscription_service.get_list(parameters)
+        subscription_list = subscription_service.get_list(
+            parameters=parameters,
+            fields=[
+                "subscription_uuid",
+                "customer_uuid",
+                "name",
+                "status",
+                "start_date",
+                "active",
+                "archived",
+                "lub_timestamp",
+                "primary_contact",
+                "dhs_contact_uuid",
+            ],
+        )
         return Response(subscription_list)
 
     @swagger_auto_schema(

@@ -62,14 +62,16 @@ def __get_service_loop(collection, model, validation_model):
     return service, loop
 
 
-def get_list(parameters, collection, model, validation_model):
+def get_list(parameters, collection, model, validation_model, fields=None):
     """
     Get_data private method.
 
     This handles getting the data from the db.
     """
     service, loop = __get_service_loop(collection, model, validation_model)
-    document_list = loop.run_until_complete(service.filter_list(parameters=parameters))
+    document_list = loop.run_until_complete(
+        service.filter_list(parameters=parameters, fields=fields)
+    )
     return document_list
 
 
@@ -91,14 +93,14 @@ def save_single(post_data, collection, model, validation_model):
     return created_response
 
 
-def get_single(uuid, collection, model, validation_model):
+def get_single(uuid, collection, model, validation_model, fields=None):
     """
     Get_single method.
 
     This handles getting the data from the db.
     """
     service, loop = __get_service_loop(collection, model, validation_model)
-    document = loop.run_until_complete(service.get(uuid=uuid))
+    document = loop.run_until_complete(service.get(uuid=uuid, fields=fields))
     return document
 
 
