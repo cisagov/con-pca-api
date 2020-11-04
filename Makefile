@@ -107,7 +107,7 @@ mongo_dump:
 mongo_restore:
 	docker exec -i pca-mongodb sh -c 'mongorestore --host mongodb --port 27017 -u ${DB_USER} -p ${DB_PW} --authenticationDatabase admin -d pca_data_dev --archive' < src/scripts/data/db_dumps/latest.dump
 
-make tasks:
+tasks:
 	python src/lambda_functions/tasks/
 
 lint:

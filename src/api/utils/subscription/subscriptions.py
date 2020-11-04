@@ -2,6 +2,7 @@
 # Standard Python Libraries
 from datetime import datetime, timedelta
 from uuid import uuid4
+import dateutil.parser
 
 # Third-Party Libraries
 from api.notifications import EmailSender
@@ -37,8 +38,9 @@ def calculate_subscription_start_end_date(start_date):
         start_date = now.strftime("%Y-%m-%dT%H:%M:%S")
 
     if not isinstance(start_date, datetime):
-        start_date = datetime.strptime(start_date.split(".")[0], "%Y-%m-%dT%H:%M:%S")
-    if start_date.replace(tzinfo=None) < now:
+        start_date = dateutil.parser.parse(start_date).replace(tzinfo=None)
+
+    if start_date < now:
         start_date = now
 
     start_date = start_date + timedelta(minutes=DELAY_MINUTES)
