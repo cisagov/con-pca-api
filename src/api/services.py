@@ -74,7 +74,8 @@ class DBService:
             validation_model=self.validation,
         )
         serializer = self.response_serializer(resp)
-        return serializer.data
+        self.validate_serializer(serializer)
+        return serializer.validated_data
 
     def get(self, uuid, fields=None):
         fields = self.convert_fields(fields)
@@ -115,8 +116,9 @@ class DBService:
             if result.get("errors"):
                 logging.error(result.get("errors"))
                 raise Exception(result.get("errors"))
-        serializer = self.response_serializer(result)
-        return serializer.data
+        serializer = self.response_serializer(data=result)
+        self.validate_serializer(serializer)
+        return serializer.validated_data
 
     def update(self, uuid, data):
         serializer = self.update_serializer(data=data)
