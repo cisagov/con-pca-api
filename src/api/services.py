@@ -73,7 +73,7 @@ class DBService:
             model=self.model,
             validation_model=self.validation,
         )
-        serializer = self.response_serializer(resp)
+        serializer = self.response_serializer(data=resp)
         self.validate_serializer(serializer)
         return serializer.validated_data
 
