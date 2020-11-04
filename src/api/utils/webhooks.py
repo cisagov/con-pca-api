@@ -10,6 +10,7 @@ def push_webhook(campaign_uuid, email, message, time, details):
         uuid=campaign_uuid,
         field="timeline",
         data=data,
+        options={hint: {campaign_uuid: 1}, upsert: False},
     )
 
 

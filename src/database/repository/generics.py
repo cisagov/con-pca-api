@@ -148,11 +148,11 @@ class GenericRepositoryInterface(object):
         """
         return self.repository.update_nested(uuid, generic_object, params)
 
-    def push_nested_item(self, uuid, generic_object, params=None):
+    def push_nested_item(self, uuid, generic_object, params=None, options=None):
         """
         Pushes item to nested list.
         """
-        return self.repository.push_nested_item(uuid, generic_object, params)
+        return self.repository.push_nested_item(uuid, generic_object, params, options)
 
     def delete(self, uuid):
         """
@@ -322,12 +322,14 @@ class GenericRepository(object):
 
         return await self.collection.update_one(object_params, {"$set": object})
 
-    async def push_nested_item(self, uuid, object, params=None):
+    async def push_nested_item(self, uuid, object, params=None, options=None):
         object_params = {self.uuid_name: uuid}
         if params:
             object_params = {**object_params, **params}
 
-        return await self.collection.update_one(object_params, {"$push": object})
+        return await self.collection.update_one(
+            object_params, {"$push": object}, options
+        )
 
     async def delete(self, uuid):
         """

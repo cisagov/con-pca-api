@@ -149,7 +149,7 @@ class DBService:
             params=params,
         )
 
-    def push_nested(self, uuid, field, data, params=None):
+    def push_nested(self, uuid, field, data, params=None, options=None):
         return db.push_nested_item(
             uuid=str(uuid),
             field=field,
@@ -158,6 +158,7 @@ class DBService:
             model=self.model,
             validation_model=self.validation,
             params=params,
+            options=options,
         )
 
     def exists(self, parameters=None):

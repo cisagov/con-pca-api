@@ -100,13 +100,13 @@ class Service:
         resp = await self.service.update_nested(uuid, to_update, params)
         return resp.raw_result
 
-    async def push_nested_item(self, uuid, item, params=None):
+    async def push_nested_item(self, uuid, item, params=None, options=None):
         """
         Push
 
         Given a json object, it will add that object to an array in the document.
         """
-        resp = await self.service.push_nested_item(uuid, item, params)
+        resp = await self.service.push_nested_item(uuid, item, params, options)
         return resp.raw_result
 
     async def delete(self, uuid):
