@@ -792,6 +792,8 @@ def count_timeline_moments(moments):
 
 
 def update_phish_results(subscription):
+    if not subscription.get("cycles"):
+        return
     for cycle in subscription["cycles"]:
         if cycle["phish_results_dirty"]:
             generate_cycle_phish_results(subscription, cycle)

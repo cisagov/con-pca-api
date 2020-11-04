@@ -38,7 +38,8 @@ class SubscriptionTasksSerializer(serializers.Serializer):
     task_uuid = serializers.CharField()
     message_type = serializers.CharField()
     scheduled_date = serializers.DateTimeField()
-    executed = serializers.BooleanField(required=False)
+    queued = serializers.BooleanField(default=False)
+    executed = serializers.BooleanField(default=False)
     executed_date = serializers.DateTimeField(required=False, allow_null=True)
     error = serializers.CharField(required=False, allow_null=True, allow_blank=True)
 
@@ -53,28 +54,31 @@ class SubscriptionSerializer(serializers.Serializer):
         required=False,
         max_length=100,
         allow_blank=True,
+        allow_null=True,
     )
     target_domain = serializers.CharField(required=False)
-    keywords = serializers.CharField(max_length=100, required=False, allow_blank=True)
+    keywords = serializers.CharField(
+        max_length=100, required=False, allow_blank=True, allow_null=True
+    )
     start_date = serializers.DateTimeField(required=False)
-    end_date = serializers.DateTimeField(required=False)
+    end_date = serializers.DateTimeField(required=False, allow_null=True)
     campaigns = GoPhishCampaignsSerializer(many=True, required=False)
     primary_contact = CustomerContactSerializer(required=False)
     dhs_contact_uuid = serializers.UUIDField(required=False)
     status = serializers.CharField(required=False, max_length=100)
     target_email_list = SubscriptionTargetSerializer(required=False, many=True)
     target_email_list_cached_copy = SubscriptionTargetSerializer(
-        many=True, required=False
+        many=True, required=False, allow_null=True
     )
     templates_selected_uuid_list = serializers.ListField(
-        child=serializers.UUIDField(), required=False
+        child=serializers.UUIDField(), required=False, allow_null=True
     )
     sending_profile_name = serializers.CharField(required=False)
     active = serializers.BooleanField(required=False)
     archived = serializers.BooleanField(required=False)
     manually_stopped = serializers.BooleanField(required=False)
     tasks = SubscriptionTasksSerializer(many=True, required=False)
-    cycles = CycleSerializer(required=False, many=True)
+    cycles = CycleSerializer(required=False, many=True, allow_null=True)
     email_report_history = SubscriptionEmailHistorySerializer(required=False, many=True)
     stagger_emails = serializers.BooleanField(required=False)
     # db data tracking added below
@@ -95,22 +99,16 @@ class SubscriptionPostSerializer(serializers.Serializer):
         max_length=100, required=False, allow_blank=True, allow_null=True
     )
     start_date = serializers.DateTimeField()
-    end_date = serializers.DateTimeField(required=False)
     primary_contact = CustomerContactSerializer()
     dhs_contact_uuid = serializers.UUIDField()
     status = serializers.CharField(max_length=100)
-    target_email_list = SubscriptionTargetSerializer(many=True)
-    target_email_list_cached_copy = SubscriptionTargetSerializer(many=True)
-    tasks = SubscriptionTasksSerializer(many=True, required=False)
-    templates_selected_uuid_list = serializers.ListField(
-        child=serializers.UUIDField(), required=False
+    target_email_list = SubscriptionTargetSerializer(required=True, many=True)
+    target_email_list_cached_copy = SubscriptionTargetSerializer(
+        required=True, many=True
     )
+    tasks = SubscriptionTasksSerializer(many=True, required=True)
     sending_profile_name = serializers.CharField()
     active = serializers.BooleanField()
-    archived = serializers.BooleanField(default=False)
-    manually_stopped = serializers.BooleanField(default=False)
-    cycles = CycleSerializer(required=False, many=True)
-    email_report_history = SubscriptionEmailHistorySerializer(required=False, many=True)
     stagger_emails = serializers.BooleanField(default=True)
 
 

@@ -38,7 +38,9 @@ def calculate_subscription_start_end_date(start_date):
         start_date = now.strftime("%Y-%m-%dT%H:%M:%S")
 
     if not isinstance(start_date, datetime):
-        start_date = dateutil.parser.parse(start_date).replace(tzinfo=None)
+        start_date = dateutil.parser.parse(start_date)
+
+    start_date = start_date.replace(tzinfo=None)
 
     if start_date < now:
         start_date = now

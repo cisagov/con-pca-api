@@ -88,6 +88,7 @@ def add_new_task(subscription_uuid, scheduled_date, message_type):
 
 def execute_task(subscription, message_type):
     task = {
+        "start_subscription": start_subscription,
         "start_subscription_email": start_subscription_email,
         "monthly_report": email_subscription_monthly,
         "cycle_report": email_subscription_cycle,
@@ -95,6 +96,10 @@ def execute_task(subscription, message_type):
         "start_new_cycle": start_subscription_cycle,
     }
     task[message_type](subscription)
+
+
+def start_subscription(subscription):
+    actions.start_subscription(subscription["subscription_uuid"])
 
 
 def start_subscription_email(subscription):
@@ -105,16 +110,7 @@ def start_subscription_email(subscription):
 
 
 def start_subscription_cycle(subscription):
-    """
-    Create the next subscription cycle
-    """
-    actions.start_subscription(
-        subscription_uuid=subscription.get("subscription_uuid"), new_cycle=True
-    )
-    context = {
-        "subscription_uuid": subscription.get("subscription_uuid"),
-    }
-    return context
+    actions.start_subscription(subscription["subscription_uuid"], new_cycle=True)
 
 
 def email_subscription_monthly(subscription):

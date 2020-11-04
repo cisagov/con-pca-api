@@ -4,6 +4,7 @@ import json
 import os
 from datetime import datetime
 
+from lambda_functions.tasks.process_tasks import update_task
 from api.services import SubscriptionService
 from api.utils.generic import format_json
 
@@ -33,10 +34,15 @@ def get_tasks_to_queue():
         for task in tasks:
             scheduled_date = task.get("scheduled_date")
             executed = task.get("executed")
-            if scheduled_date.replace(tzinfo=None) < datetime.utcnow() and not executed:
+            if (
+                scheduled_date.replace(tzinfo=None) < datetime.utcnow()
+                and not executed
+                and not task.get("queued")
+            ):
                 tasks_to_queue.append(
                     {"subscription_uuid": s["subscription_uuid"], "task": task}
                 )
+                task["queued"] = True
     return tasks_to_queue
 
 
@@ -49,3 +55,4 @@ def queue_tasks(tasks):
             QueueUrl=os.environ["TASKS_QUEUE_URL"],
             MessageBody=json.dumps(task, default=format_json),
         )
+        update_task(task["subscription_uuid"], task["task"])

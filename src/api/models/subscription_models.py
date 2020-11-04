@@ -74,6 +74,7 @@ class ScheduledTaskModel(Model):
     task_uuid = StringType()
     message_type = StringType()
     scheduled_date = DateTimeType()
+    queued = BooleanType()
     executed = BooleanType()
     executed_date = DateTimeType()
     error = StringType()
