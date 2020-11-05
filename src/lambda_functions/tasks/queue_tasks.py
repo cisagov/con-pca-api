@@ -42,7 +42,6 @@ def get_tasks_to_queue():
                 tasks_to_queue.append(
                     {"subscription_uuid": s["subscription_uuid"], "task": task}
                 )
-                task["queued"] = True
     return tasks_to_queue
 
 
@@ -51,6 +50,7 @@ def queue_tasks(tasks):
 
     for task in tasks:
         logger.info(f"Queueing task {task}")
+        task["queued"] = True
         sqs.send_message(
             QueueUrl=os.environ["TASKS_QUEUE_URL"],
             MessageBody=json.dumps(task, default=format_json),

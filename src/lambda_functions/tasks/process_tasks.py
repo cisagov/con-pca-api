@@ -4,6 +4,7 @@ import dateutil.parser
 
 from api.utils.subscription.static import YEARLY_MINUTES, MONTHLY_MINUTES, CYCLE_MINUTES
 from api.utils.subscription.subscriptions import send_start_notification
+from api.utils.subscription.cycles import get_last_run_cycle
 from api.utils.subscription import actions
 from api.services import SubscriptionService, CampaignService
 
@@ -138,7 +139,11 @@ def email_subscription_cycle(subscription):
     schedule the next subscription cycle report email
     """
     # Send email
-    sender = EmailSender(subscription, "cycle_report", datetime.now().isoformat())
+    selected_cycle = get_last_run_cycle(subscription["cycles"][-2:])
+
+    sender = EmailSender(
+        subscription, "cycle_report", selected_cycle["start_date"].isoformat()
+    )
     sender.send()
 
     context = {
