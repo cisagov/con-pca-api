@@ -11,6 +11,7 @@ from api.utils.subscription.actions import (
     start_subscription,
     stop_subscription,
     create_subscription,
+    restart_subscription,
 )
 from reports.utils import update_phish_results
 from drf_yasg.utils import swagger_auto_schema
@@ -173,7 +174,7 @@ class SubscriptionRestartView(APIView):
 
     @swagger_auto_schema(operation_id="Restart Subscription")
     def get(self, request, subscription_uuid):
-        created_response = start_subscription(subscription_uuid)
+        created_response = restart_subscription(subscription_uuid)
         return Response(created_response, status=status.HTTP_202_ACCEPTED)
 
 

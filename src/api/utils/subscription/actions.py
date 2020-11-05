@@ -51,6 +51,22 @@ def create_subscription(subscription):
     return response
 
 
+def restart_subscription(subscription_uuid):
+    subscription = subscription_service.get(subscription_uuid)
+    data = {
+        "status": "Queued",
+        "tasks": [
+            {
+                "task_uuid": str(uuid.uuid4()),
+                "message_type": "start_subscription",
+                "scheduled_date": subscription["start_date"],
+                "executed": False,
+            }
+        ],
+    }
+    return subscription_service.update(subscription_uuid, data)
+
+
 def start_subscription(subscription_uuid, new_cycle=False):
     """
     Returns a subscription from database.
