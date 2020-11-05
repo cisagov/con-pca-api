@@ -76,6 +76,7 @@ def add_new_task(subscription_uuid, scheduled_date, message_type):
             "message_type": message_type,
             "scheduled_date": new_date,
             "executed": False,
+            "queued": False,
         }
 
         logger.info(f"Adding new task {task}")
