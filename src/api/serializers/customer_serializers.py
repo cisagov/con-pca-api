@@ -28,7 +28,11 @@ class CustomerContactSerializer(serializers.Serializer):
     )
     email = serializers.EmailField(max_length=None, min_length=None, allow_blank=False)
     notes = serializers.CharField(
-        required=False, max_length=None, min_length=None, allow_blank=True
+        required=False,
+        max_length=None,
+        min_length=None,
+        allow_blank=True,
+        allow_null=True,
     )
     active = serializers.BooleanField(default=True, allow_null=False)
 

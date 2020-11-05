@@ -73,35 +73,28 @@ class DBService:
             model=self.model,
             validation_model=self.validation,
         )
-        serializer = self.response_serializer(data=resp)
-        self.validate_serializer(serializer)
-        return serializer.validated_data
+        serializer = self.response_serializer(resp)
+        return serializer.data
 
     def get(self, uuid, fields=None):
         fields = self.convert_fields(fields)
-        result = db.get_single(
+        return db.get_single(
             uuid=str(uuid),
             collection=self.collection,
             model=self.model,
             validation_model=self.validation,
             fields=fields,
         )
-        serializer = self.model_serializer(data=result)
-        self.validate_serializer(serializer)
-        return serializer.validated_data
 
     def get_list(self, parameters=None, fields=None):
         fields = self.convert_fields(fields)
-        result = db.get_list(
+        return db.get_list(
             parameters=parameters,
             collection=self.collection,
             model=self.model,
             validation_model=self.validation,
             fields=fields,
         )
-        serializer = self.model_serializer(data=result, many=True)
-        self.validate_serializer(serializer)
-        return serializer.validated_data
 
     def save(self, data):
         serializer = self.save_serializer(data=data)
@@ -116,9 +109,8 @@ class DBService:
             if result.get("errors"):
                 logging.error(result.get("errors"))
                 raise Exception(result.get("errors"))
-        serializer = self.response_serializer(data=result)
-        self.validate_serializer(serializer)
-        return serializer.validated_data
+
+        return result
 
     def update(self, uuid, data):
         serializer = self.update_serializer(data=data)
@@ -134,9 +126,7 @@ class DBService:
             if result.get("errors"):
                 logging.error(result.get("errors"))
                 raise Exception(result.get("errors"))
-        serializer = self.model_serializer(data=result)
-        self.validate_serializer(serializer)
-        return serializer.validated_data
+        return result
 
     def update_nested(self, uuid, field, data, params=None):
         return db.update_nested_single(
@@ -229,9 +219,7 @@ class SubscriptionService(DBService):
         subscription["campaigns"] = self.campaign_service.get_list(
             {"subscription_uuid": str(uuid)}
         )
-        serializer = self.model_serializer(data=subscription)
-        self.validate_serializer(serializer)
-        return serializer.validated_data
+        return subscription
 
 
 class RecommendationService(DBService):
