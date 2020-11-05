@@ -58,7 +58,10 @@ class SubscriptionSerializer(serializers.Serializer):
     )
     target_domain = serializers.CharField(required=False)
     keywords = serializers.CharField(
-        max_length=100, required=False, allow_blank=True, allow_null=True
+        max_length=100,
+        required=False,
+        allow_blank=True,
+        allow_null=True,
     )
     start_date = serializers.DateTimeField(required=False)
     end_date = serializers.DateTimeField(required=False, allow_null=True)
