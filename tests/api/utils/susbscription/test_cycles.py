@@ -149,3 +149,27 @@ def test_get_cycle():
     cycle_data_override = {"cycle_uuid": "2"}
     result = cycles.get_cycle(subscription, cycle_data_override)
     assert result == {"cycle_uuid": "2"}
+
+
+def test_get_last_run_cycle():
+    data = [
+        {"end_date": datetime.now() - timedelta(minutes=5)},
+        {"end_date": datetime.now() + timedelta(days=3)},
+    ]
+    result = cycles.get_last_run_cycle(data)
+    assert result == data[0]
+
+    data = [
+        {"end_date": datetime.now() + timedelta(days=3)},
+    ]
+    result = cycles.get_last_run_cycle(data)
+    assert result == data[0]
+
+    data = [
+        {"end_date": datetime.now() - timedelta(minutes=5)},
+        {"end_date": datetime.now() - timedelta(minutes=3)},
+        {"end_date": datetime.now() - timedelta(minutes=1)},
+        {"end_date": datetime.now() + timedelta(days=3)},
+    ]
+    result = cycles.get_last_run_cycle(data)
+    assert result == data[2]

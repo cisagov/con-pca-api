@@ -2,6 +2,7 @@
 # Third-Party Libraries
 from api.utils.generic import format_ztime
 from api.services import CampaignService
+from datetime import datetime
 
 campaign_service = CampaignService()
 
@@ -186,3 +187,13 @@ def get_cycle(subscription, cycle_data_override):
     for cycle in subscription["cycles"]:
         if cycle["cycle_uuid"] == cycle_data_override["cycle_uuid"]:
             return cycle
+
+
+def get_last_run_cycle(cycles):
+    now = datetime.now()
+    return min(
+        cycles,
+        key=lambda x: abs(
+            x["end_date"].replace(tzinfo=None) - now.replace(tzinfo=None)
+        ),
+    )
