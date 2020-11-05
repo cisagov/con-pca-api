@@ -9,9 +9,7 @@ from api.serializers.landing_page_serializers import (
     LandingPagePatchSerializer,
     LandingPagePostSerializer,
     LandingPageQuerySerializer,
-    LandingPageStopResponseSerializer,
 )
-from api.utils.subscription.actions import stop_subscription
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.response import Response
@@ -129,39 +127,3 @@ class LandingPageView(APIView):
         """Delete method."""
         delete_response = landing_page_service.delete(landing_page_uuid)
         return Response(delete_response, status=status.HTTP_200_OK)
-
-
-class LandingPageStopView(APIView):
-    """
-    This is the LandingPageStopView APIView.
-
-    This handles the API for stopping all campaigns using a landing_page with landing_page_uuid
-    """
-
-    @swagger_auto_schema(operation_id="Get single LandingPage")
-    def get(self, request, landing_page_uuid):
-        """Get method."""
-        # get subscriptions
-        parameters = {"landing_pages_selected_uuid_list": landing_page_uuid}
-        subscriptions = subscription_service.get_list(parameters)
-
-        # Stop subscriptions
-        updated_subscriptions = list(map(stop_subscription, subscriptions))
-
-        # Get landing_page
-        landing_page = landing_page_service.get(landing_page_uuid)
-
-        # Update landing_page
-        landing_page["retired"] = True
-        landing_page["retired_description"] = "Manually Stopped"
-        updated_landing_page = landing_page_service.update(
-            landing_page_uuid, LandingPagePatchSerializer(landing_page).data
-        )
-
-        # Generate and return response
-        resp = {
-            "landing_page": updated_landing_page,
-            "subscriptions": updated_subscriptions,
-        }
-        serializer = LandingPageStopResponseSerializer(resp)
-        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)

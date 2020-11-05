@@ -1,29 +1,25 @@
-"""
-Subscription Views.
-
-This handles the api for all the Subscription urls.
-"""
-# Standard Python Libraries
 import logging
+from uuid import uuid4
 
-# Third-Party Libraries
-# Local Libraries
 from api.manager import CampaignManager, TemplateManager
 from api.serializers.subscriptions_serializers import (
     SubscriptionPatchSerializer,
     SubscriptionPostSerializer,
 )
 from api.services import SubscriptionService, CampaignService
-from api.utils.subscription.actions import start_subscription, stop_subscription
+from api.utils.subscription.actions import (
+    start_subscription,
+    stop_subscription,
+    create_subscription,
+)
 from reports.utils import update_phish_results
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-# GoPhish API Manager
+
 campaign_manager = CampaignManager()
-# Template Calculator Manager
 template_manager = TemplateManager()
 
 subscription_service = SubscriptionService()
@@ -79,9 +75,8 @@ class SubscriptionsListView(APIView):
     )
     def post(self, request, format=None):
         """Post method."""
-        post_data = request.data.copy()
-        created_response = start_subscription(data=post_data)
-        return Response(created_response, status=status.HTTP_201_CREATED)
+        resp = create_subscription(request.data.copy())
+        return Response(resp, status=status.HTTP_201_CREATED)
 
 
 class SubscriptionView(APIView):
@@ -178,7 +173,7 @@ class SubscriptionRestartView(APIView):
 
     @swagger_auto_schema(operation_id="Restart Subscription")
     def get(self, request, subscription_uuid):
-        created_response = start_subscription(subscription_uuid=subscription_uuid)
+        created_response = start_subscription(subscription_uuid)
         return Response(created_response, status=status.HTTP_202_ACCEPTED)
 
 

@@ -73,16 +73,6 @@ def test_calculate_subscription_start_end_date():
     assert start > start_date - timedelta(minutes=(DELAY_MINUTES + 3))
 
 
-def test_get_subscription_status():
-    result = subscriptions.get_subscription_status(
-        datetime.now() + timedelta(minutes=DELAY_MINUTES)
-    )
-    assert result == "In Progress"
-
-    result = subscriptions.get_subscription_status(datetime.now() + timedelta(days=3))
-    assert result == "Queued"
-
-
 def test_get_subscription_cycles():
     campaigns = [
         {"campaign_id": 1},

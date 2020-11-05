@@ -1,6 +1,6 @@
 import os
 
-DELAY_MINUTES = int(os.environ.get("DELAY_MINUTES", 1))
+DELAY_MINUTES = int(os.environ.get("DELAY_MINUTES", 3))
 
 # Set cycle minutes or 90 days
 CYCLE_MINUTES = int(os.environ.get("CYCLE_MINUTES", 129600))

@@ -235,11 +235,6 @@ urlpatterns = [
         name="landing_page_get_api",
     ),
     path(
-        "v1/landingpage/stop/<landing_page_uuid>/",
-        landing_page_views.LandingPageStopView.as_view(),
-        name="landing_page_stop_api",
-    ),
-    path(
         "v1/test_email/",
         test_email_views.SendingTestEmailsView.as_view(),
         name="test_email_api",

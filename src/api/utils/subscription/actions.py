@@ -1,11 +1,7 @@
-"""Subscription Util Actions."""
-
-# Standard Python Libraries
 import logging
 import uuid
 import numpy
 
-# Third-Party Libraries
 from api.manager import CampaignManager
 from api.utils.subscription.campaigns import (
     generate_campaigns,
@@ -16,7 +12,6 @@ from api.utils.subscription.subscriptions import (
     init_subscription_tasks,
     create_subscription_name,
     get_subscription_cycles,
-    get_subscription_status,
     send_stop_notification,
     get_staggered_dates_in_range,
 )
@@ -38,7 +33,25 @@ landing_page_service = LandingPageService()
 campaign_service = CampaignService()
 
 
-def start_subscription(data=None, subscription_uuid=None, new_cycle=False):
+def create_subscription(subscription):
+    customer = customer_service.get(subscription["customer_uuid"])
+
+    subscription["name"] = create_subscription_name(customer)
+    subscription["tasks"] = [
+        {
+            "task_uuid": str(uuid.uuid4()),
+            "message_type": "start_subscription",
+            "scheduled_date": subscription["start_date"],
+            "executed": False,
+        }
+    ]
+    subscription["status"] = "Queued"
+    response = subscription_service.save(subscription)
+    response["name"] = subscription["name"]
+    return response
+
+
+def start_subscription(subscription_uuid, new_cycle=False):
     """
     Returns a subscription from database.
 
@@ -49,12 +62,9 @@ def start_subscription(data=None, subscription_uuid=None, new_cycle=False):
     Returns:
         dict: returns response of updated/created subscription from database.
     """
-    if subscription_uuid:
-        subscription = subscription_service.get(subscription_uuid)
-    else:
-        subscription = data
+    subscription = subscription_service.get(subscription_uuid)
 
-    if new_cycle and subscription_uuid:
+    if new_cycle:
         stop_campaigns(subscription["campaigns"])
 
     # calculate start and end date to subscription
@@ -103,10 +113,6 @@ def start_subscription(data=None, subscription_uuid=None, new_cycle=False):
         },
     }
 
-    # if a new subscription is being created, a name needs generated.
-    if not subscription_uuid:
-        subscription["name"] = create_subscription_name(customer)
-
     # get personalized and selected template_uuids
     sub_levels = personalize_template_batch(customer, subscription, sub_levels)
 
@@ -134,8 +140,8 @@ def start_subscription(data=None, subscription_uuid=None, new_cycle=False):
     subscription["templates_selected_uuid_list"] = selected_templates
 
     subscription["end_date"] = end_date.strftime("%Y-%m-%dT%H:%M:%S")
-    subscription["status"] = get_subscription_status(start_date)
-    if "cycles" not in subscription:
+    subscription["status"] = "In Progress"
+    if not subscription.get("cycles"):
         subscription["cycles"] = []
     subscription["cycles"].append(
         get_subscription_cycles(
@@ -147,14 +153,11 @@ def start_subscription(data=None, subscription_uuid=None, new_cycle=False):
     )
 
     if not subscription.get("tasks"):
-        subscription["tasks"] = init_subscription_tasks(start_date)
+        subscription["tasks"] = []
+    if len(subscription["tasks"]) <= 1:
+        subscription["tasks"].extend(init_subscription_tasks(start_date))
 
-    if subscription_uuid:
-        response = subscription_service.update(subscription_uuid, subscription)
-    else:
-        print("SAVING SUBSCRIPTION")
-        response = subscription_service.save(subscription)
-        response["name"] = subscription["name"]
+    response = subscription_service.update(subscription_uuid, subscription)
 
     for campaign in new_gophish_campaigns:
         campaign["subscription_uuid"] = response["subscription_uuid"]
@@ -172,21 +175,21 @@ def stop_subscription(subscription):
     # Stop Campaigns
     stop_campaigns(subscription["campaigns"])
 
-    # Remove subscription tasks from the scheduler
-    subscription["tasks"] = []
-
-    # Update subscription
-    subscription["templates_selected_uuid_list"] = []
-    subscription["active"] = False
-    subscription["manually_stopped"] = True
-
-    subscription["status"] = "stopped"
-
     try:
         send_stop_notification(subscription)
     except Exception as e:
         logging.exception(e)
 
-    resp = subscription_service.update(subscription["subscription_uuid"], subscription)
+    resp = subscription_service.update(
+        subscription["subscription_uuid"],
+        {
+            "campaigns": subscription["campaigns"],
+            "tasks": [],
+            "templates_selected_uuid_list": [],
+            "active": False,
+            "manually_stopped": True,
+            "status": "stopped",
+        },
+    )
 
     return resp

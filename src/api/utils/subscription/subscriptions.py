@@ -38,7 +38,9 @@ def calculate_subscription_start_end_date(start_date):
         start_date = now.strftime("%Y-%m-%dT%H:%M:%S")
 
     if not isinstance(start_date, datetime):
-        start_date = dateutil.parser.parse(start_date).replace(tzinfo=None)
+        start_date = dateutil.parser.parse(start_date)
+
+    start_date = start_date.replace(tzinfo=None)
 
     if start_date < now:
         start_date = now
@@ -47,14 +49,6 @@ def calculate_subscription_start_end_date(start_date):
     end_date = start_date + timedelta(minutes=CYCLE_MINUTES)
 
     return start_date, end_date
-
-
-def get_subscription_status(start_date):
-    """Returns status for subscription based upon start date."""
-    if start_date <= (datetime.now() + timedelta(minutes=DELAY_MINUTES)):
-        return "In Progress"
-    else:
-        return "Queued"
 
 
 def get_subscription_cycles(campaigns, start_date, end_date, new_uuid):
