@@ -37,12 +37,3 @@ class TargetHistoryModel(Model):
     cb_timestamp = DateTimeType()
     last_updated_by = StringType()
     lub_timestamp = DateTimeType()
-
-
-def validate_history(data_object):
-    """
-    This is an the validate_tag.
-
-    This shows basic validation for the model.
-    """
-    return TargetHistoryModel(data_object).validate()
