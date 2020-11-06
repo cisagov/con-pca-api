@@ -118,3 +118,85 @@ def test_get_staggered_dates_in_range():
     assert result[0] == start
     assert result[1] == start + timedelta(hours=1)
     assert result[2] == start + timedelta(hours=2)
+
+
+def test_add_remove_continuous_subscription_task():
+    put_data_true_with_task = {
+        "start_date": "2020-04-10T09:30:25",
+        "tasks": [
+            {
+                "task_uuid": "1234",
+                "message_type": "start_new_cycle",
+                "scheduled_date": datetime.now(),
+                "executed": False,
+            },
+            {
+                "task_uuid": "5678",
+                "message_type": "start_subscription_email",
+                "scheduled_date": datetime.now(),
+                "executed": False,
+            },
+        ],
+        "continuous_subscription": True,
+    }
+    result = subscriptions.add_remove_continuous_subscription_task(
+        put_data_true_with_task
+    )
+    assert len(result["tasks"]) == 2
+
+    put_data_true_without_task = {
+        "start_date": "2020-04-10T09:30:25",
+        "tasks": [
+            {
+                "task_uuid": "5678",
+                "message_type": "start_subscription_email",
+                "scheduled_date": datetime.now(),
+                "executed": False,
+            }
+        ],
+        "continuous_subscription": True,
+    }
+    result = subscriptions.add_remove_continuous_subscription_task(
+        put_data_true_without_task
+    )
+    assert len(result["tasks"]) == 2
+
+    put_data_false_with_task = {
+        "start_date": "2020-04-10T09:30:25",
+        "tasks": [
+            {
+                "task_uuid": "1234",
+                "message_type": "start_new_cycle",
+                "scheduled_date": datetime.now(),
+                "executed": False,
+            },
+            {
+                "task_uuid": "5678",
+                "message_type": "start_subscription_email",
+                "scheduled_date": datetime.now(),
+                "executed": False,
+            },
+        ],
+        "continuous_subscription": False,
+    }
+    result = subscriptions.add_remove_continuous_subscription_task(
+        put_data_false_with_task
+    )
+    assert len(result["tasks"]) == 1
+
+    put_data_false_without_task = {
+        "start_date": "2020-04-10T09:30:25",
+        "tasks": [
+            {
+                "task_uuid": "5678",
+                "message_type": "start_subscription_email",
+                "scheduled_date": datetime.now(),
+                "executed": False,
+            }
+        ],
+        "continuous_subscription": False,
+    }
+    result = subscriptions.add_remove_continuous_subscription_task(
+        put_data_false_without_task
+    )
+    assert len(result["tasks"]) == 1
