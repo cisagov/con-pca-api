@@ -13,7 +13,7 @@ from config import settings
 import os
 
 
-def __db_service(collection_name, model, validate_model):
+def __db_service(collection_name, model):
     """
     Db_service.
 
@@ -26,7 +26,6 @@ def __db_service(collection_name, model, validate_model):
         mongo_uri,
         collection_name=collection_name,
         model=model,
-        model_validation=validate_model,
     )
 
     return service
@@ -50,7 +49,7 @@ def get_mongo_uri():
     return mongo_uri
 
 
-def __get_service_loop(collection, model, validation_model):
+def __get_service_loop(collection, model):
     """
     Get Service Loop.
 
@@ -58,31 +57,31 @@ def __get_service_loop(collection, model, validation_model):
     """
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    service = __db_service(collection, model, validation_model)
+    service = __db_service(collection, model)
     return service, loop
 
 
-def get_list(parameters, collection, model, validation_model, fields=None):
+def get_list(parameters, collection, model, fields=None):
     """
     Get_data private method.
 
     This handles getting the data from the db.
     """
-    service, loop = __get_service_loop(collection, model, validation_model)
+    service, loop = __get_service_loop(collection, model)
     document_list = loop.run_until_complete(
         service.filter_list(parameters=parameters, fields=fields)
     )
     return document_list
 
 
-def save_single(post_data, collection, model, validation_model):
+def save_single(post_data, collection, model):
     """
     Save_data method.
 
     This method takes in
     post_data and saves it to the db with the required feilds.
     """
-    service, loop = __get_service_loop(collection, model, validation_model)
+    service, loop = __get_service_loop(collection, model)
     create_timestamp = datetime.datetime.utcnow()
     current_user = "dev user"
     post_data["{}_uuid".format(collection)] = str(uuid.uuid4())
@@ -93,24 +92,24 @@ def save_single(post_data, collection, model, validation_model):
     return created_response
 
 
-def get_single(uuid, collection, model, validation_model, fields=None):
+def get_single(uuid, collection, model, fields=None):
     """
     Get_single method.
 
     This handles getting the data from the db.
     """
-    service, loop = __get_service_loop(collection, model, validation_model)
+    service, loop = __get_service_loop(collection, model)
     document = loop.run_until_complete(service.get(uuid=uuid, fields=fields))
     return document
 
 
-def update_single(uuid, put_data, collection, model, validation_model):
+def update_single(uuid, put_data, collection, model):
     """
     Update_single method.
 
     This handles getting the data from the db.
     """
-    service, loop = __get_service_loop(collection, model, validation_model)
+    service, loop = __get_service_loop(collection, model)
     updated_timestamp = datetime.datetime.utcnow()
     current_user = "dev user"
 
@@ -132,10 +131,8 @@ def update_single(uuid, put_data, collection, model, validation_model):
     return document
 
 
-def push_nested_item(
-    uuid, field, put_data, collection, model, validation_model, params=None
-):
-    service, loop = __get_service_loop(collection, model, validation_model)
+def push_nested_item(uuid, field, put_data, collection, model, params=None):
+    service, loop = __get_service_loop(collection, model)
 
     list_update_object = {field: put_data}
 
@@ -148,9 +145,7 @@ def push_nested_item(
     return update_response
 
 
-def update_list_single(
-    uuid, field, put_data, collection, model, validation_model, params=None
-):
+def update_list_single(uuid, field, put_data, collection, model, params=None):
     """
     Update_list_single method.
 
@@ -171,7 +166,7 @@ def update_list_single(
             put_data=[<object>], "subscription", SubscriptionModel,validate_subscription,
             params={"campaigns.campaign_id": 85})
     """
-    service, loop = __get_service_loop(collection, model, validation_model)
+    service, loop = __get_service_loop(collection, model)
 
     list_update_object = {field: {"$each": put_data}}
 
@@ -184,9 +179,7 @@ def update_list_single(
     return update_response
 
 
-def update_nested_single(
-    uuid, field, put_data, collection, model, validation_model, params=None
-):
+def update_nested_single(uuid, field, put_data, collection, model, params=None):
     """
     Update_list_single method.
 
@@ -207,7 +200,7 @@ def update_nested_single(
             put_data=[<object>], "subscription", SubscriptionModel,validate_subscription,
             params={"campaigns.campaign_id": 85})
     """
-    service, loop = __get_service_loop(collection, model, validation_model)
+    service, loop = __get_service_loop(collection, model)
 
     list_update_object = {field: put_data}
 
@@ -219,21 +212,21 @@ def update_nested_single(
     return update_response
 
 
-def delete_single(uuid, collection, model, validation_model):
+def delete_single(uuid, collection, model):
     """
     Delete_single method.
 
     This handles getting the data from the db.
     """
-    service, loop = __get_service_loop(collection, model, validation_model)
+    service, loop = __get_service_loop(collection, model)
 
     delete_response = loop.run_until_complete(service.delete(uuid=uuid))
     return delete_response
 
 
-def update_single_webhook(subscription, collection, model, validation_model):
+def update_single_webhook(subscription, collection, model):
     """Update single subscription with webhook user."""
-    service, loop = __get_service_loop(collection, model, validation_model)
+    service, loop = __get_service_loop(collection, model)
     put_data = {
         "last_updated_by": "webhook",
         "lub_timestamp": datetime.datetime.utcnow(),
@@ -245,9 +238,9 @@ def update_single_webhook(subscription, collection, model, validation_model):
     return subscription
 
 
-def exists(parameters, collection, model, validation_model):
+def exists(parameters, collection, model):
     """Check if item exists for given parameter."""
-    service, loop = __get_service_loop(collection, model, validation_model)
+    service, loop = __get_service_loop(collection, model)
 
     document_list = loop.run_until_complete(service.filter_list(parameters=parameters))
     if document_list:

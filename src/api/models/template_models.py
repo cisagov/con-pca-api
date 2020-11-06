@@ -92,15 +92,6 @@ class TemplateModel(Model):
     lub_timestamp = DateTimeType()
 
 
-def validate_template(data_object):
-    """
-    This validates templates data.
-
-    This shows basic validation for the model.
-    """
-    return TemplateModel(data_object).validate()
-
-
 class DeceptionLevelStatsModel:
     """Statistics for a deception level."""
 

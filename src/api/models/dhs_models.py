@@ -36,12 +36,3 @@ class DHSContactModel(Model):
     cb_timestamp = DateTimeType()
     last_updated_by = StringType()
     lub_timestamp = DateTimeType()
-
-
-def validate_dhs_contact(data_object):
-    """
-    This is an the validate_subscription.
-
-    This shows basic validation for the model.
-    """
-    return DHSContactModel(data_object).validate()
