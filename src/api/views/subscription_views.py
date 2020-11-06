@@ -13,6 +13,7 @@ from api.utils.subscription.actions import (
     create_subscription,
     restart_subscription,
 )
+from api.utils.subscription.subscriptions import add_remove_continuous_subscription_task
 from reports.utils import update_phish_results
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
@@ -99,6 +100,10 @@ class SubscriptionView(APIView):
     def patch(self, request, subscription_uuid):
         """Patch method."""
         put_data = request.data.copy()
+
+        if "continuous_subscription" in put_data:
+            put_data = add_remove_continuous_subscription_task(put_data)
+
         updated_response = subscription_service.update(subscription_uuid, put_data)
         return Response(updated_response, status=status.HTTP_202_ACCEPTED)
 

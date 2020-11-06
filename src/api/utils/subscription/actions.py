@@ -171,7 +171,9 @@ def start_subscription(subscription_uuid, new_cycle=False):
     if not subscription.get("tasks"):
         subscription["tasks"] = []
     if len(subscription["tasks"]) <= 1:
-        subscription["tasks"].extend(init_subscription_tasks(start_date))
+        subscription["tasks"].extend(
+            init_subscription_tasks(start_date, subscription["continuous_subscription"])
+        )
 
     response = subscription_service.update(subscription_uuid, subscription)
 
