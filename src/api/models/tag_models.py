@@ -26,12 +26,3 @@ class TagModel(Model):
     cb_timestamp = DateTimeType()
     last_updated_by = StringType()
     lub_timestamp = DateTimeType()
-
-
-def validate_tag(data_object):
-    """
-    This is an the validate_tag.
-
-    This shows basic validation for the model.
-    """
-    return TagModel(data_object).validate()

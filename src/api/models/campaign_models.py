@@ -85,7 +85,3 @@ class GoPhishCampaignsModel(Model):
     cb_timestamp = DateTimeType()
     last_updated_by = StringType()
     lub_timestamp = DateTimeType()
-
-
-def validate_campaign(data_object):
-    return GoPhishCampaignsModel(data_object).validate()

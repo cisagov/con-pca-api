@@ -33,12 +33,3 @@ class LandingPageModel(Model):
     cb_timestamp = DateTimeType()
     last_updated_by = StringType()
     lub_timestamp = DateTimeType()
-
-
-def validate_landing_page(data_object):
-    """
-    This validates templates data.
-
-    This shows basic validation for the model.
-    """
-    return LandingPageModel(data_object).validate()

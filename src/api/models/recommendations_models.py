@@ -41,12 +41,3 @@ class RecommendationsModel(Model):
     cb_timestamp = DateTimeType()
     last_updated_by = StringType()
     lub_timestamp = DateTimeType()
-
-
-def validate_recommendations(data_object):
-    """
-    This validates recommendations data.
-
-    This shows basic validation for the model.
-    """
-    return RecommendationsModel(data_object).validate()

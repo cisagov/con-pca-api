@@ -37,17 +37,11 @@ class DBService:
         self,
         collection,
         model,
-        validation,
-        model_serializer,
-        response_serializer,
         save_serializer,
         update_serializer,
     ):
         self.collection = collection
         self.model = model
-        self.validation = validation
-        self.model_serializer = model_serializer
-        self.response_serializer = response_serializer
         self.save_serializer = save_serializer
         self.update_serializer = update_serializer
 
@@ -67,41 +61,29 @@ class DBService:
         return result
 
     def delete(self, uuid):
-        resp = db.delete_single(
+        return db.delete_single(
             uuid=str(uuid),
             collection=self.collection,
             model=self.model,
-            validation_model=self.validation,
         )
-        serializer = self.response_serializer(data=resp)
-        self.validate_serializer(serializer)
-        return serializer.validated_data
 
     def get(self, uuid, fields=None):
         fields = self.convert_fields(fields)
-        result = db.get_single(
+        return db.get_single(
             uuid=str(uuid),
             collection=self.collection,
             model=self.model,
-            validation_model=self.validation,
             fields=fields,
         )
-        serializer = self.model_serializer(data=result)
-        self.validate_serializer(serializer)
-        return serializer.validated_data
 
     def get_list(self, parameters=None, fields=None):
         fields = self.convert_fields(fields)
-        result = db.get_list(
+        return db.get_list(
             parameters=parameters,
             collection=self.collection,
             model=self.model,
-            validation_model=self.validation,
             fields=fields,
         )
-        serializer = self.model_serializer(data=result, many=True)
-        self.validate_serializer(serializer)
-        return serializer.validated_data
 
     def save(self, data):
         serializer = self.save_serializer(data=data)
@@ -110,33 +92,27 @@ class DBService:
             post_data=serializer.data,
             collection=self.collection,
             model=self.model,
-            validation_model=self.validation,
         )
         if type(result) is dict:
             if result.get("errors"):
                 logging.error(result.get("errors"))
                 raise Exception(result.get("errors"))
-        serializer = self.response_serializer(data=result)
-        self.validate_serializer(serializer)
-        return serializer.validated_data
+
+        return result
 
     def update(self, uuid, data):
-        serializer = self.update_serializer(data=data)
-        self.validate_serializer(serializer)
+        serializer = self.update_serializer(data)
         result = db.update_single(
             uuid=str(uuid),
             put_data=serializer.data,
             collection=self.collection,
             model=self.model,
-            validation_model=self.validation,
         )
         if type(result) is dict:
             if result.get("errors"):
                 logging.error(result.get("errors"))
                 raise Exception(result.get("errors"))
-        serializer = self.model_serializer(data=result)
-        self.validate_serializer(serializer)
-        return serializer.validated_data
+        return result
 
     def update_nested(self, uuid, field, data, params=None):
         return db.update_nested_single(
@@ -145,7 +121,6 @@ class DBService:
             put_data=data,
             collection=self.collection,
             model=self.model,
-            validation_model=self.validation,
             params=params,
         )
 
@@ -156,7 +131,6 @@ class DBService:
             put_data=data,
             collection=self.collection,
             model=self.model,
-            validation_model=self.validation,
             params=params,
         )
 
@@ -165,7 +139,6 @@ class DBService:
             parameters=parameters,
             collection=self.collection,
             model=self.model,
-            validation_model=self.validation,
         )
 
 
@@ -174,9 +147,6 @@ class CampaignService(DBService):
         return super().__init__(
             collection="campaign",
             model=campaign_models.GoPhishCampaignsModel,
-            validation=campaign_models.validate_campaign,
-            model_serializer=campaign_serializers.GoPhishCampaignsSerializer,
-            response_serializer=campaign_serializers.GoPhishCampaignsResponseSerializer,
             save_serializer=campaign_serializers.GoPhishCampaignsPostSerializer,
             update_serializer=campaign_serializers.GoPhishCampaignsPatchSerializer,
         )
@@ -187,9 +157,6 @@ class LandingPageService(DBService):
         return super().__init__(
             collection="landing_page",
             model=landing_page_models.LandingPageModel,
-            validation=landing_page_models.validate_landing_page,
-            model_serializer=landing_page_serializers.LandingPageSerializer,
-            response_serializer=landing_page_serializers.LandingPageResponseSerializer,
             save_serializer=landing_page_serializers.LandingPagePostSerializer,
             update_serializer=landing_page_serializers.LandingPagePatchSerializer,
         )
@@ -212,9 +179,6 @@ class SubscriptionService(DBService):
         return super().__init__(
             collection="subscription",
             model=subscription_models.SubscriptionModel,
-            validation=subscription_models.validate_subscription,
-            model_serializer=subscriptions_serializers.SubscriptionSerializer,
-            response_serializer=subscriptions_serializers.SubscriptionResponseSerializer,
             save_serializer=subscriptions_serializers.SubscriptionPostSerializer,
             update_serializer=subscriptions_serializers.SubscriptionPatchSerializer,
         )
@@ -224,14 +188,11 @@ class SubscriptionService(DBService):
             uuid=str(uuid),
             collection=self.collection,
             model=self.model,
-            validation_model=self.validation,
         )
         subscription["campaigns"] = self.campaign_service.get_list(
             {"subscription_uuid": str(uuid)}
         )
-        serializer = self.model_serializer(data=subscription)
-        self.validate_serializer(serializer)
-        return serializer.validated_data
+        return subscription
 
 
 class RecommendationService(DBService):
@@ -239,9 +200,6 @@ class RecommendationService(DBService):
         return super().__init__(
             collection="recommendations",
             model=recommendations_models.RecommendationsModel,
-            validation=recommendations_models.validate_recommendations,
-            model_serializer=recommendations_serializers.RecommendationsSerializer,
-            response_serializer=recommendations_serializers.RecommendationsResponseSerializer,
             save_serializer=recommendations_serializers.RecommendationsPostSerializer,
             update_serializer=recommendations_serializers.RecommendationsPatchSerializer,
         )
@@ -252,9 +210,6 @@ class TemplateService(DBService):
         return super().__init__(
             collection="template",
             model=template_models.TemplateModel,
-            validation=template_models.validate_template,
-            model_serializer=template_serializers.TemplateSerializer,
-            response_serializer=template_serializers.TemplateResponseSerializer,
             save_serializer=template_serializers.TemplatePostSerializer,
             update_serializer=template_serializers.TemplatePatchSerializer,
         )
@@ -265,9 +220,6 @@ class TagService(DBService):
         return super().__init__(
             collection="tag_definition",
             model=tag_models.TagModel,
-            validation=tag_models.validate_tag,
-            model_serializer=tag_serializers.TagSerializer,
-            response_serializer=tag_serializers.TagResponseSerializer,
             save_serializer=tag_serializers.TagPostSerializer,
             update_serializer=tag_serializers.TagPatchSerializer,
         )
@@ -278,9 +230,6 @@ class DHSContactService(DBService):
         return super().__init__(
             collection="dhs_contact",
             model=dhs_models.DHSContactModel,
-            validation=dhs_models.validate_dhs_contact,
-            model_serializer=dhs_serializers.DHSContactSerializer,
-            response_serializer=dhs_serializers.DHSContactResponseSerializer,
             save_serializer=dhs_serializers.DHSContactPostSerializer,
             update_serializer=dhs_serializers.DHSContactPatchSerializer,
         )
@@ -291,9 +240,6 @@ class CustomerService(DBService):
         return super().__init__(
             collection="customer",
             model=customer_models.CustomerModel,
-            validation=customer_models.validate_customer,
-            model_serializer=customer_serializers.CustomerSerializer,
-            response_serializer=customer_serializers.CustomerResponseSerializer,
             save_serializer=customer_serializers.CustomerPostSerializer,
             update_serializer=customer_serializers.CustomerPatchSerializer,
         )
@@ -304,9 +250,6 @@ class TargetHistoryService(DBService):
         return super().__init__(
             collection="target",
             model=target_history_models.TargetHistoryModel,
-            validation=target_history_models.validate_history,
-            model_serializer=target_history_serializers.TargetHistorySerializer,
-            response_serializer=target_history_serializers.TargetHistoryResponseSerializer,
             save_serializer=target_history_serializers.TargetHistoryPostSerializer,
             update_serializer=target_history_serializers.TargetHistoryPatchSerializer,
         )

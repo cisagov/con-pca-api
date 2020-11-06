@@ -16,10 +16,9 @@ from .repository.generics import GenericRepository, GenericRepositoryInterface
 class Service:
     """This loads configuration from env."""
 
-    def __init__(self, mongo_url, collection_name, model, model_validation):
+    def __init__(self, mongo_url, collection_name, model):
         """Init for service creation."""
         self.model = model
-        self.model_validation = model_validation
         self.service = GenericRepositoryInterface(
             GenericRepository(mongo_url, collection_name, model_cls=model)
         )
@@ -58,11 +57,6 @@ class Service:
         Given a json object, it wil validate the fields and create a db entrie.
         This will return the objectID of the created object
         """
-        try:
-            to_create = self.model_validation(to_create)
-        except DataError as e:
-            return {"errors": {"validation_error": e.to_primitive()}}
-
         return await self.service.create(to_create)
 
     async def update(self, to_update):
@@ -72,11 +66,6 @@ class Service:
         Given a json object, it wil validate the fields and update a db entrie.
         This will return the objectID of the updated object
         """
-        try:
-            to_update = self.model_validation(to_update)
-        except DataError as e:
-            return {"errors": {"validation_error": e.to_primitive()}}
-
         return await self.service.update(to_update)
 
     async def update_list(self, uuid, to_update, params=None):
@@ -86,7 +75,6 @@ class Service:
         Given a json object, it wil validate the fields and update a db entrie.
         This will return the objectID of the updated object
         """
-
         return await self.service.update_list(uuid, to_update, params)
 
     async def update_nested_single(self, uuid, to_update, params=None):

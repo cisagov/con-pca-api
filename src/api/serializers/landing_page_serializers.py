@@ -4,10 +4,6 @@ Landing Page Serializers.
 These are Django Rest Framework Serializers. These are used for
 serializing data coming from the db into a request response.
 """
-# Third-Party Libraries
-from api.serializers.subscriptions_serializers import (
-    SubscriptionSerializer,
-)
 from rest_framework import serializers
 
 

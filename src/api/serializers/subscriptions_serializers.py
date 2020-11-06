@@ -38,7 +38,7 @@ class SubscriptionTasksSerializer(serializers.Serializer):
     task_uuid = serializers.CharField()
     message_type = serializers.CharField()
     scheduled_date = serializers.DateTimeField()
-    queued = serializers.BooleanField(default=False)
+    queued = serializers.BooleanField(default=False, allow_null=True)
     executed = serializers.BooleanField(default=False)
     executed_date = serializers.DateTimeField(required=False, allow_null=True)
     error = serializers.CharField(required=False, allow_null=True, allow_blank=True)

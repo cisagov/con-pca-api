@@ -4,6 +4,7 @@ import dateutil.parser
 
 from api.utils.subscription.static import YEARLY_MINUTES, MONTHLY_MINUTES, CYCLE_MINUTES
 from api.utils.subscription.subscriptions import send_start_notification
+from api.utils.subscription.cycles import get_last_run_cycle
 from api.utils.subscription import actions
 from api.services import SubscriptionService, CampaignService
 
@@ -75,6 +76,7 @@ def add_new_task(subscription_uuid, scheduled_date, message_type):
             "message_type": message_type,
             "scheduled_date": new_date,
             "executed": False,
+            "queued": False,
         }
 
         logger.info(f"Adding new task {task}")
@@ -138,7 +140,11 @@ def email_subscription_cycle(subscription):
     schedule the next subscription cycle report email
     """
     # Send email
-    sender = EmailSender(subscription, "cycle_report", datetime.now().isoformat())
+    selected_cycle = get_last_run_cycle(subscription["cycles"][-2:])
+
+    sender = EmailSender(
+        subscription, "cycle_report", selected_cycle["start_date"].isoformat()
+    )
     sender.send()
 
     context = {
