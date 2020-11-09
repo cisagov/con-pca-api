@@ -100,10 +100,8 @@ class SubscriptionView(APIView):
     def patch(self, request, subscription_uuid):
         """Patch method."""
         put_data = request.data.copy()
-
         if "continuous_subscription" in put_data:
             put_data = add_remove_continuous_subscription_task(put_data)
-
         updated_response = subscription_service.update(subscription_uuid, put_data)
         return Response(updated_response, status=status.HTTP_202_ACCEPTED)
 

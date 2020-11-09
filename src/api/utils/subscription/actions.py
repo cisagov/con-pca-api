@@ -45,6 +45,33 @@ def create_subscription(subscription):
             "executed": False,
         }
     ]
+
+    if "continuous_subscription" in subscription:
+        continuous_subscription = subscription["continuous_subscription"]
+        subscription.pop("continuous_subscription", None)
+        _, end_date = calculate_subscription_start_end_date(
+            subscription.get("start_date")
+        )
+
+        if continuous_subscription:
+            subscription["tasks"].append(
+                {
+                    "task_uuid": str(uuid.uuid4()),
+                    "message_type": "start_new_cycle",
+                    "scheduled_date": end_date,
+                    "executed": False,
+                }
+            )
+        else:
+            subscription["tasks"].append(
+                {
+                    "task_uuid": str(uuid.uuid4()),
+                    "message_type": "stop_subscription",
+                    "scheduled_date": end_date,
+                    "executed": False,
+                }
+            )
+
     subscription["status"] = "Queued"
     response = subscription_service.save(subscription)
     response["name"] = subscription["name"]
@@ -170,10 +197,17 @@ def start_subscription(subscription_uuid, new_cycle=False):
 
     if not subscription.get("tasks"):
         subscription["tasks"] = []
-    if len(subscription["tasks"]) <= 1:
-        subscription["tasks"].extend(
-            init_subscription_tasks(start_date, subscription["continuous_subscription"])
+
+    filted_tasks = list(
+        filter(
+            lambda x: x["message_type"] not in ["start_new_cycle", "stop_subscription"],
+            subscription["tasks"],
         )
+    )
+    print("filted tasks on start: {}".format(filted_tasks))
+
+    if len(filted_tasks) <= 1:
+        subscription["tasks"].extend(init_subscription_tasks(start_date))
 
     response = subscription_service.update(subscription_uuid, subscription)
 
