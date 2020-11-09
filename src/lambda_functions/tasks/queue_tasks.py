@@ -18,7 +18,7 @@ application = get_wsgi_application()
 
 
 def lambda_handler(event, context):
-    logger.info("Getting tasks to queue")
+    logger.info("Getting tasks to queue.")
     tasks = get_tasks_to_queue()
 
     logger.info("Queueing tasks")
@@ -34,7 +34,7 @@ def get_tasks_to_queue():
         tasks = s.get("tasks", [])
         for task in tasks:
             scheduled_date = task.get("scheduled_date")
-            
+
             if type(scheduled_date) is str:
                 scheduled_date = dateutil.parser.parse(scheduled_date)
             executed = task.get("executed")
