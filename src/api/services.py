@@ -69,8 +69,17 @@ class DBService:
 
     def get(self, uuid, fields=None):
         fields = self.convert_fields(fields)
-        return db.get_single(
+        return db.get(
             uuid=str(uuid),
+            collection=self.collection,
+            model=self.model,
+            fields=fields,
+        )
+
+    def get_single(self, parameters, fields=None):
+        fields = self.convert_fields(fields)
+        return db.get_single(
+            parameters=parameters,
             collection=self.collection,
             model=self.model,
             fields=fields,
@@ -89,7 +98,7 @@ class DBService:
         serializer = self.save_serializer(data=data)
         self.validate_serializer(serializer)
         result = db.save_single(
-            post_data=serializer.data,
+            post_data=serializer.validated_data,
             collection=self.collection,
             model=self.model,
         )
@@ -101,13 +110,15 @@ class DBService:
         return result
 
     def update(self, uuid, data):
-        serializer = self.update_serializer(data)
+        serializer = self.update_serializer(data=data)
+        self.validate_serializer(serializer)
         result = db.update_single(
             uuid=str(uuid),
-            put_data=serializer.data,
+            put_data=serializer.validated_data,
             collection=self.collection,
             model=self.model,
         )
+        print(result)
         if type(result) is dict:
             if result.get("errors"):
                 logging.error(result.get("errors"))
@@ -183,15 +194,16 @@ class SubscriptionService(DBService):
             update_serializer=subscriptions_serializers.SubscriptionPatchSerializer,
         )
 
-    def get(self, uuid):
-        subscription = db.get_single(
-            uuid=str(uuid),
-            collection=self.collection,
-            model=self.model,
+    def get(self, uuid, fields=None):
+        fields = self.convert_fields(fields)
+        subscription = db.get(
+            uuid=str(uuid), collection=self.collection, model=self.model, fields=fields
         )
-        subscription["campaigns"] = self.campaign_service.get_list(
-            {"subscription_uuid": str(uuid)}
-        )
+
+        if not fields or "campaigns" in fields:
+            subscription["campaigns"] = self.campaign_service.get_list(
+                {"subscription_uuid": str(uuid)}
+            )
         return subscription
 
 

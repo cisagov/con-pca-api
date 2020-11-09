@@ -1,5 +1,4 @@
 import logging
-from uuid import uuid4
 
 from api.manager import CampaignManager, TemplateManager
 from api.serializers.subscriptions_serializers import (
@@ -8,7 +7,6 @@ from api.serializers.subscriptions_serializers import (
 )
 from api.services import SubscriptionService, CampaignService
 from api.utils.subscription.actions import (
-    start_subscription,
     stop_subscription,
     create_subscription,
     restart_subscription,
@@ -116,7 +114,7 @@ class SubscriptionView(APIView):
         # Delete Campaigns
         campaigns = campaign_service.get_list({"subscription_uuid": subscription_uuid})
         for campaign in campaigns:
-            campaign_service.delete(campaign["campaign_uuid"])
+            campaign_service.delete(str(campaign["campaign_uuid"]))
 
         # Delete Subscription
         delete_response = subscription_service.delete(subscription_uuid)
