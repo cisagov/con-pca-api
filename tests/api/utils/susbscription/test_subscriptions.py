@@ -108,7 +108,7 @@ def test_get_subscription_cycles():
 def test_init_subscription_tasks():
     start = datetime.now()
     result = subscriptions.init_subscription_tasks(start)
-    assert len(result) == 5
+    assert len(result) == 4
 
 
 def test_get_staggered_dates_in_range():
@@ -182,7 +182,7 @@ def test_add_remove_continuous_subscription_task():
     result = subscriptions.add_remove_continuous_subscription_task(
         put_data_false_with_task
     )
-    assert len(result["tasks"]) == 1
+    assert len(result["tasks"]) == 2
 
     put_data_false_without_task = {
         "start_date": "2020-04-10T09:30:25",
@@ -199,4 +199,4 @@ def test_add_remove_continuous_subscription_task():
     result = subscriptions.add_remove_continuous_subscription_task(
         put_data_false_without_task
     )
-    assert len(result["tasks"]) == 1
+    assert len(result["tasks"]) == 2
