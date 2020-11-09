@@ -34,10 +34,9 @@ def get_tasks_to_queue():
         tasks = s.get("tasks", [])
         for task in tasks:
             scheduled_date = task.get("scheduled_date")
-
-            if not isinstance(scheduled_date, datetime):
+            
+            if type(scheduled_date) is str:
                 scheduled_date = dateutil.parser.parse(scheduled_date)
-
             executed = task.get("executed")
             if (
                 scheduled_date.replace(tzinfo=None) < datetime.utcnow()

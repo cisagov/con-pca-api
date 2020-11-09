@@ -103,9 +103,9 @@ class TemplateStopView(APIView):
         # Update template
         template["retired"] = True
         template["retired_description"] = "Manually Stopped"
-        updated_template = template_service.update(template_uuid, template)
+        template_service.update(template_uuid, template)
 
         # Generate and return response
-        resp = {"template": updated_template, "subscriptions": updated_subscriptions}
+        resp = {"template": template, "subscriptions": updated_subscriptions}
         serializer = TemplateStopResponseSerializer(resp)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)

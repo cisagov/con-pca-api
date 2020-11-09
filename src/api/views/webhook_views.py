@@ -76,9 +76,16 @@ class IncomingWebhookView(APIView):
         if "message" in data:
             seralized = webhook_serializers.InboundWebhookSerializer(data)
             seralized_data = seralized.data
-            campaign = campaign_service.get_list(
-                parameters={"campaign_id": seralized_data["campaign_id"]}
-            )[0]
+            campaign = campaign_service.get_single(
+                parameters={"campaign_id": seralized_data["campaign_id"]},
+                fields=[
+                    "campaign_uuid",
+                    "subscription_uuid",
+                    "cycle_uuid",
+                    "template_uuid",
+                    "timeline",
+                ],
+            )
 
             campaign_event = seralized_data["message"]
             if campaign_event in [
@@ -126,7 +133,11 @@ class IncomingWebhookView(APIView):
                 # update target history
                 if campaign_event == "Email Sent":
                     # send campaign info and email gophish_campaign_data, seralized_data
-                    templates.update_target_history(campaign, seralized_data)
+                    templates.update_target_history(
+                        campaign["template_uuid"],
+                        seralized_data["email"],
+                        seralized_data["time"],
+                    )
 
             return Response(status=status.HTTP_202_ACCEPTED)
 

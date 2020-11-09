@@ -637,7 +637,7 @@ def get_unique_moments(campaign_timeline):
 
     # Sort the working timeline by date, first occurence of a moment
     # will be the one that is used for calculations
-    user_moments.sort(key=get_moment_date)
+    user_moments.sort(key=lambda x: x["time"])
 
     # Find the first occurence of a opened/clicked/submitted/reported moment
 
@@ -661,14 +661,6 @@ def get_unique_moments(campaign_timeline):
             # user_moments.remove(action_moment)
 
     return retVal
-
-
-def get_moment_date(moment):
-    return moment["time"]
-
-
-def get_moment_email(moment):
-    return moment["email"]
 
 
 def set_cycle_quarters(cycles):
@@ -795,7 +787,7 @@ def update_phish_results(subscription):
     if not subscription.get("cycles"):
         return
     for cycle in subscription["cycles"]:
-        if cycle["phish_results_dirty"]:
+        if "phish_results_dirty" not in cycle or cycle.get("phish_results_dirty"):
             generate_cycle_phish_results(subscription, cycle)
 
 
@@ -810,7 +802,9 @@ def generate_cycle_phish_results(subscription, cycle):
     for campaign in subscription["campaigns"]:
         if campaign["campaign_id"] in cycle["campaigns_in_cycle"]:
             # If campaign timeline is dirty, recalculate the phish results
-            if campaign["phish_results_dirty"]:
+            if "phish_results_dirty" not in campaign or campaign.get(
+                "phish_results_dirty"
+            ):
 
                 unique_moments = get_unique_moments(campaign["timeline"])
                 phishing_results = count_timeline_moments(unique_moments)

@@ -7,9 +7,6 @@ This creates a Service class that is given:
 on init.
 this will then handle all transacations for the given collection and model.
 """
-# Third-Party Libraries
-from schematics.exceptions import DataError
-
 from .repository.generics import GenericRepository, GenericRepositoryInterface
 
 
@@ -50,6 +47,9 @@ class Service:
         """
         return await self.service.get(uuid, fields)
 
+    async def get_single(self, parameters, fields=None):
+        return await self.service.get_single(parameters, fields)
+
     async def create(self, to_create):
         """
         Create.
@@ -59,23 +59,14 @@ class Service:
         """
         return await self.service.create(to_create)
 
-    async def update(self, to_update):
+    async def update(self, uuid, to_update):
         """
         Update.
 
         Given a json object, it wil validate the fields and update a db entrie.
         This will return the objectID of the updated object
         """
-        return await self.service.update(to_update)
-
-    async def update_list(self, uuid, to_update, params=None):
-        """
-        Update.
-
-        Given a json object, it wil validate the fields and update a db entrie.
-        This will return the objectID of the updated object
-        """
-        return await self.service.update_list(uuid, to_update, params)
+        return await self.service.update(uuid, to_update)
 
     async def update_nested_single(self, uuid, to_update, params=None):
         """

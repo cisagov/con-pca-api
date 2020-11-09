@@ -517,32 +517,6 @@ def test_get_unique_moments():
     assert len(results) != len(campaign_timeline_summary)
 
 
-def test_get_moment_date():
-    moment = {
-        "message": "Email Sent",
-        "email": "test@test.com",
-        "time": datetime(2020, 7, 7, 19, 37, 54, 960000, tzinfo=timezone.utc),
-        "sent": datetime(2020, 7, 7, 19, 37, 54, 960000, tzinfo=timezone.utc),
-    }
-
-    results = utils.get_moment_date(moment)
-
-    assert results == datetime(2020, 7, 7, 19, 37, 54, 960000, tzinfo=timezone.utc)
-
-
-def test_get_moment_email():
-    moment = {
-        "message": "Email Sent",
-        "email": "test@test.com",
-        "time": datetime(2020, 7, 7, 19, 37, 54, 960000, tzinfo=timezone.utc),
-        "sent": datetime(2020, 7, 7, 19, 37, 54, 960000, tzinfo=timezone.utc),
-    }
-
-    results = utils.get_moment_email(moment)
-
-    assert results == "test@test.com"
-
-
 def test_count_timeline_moments():
     campaign_timeline_summary = [
         {

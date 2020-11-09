@@ -80,8 +80,8 @@ class GoPhishCampaignsSerializer(serializers.Serializer):
 
 class GoPhishCampaignsPostSerializer(serializers.Serializer):
     campaign_id = serializers.IntegerField()
-    subscription_uuid = serializers.UUIDField()
-    cycle_uuid = serializers.UUIDField()
+    subscription_uuid = serializers.CharField()
+    cycle_uuid = serializers.CharField()
     name = serializers.CharField(max_length=100)
     created_date = serializers.DateTimeField()
     launch_date = serializers.DateTimeField()
@@ -89,7 +89,7 @@ class GoPhishCampaignsPostSerializer(serializers.Serializer):
     completed_date = serializers.DateTimeField(required=False, allow_null=True)
     email_template = serializers.CharField(required=False)
     email_template_id = serializers.IntegerField(required=False)
-    template_uuid = serializers.UUIDField()
+    template_uuid = serializers.CharField()
     deception_level = serializers.IntegerField(required=False)
     landing_page_template = serializers.CharField(required=False)
     status = serializers.CharField(max_length=255)
@@ -104,8 +104,8 @@ class GoPhishCampaignsPostSerializer(serializers.Serializer):
 
 class GoPhishCampaignsPatchSerializer(serializers.Serializer):
     campaign_id = serializers.IntegerField(required=False)
-    subscription_uuid = serializers.UUIDField(required=False)
-    cycle_uuid = serializers.UUIDField(required=False)
+    subscription_uuid = serializers.CharField(required=False)
+    cycle_uuid = serializers.CharField(required=False)
     name = serializers.CharField(max_length=100, required=False)
     created_date = serializers.DateTimeField(required=False)
     launch_date = serializers.DateTimeField(required=False)
@@ -113,7 +113,7 @@ class GoPhishCampaignsPatchSerializer(serializers.Serializer):
     completed_date = serializers.DateTimeField(required=False, allow_null=True)
     email_template = serializers.CharField(required=False)
     email_template_id = serializers.IntegerField(required=False)
-    template_uuid = serializers.UUIDField(required=False)
+    template_uuid = serializers.CharField(required=False)
     deception_level = serializers.IntegerField(required=False)
     landing_page_template = serializers.CharField(required=False)
     status = serializers.CharField(max_length=255, required=False)

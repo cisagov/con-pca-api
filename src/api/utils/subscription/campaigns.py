@@ -220,7 +220,7 @@ def __create_campaign(
         "send_by_date": campaign_end,
         "email_template": created_template.name,
         "email_template_id": created_template.id,
-        "template_uuid": template["template_uuid"],
+        "template_uuid": str(template["template_uuid"]),
         "landing_page_template": campaign.page.name,
         "deception_level": deception_level,
         "status": campaign.status,

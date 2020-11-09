@@ -43,6 +43,7 @@ def get_campaign_data():
         "subscription_uuid": "12345",
         "campaign_uuid": "1234",
         "cycle_uuid": "123456",
+        "template_uuid": "432451",
         "timeline": [
             {
                 "email": None,
@@ -77,7 +78,7 @@ def test_inbound_webhook_view_post_campaign_created(client):
 
 
 @pytest.mark.django_db
-@mock.patch("api.services.CampaignService.get_list", return_value=[get_campaign_data()])
+@mock.patch("api.services.CampaignService.get_single", return_value=get_campaign_data())
 @mock.patch("api.utils.webhooks.push_webhook")
 @mock.patch("api.services.CampaignService.update")
 @mock.patch("api.services.SubscriptionService.update_nested")
@@ -102,7 +103,7 @@ def test_inbound_webhook_view_post_email_sent(
 
 
 @pytest.mark.django_db
-@mock.patch("api.services.CampaignService.get_list", return_value=[get_campaign_data()])
+@mock.patch("api.services.CampaignService.get_single", return_value=get_campaign_data())
 @mock.patch("api.utils.webhooks.push_webhook")
 @mock.patch("api.services.CampaignService.update")
 @mock.patch("api.services.SubscriptionService.update_nested")
