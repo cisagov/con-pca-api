@@ -175,7 +175,10 @@ class SubscriptionRestartView(APIView):
 
     @swagger_auto_schema(operation_id="Restart Subscription")
     def get(self, request, subscription_uuid):
-        created_response = restart_subscription(subscription_uuid)
+        continuous_subscription = request.GET.get("continuous_subscription", None)
+        created_response = restart_subscription(
+            subscription_uuid, continuous_subscription
+        )
         return Response(created_response, status=status.HTTP_202_ACCEPTED)
 
 
