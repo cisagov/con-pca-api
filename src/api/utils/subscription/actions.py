@@ -176,8 +176,8 @@ def start_subscription(subscription_uuid, new_cycle=False):
     response = subscription_service.update(subscription_uuid, subscription)
 
     for campaign in new_gophish_campaigns:
-        campaign["subscription_uuid"] = response["subscription_uuid"]
-        campaign["cycle_uuid"] = cycle_uuid
+        campaign["subscription_uuid"] = str(response["subscription_uuid"])
+        campaign["cycle_uuid"] = str(cycle_uuid)
         campaign_service.save(campaign)
 
     return response

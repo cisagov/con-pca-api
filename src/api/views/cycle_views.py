@@ -74,7 +74,7 @@ class CycleReportedView(APIView):
             update_reported_emails(subscription, data)
 
         emails_reported_list = get_reported_emails(subscription)
-        updated_response = subscription_service.update(subscription_uuid, data)
+        subscription_service.update(subscription_uuid, data)
 
         serializer = CycleEmailReportedListSerializer(emails_reported_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

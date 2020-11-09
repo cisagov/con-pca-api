@@ -5,9 +5,6 @@ import datetime
 import uuid
 
 # Models
-from api.models.dhs_models import DHSContactModel
-from api.models.subscription_models import SubscriptionModel
-from api.models.template_models import TemplateModel
 from database.service import Service
 from config import settings
 import os
@@ -62,16 +59,11 @@ def __get_service_loop(collection, model):
 
 
 def get_list(parameters, collection, model, fields=None):
-    """
-    Get_data private method.
-
-    This handles getting the data from the db.
-    """
+    """Gets list of documents from database."""
     service, loop = __get_service_loop(collection, model)
-    document_list = loop.run_until_complete(
+    return loop.run_until_complete(
         service.filter_list(parameters=parameters, fields=fields)
     )
-    return document_list
 
 
 def save_single(post_data, collection, model):
@@ -88,47 +80,30 @@ def save_single(post_data, collection, model):
     post_data["created_by"] = post_data["last_updated_by"] = current_user
     post_data["cb_timestamp"] = post_data["lub_timestamp"] = create_timestamp
 
-    created_response = loop.run_until_complete(service.create(to_create=post_data))
-    return created_response
+    return loop.run_until_complete(service.create(to_create=post_data))
 
 
-def get_single(uuid, collection, model, fields=None):
-    """
-    Get_single method.
-
-    This handles getting the data from the db.
-    """
+def get(uuid, collection, model, fields=None):
+    """Gets single record by uuid"""
     service, loop = __get_service_loop(collection, model)
-    document = loop.run_until_complete(service.get(uuid=uuid, fields=fields))
-    return document
+    return loop.run_until_complete(service.get(uuid=uuid, fields=fields))
+
+
+def get_single(parameters, collection, model, fields=None):
+    """gets single record by given params"""
+    service, loop = __get_service_loop(collection, model)
+    return loop.run_until_complete(
+        service.get_single(parameters=parameters, fields=fields)
+    )
 
 
 def update_single(uuid, put_data, collection, model):
-    """
-    Update_single method.
-
-    This handles getting the data from the db.
-    """
+    """Updates single item by uuid in database"""
     service, loop = __get_service_loop(collection, model)
-    updated_timestamp = datetime.datetime.utcnow()
-    current_user = "dev user"
+    put_data["last_updated_by"] = "dev user"
+    put_data["lub_timestamp"] = datetime.datetime.utcnow()
 
-    if isinstance(model, TemplateModel):
-        put_data["template_uuid"] = uuid
-    elif isinstance(model, SubscriptionModel):
-        put_data["subscription_uuid"] = uuid
-    elif isinstance(model, DHSContactModel):
-        put_data["dhs_contact_uuid"] = uuid
-
-    put_data["last_updated_by"] = current_user
-    put_data["lub_timestamp"] = updated_timestamp
-
-    document = loop.run_until_complete(service.get(uuid=uuid))
-    document.update(put_data)
-    update_response = loop.run_until_complete(service.update(document))
-    if "errors" in update_response:
-        return update_response
-    return document
+    return loop.run_until_complete(service.update(uuid, put_data))
 
 
 def push_nested_item(uuid, field, put_data, collection, model, params=None):
@@ -136,52 +111,14 @@ def push_nested_item(uuid, field, put_data, collection, model, params=None):
 
     list_update_object = {field: put_data}
 
-    update_response = loop.run_until_complete(
+    return loop.run_until_complete(
         service.push_nested_item(uuid, list_update_object, params)
     )
-
-    if "errors" in update_response:
-        return update_response
-    return update_response
-
-
-def update_list_single(uuid, field, put_data, collection, model, params=None):
-    """
-    Update_list_single method.
-
-    This builds $addToSet object for db, updates, then returns.
-
-    Example: uuid="123-123-123", field="timeline", put_data={...data...}, ...
-    if params!=None:
-        the db will query using extra params
-        {uuid="123-123-123", "campaigns.campaign_id": 85}
-        then for a nested set:
-        field="campaigns.$.timeline"
-        and put_data = [value1,value2,...]
-
-    Example call:
-        update_list_single(
-            uuid="123-123-123",
-            field="campaigns.$.timeline",
-            put_data=[<object>], "subscription", SubscriptionModel,validate_subscription,
-            params={"campaigns.campaign_id": 85})
-    """
-    service, loop = __get_service_loop(collection, model)
-
-    list_update_object = {field: {"$each": put_data}}
-
-    update_response = loop.run_until_complete(
-        service.update_list(uuid, list_update_object, params)
-    )
-
-    if "errors" in update_response:
-        return update_response
-    return update_response
 
 
 def update_nested_single(uuid, field, put_data, collection, model, params=None):
     """
-    Update_list_single method.
+    update_nested_single method.
 
     This builds $addToSet object for db, updates, then returns.
 
@@ -194,7 +131,7 @@ def update_nested_single(uuid, field, put_data, collection, model, params=None):
         and put_data = [value1,value2,...]
 
     Example call:
-        update_list_single(
+        update_nested_single(
             uuid="123-123-123",
             field="campaigns.$.timeline",
             put_data=[<object>], "subscription", SubscriptionModel,validate_subscription,
@@ -204,45 +141,24 @@ def update_nested_single(uuid, field, put_data, collection, model, params=None):
 
     list_update_object = {field: put_data}
 
-    update_response = loop.run_until_complete(
+    return loop.run_until_complete(
         service.update_nested_single(uuid, list_update_object, params)
     )
-    if "errors" in update_response:
-        return update_response
-    return update_response
 
 
 def delete_single(uuid, collection, model):
-    """
-    Delete_single method.
-
-    This handles getting the data from the db.
-    """
+    """ Deletes object by uuid from database """
     service, loop = __get_service_loop(collection, model)
 
-    delete_response = loop.run_until_complete(service.delete(uuid=uuid))
-    return delete_response
-
-
-def update_single_webhook(subscription, collection, model):
-    """Update single subscription with webhook user."""
-    service, loop = __get_service_loop(collection, model)
-    put_data = {
-        "last_updated_by": "webhook",
-        "lub_timestamp": datetime.datetime.utcnow(),
-    }
-    subscription.update(put_data)
-    update_response = loop.run_until_complete(service.update(subscription))
-    if "errors" in update_response:
-        return update_response
-    return subscription
+    return loop.run_until_complete(service.delete(uuid=uuid))
 
 
 def exists(parameters, collection, model):
     """Check if item exists for given parameter."""
     service, loop = __get_service_loop(collection, model)
-
-    document_list = loop.run_until_complete(service.filter_list(parameters=parameters))
+    document_list = loop.run_until_complete(
+        service.filter_list(parameters=parameters, fields={"_id": 1})
+    )
     if document_list:
         return True
     return False

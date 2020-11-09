@@ -112,6 +112,9 @@ class GenericRepositoryInterface(object):
         """
         return self.repository.get(uuid, fields or {})
 
+    def get_single(self, parameters, fields=None):
+        return self.repository.get_single(parameters, fields or {})
+
     def create(self, generic_object):
         """
         Create.
@@ -121,23 +124,14 @@ class GenericRepositoryInterface(object):
         """
         return self.repository.create(generic_object)
 
-    def update(self, generic_object):
+    def update(self, uuid, generic_object):
         """
         Update.
 
         Takes in generic_object and send to repository.
         Returns objectId of updated document.
         """
-        return self.repository.update(generic_object)
-
-    def update_list(self, uuid, generic_object, params=None):
-        """
-        Update List.
-
-        Takes in uuid, field and list_data and send to repository.
-        Returns objectId of updated document.
-        """
-        return self.repository.update_list(uuid, generic_object, params)
+        return self.repository.update(uuid, generic_object)
 
     def update_nested(self, uuid, generic_object, params=None):
         """
@@ -251,7 +245,8 @@ class GenericRepository(object):
         params = format_params(self.model_cls, params)
         result = []
         if fields is not None:
-            fields["_id"] = 0
+            if not fields.get("_id"):
+                fields["_id"] = 0
         elif 0 in fields.values():
             fields = {"_id": 0}
         async for document in self.collection.find(params, fields):
@@ -271,6 +266,16 @@ class GenericRepository(object):
             fields = {"_id": 0}
         return await self.collection.find_one({self.uuid_name: uuid}, fields)
 
+    async def get_single(self, params, fields=None):
+        if params is None:
+            params = {}
+        params = format_params(self.model_cls, params)
+        if fields is not None:
+            fields["_id"] = 0
+        elif 0 in fields.values():
+            fields = {"_id": 0}
+        return await self.collection.find_one(params, fields)
+
     async def create(self, object):
         """
         Create.
@@ -281,32 +286,14 @@ class GenericRepository(object):
         await self.collection.insert_one(object)
         return {self.uuid_name: object[self.uuid_name]}
 
-    async def update(self, object):
+    async def update(self, uuid, object):
         """
         Update.
 
         Generic method that can be used to update a
         single document by a given object.
         """
-        await self.collection.update_one(
-            {self.uuid_name: object[self.uuid_name]}, {"$set": object}
-        )
-        return {self.uuid_name: object[self.uuid_name]}
-
-    async def update_list(self, uuid, object, params=None):
-        """
-        Update List.
-
-        object to be in the form: {field_name: { $each: list_data }}
-
-        Generic method that can be used to update a
-        single document by a given uuid, field and values.
-        """
-        object_params = {self.uuid_name: uuid}
-        if params:
-            object_params = {**object_params, **params}
-
-        await self.collection.update_one(object_params, {"$addToSet": object})
+        await self.collection.update_one({self.uuid_name: uuid}, {"$set": object})
         return {self.uuid_name: uuid}
 
     async def update_nested(self, uuid, object, params=None):

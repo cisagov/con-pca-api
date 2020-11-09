@@ -3,6 +3,7 @@ import boto3
 import json
 import os
 from datetime import datetime
+import dateutil.parser
 
 from lambda_functions.tasks.process_tasks import update_task
 from api.services import SubscriptionService
@@ -33,6 +34,8 @@ def get_tasks_to_queue():
         tasks = s.get("tasks", [])
         for task in tasks:
             scheduled_date = task.get("scheduled_date")
+            if type(scheduled_date) is str:
+                scheduled_date = dateutil.parser.parse(scheduled_date)
             executed = task.get("executed")
             if (
                 scheduled_date.replace(tzinfo=None) < datetime.utcnow()
