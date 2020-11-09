@@ -637,7 +637,6 @@ def get_unique_moments(campaign_timeline):
 
     # Sort the working timeline by date, first occurence of a moment
     # will be the one that is used for calculations
-    print(user_moments)
     user_moments.sort(key=lambda x: x["time"])
 
     # Find the first occurence of a opened/clicked/submitted/reported moment
