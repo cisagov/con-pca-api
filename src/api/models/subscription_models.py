@@ -113,7 +113,6 @@ class SubscriptionModel(Model):
         ModelType(SubscriptionEmailHistoryModel), default=[]
     )
     stagger_emails = BooleanType()
-    continuous_subscription = BooleanType()
     # db data tracking added below
     created_by = StringType()
     cb_timestamp = DateTimeType()

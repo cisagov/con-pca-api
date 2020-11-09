@@ -30,7 +30,7 @@ class CycleSerializer(serializers.Serializer):
     active = serializers.BooleanField()
     campaigns_in_cycle = serializers.ListField()
     phish_results = PhishingResultsSerializer()
-    phish_results_dirty = serializers.BooleanField(required=False)
+    phish_results_dirty = serializers.BooleanField(required=False, default=False)
     override_total_reported = serializers.IntegerField(default=-1)
 
 
@@ -84,7 +84,6 @@ class SubscriptionSerializer(serializers.Serializer):
     cycles = CycleSerializer(required=False, many=True, allow_null=True)
     email_report_history = SubscriptionEmailHistorySerializer(required=False, many=True)
     stagger_emails = serializers.BooleanField(required=False)
-    continuous_subscription = serializers.BooleanField(required=False)
     # db data tracking added below
     created_by = serializers.CharField(required=False, max_length=100)
     cb_timestamp = serializers.DateTimeField(required=False)
@@ -114,7 +113,6 @@ class SubscriptionPostSerializer(serializers.Serializer):
     sending_profile_name = serializers.CharField()
     active = serializers.BooleanField()
     stagger_emails = serializers.BooleanField(default=True)
-    continuous_subscription = serializers.BooleanField(default=True)
 
 
 class SubscriptionPatchSerializer(serializers.Serializer):
@@ -147,7 +145,6 @@ class SubscriptionPatchSerializer(serializers.Serializer):
     cycles = CycleSerializer(required=False, many=True)
     email_report_history = SubscriptionEmailHistorySerializer(required=False, many=True)
     stagger_emails = serializers.BooleanField(required=False)
-    continuous_subscription = serializers.BooleanField(required=False)
 
 
 class SubscriptionResponseSerializer(serializers.Serializer):
@@ -170,4 +167,3 @@ class SubscriptionQuerySerializer(serializers.Serializer):
     archived = serializers.BooleanField(default=False, required=False)
     manually_stopped = serializers.BooleanField(required=False)
     stagger_emails = serializers.BooleanField(required=False)
-    continuous_subscription = serializers.BooleanField(required=False)
