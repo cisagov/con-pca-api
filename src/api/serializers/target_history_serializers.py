@@ -8,7 +8,7 @@ class TemplateStatusSerializer(serializers.Serializer):
     This handles nested data for Tempalte history
     """
 
-    template_uuid = serializers.UUIDField()
+    template_uuid = serializers.CharField()
     sent_timestamp = serializers.DateTimeField(required=False)
 
 
