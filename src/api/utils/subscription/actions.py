@@ -46,8 +46,6 @@ def create_subscription(subscription):
             "executed": False,
         }
     ]
-    subscription
-
     _, end_date = calculate_subscription_start_end_date(subscription.get("start_date"))
     subscription["tasks"].append(
         continuous_subscription_tasks(
