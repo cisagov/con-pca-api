@@ -114,7 +114,8 @@ def test_subscription_view_get(client):
 
 
 @pytest.mark.django_db
-def test_subscription_view_patch(client):
+@mock.patch("api.services.SubscriptionService.get", return_value={})
+def test_subscription_view_patch(mock_get, client):
     with mock.patch(
         "api.services.SubscriptionService.update",
         return_value=subscription(),
@@ -125,6 +126,7 @@ def test_subscription_view_patch(client):
             content_type="application/json",
         )
         assert mock_update_single.called
+        assert mock_get.called
         assert result.status_code == 202
 
 
