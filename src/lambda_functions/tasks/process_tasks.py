@@ -117,9 +117,6 @@ def start_subscription_cycle(subscription):
 
 
 def stop_subscription(subscription):
-    subscription_service.update(
-        subscription["subscription_uuid"], {"status": "Pending Stop"}
-    )
     actions.stop_subscription(subscription)
 
 

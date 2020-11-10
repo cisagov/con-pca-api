@@ -93,6 +93,23 @@ def send_stop_notification(subscription):
     sender.send()
 
 
+def continuous_subscription_tasks(continuous_subscription, end_date):
+    if continuous_subscription:
+        return {
+            "task_uuid": str(uuid4()),
+            "message_type": "start_new_cycle",
+            "scheduled_date": end_date,
+            "executed": False,
+        }
+    else:
+        return {
+            "task_uuid": str(uuid4()),
+            "message_type": "stop_subscription",
+            "scheduled_date": end_date,
+            "executed": False,
+        }
+
+
 def init_subscription_tasks(start_date):
     message_types = {
         "start_subscription_email": start_date - timedelta(minutes=5),
@@ -136,7 +153,6 @@ def get_staggered_dates_in_range(start, intv):
 def add_remove_continuous_subscription_task(put_data):
     # check if continuous_subscription cycle task is in subscription currently
     continuous_subscription = put_data["continuous_subscription"]
-    put_data.pop("continuous_subscription", None)
     _, end_date = calculate_subscription_start_end_date(put_data["start_date"])
 
     if continuous_subscription:

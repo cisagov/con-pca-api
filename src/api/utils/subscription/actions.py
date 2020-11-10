@@ -10,6 +10,7 @@ from api.utils.subscription.campaigns import (
 from api.utils.subscription.subscriptions import (
     calculate_subscription_start_end_date,
     init_subscription_tasks,
+    continuous_subscription_tasks,
     create_subscription_name,
     get_subscription_cycles,
     send_stop_notification,
@@ -45,32 +46,14 @@ def create_subscription(subscription):
             "executed": False,
         }
     ]
+    subscription
 
-    if "continuous_subscription" in subscription:
-        continuous_subscription = subscription["continuous_subscription"]
-        subscription.pop("continuous_subscription", None)
-        _, end_date = calculate_subscription_start_end_date(
-            subscription.get("start_date")
+    _, end_date = calculate_subscription_start_end_date(subscription.get("start_date"))
+    subscription["tasks"].append(
+        continuous_subscription_tasks(
+            subscription.get("continuous_subscrtipion"), end_date
         )
-
-        if continuous_subscription:
-            subscription["tasks"].append(
-                {
-                    "task_uuid": str(uuid.uuid4()),
-                    "message_type": "start_new_cycle",
-                    "scheduled_date": end_date,
-                    "executed": False,
-                }
-            )
-        else:
-            subscription["tasks"].append(
-                {
-                    "task_uuid": str(uuid.uuid4()),
-                    "message_type": "stop_subscription",
-                    "scheduled_date": end_date,
-                    "executed": False,
-                }
-            )
+    )
 
     subscription["status"] = "Queued"
     response = subscription_service.save(subscription)
@@ -78,7 +61,7 @@ def create_subscription(subscription):
     return response
 
 
-def restart_subscription(subscription_uuid, continuous_subscription):
+def restart_subscription(subscription_uuid):
     subscription = subscription_service.get(subscription_uuid)
     data = {
         "status": "Queued",
@@ -93,25 +76,11 @@ def restart_subscription(subscription_uuid, continuous_subscription):
     }
 
     _, end_date = calculate_subscription_start_end_date(subscription.get("start_date"))
-
-    if continuous_subscription == "true":
-        data["tasks"].append(
-            {
-                "task_uuid": str(uuid.uuid4()),
-                "message_type": "start_new_cycle",
-                "scheduled_date": end_date,
-                "executed": False,
-            }
+    data["tasks"].append(
+        continuous_subscription_tasks(
+            subscription.get("continuous_subscription"), end_date
         )
-    else:
-        data["tasks"].append(
-            {
-                "task_uuid": str(uuid.uuid4()),
-                "message_type": "stop_subscription",
-                "scheduled_date": end_date,
-                "executed": False,
-            }
-        )
+    )
 
     return subscription_service.update(subscription_uuid, data)
 
@@ -226,7 +195,6 @@ def start_subscription(subscription_uuid, new_cycle=False):
             subscription["tasks"],
         )
     )
-    print("filted tasks on start: {}".format(filted_tasks))
 
     if len(filted_tasks) <= 1:
         subscription["tasks"].extend(init_subscription_tasks(start_date))

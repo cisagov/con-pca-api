@@ -98,7 +98,10 @@ class SubscriptionView(APIView):
     def patch(self, request, subscription_uuid):
         """Patch method."""
         put_data = request.data.copy()
-        if "continuous_subscription" in put_data:
+        # Don't add task if tasks dont exist. This means the subscription is already stopped.
+        subscription = subscription_service.get(subscription_uuid, fields=["tasks"])
+        put_data["tasks"] = subscription.get("tasks", [])
+        if "continuous_subscription" in put_data and put_data.get("tasks"):
             put_data = add_remove_continuous_subscription_task(put_data)
         updated_response = subscription_service.update(subscription_uuid, put_data)
         return Response(updated_response, status=status.HTTP_202_ACCEPTED)
@@ -175,10 +178,7 @@ class SubscriptionRestartView(APIView):
 
     @swagger_auto_schema(operation_id="Restart Subscription")
     def get(self, request, subscription_uuid):
-        continuous_subscription = request.GET.get("continuous_subscription", None)
-        created_response = restart_subscription(
-            subscription_uuid, continuous_subscription
-        )
+        created_response = restart_subscription(subscription_uuid)
         return Response(created_response, status=status.HTTP_202_ACCEPTED)
 
 
