@@ -10,6 +10,7 @@ from api.utils.subscription.campaigns import (
 from api.utils.subscription.subscriptions import (
     calculate_subscription_start_end_date,
     init_subscription_tasks,
+    continuous_subscription_tasks,
     create_subscription_name,
     get_subscription_cycles,
     send_stop_notification,
@@ -45,6 +46,13 @@ def create_subscription(subscription):
             "executed": False,
         }
     ]
+    _, end_date = calculate_subscription_start_end_date(subscription.get("start_date"))
+    subscription["tasks"].append(
+        continuous_subscription_tasks(
+            subscription.get("continuous_subscription"), end_date
+        )
+    )
+
     subscription["status"] = "Queued"
     response = subscription_service.save(subscription)
     response["name"] = subscription["name"]
@@ -64,6 +72,14 @@ def restart_subscription(subscription_uuid):
             }
         ],
     }
+
+    _, end_date = calculate_subscription_start_end_date(subscription.get("start_date"))
+    data["tasks"].append(
+        continuous_subscription_tasks(
+            subscription.get("continuous_subscription"), end_date
+        )
+    )
+
     return subscription_service.update(subscription_uuid, data)
 
 
@@ -170,7 +186,15 @@ def start_subscription(subscription_uuid, new_cycle=False):
 
     if not subscription.get("tasks"):
         subscription["tasks"] = []
-    if len(subscription["tasks"]) <= 1:
+
+    filted_tasks = list(
+        filter(
+            lambda x: x["message_type"] not in ["start_new_cycle", "stop_subscription"],
+            subscription["tasks"],
+        )
+    )
+
+    if len(filted_tasks) <= 1:
         subscription["tasks"].extend(init_subscription_tasks(start_date))
 
     response = subscription_service.update(subscription_uuid, subscription)

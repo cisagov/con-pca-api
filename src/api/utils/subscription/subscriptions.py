@@ -20,7 +20,7 @@ subscription_service = SubscriptionService()
 def create_subscription_name(customer: dict):
     """Returns a subscription name."""
     subscriptions = subscription_service.get_list(
-        {"customer_uuid": str(customer["customer_uuid"])}
+        {"customer_uuid": str(customer["customer_uuid"])}, fields=["name", "identifier"]
     )
 
     if not subscriptions:
@@ -93,13 +93,29 @@ def send_stop_notification(subscription):
     sender.send()
 
 
+def continuous_subscription_tasks(continuous_subscription, end_date):
+    if continuous_subscription:
+        return {
+            "task_uuid": str(uuid4()),
+            "message_type": "start_new_cycle",
+            "scheduled_date": end_date,
+            "executed": False,
+        }
+    else:
+        return {
+            "task_uuid": str(uuid4()),
+            "message_type": "stop_subscription",
+            "scheduled_date": end_date,
+            "executed": False,
+        }
+
+
 def init_subscription_tasks(start_date):
     message_types = {
         "start_subscription_email": start_date - timedelta(minutes=5),
         "monthly_report": start_date + timedelta(minutes=MONTHLY_MINUTES),
         "cycle_report": start_date + timedelta(minutes=CYCLE_MINUTES),
         "yearly_report": start_date + timedelta(minutes=YEARLY_MINUTES),
-        "start_new_cycle": start_date + timedelta(minutes=CYCLE_MINUTES),
     }
 
     tasks = []
@@ -132,3 +148,51 @@ def get_staggered_dates_in_range(start, intv):
     for i in range(intv):
         date_list.append(start + timedelta(hours=i))
     return date_list
+
+
+def add_remove_continuous_subscription_task(put_data):
+    # check if continuous_subscription cycle task is in subscription currently
+    continuous_subscription = put_data["continuous_subscription"]
+    _, end_date = calculate_subscription_start_end_date(put_data["start_date"])
+
+    if continuous_subscription:
+        # remove stop_subscription task
+        put_data["tasks"] = list(
+            filter(
+                lambda x: x["message_type"] != "stop_subscription", put_data["tasks"]
+            )
+        )
+        # Check if start_new_cycle is not in list
+        task_list = list(
+            filter(lambda x: x["message_type"] == "start_new_cycle", put_data["tasks"])
+        )
+        if not task_list:
+            put_data["tasks"].append(
+                {
+                    "task_uuid": str(uuid4()),
+                    "message_type": "start_new_cycle",
+                    "scheduled_date": end_date,
+                    "executed": False,
+                }
+            )
+    else:
+        # if false, make sure task is removed
+        put_data["tasks"] = list(
+            filter(lambda x: x["message_type"] != "start_new_cycle", put_data["tasks"])
+        )
+        task_list = list(
+            filter(
+                lambda x: x["message_type"] == "stop_subscription", put_data["tasks"]
+            )
+        )
+        if not task_list:
+            put_data["tasks"].append(
+                {
+                    "task_uuid": str(uuid4()),
+                    "message_type": "stop_subscription",
+                    "scheduled_date": end_date,
+                    "executed": False,
+                }
+            )
+
+    return put_data

@@ -96,6 +96,7 @@ def execute_task(subscription, message_type):
         "cycle_report": email_subscription_cycle,
         "yearly_report": email_subscription_yearly,
         "start_new_cycle": start_subscription_cycle,
+        "stop_subscription": stop_subscription,
     }
     task[message_type](subscription)
 
@@ -113,6 +114,10 @@ def start_subscription_email(subscription):
 
 def start_subscription_cycle(subscription):
     actions.start_subscription(subscription["subscription_uuid"], new_cycle=True)
+
+
+def stop_subscription(subscription):
+    actions.stop_subscription(subscription)
 
 
 def email_subscription_monthly(subscription):

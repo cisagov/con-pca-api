@@ -21,7 +21,7 @@ def get_reported_emails(subscription):
         campaign_reports.append(get_campaign_reports(campaign))
 
     cycle_reports = []
-    for cycle in subscription["cycles"]:
+    for cycle in subscription.get("cycles", []):
         cycle_reports.append(get_cycle_reports(cycle, campaign_reports))
 
     return cycle_reports

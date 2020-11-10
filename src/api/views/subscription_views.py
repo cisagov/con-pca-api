@@ -11,6 +11,7 @@ from api.utils.subscription.actions import (
     create_subscription,
     restart_subscription,
 )
+from api.utils.subscription.subscriptions import add_remove_continuous_subscription_task
 from reports.utils import update_phish_results
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
@@ -97,6 +98,11 @@ class SubscriptionView(APIView):
     def patch(self, request, subscription_uuid):
         """Patch method."""
         put_data = request.data.copy()
+        # Don't add task if tasks dont exist. This means the subscription is already stopped.
+        subscription = subscription_service.get(subscription_uuid, fields=["tasks"])
+        put_data["tasks"] = subscription.get("tasks", [])
+        if "continuous_subscription" in put_data and put_data.get("tasks"):
+            put_data = add_remove_continuous_subscription_task(put_data)
         updated_response = subscription_service.update(subscription_uuid, put_data)
         return Response(updated_response, status=status.HTTP_202_ACCEPTED)
 

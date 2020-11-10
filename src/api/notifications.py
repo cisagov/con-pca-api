@@ -136,7 +136,7 @@ class EmailSender:
 
         first_name = self.subscription.get("primary_contact").get("first_name").title()
         last_name = self.subscription.get("primary_contact").get("last_name").title()
-        current_cycle = current_cycle = self.subscription.get("cycles")[-1]
+        current_cycle = self.subscription.get("cycles")[-1]
         cycle_uuid = current_cycle.get("cycle_uuid")
 
         dhs_contact = self.dhs_contact

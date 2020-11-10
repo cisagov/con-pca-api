@@ -30,7 +30,7 @@ class CycleSerializer(serializers.Serializer):
     active = serializers.BooleanField()
     campaigns_in_cycle = serializers.ListField()
     phish_results = PhishingResultsSerializer()
-    phish_results_dirty = serializers.BooleanField(required=False)
+    phish_results_dirty = serializers.BooleanField(required=False, default=False)
     override_total_reported = serializers.IntegerField(default=-1)
 
 
@@ -48,7 +48,7 @@ class SubscriptionSerializer(serializers.Serializer):
     # created by mongodb
     subscription_uuid = serializers.UUIDField(required=False)
     # values being passed in.
-    customer_uuid = serializers.UUIDField(required=False)
+    customer_uuid = serializers.CharField(required=False)
     name = serializers.CharField(required=False, max_length=100)
     url = serializers.CharField(
         required=False,
@@ -67,7 +67,7 @@ class SubscriptionSerializer(serializers.Serializer):
     end_date = serializers.DateTimeField(required=False, allow_null=True)
     campaigns = GoPhishCampaignsSerializer(many=True, required=False)
     primary_contact = CustomerContactSerializer(required=False)
-    dhs_contact_uuid = serializers.UUIDField(required=False)
+    dhs_contact_uuid = serializers.CharField(required=False)
     status = serializers.CharField(required=False, max_length=100)
     target_email_list = SubscriptionTargetSerializer(required=False, many=True)
     target_email_list_cached_copy = SubscriptionTargetSerializer(
@@ -84,6 +84,7 @@ class SubscriptionSerializer(serializers.Serializer):
     cycles = CycleSerializer(required=False, many=True, allow_null=True)
     email_report_history = SubscriptionEmailHistorySerializer(required=False, many=True)
     stagger_emails = serializers.BooleanField(required=False)
+    continuous_subscription = serializers.BooleanField(default=True)
     # db data tracking added below
     created_by = serializers.CharField(required=False, max_length=100)
     cb_timestamp = serializers.DateTimeField(required=False)
@@ -92,7 +93,7 @@ class SubscriptionSerializer(serializers.Serializer):
 
 
 class SubscriptionPostSerializer(serializers.Serializer):
-    customer_uuid = serializers.UUIDField()
+    customer_uuid = serializers.CharField()
     name = serializers.CharField(max_length=100)
     target_domain = serializers.CharField(required=False)
     url = serializers.CharField(
@@ -103,7 +104,7 @@ class SubscriptionPostSerializer(serializers.Serializer):
     )
     start_date = serializers.DateTimeField()
     primary_contact = CustomerContactSerializer()
-    dhs_contact_uuid = serializers.UUIDField()
+    dhs_contact_uuid = serializers.CharField()
     status = serializers.CharField(max_length=100)
     target_email_list = SubscriptionTargetSerializer(required=True, many=True)
     target_email_list_cached_copy = SubscriptionTargetSerializer(
@@ -113,10 +114,11 @@ class SubscriptionPostSerializer(serializers.Serializer):
     sending_profile_name = serializers.CharField()
     active = serializers.BooleanField()
     stagger_emails = serializers.BooleanField(default=True)
+    continuous_subscription = serializers.BooleanField(default=True)
 
 
 class SubscriptionPatchSerializer(serializers.Serializer):
-    customer_uuid = serializers.UUIDField(required=False)
+    customer_uuid = serializers.CharField(required=False)
     name = serializers.CharField(required=False, max_length=100)
     target_domain = serializers.CharField(required=False)
     url = serializers.CharField(
@@ -128,7 +130,7 @@ class SubscriptionPatchSerializer(serializers.Serializer):
     start_date = serializers.DateTimeField(required=False)
     end_date = serializers.DateTimeField(required=False)
     primary_contact = CustomerContactSerializer(required=False)
-    dhs_contact_uuid = serializers.UUIDField(required=False)
+    dhs_contact_uuid = serializers.CharField(required=False)
     status = serializers.CharField(required=False, max_length=100)
     target_email_list = SubscriptionTargetSerializer(required=False, many=True)
     target_email_list_cached_copy = SubscriptionTargetSerializer(
@@ -145,6 +147,7 @@ class SubscriptionPatchSerializer(serializers.Serializer):
     cycles = CycleSerializer(required=False, many=True)
     email_report_history = SubscriptionEmailHistorySerializer(required=False, many=True)
     stagger_emails = serializers.BooleanField(required=False)
+    continuous_subscription = serializers.BooleanField(required=False)
 
 
 class SubscriptionResponseSerializer(serializers.Serializer):
@@ -152,7 +155,7 @@ class SubscriptionResponseSerializer(serializers.Serializer):
 
 
 class SubscriptionQuerySerializer(serializers.Serializer):
-    customer_uuid = serializers.UUIDField(required=False)
+    customer_uuid = serializers.CharField(required=False)
     name = serializers.CharField(required=False)
     url = serializers.CharField(required=False)
     target_domain = serializers.CharField(required=False)
@@ -161,7 +164,7 @@ class SubscriptionQuerySerializer(serializers.Serializer):
     end_date = serializers.DateTimeField(required=False)
     status = serializers.CharField(required=False)
     templates_selected_uuid_list = serializers.ListField(required=False)
-    dhs_contact_uuid = serializers.UUIDField(required=False)
+    dhs_contact_uuid = serializers.CharField(required=False)
     sending_profile_name = serializers.CharField(required=False)
     active = serializers.BooleanField(required=False)
     archived = serializers.BooleanField(default=False, required=False)
