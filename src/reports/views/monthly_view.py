@@ -196,7 +196,7 @@ class MonthlyReportsView(APIView):
             subscription_stats, "stats_all", "reported", "count"
         )
 
-        total = len(subscription["target_email_list"])
+        total = active_cycle["total_targets"]
         low_mid_high_bar_data = get_stats_low_med_high_by_level(subscription_stats)
         zerodefault = [0] * 15
         low_mid_high_bar_data = (

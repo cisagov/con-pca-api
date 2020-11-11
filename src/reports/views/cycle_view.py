@@ -98,8 +98,8 @@ class CycleReportsView(APIView):
         }
 
         # Get statistics for the specified subscription during the specified cycle
-        subscription_stats = get_subscription_stats_for_cycle(
-            subscription, current_cycle["cycle_uuid"]
+        subscription_stats, total_targets = get_subscription_stats_for_cycle(
+            subscription, cycle_uuid=current_cycle["cycle_uuid"], start_date=None
         )
         region_stats = get_related_subscription_stats(subscription, start_date)
         previous_cycle_stats = get_cycles_breakdown(subscription["cycles"])
@@ -108,7 +108,7 @@ class CycleReportsView(APIView):
         get_template_details(subscription_stats["campaign_results"])
 
         metrics = {
-            "total_users_targeted": len(subscription["target_email_list"]),
+            "total_users_targeted": total_targets,
             "number_of_email_sent_overall": get_statistic_from_group(
                 subscription_stats, "stats_all", "sent", "count"
             ),
@@ -164,7 +164,7 @@ class CycleReportsView(APIView):
                 get_statistic_from_group(
                     subscription_stats, "stats_all", "sent", "count", zeroIfNone=True
                 )
-                / len(subscription["target_email_list"]),
+                / total_targets,
                 0,
             ),
             "customer_clicked_avg": ratio_to_percent_zero_default(
@@ -321,7 +321,9 @@ class CycleStatusView(APIView):
         subscription = subscription_service.get(subscription_uuid)
 
         # Get statistics for the specified subscription during the specified cycle
-        subscription_stats = get_subscription_stats_for_cycle(subscription, cycle_uuid)
+        subscription_stats, total_targets = get_subscription_stats_for_cycle(
+            subscription, cycle_uuid=cycle_uuid, start_date=None
+        )
         get_template_details(subscription_stats["campaign_results"])
 
         context = {
@@ -338,7 +340,7 @@ class CycleStatusView(APIView):
             "sent": get_statistic_from_group(
                 subscription_stats, "stats_all", "sent", "count"
             ),
-            "target_count": len(subscription["target_email_list"]),
+            "target_count": total_targets,
             "campaign_details": subscription_stats["campaign_results"],
             "aggregate_stats": subscription_stats["stats_all"],
             # "stats": subscription_stats,
