@@ -18,6 +18,8 @@ from api.services import (
     CampaignService,
 )
 
+from api.utils.subscription.static import DELAY_MINUTES
+
 customer_service = CustomerService()
 subscription_service = SubscriptionService()
 template_service = TemplateService()
@@ -465,9 +467,7 @@ def get_subscription_stats_for_cycle(subscription, cycle_uuid=None, start_date=N
     )
 
 
-def get_subscription_stats_for_yearly(
-    subscription, start_date=None, end_date=datetime.now()
-):
+def get_subscription_stats_for_yearly(subscription, start_date=None, end_date=None):
     """
     Generate statistics for a subscriptions given span, Defaults to the last year if no dates provided.
 
@@ -477,6 +477,9 @@ def get_subscription_stats_for_yearly(
     # active_cycle = get_cycle_by_date_in_range(subscription, start_date)
 
     # Determine start date if None
+    if not end_date:
+        # add offset to delay to capture todays cycles
+        end_date = datetime.now() + timedelta(minutes=DELAY_MINUTES + 5)
     if not start_date:
         start_date = end_date - timedelta(days=365.25)
 
@@ -644,7 +647,6 @@ def cycle_in_yearly_timespan(cycle_start, cycle_end, yearly_start, yearly_end):
     # Cycles: [-----][-----][-----][-----][-----]
     # Yearly:  [--------------------------]
     #            1      2       2     2      3
-
     # 1
     if cycle_start < yearly_start and cycle_end > yearly_start:
         return True
