@@ -51,7 +51,9 @@ def calculate_subscription_start_end_date(start_date):
     return start_date, end_date
 
 
-def get_subscription_cycles(campaigns, start_date, end_date, new_uuid):
+def get_subscription_cycles(
+    campaigns, start_date, end_date, new_uuid, total_targets_in_cycle
+):
     """Returns cycle data for a subscription."""
     campaigns_in_cycle = [c["campaign_id"] for c in campaigns]
     return [
@@ -61,6 +63,7 @@ def get_subscription_cycles(campaigns, start_date, end_date, new_uuid):
             "end_date": end_date,
             "active": True,
             "campaigns_in_cycle": campaigns_in_cycle,
+            "total_targets": total_targets_in_cycle,
             "phish_results": {
                 "sent": 0,
                 "opened": 0,

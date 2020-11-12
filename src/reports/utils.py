@@ -3,6 +3,7 @@ Reporting Utils.
 These are utils for creating reports.
 """
 from datetime import timedelta, datetime
+import dateutil
 import statistics
 import logging
 import pytz
@@ -16,6 +17,8 @@ from api.services import (
     RecommendationService,
     CampaignService,
 )
+
+from api.utils.subscription.static import DELAY_MINUTES
 
 customer_service = CustomerService()
 subscription_service = SubscriptionService()
@@ -62,13 +65,14 @@ def get_cycle_by_date_in_range(subscription, date):
     """
     Get the cycle that contains the given date
     """
+    date = _check_type(date)
     utc = pytz.UTC
     if not timezone.is_aware(date):
         date = utc.localize(date)
 
     for cycle in subscription["cycles"]:
-        start_date = cycle["start_date"]
-        end_date = cycle["end_date"]
+        start_date = _check_type(cycle["start_date"])
+        end_date = _check_type(cycle["end_date"])
         if not timezone.is_aware(start_date):
             start_date = utc.localize(start_date)
         if not timezone.is_aware(end_date):
@@ -77,6 +81,12 @@ def get_cycle_by_date_in_range(subscription, date):
         if start_date < date and end_date >= date:
             return cycle
     return subscription["cycles"][0]
+
+
+def _check_type(date):
+    if type(date) is str:
+        date = dateutil.parser.parse(date)
+    return date
 
 
 def find_send_timeline_moment(email, timeline_items):
@@ -396,7 +406,7 @@ def get_subscription_stats_for_month(subscription, end_date, cycle_uuid=None):
     )
 
 
-def get_subscription_stats_for_cycle(subscription, cycle_uuid=None):
+def get_subscription_stats_for_cycle(subscription, cycle_uuid=None, start_date=None):
     """
     Generate statistics for a subscriptions given cycle.
 
@@ -404,12 +414,20 @@ def get_subscription_stats_for_cycle(subscription, cycle_uuid=None):
     """
     # Get the correct cycle based on the provided start_date
     # active_cycle = get_cycle_by_date_in_range(subscription, start_date)
-    active_cycle = None
-    for cycle in subscription["cycles"]:
-        if cycle["cycle_uuid"] == cycle_uuid:
-            active_cycle = cycle
-    if not active_cycle:
+    # active_cycle = None
+    # for cycle in subscription["cycles"]:
+    #    if cycle["cycle_uuid"] == cycle_uuid:
+    #        active_cycle = cycle
+    # if not active_cycle:
+    #    active_cycle = subscription["cycles"][0]
+
+    if cycle_uuid:
         active_cycle = subscription["cycles"][0]
+        for cycle in subscription["cycles"]:
+            if cycle["cycle_uuid"] == cycle_uuid:
+                active_cycle = cycle
+    else:
+        active_cycle = get_cycle_by_date_in_range(subscription, start_date)
 
     # Get all the campaigns for the specified cycle from the campaigns
     campaigns_in_cycle = []
@@ -441,14 +459,15 @@ def get_subscription_stats_for_cycle(subscription, cycle_uuid=None):
         )
         campaign_timeline_summary = []
 
-    return generate_subscription_stat_details(
-        campaign_results, active_cycle["override_total_reported"]
+    return (
+        generate_subscription_stat_details(
+            campaign_results, active_cycle["override_total_reported"]
+        ),
+        active_cycle["total_targets"],
     )
 
 
-def get_subscription_stats_for_yearly(
-    subscription, start_date=None, end_date=datetime.now()
-):
+def get_subscription_stats_for_yearly(subscription, start_date=None, end_date=None):
     """
     Generate statistics for a subscriptions given span, Defaults to the last year if no dates provided.
 
@@ -458,6 +477,9 @@ def get_subscription_stats_for_yearly(
     # active_cycle = get_cycle_by_date_in_range(subscription, start_date)
 
     # Determine start date if None
+    if not end_date:
+        # add offset to delay to capture todays cycles
+        end_date = datetime.now() + timedelta(minutes=DELAY_MINUTES + 5)
     if not start_date:
         start_date = end_date - timedelta(days=365.25)
 
@@ -496,11 +518,22 @@ def get_subscription_stats_for_yearly(
             lambda x: x["campaign_id"] in campaigns_in_year, subscription["campaigns"]
         )
     )
-
+    all_targets_dirty = []
     for campaign in subscription["campaigns"]:
         for cycle in cycles_in_year:
             if campaign["campaign_id"] in cycle["campaigns"]:
                 cycle["campaign_list"].append(campaign)
+                all_targets_dirty.extend(campaign["target_email_list"])
+
+    # remove dups in list of targets
+    all_targets_clean = []
+    [
+        all_targets_clean.append(x)
+        for x in all_targets_dirty
+        if x not in all_targets_clean
+    ]
+
+    total_unique_targets_in_year = len(all_targets_clean)
 
     # Loop through all campaigns in cycle. Check for unique moments, and appending to campaign_timeline_summary
 
@@ -517,6 +550,7 @@ def get_subscription_stats_for_yearly(
             campaign_results, reported_override_val_total
         ),
         cycles_in_year,
+        total_unique_targets_in_year,
     )
 
 
@@ -613,7 +647,6 @@ def cycle_in_yearly_timespan(cycle_start, cycle_end, yearly_start, yearly_end):
     # Cycles: [-----][-----][-----][-----][-----]
     # Yearly:  [--------------------------]
     #            1      2       2     2      3
-
     # 1
     if cycle_start < yearly_start and cycle_end > yearly_start:
         return True

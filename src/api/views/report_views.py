@@ -104,7 +104,9 @@ class ReportsView(APIView):
         start_date = subscription["start_date"]
 
         # Get statistics for the specified subscription during the specified cycle
-        subscription_stats = get_subscription_stats_for_cycle(subscription, start_date)
+        subscription_stats, _ = get_subscription_stats_for_cycle(
+            subscription, cycle_uuid=None, start_date=start_date
+        )
         get_related_subscription_stats(subscription, start_date)
         get_cycles_breakdown(subscription["cycles"])
 
@@ -115,7 +117,7 @@ class ReportsView(APIView):
         recommendations = get_relevant_recommendations(subscription_stats)
 
         metrics = {
-            "total_users_targeted": len(subscription["target_email_list"]),
+            "total_users_targeted": target_count,
             "number_of_email_sent_overall": get_statistic_from_group(
                 subscription_stats, "stats_all", "sent", "count"
             ),

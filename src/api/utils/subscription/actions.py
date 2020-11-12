@@ -175,12 +175,15 @@ def start_subscription(subscription_uuid, new_cycle=False):
     subscription["status"] = "In Progress"
     if not subscription.get("cycles"):
         subscription["cycles"] = []
+
+    total_targets_in_cycle = len(subscription["target_email_list"])
     subscription["cycles"].append(
         get_subscription_cycles(
             new_gophish_campaigns,
             start_date,
             end_date,
             cycle_uuid,
+            total_targets_in_cycle,
         )[0]
     )
 

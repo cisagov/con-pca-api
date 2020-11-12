@@ -82,9 +82,10 @@ def test_get_subscription_cycles():
     start_date = datetime.now()
     end_date = datetime.now() + timedelta(days=2)
     new_uuid = fake.uuid4()
+    total_targets = 5
 
     result = subscriptions.get_subscription_cycles(
-        campaigns, start_date, end_date, new_uuid
+        campaigns, start_date, end_date, new_uuid, total_targets
     )
 
     assert result == [
@@ -94,6 +95,7 @@ def test_get_subscription_cycles():
             "end_date": end_date,
             "active": True,
             "campaigns_in_cycle": [c["campaign_id"] for c in campaigns],
+            "total_targets": 5,
             "phish_results": {
                 "sent": 0,
                 "opened": 0,

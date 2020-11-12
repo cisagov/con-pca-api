@@ -89,6 +89,7 @@ def subscription():
                 },
                 "phish_results_dirty": False,
                 "override_total_reported": -1,
+                "total_targets": 7,
             }
         ],
         "campaigns": [],

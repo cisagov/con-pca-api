@@ -62,6 +62,7 @@ class CycleModel(Model):
     phish_results = ModelType(PhishingResultsModel)
     phish_results_dirty = BooleanType(default=False)
     override_total_reported = IntType()
+    total_targets = IntType()
 
 
 class ScheduledTaskModel(Model):

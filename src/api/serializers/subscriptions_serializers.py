@@ -32,6 +32,7 @@ class CycleSerializer(serializers.Serializer):
     phish_results = PhishingResultsSerializer()
     phish_results_dirty = serializers.BooleanField(required=False, default=False)
     override_total_reported = serializers.IntegerField(default=-1)
+    total_targets = serializers.IntegerField(default=0)
 
 
 class SubscriptionTasksSerializer(serializers.Serializer):

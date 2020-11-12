@@ -53,7 +53,7 @@ class YearlyReportsView(APIView):
         set_cycle_quarters(cycles)
 
         # target_count = sum([targets.get("stats").get("total") for targets in summary])
-        target_count = len(subscription["target_email_list"])
+        # target_count = len(subscription["target_email_list"])
 
         yearly_start_date, yearly_end_date = get_yearly_start_dates(
             subscription, start_date
@@ -61,9 +61,11 @@ class YearlyReportsView(APIView):
 
         # Get subscription stats for the previous year.
         # Provide date values to get_subscription_stats_for_yearly for a different time span
-        subscription_stats, cycles_stats = get_subscription_stats_for_yearly(
-            subscription
-        )
+        (
+            subscription_stats,
+            cycles_stats,
+            total_targets_in_year,
+        ) = get_subscription_stats_for_yearly(subscription)
         region_stats = get_related_subscription_stats(subscription)
         percentage_trends_data = cycle_stats_to_percentage_trend_graph_data(
             cycles_stats
@@ -84,7 +86,7 @@ class YearlyReportsView(APIView):
         )
 
         metrics = {
-            "total_users_targeted": len(subscription["target_email_list"]),
+            "total_users_targeted": total_targets_in_year,
             "number_of_email_sent_overall": get_statistic_from_group(
                 subscription_stats, "stats_all", "sent", "count"
             ),
@@ -158,7 +160,7 @@ class YearlyReportsView(APIView):
             # Subscription info
             "start_date": subscription.get("start_date"),
             "end_date": subscription.get("end_date"),
-            "target_count": target_count,
+            "target_count": total_targets_in_year,
             "primary_contact": primary_contact,
             "primary_contact_email": primary_contact.get("email"),
             "subscription_stats": subscription_stats,
