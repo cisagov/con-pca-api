@@ -1,11 +1,73 @@
 from src.api.utils.subscription import subscriptions
 from faker import Faker
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from src.api.utils.subscription.static import CYCLE_MINUTES, DELAY_MINUTES
 
 from unittest import mock
 
 fake = Faker()
+
+
+def subscription():
+    return {
+        "subscription_uuid": "12334",
+        "status": "  Waiting on SRF",
+        "cycles": [
+            {
+                "cycle_uuid": "2bfd4b54-b587-4fa2-a60d-4daba861959e",
+                "start_date": datetime(
+                    2020, 7, 7, 19, 37, 54, 960000, tzinfo=timezone.utc
+                ),
+                "end_date": datetime(2020, 10, 30, 5, 49, 2),
+                "active": True,
+                "campaigns_in_cycle": [1],
+                "phish_results": {
+                    "sent": 1,
+                    "opened": 0,
+                    "clicked": 0,
+                    "submitted": 0,
+                    "reported": 0,
+                },
+                "phish_results_dirty": False,
+                "override_total_reported": -1,
+            }
+        ],
+    }
+
+
+def subscription_queued():
+    return {
+        "subscription_uuid": "12334",
+        "status": "Queued",
+        "cycles": [
+            {
+                "cycle_uuid": "2bfd4b54-b587-4fa2-a60d-4daba861959e",
+                "start_date": datetime(
+                    2020, 7, 7, 19, 37, 54, 960000, tzinfo=timezone.utc
+                ),
+                "end_date": datetime(2020, 10, 30, 5, 49, 2),
+                "active": True,
+                "campaigns_in_cycle": [1],
+                "phish_results": {
+                    "sent": 1,
+                    "opened": 0,
+                    "clicked": 0,
+                    "submitted": 0,
+                    "reported": 0,
+                },
+                "phish_results_dirty": False,
+                "override_total_reported": -1,
+            }
+        ],
+    }
+
+
+def subscription_no_cycles():
+    return {
+        "subscription_uuid": "12334",
+        "status": "  Waiting on SRF",
+        "cycles": [],
+    }
 
 
 def test_create_subscription_name():
@@ -122,7 +184,8 @@ def test_get_staggered_dates_in_range():
     assert result[2] == start + timedelta(hours=2)
 
 
-def test_add_remove_continuous_subscription_task():
+@mock.patch("api.services.SubscriptionService.get", return_value=subscription())
+def test_add_remove_continuous_subscription_task(mocked_get):
     put_data_true_with_task = {
         "start_date": "2020-04-10T09:30:25",
         "tasks": [
@@ -140,6 +203,7 @@ def test_add_remove_continuous_subscription_task():
             },
         ],
         "continuous_subscription": True,
+        "subscription_uuid": "1234",
     }
     result = subscriptions.add_remove_continuous_subscription_task(
         put_data_true_with_task
@@ -157,6 +221,7 @@ def test_add_remove_continuous_subscription_task():
             }
         ],
         "continuous_subscription": True,
+        "subscription_uuid": "1234",
     }
     result = subscriptions.add_remove_continuous_subscription_task(
         put_data_true_without_task
@@ -180,6 +245,7 @@ def test_add_remove_continuous_subscription_task():
             },
         ],
         "continuous_subscription": False,
+        "subscription_uuid": "1234",
     }
     result = subscriptions.add_remove_continuous_subscription_task(
         put_data_false_with_task
@@ -197,8 +263,27 @@ def test_add_remove_continuous_subscription_task():
             }
         ],
         "continuous_subscription": False,
+        "subscription_uuid": "1234",
     }
     result = subscriptions.add_remove_continuous_subscription_task(
         put_data_false_without_task
     )
     assert len(result["tasks"]) == 2
+
+    with mock.patch(
+        "api.services.SubscriptionService.get",
+        return_value=subscription_queued(),
+    ) as mock_get:
+        result = subscriptions.add_remove_continuous_subscription_task(
+            put_data_true_with_task
+        )
+        assert len(result["tasks"]) == 2
+
+    with mock.patch(
+        "api.services.SubscriptionService.get",
+        return_value=subscription_no_cycles(),
+    ) as mock_get:
+        result = subscriptions.add_remove_continuous_subscription_task(
+            put_data_true_with_task
+        )
+        assert len(result["tasks"]) == 2
