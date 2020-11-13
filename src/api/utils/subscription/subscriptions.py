@@ -157,11 +157,24 @@ def add_remove_continuous_subscription_task(put_data):
     # check if continuous_subscription cycle task is in subscription currently
     continuous_subscription = put_data["continuous_subscription"]
     # Calculate end of cycle.
-    start_date = put_data["start_date"]
-    if not isinstance(start_date, datetime):
-        start_date = dateutil.parser.parse(start_date)
+    # first get latest cycle
 
-    end_date = start_date + timedelta(minutes=CYCLE_MINUTES)
+    subscription = subscription_service.get(
+        uuid=put_data["subscription_uuid"],
+        fields=["cycles", "status"],
+    )
+    latest_cycle = subscription["cycles"][-1]
+
+    # if no cycles or sub is still Queued, calculate from latest start_date
+    if not latest_cycle or subscription["status"] == "Queued":
+        start_date = put_data["start_date"]
+        if not isinstance(start_date, datetime):
+            start_date = dateutil.parser.parse(start_date)
+        end_date = start_date + timedelta(minutes=CYCLE_MINUTES)
+    else:
+        end_date = latest_cycle["end_date"]
+        if not isinstance(end_date, datetime):
+            end_date = dateutil.parser.parse(end_date)
 
     if continuous_subscription:
         # remove stop_subscription task
