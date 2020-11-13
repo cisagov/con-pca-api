@@ -156,7 +156,12 @@ def get_staggered_dates_in_range(start, intv):
 def add_remove_continuous_subscription_task(put_data):
     # check if continuous_subscription cycle task is in subscription currently
     continuous_subscription = put_data["continuous_subscription"]
-    _, end_date = calculate_subscription_start_end_date(put_data["start_date"])
+    # Calculate end of cycle.
+    start_date = put_data["start_date"]
+    if not isinstance(start_date, datetime):
+        start_date = dateutil.parser.parse(start_date)
+
+    end_date = start_date + timedelta(minutes=CYCLE_MINUTES)
 
     if continuous_subscription:
         # remove stop_subscription task
