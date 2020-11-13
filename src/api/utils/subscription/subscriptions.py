@@ -163,15 +163,16 @@ def add_remove_continuous_subscription_task(put_data):
         uuid=put_data["subscription_uuid"],
         fields=["cycles", "status"],
     )
-    latest_cycle = subscription["cycles"][-1]
+    cycles = subscription.get("cycles", [])
 
     # if no cycles or sub is still Queued, calculate from latest start_date
-    if not latest_cycle or subscription["status"] == "Queued":
+    if not cycles or subscription["status"] == "Queued":
         start_date = put_data["start_date"]
         if not isinstance(start_date, datetime):
             start_date = dateutil.parser.parse(start_date)
         end_date = start_date + timedelta(minutes=CYCLE_MINUTES)
     else:
+        latest_cycle = cycles[-1]
         end_date = latest_cycle["end_date"]
         if not isinstance(end_date, datetime):
             end_date = dateutil.parser.parse(end_date)
