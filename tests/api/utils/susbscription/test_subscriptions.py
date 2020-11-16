@@ -171,8 +171,13 @@ def test_get_subscription_cycles():
 
 def test_init_subscription_tasks():
     start = datetime.now()
-    result = subscriptions.init_subscription_tasks(start)
-    assert len(result) == 4
+    result = subscriptions.init_subscription_tasks(start, True)
+    assert len(result) == 5
+    assert result[-1]["message_type"] == "start_new_cycle"
+
+    result = subscriptions.init_subscription_tasks(start, False)
+    assert len(result) == 5
+    assert result[-1]["message_type"] == "stop_subscription"
 
 
 def test_get_staggered_dates_in_range():
@@ -184,106 +189,46 @@ def test_get_staggered_dates_in_range():
     assert result[2] == start + timedelta(hours=2)
 
 
-@mock.patch("api.services.SubscriptionService.get", return_value=subscription())
-def test_add_remove_continuous_subscription_task(mocked_get):
-    put_data_true_with_task = {
-        "start_date": "2020-04-10T09:30:25",
-        "tasks": [
-            {
-                "task_uuid": "1234",
-                "message_type": "start_new_cycle",
-                "scheduled_date": datetime.now(),
-                "executed": False,
-            },
-            {
-                "task_uuid": "5678",
-                "message_type": "start_subscription_email",
-                "scheduled_date": datetime.now(),
-                "executed": False,
-            },
-        ],
-        "continuous_subscription": True,
-        "subscription_uuid": "1234",
-    }
-    result = subscriptions.add_remove_continuous_subscription_task(
-        put_data_true_with_task
+@mock.patch("api.services.SubscriptionService.update_nested")
+def test_add_remove_continuous_subscription_task(mock_update):
+    subscription_uuid = "1234"
+    now = datetime.now()
+    tasks = [
+        {
+            "task_uuid": "1234",
+            "message_type": "start_new_cycle",
+            "scheduled_date": now,
+            "executed": False,
+        },
+        {
+            "task_uuid": "5678",
+            "message_type": "start_subscription_email",
+            "scheduled_date": now,
+            "executed": False,
+        },
+    ]
+
+    subscriptions.add_remove_continuous_subscription_task(
+        subscription_uuid, tasks, False
     )
-    assert len(result["tasks"]) == 2
+    assert "stop_subscription" in str(mock_update.call_args_list[0])
 
-    put_data_true_without_task = {
-        "start_date": "2020-04-10T09:30:25",
-        "tasks": [
-            {
-                "task_uuid": "5678",
-                "message_type": "start_subscription_email",
-                "scheduled_date": datetime.now(),
-                "executed": False,
-            }
-        ],
-        "continuous_subscription": True,
-        "subscription_uuid": "1234",
-    }
-    result = subscriptions.add_remove_continuous_subscription_task(
-        put_data_true_without_task
+    tasks = [
+        {
+            "task_uuid": "1234",
+            "message_type": "stop_subscription",
+            "scheduled_date": now,
+            "executed": False,
+        },
+        {
+            "task_uuid": "5678",
+            "message_type": "start_subscription_email",
+            "scheduled_date": now,
+            "executed": False,
+        },
+    ]
+
+    subscriptions.add_remove_continuous_subscription_task(
+        subscription_uuid, tasks, True
     )
-    assert len(result["tasks"]) == 2
-
-    put_data_false_with_task = {
-        "start_date": "2020-04-10T09:30:25",
-        "tasks": [
-            {
-                "task_uuid": "1234",
-                "message_type": "start_new_cycle",
-                "scheduled_date": datetime.now(),
-                "executed": False,
-            },
-            {
-                "task_uuid": "5678",
-                "message_type": "start_subscription_email",
-                "scheduled_date": datetime.now(),
-                "executed": False,
-            },
-        ],
-        "continuous_subscription": False,
-        "subscription_uuid": "1234",
-    }
-    result = subscriptions.add_remove_continuous_subscription_task(
-        put_data_false_with_task
-    )
-    assert len(result["tasks"]) == 2
-
-    put_data_false_without_task = {
-        "start_date": "2020-04-10T09:30:25",
-        "tasks": [
-            {
-                "task_uuid": "5678",
-                "message_type": "start_subscription_email",
-                "scheduled_date": datetime.now(),
-                "executed": False,
-            }
-        ],
-        "continuous_subscription": False,
-        "subscription_uuid": "1234",
-    }
-    result = subscriptions.add_remove_continuous_subscription_task(
-        put_data_false_without_task
-    )
-    assert len(result["tasks"]) == 2
-
-    with mock.patch(
-        "api.services.SubscriptionService.get",
-        return_value=subscription_queued(),
-    ) as mock_get:
-        result = subscriptions.add_remove_continuous_subscription_task(
-            put_data_true_with_task
-        )
-        assert len(result["tasks"]) == 2
-
-    with mock.patch(
-        "api.services.SubscriptionService.get",
-        return_value=subscription_no_cycles(),
-    ) as mock_get:
-        result = subscriptions.add_remove_continuous_subscription_task(
-            put_data_true_with_task
-        )
-        assert len(result["tasks"]) == 2
+    assert "start_new_cycle" in str(mock_update.call_args_list[1])
