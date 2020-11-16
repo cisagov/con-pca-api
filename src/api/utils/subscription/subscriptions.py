@@ -96,30 +96,20 @@ def send_stop_notification(subscription):
     sender.send()
 
 
-def continuous_subscription_tasks(continuous_subscription, end_date):
-    if continuous_subscription:
-        return {
-            "task_uuid": str(uuid4()),
-            "message_type": "start_new_cycle",
-            "scheduled_date": end_date,
-            "executed": False,
-        }
-    else:
-        return {
-            "task_uuid": str(uuid4()),
-            "message_type": "stop_subscription",
-            "scheduled_date": end_date,
-            "executed": False,
-        }
-
-
-def init_subscription_tasks(start_date):
+def init_subscription_tasks(start_date, continuous_subscription):
     message_types = {
         "start_subscription_email": start_date - timedelta(minutes=5),
         "monthly_report": start_date + timedelta(minutes=MONTHLY_MINUTES),
         "cycle_report": start_date + timedelta(minutes=CYCLE_MINUTES),
         "yearly_report": start_date + timedelta(minutes=YEARLY_MINUTES),
     }
+
+    if continuous_subscription:
+        message_types["start_new_cycle"] = start_date + timedelta(minutes=CYCLE_MINUTES)
+    else:
+        message_types["stop_subscription"] = start_date + timedelta(
+            minutes=CYCLE_MINUTES
+        )
 
     tasks = []
     for message_type, send_date in message_types.items():
@@ -153,68 +143,42 @@ def get_staggered_dates_in_range(start, intv):
     return date_list
 
 
-def add_remove_continuous_subscription_task(put_data):
-    # check if continuous_subscription cycle task is in subscription currently
-    continuous_subscription = put_data["continuous_subscription"]
-    # Calculate end of cycle.
-    # first get latest cycle
-
-    subscription = subscription_service.get(
-        uuid=put_data["subscription_uuid"],
-        fields=["cycles", "status"],
-    )
-    cycles = subscription.get("cycles", [])
-
-    # if no cycles or sub is still Queued, calculate from latest start_date
-    if not cycles or subscription["status"] == "Queued":
-        start_date = put_data["start_date"]
-        if not isinstance(start_date, datetime):
-            start_date = dateutil.parser.parse(start_date)
-        end_date = start_date + timedelta(minutes=CYCLE_MINUTES)
-    else:
-        latest_cycle = cycles[-1]
-        end_date = latest_cycle["end_date"]
-        if not isinstance(end_date, datetime):
-            end_date = dateutil.parser.parse(end_date)
-
+def add_remove_continuous_subscription_task(
+    subscription_uuid, tasks, continuous_subscription
+):
+    # If continuous subscription, change stop_subscription task to start_new_cycle
     if continuous_subscription:
-        # remove stop_subscription task
-        put_data["tasks"] = list(
+        stop_task = next(
             filter(
-                lambda x: x["message_type"] != "stop_subscription", put_data["tasks"]
-            )
+                lambda x: x["message_type"] == "stop_subscription"
+                and not x.get("executed"),
+                tasks,
+            ),
+            None,
         )
-        # Check if start_new_cycle is not in list
-        task_list = list(
-            filter(lambda x: x["message_type"] == "start_new_cycle", put_data["tasks"])
-        )
-        if not task_list:
-            put_data["tasks"].append(
-                {
-                    "task_uuid": str(uuid4()),
-                    "message_type": "start_new_cycle",
-                    "scheduled_date": end_date,
-                    "executed": False,
-                }
+        if stop_task:
+            stop_task["message_type"] = "start_new_cycle"
+            subscription_service.update_nested(
+                uuid=subscription_uuid,
+                field="tasks.$",
+                data=stop_task,
+                params={"tasks.task_uuid": stop_task["task_uuid"]},
             )
+    # If not continuous subscription, change start_new_cycle task to stop_subscription
     else:
-        # if false, make sure task is removed
-        put_data["tasks"] = list(
-            filter(lambda x: x["message_type"] != "start_new_cycle", put_data["tasks"])
-        )
-        task_list = list(
+        new_cycle_task = next(
             filter(
-                lambda x: x["message_type"] == "stop_subscription", put_data["tasks"]
-            )
+                lambda x: x["message_type"] == "start_new_cycle"
+                and not x.get("executed"),
+                tasks,
+            ),
+            None,
         )
-        if not task_list:
-            put_data["tasks"].append(
-                {
-                    "task_uuid": str(uuid4()),
-                    "message_type": "stop_subscription",
-                    "scheduled_date": end_date,
-                    "executed": False,
-                }
+        if new_cycle_task:
+            new_cycle_task["message_type"] = "stop_subscription"
+            subscription_service.update_nested(
+                uuid=subscription_uuid,
+                field="tasks.$",
+                data=new_cycle_task,
+                params={"tasks.task_uuid": new_cycle_task["task_uuid"]},
             )
-
-    return put_data

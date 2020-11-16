@@ -100,10 +100,12 @@ class SubscriptionView(APIView):
         put_data = request.data.copy()
         # Don't add task if tasks dont exist. This means the subscription is already stopped.
         subscription = subscription_service.get(subscription_uuid, fields=["tasks"])
-        put_data["tasks"] = subscription.get("tasks", [])
-        if "continuous_subscription" in put_data and put_data.get("tasks"):
-            put_data["subscription_uuid"] = subscription_uuid
-            put_data = add_remove_continuous_subscription_task(put_data)
+        if "continuous_subscription" in put_data and subscription.get("tasks"):
+            add_remove_continuous_subscription_task(
+                subscription_uuid,
+                subscription["tasks"],
+                put_data["continuous_subscription"],
+            )
         updated_response = subscription_service.update(subscription_uuid, put_data)
         return Response(updated_response, status=status.HTTP_202_ACCEPTED)
 
