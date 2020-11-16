@@ -23,8 +23,8 @@ from reports.utils import (
     get_statistic_from_group,
     get_subscription_stats_for_cycle,
     get_template_details,
-    get_relevant_recommendations,
 )
+from reports.recommendations import get_relevant_recommendations
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from api.utils.reports import download_pdf

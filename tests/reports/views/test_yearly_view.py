@@ -234,7 +234,9 @@ def template():
     return_value=(generate_subscription_stat_details(), []),
 )
 @mock.patch("reports.utils.get_template_details", return_value=None)
-@mock.patch("reports.utils.get_relevant_recommendations", return_value=["1234"])
+@mock.patch(
+    "reports.recommendations.get_relevant_recommendations", return_value=["1234"]
+)
 def test_year_view_get(
     mock_subscription_get,
     mock_subscription_get_list,

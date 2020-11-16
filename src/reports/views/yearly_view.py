@@ -24,8 +24,8 @@ from reports.utils import (
     cycle_stats_to_click_rate_vs_report_rate,
     determine_trend,
     get_yearly_start_dates,
-    get_relevant_recommendations,
 )
+from reports.recommendations import get_relevant_recommendations
 
 # GoPhish API Manager
 campaign_manager = CampaignManager()

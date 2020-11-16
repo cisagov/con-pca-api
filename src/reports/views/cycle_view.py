@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 from api.manager import CampaignManager
-from reports.utils import get_relevant_recommendations
+from reports.recommendations import get_relevant_recommendations
 
 from rest_framework import status
 from rest_framework.response import Response
