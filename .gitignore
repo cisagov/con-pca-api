@@ -3,6 +3,8 @@
 .python-version
 __pycache__
 .venv
+.lambda_other
+.lambda_scikit
 .lambda
 .vs
 
