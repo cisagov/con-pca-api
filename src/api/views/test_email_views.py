@@ -1,6 +1,4 @@
 from api.manager import CampaignManager
-from api.serializers.sendingprofile_serializers import SendingProfilePatchSerializer
-from drf_yasg.utils import swagger_auto_schema
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -8,21 +6,8 @@ campaign_manager = CampaignManager()
 
 
 class SendingTestEmailsView(APIView):
-    """
-    This is the SendingProfilesListView APIView.
-    This handles the API to get a List of Sending Profiles.
-    """
+    """This is the SendingProfilesListView APIView."""
 
-    """
-    This is the SendingProfileView APIView.
-    This handles the API for creating a new Sending Profile.
-    http://localhost:3333/api/util/send_test_email
-    """
-
-    @swagger_auto_schema(
-        request_body=SendingProfilePatchSerializer,
-        operation_id="Create Sending Profile",
-    )
     def post(self, request):
         sp = request.data.copy()
         # build the template

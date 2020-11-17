@@ -1,5 +1,4 @@
 from api.utils.aws_utils import S3
-from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -8,7 +7,6 @@ from rest_framework.views import APIView
 class ImageView(APIView):
     """ImageView."""
 
-    @swagger_auto_schema(operation_id="Single Image")
     def post(self, request, format=None):
         """Post method."""
         s3 = S3()

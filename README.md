@@ -140,31 +140,9 @@ Dev Access
 
 You can use these endpoints to debug and develop, suggested access:
 
-- [drf-yasg - Yet another Swagger generator](https://drf-yasg.readthedocs.io/en/latest/)
-
 - [curl](https://curl.haxx.se/docs/manpage.html)
 
 - [PostMan](https://www.postman.com/)
-
-### drf-yasg / Swagger
-
-Here we are using genrated docs via swagger that also give us a
-few ways of viewing them.
-
-Once running, navigate to the
-[Api Swagger UI](http://localhost:8000/api/v1/swagger/)
-located at: `http://localhost:8000/api/v1/swagger/`
-
-You can also see the redoc version of the api at, navigate to the
-[Api redoc UI](http://localhost:8000/api/v1/redoc/)
-located at: `http://localhost:8000/api/v1/redoc/`
-
-To download the api docs as yaml or json, use the following enpoints:
-[Api Swagger json](http://localhost:8000/api/v1/swagger.json)
-[Api Swagger YAML](http://localhost:8000/api/v1/swagger.yaml)
-
-Here you can see how the calls are defined. These objects are defined under `api.serializers.*`
-When created, it is genrated from those files and is validated when sending.
 
 ## Database Dump and Restore
 
@@ -264,7 +242,6 @@ AWS_SECRET_ACCESS_KEY=mock_secret_key
 AWS_STORAGE_BUCKET_NAME=con-pca-local-bucket
 AWS_STORAGE_BUCKET_IMAGES_NAME=con-pca-local-image-bucket
 AWS_S3_REGION_NAME=us-east-1
-DEFAULT_FILE_STORAGE=storages.backends.s3boto3.S3Boto3Storage
 
 `DB_PW` and `DB_USER` should match `MONGO_INITDB_ROOT_PASSWORD` and `MONGO_INITDB_ROOT_USERNAME`
 

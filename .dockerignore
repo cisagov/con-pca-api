@@ -23,3 +23,7 @@
 **/secrets.dev.yaml
 **/values.dev.yaml
 README.md
+.profile-data
+.pytest_cache
+.venv
+.vscode

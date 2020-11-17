@@ -52,31 +52,6 @@ def template():
     }
 
 
-class TestTemplateManager:
-    def test_preprocess_keywords(self):
-        url = "google.com"
-        keywords = "test"
-        result = manager.TemplateManager().preprocess_keywords(url, keywords)
-        assert result is not None
-
-        keywords = None
-        result = manager.TemplateManager().preprocess_keywords(url, keywords)
-        assert result is not None
-
-    def test_randomize_templates(self):
-        template_data = {"111": "words", "222": "at", "333": "random"}
-        result = manager.TemplateManager().randomize_templates(template_data)
-        assert result is not None
-
-    def test_get_templates(self):
-        url = "google.com"
-        keywords = "test"
-        template_data = {"111": "words", "222": "at", "333": "random", "444": "test"}
-        result = manager.TemplateManager().get_templates(url, keywords, template_data)
-
-        assert result == ["444", "333"]
-
-
 class TestCampaignManager:
     def test_create(self):
         return

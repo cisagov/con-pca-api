@@ -62,10 +62,8 @@ INSTALLED_APPS = [
     "django_extensions",
     "django_smtp_ssl",
     "corsheaders",
-    "storages",
     # third party
     "rest_framework",
-    "drf_yasg",
     # local
     "authentication",
     "reports",
@@ -127,7 +125,6 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -136,7 +133,6 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
-
 
 # Email
 # Email Settings for EMAIL_BACKEND
@@ -163,20 +159,13 @@ else:
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
-
 LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = "UTC"
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
-
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
@@ -199,9 +188,6 @@ BROWSERLESS_ENDPOINT = os.environ.get("BROWSERLESS_ENDPOINT", "pca-browserless:3
 GP_URL = os.environ.get("GP_URL", "")
 GP_API_KEY = os.environ.get("GP_API_KEY", "")
 PHISH_URL = os.environ.get("PHISH_URL", "")
-
-# AWS
-DEFAULT_FILE_STORAGE = os.environ.get("DEFAULT_FILE_STORAGE")
 
 # API Key for running local scripts
 LOCAL_API_KEY = os.environ.get("LOCAL_API_KEY")
