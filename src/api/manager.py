@@ -2,18 +2,13 @@
 
 # Standard Python Libraries
 import logging
-import re
 import json
 from typing import Dict
-import random
 
 # Third-Party Libraries
-from bs4 import BeautifulSoup
 from config import settings
 from faker import Faker
 import requests
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
 
 # cisagov Libraries
 # GoPhish Libraries
@@ -21,71 +16,6 @@ from gophish import Gophish
 from gophish.models import SMTP, Campaign, Group, Page, Template, User
 
 faker = Faker()
-vectorizer = TfidfVectorizer()
-
-
-class TemplateManager:
-    """Template calculator."""
-
-    def __init__(self):
-        """Init."""
-        pass
-
-    def preprocess_keywords(self, url: str, keywords: str):
-        """
-        Preprocess_keywords.
-
-        Extract text from the given url.
-        Concatenate a bag of keywords from user input
-        clean text by converting words to lower case,
-        removing punctuation and numbers
-        """
-        web_text = ""
-        if url is not None:
-            if not url.startswith("http://") and not url.startswith("https://"):
-                url = "http://" + url
-            headers = {"Content-Type": "text/html"}
-            resp = requests.get(url, headers=headers)
-            soup = BeautifulSoup(resp.text, "lxml")
-            web_text = re.sub(r"[^A-Za-z]+", " ", soup.get_text().lower())
-
-        if keywords is None:
-            keywords = ""
-
-        return web_text + keywords
-
-    def randomize_templates(self, template_data):
-        return random.sample(
-            list(template_data.keys()), len(list(template_data.keys()))
-        )
-
-    def get_templates(self, url: str, keywords: str, template_data):
-        """
-        Get Templates.
-
-        Return highest relative templates using tf-idf and cosine similarity algorithms
-        based on customer keywords
-        """
-        if not url or not keywords:
-            return self.randomize_templates(template_data)
-
-        template_uuids = [*template_data.keys()]
-        preprocessed_data = [self.preprocess_keywords(url, keywords)] + [
-            *template_data.values()
-        ]
-
-        docs_tfidf = vectorizer.fit_transform(preprocessed_data)
-        cosine_similarities = cosine_similarity(docs_tfidf[:1], docs_tfidf).flatten()
-        cosine_similarities = cosine_similarities[1:]
-
-        context = [
-            i
-            for _, i in sorted(
-                dict(zip(cosine_similarities, template_uuids)).items(), reverse=True
-            )
-        ]
-
-        return context
 
 
 class CampaignManager:

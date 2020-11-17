@@ -1,10 +1,6 @@
 import logging
 
-from api.manager import CampaignManager, TemplateManager
-from api.serializers.subscriptions_serializers import (
-    SubscriptionPatchSerializer,
-    SubscriptionPostSerializer,
-)
+from api.manager import CampaignManager
 from api.services import SubscriptionService, CampaignService
 from api.utils.subscription.actions import (
     stop_subscription,
@@ -13,14 +9,12 @@ from api.utils.subscription.actions import (
 )
 from api.utils.subscription.subscriptions import add_remove_continuous_subscription_task
 from reports.utils import update_phish_results
-from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 
 campaign_manager = CampaignManager()
-template_manager = TemplateManager()
 
 subscription_service = SubscriptionService()
 campaign_service = CampaignService()
@@ -29,7 +23,6 @@ campaign_service = CampaignService()
 class SubscriptionsListView(APIView):
     """SubscriptionsListView."""
 
-    @swagger_auto_schema(operation_id="List of Subscriptions")
     def get(self, request):
         """Get method."""
         parameters = {"archived": {"$in": [False, None]}}
@@ -69,10 +62,6 @@ class SubscriptionsListView(APIView):
         )
         return Response(subscription_list)
 
-    @swagger_auto_schema(
-        request_body=SubscriptionPostSerializer,
-        operation_id="Create Subscription",
-    )
     def post(self, request, format=None):
         """Post method."""
         resp = create_subscription(request.data.copy())
@@ -82,7 +71,6 @@ class SubscriptionsListView(APIView):
 class SubscriptionView(APIView):
     """SubscriptionsView."""
 
-    @swagger_auto_schema(operation_id="Get single Subscription")
     def get(self, request, subscription_uuid):
         """Get method."""
         subscription = subscription_service.get(subscription_uuid)
@@ -91,10 +79,6 @@ class SubscriptionView(APIView):
         update_phish_results(subscription)
         return Response(subscription)
 
-    @swagger_auto_schema(
-        request_body=SubscriptionPatchSerializer,
-        operation_id="Update and Patch single subscription",
-    )
     def patch(self, request, subscription_uuid):
         """Patch method."""
         put_data = request.data.copy()
@@ -109,7 +93,6 @@ class SubscriptionView(APIView):
         updated_response = subscription_service.update(subscription_uuid, put_data)
         return Response(updated_response, status=status.HTTP_202_ACCEPTED)
 
-    @swagger_auto_schema(operation_id="Delete single subscription")
     def delete(self, request, subscription_uuid):
         """Delete method."""
         subscription = subscription_service.get(subscription_uuid)
@@ -134,17 +117,12 @@ class SubscriptionView(APIView):
 class SubscriptionsCustomerListView(APIView):
     """SubscriptionsCustomerListView."""
 
-    @swagger_auto_schema(operation_id="Get list of Subscriptions via customer_uuid")
     def get(self, request, customer_uuid):
         """Get method."""
         parameters = {"customer_uuid": customer_uuid, "archived": False}
         subscription_list = subscription_service.get_list(parameters)
         return Response(subscription_list)
 
-    @swagger_auto_schema(
-        request_body=SubscriptionPostSerializer,
-        operation_id="Get list of Subs with customer id and primary contact via customer_uuid",
-    )
     def post(self, request, customer_uuid):
         """Post method."""
         search_data = request.data.copy()
@@ -157,7 +135,6 @@ class SubscriptionsCustomerListView(APIView):
 class SubscriptionsTemplateListView(APIView):
     """SubscriptionsTemplateListView."""
 
-    @swagger_auto_schema(operation_id="Get list of subscriptions via template_uuid")
     def get(self, request, template_uuid):
         """Get method."""
         parameters = {"templates_selected_uuid_list": template_uuid, "archived": False}
@@ -168,7 +145,6 @@ class SubscriptionsTemplateListView(APIView):
 class SubscriptionStopView(APIView):
     """SubscriptionStopView."""
 
-    @swagger_auto_schema(operation_id="Endpoint for manually stopping a subscription")
     def get(self, request, subscription_uuid):
         """Get method."""
         subscription = subscription_service.get(subscription_uuid)
@@ -179,7 +155,6 @@ class SubscriptionStopView(APIView):
 class SubscriptionRestartView(APIView):
     """SubscriptionRestartView."""
 
-    @swagger_auto_schema(operation_id="Restart Subscription")
     def get(self, request, subscription_uuid):
         created_response = restart_subscription(subscription_uuid)
         return Response(created_response, status=status.HTTP_202_ACCEPTED)
@@ -188,10 +163,6 @@ class SubscriptionRestartView(APIView):
 class SubscriptionTargetCacheView(APIView):
     """SubscriptionTargetCacheView."""
 
-    @swagger_auto_schema(
-        request_body=SubscriptionPostSerializer,
-        operation_id="update the subscription target cache",
-    )
     def post(self, request, subscription_uuid):
         """
         If the campaign is currently running then save the target cache but leave the

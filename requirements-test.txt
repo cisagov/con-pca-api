@@ -1,6 +1,7 @@
 --requirement requirements.txt
 black
 coverage
+flake8
 pre-commit
 pytest
 pytest-django

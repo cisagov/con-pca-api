@@ -1,7 +1,6 @@
 """Webhook View."""
 from datetime import datetime
 
-from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -23,10 +22,6 @@ campaign_service = CampaignService()
 class IncomingWebhookView(APIView):
     """This is the a IncomingWebhookView."""
 
-    @swagger_auto_schema(
-        request_body=webhook_serializers.InboundWebhookSerializer,
-        operation_id="Incoming WebHook from gophish ",
-    )
     def post(self, request):
         """Post method."""
         data = request.data.copy()

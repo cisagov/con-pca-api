@@ -1,7 +1,7 @@
 """Tempalte Selector Util."""
-from api.manager import TemplateManager
 from api.utils.template.personalize import personalize_template
 from api.services import TagService, TemplateService
+import random
 
 tag_service = TagService()
 tempalte_service = TemplateService()
@@ -27,10 +27,12 @@ def group_templates(templates):
     return template_groups
 
 
+def randomize_templates(template_data):
+    return random.sample(list(template_data.keys()), len(list(template_data.keys())))
+
+
 def get_relevant_templates(templates, subscription, template_count: int):
     """Get_relevant_templates."""
-    template_manager = TemplateManager()
-
     # Values as a minimum
     template_groups = group_templates(templates)
 
@@ -49,21 +51,9 @@ def get_relevant_templates(templates, subscription, template_count: int):
     }
 
     # gets order of templates ranked from best to worst
-    relevant_templates_low = template_manager.get_templates(
-        url=subscription.get("url"),
-        keywords=subscription.get("keywords"),
-        template_data=template_data_low,
-    )
-    relevant_templates_medium = template_manager.get_templates(
-        url=subscription.get("url"),
-        keywords=subscription.get("keywords"),
-        template_data=template_data_medium,
-    )
-    relevant_templates_high = template_manager.get_templates(
-        url=subscription.get("url"),
-        keywords=subscription.get("keywords"),
-        template_data=template_data_high,
-    )
+    relevant_templates_low = randomize_templates(template_data_low)
+    relevant_templates_medium = randomize_templates(template_data_medium)
+    relevant_templates_high = randomize_templates(template_data_high)
     relevant_templates = {
         "low": relevant_templates_low,
         "medium": relevant_templates_medium,

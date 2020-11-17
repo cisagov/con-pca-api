@@ -1,6 +1,6 @@
 import logging
 import uuid
-import numpy
+import random
 
 from api.manager import CampaignManager
 from api.utils.subscription.campaigns import (
@@ -99,7 +99,7 @@ def start_subscription(subscription_uuid, new_cycle=False):
     # Divide stagger each start date and randomize:
     if subscription["stagger_emails"]:
         date_list = get_staggered_dates_in_range(start_date, 3)
-        numpy.random.shuffle(date_list)
+        date_list = random.sample(date_list, len(date_list))
     else:
         date_list = [start_date, start_date, start_date]
 

@@ -53,14 +53,6 @@ def test_group_templates():
     assert len(result["high"]) == 15
 
 
-@mock.patch("api.manager.TemplateManager.get_templates", return_value="test")
-def test_get_relevant_templates(mock_get_templates):
-    templates = create_templates()
-    subscription = create_subscription()
-    template_selector.get_relevant_templates(templates, subscription, 15)
-    assert mock_get_templates.call_count == 3
-
-
 def test_batch_templates():
     templates = {
         "high": list(range(1, 15)),

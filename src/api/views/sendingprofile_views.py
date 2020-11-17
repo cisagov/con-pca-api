@@ -1,11 +1,8 @@
 from api.manager import CampaignManager
 from api.serializers.sendingprofile_serializers import (
     SendingProfileDeleteResponseSerializer,
-    SendingProfileDeleteSerializer,
-    SendingProfilePatchSerializer,
     SendingProfileSerializer,
 )
-from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -17,17 +14,12 @@ campaign_manager = CampaignManager()
 class SendingProfilesListView(APIView):
     """SendingProfilesListView."""
 
-    @swagger_auto_schema(operation_id="List of Sending Profiles")
     def get(self, request):
         """Get method."""
         sending_profiles = campaign_manager.get_sending_profile()
         serializer = SendingProfileSerializer(sending_profiles, many=True)
         return Response(serializer.data)
 
-    @swagger_auto_schema(
-        request_body=SendingProfilePatchSerializer,
-        operation_id="Create Sending Profile",
-    )
     def post(self, request):
         sp = request.data.copy()
         sending_profile = campaign_manager.create_sending_profile(
@@ -48,16 +40,11 @@ class SendingProfilesListView(APIView):
 class SendingProfileView(APIView):
     """SendingProfileView."""
 
-    @swagger_auto_schema(operation_id="Get single Sending Profile")
     def get(self, request, id):
         sending_profile = campaign_manager.get_sending_profile(smtp_id=id)
         serializer = SendingProfileSerializer(sending_profile)
         return Response(serializer.data)
 
-    @swagger_auto_schema(
-        request_body=SendingProfilePatchSerializer,
-        operation_id="Update and Patch single Sending Profile",
-    )
     def patch(self, request, id):
         # get the saved record and overlay with whatever was sent
         sp = campaign_manager.get_sending_profile(smtp_id=id)
@@ -85,10 +72,6 @@ class SendingProfileView(APIView):
         serializer = SendingProfileSerializer(sending_profile)
         return Response(serializer.data)
 
-    @swagger_auto_schema(
-        request_body=SendingProfileDeleteSerializer,
-        operation_id="Delete single Sending Profile",
-    )
     def delete(self, request, id):
         delete_response = campaign_manager.delete_sending_profile(smtp_id=id)
         serializer = SendingProfileDeleteResponseSerializer(delete_response)

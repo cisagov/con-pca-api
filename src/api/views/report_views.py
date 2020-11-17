@@ -12,7 +12,6 @@ from api.serializers.reports_serializers import (
     ReportsGetSerializer,
 )
 from django.http import FileResponse, JsonResponse
-from drf_yasg.utils import swagger_auto_schema
 from api.notifications import EmailSender
 from reports.utils import (
     campaign_templates_to_string,
@@ -39,13 +38,8 @@ campaign_manager = CampaignManager()
 
 
 class ReportsView(APIView):
-    """
-    This is the ReportsView API Endpoint.
+    """ReportsView."""
 
-    This handles the API a Get .
-    """
-
-    @swagger_auto_schema(operation_id="Get Subscription Report data")
     def get(self, request, subscription_uuid):
         """Get Method."""
         subscription_uuid = self.kwargs["subscription_uuid"]

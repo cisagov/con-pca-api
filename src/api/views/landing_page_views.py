@@ -5,12 +5,7 @@ This handles the api for all the landing Page URLS
 """
 # Third-Party Libraries
 from api.manager import CampaignManager
-from api.serializers.landing_page_serializers import (
-    LandingPagePatchSerializer,
-    LandingPagePostSerializer,
-    LandingPageQuerySerializer,
-)
-from drf_yasg.utils import swagger_auto_schema
+from api.serializers.landing_page_serializers import LandingPageQuerySerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -25,10 +20,6 @@ landing_page_service = LandingPageService()
 class LandingPagesListView(APIView):
     """LandingPagesListView"""
 
-    @swagger_auto_schema(
-        query_serializer=LandingPageQuerySerializer,
-        operation_id="List of LandingPages",
-    )
     def get(self, request):
         """Get method."""
         serializer = LandingPageQuerySerializer(request.GET.dict())
@@ -59,10 +50,6 @@ class LandingPagesListView(APIView):
 
         return Response(landing_page_list, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(
-        request_body=LandingPagePostSerializer,
-        operation_id="Create LandingPage",
-    )
     def post(self, request, format=None):
         """Post method."""
         post_data = request.data.copy()
@@ -85,16 +72,11 @@ class LandingPagesListView(APIView):
 class LandingPageView(APIView):
     """LandingPageView."""
 
-    @swagger_auto_schema(operation_id="Get single LandingPage")
     def get(self, request, landing_page_uuid):
         """Get method."""
         landing_page = landing_page_service.get(landing_page_uuid)
         return Response(landing_page)
 
-    @swagger_auto_schema(
-        request_body=LandingPagePatchSerializer,
-        operation_id="Update and Patch single LandingPage",
-    )
     def patch(self, request, landing_page_uuid):
         """Patch method."""
         data = request.data.copy()
@@ -122,7 +104,6 @@ class LandingPageView(APIView):
         )
         return Response(updated_response, status=status.HTTP_202_ACCEPTED)
 
-    @swagger_auto_schema(operation_id="Delete single LandingPage")
     def delete(self, request, landing_page_uuid):
         """Delete method."""
         delete_response = landing_page_service.delete(landing_page_uuid)

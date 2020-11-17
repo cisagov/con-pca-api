@@ -20,40 +20,8 @@ from api.views import (
     tag_views,
 )
 from django.urls import path
-from drf_yasg import openapi
-from drf_yasg.views import get_schema_view
-from rest_framework import permissions
-
-schema_view = get_schema_view(
-    openapi.Info(
-        title="Con-PCA API",
-        default_version="v1",
-        description="""This is the API documentation for Con-PCA.
-        This was created to define all API calls and repsonses.""",
-        terms_of_service="https://github.com/cisagov/cpa/blob/develop/LICENSE",
-        contact=openapi.Contact(email="peter.mercado255@gmail.com"),
-        license=openapi.License(name="Public Domain"),
-    ),
-    public=True,
-    permission_classes=(permissions.AllowAny,),
-    url="http://localhost:8000",
-)
 
 urlpatterns = [
-    path(
-        "v1/swagger.json", schema_view.without_ui(cache_timeout=0), name="schema-json"
-    ),
-    path(
-        "v1/swagger.yaml", schema_view.without_ui(cache_timeout=0), name="schema-yaml"
-    ),
-    path(
-        "v1/swagger/",
-        schema_view.with_ui("swagger", cache_timeout=0),
-        name="schema-swagger-ui",
-    ),
-    path(
-        "v1/redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"
-    ),
     path(
         "v1/subscriptions/",
         subscription_views.SubscriptionsListView.as_view(),

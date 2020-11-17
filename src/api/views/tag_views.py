@@ -3,14 +3,9 @@ Tag Views.
 
 This handles the api for all the Tag urls.
 """
-from api.serializers.tag_serializers import (
-    TagPatchSerializer,
-    TagPostSerializer,
-    TagQuerySerializer,
-)
+from api.serializers.tag_serializers import TagQuerySerializer
 from api.services import TagService
 from api.utils.tag.tags import check_tag_format
-from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -25,10 +20,6 @@ class TagsView(APIView):
     This returns all Tags or POST to create a tag.
     """
 
-    @swagger_auto_schema(
-        query_serializer=TagQuerySerializer,
-        operation_id="Get all template tags",
-    )
     def get(self, request):
         """Get method."""
         serializer = TagQuerySerializer(request.GET.dict())
@@ -38,10 +29,6 @@ class TagsView(APIView):
         tag_list = tag_service.get_list(parameters)
         return Response(tag_list, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(
-        request_body=TagPostSerializer,
-        operation_id="Create Tag",
-    )
     def post(self, request):
         """Post Method."""
         post_data = request.data.copy()
@@ -65,23 +52,17 @@ class TagsView(APIView):
 class TagView(APIView):
     """TagView."""
 
-    @swagger_auto_schema(operation_id="Get single Tag")
     def get(self, request, tag_uuid):
         """Get method."""
         tag = tag_service.get(tag_uuid)
         return Response(tag)
 
-    @swagger_auto_schema(
-        request_body=TagPatchSerializer,
-        operation_id="Update and Patch single Tag",
-    )
     def patch(self, request, tag_uuid):
         """Patch method."""
         put_data = request.data.copy()
         updated_response = tag_service.update(tag_uuid, put_data)
         return Response(updated_response, status=status.HTTP_202_ACCEPTED)
 
-    @swagger_auto_schema(operation_id="Delete single Template")
     def delete(self, request, tag_uuid):
         """Delete method."""
         delete_response = tag_service.delete(tag_uuid)
