@@ -110,14 +110,14 @@ class SystemReportsView(APIView):
         timeline_list = []
 
         for sub in subscriptions:
-            for email_notifcation in sub["email_report_history"]:
-                if email_notifcation["report_type"] == "Cycle Start Notification":
+            for notification in sub.get("email_report_history", []):
+                if notification["report_type"] == "Cycle Start Notification":
                     cycles_started += 1
-                if email_notifcation["report_type"] == "Monthly":
+                if notification["report_type"] == "Monthly":
                     monthly_reports_sent += 1
-                if email_notifcation["report_type"] == "Cycle":
+                if notification["report_type"] == "Cycle":
                     cycle_reports_sent += 1
-                if email_notifcation["report_type"] == "Yearly":
+                if notification["report_type"] == "Yearly":
                     yearly_reports_sent += 1
 
             subscription_campaigns = campaign_service.get_list(
