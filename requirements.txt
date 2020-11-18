@@ -21,7 +21,7 @@ jmespath==0.10.0
 motor==2.3.0
 packaging==20.4
 pycparser==2.20
-pyee==7.0.4
+pyee==8.1.0
 PyJWT==1.7.1
 pymongo==3.11.1
 pyparsing==2.4.7
