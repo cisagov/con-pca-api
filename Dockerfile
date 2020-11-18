@@ -21,7 +21,7 @@ ENV PYTHONPATH "${PYTHONPATH}:/app"
 # Install dependencies
 RUN pip install --upgrade pip
 COPY requirements.txt /app/requirements.txt
-RUN pip install -r requirements.txt --use-feature=2020-resolver
+RUN pip install -r requirements.txt --use-feature=2020-resolver --no-deps
 
 # Copy project
 ADD ./src /app
