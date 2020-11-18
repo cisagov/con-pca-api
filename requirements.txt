@@ -2,7 +2,7 @@ appdirs==1.4.4
 asgiref==3.3.1
 beautifulsoup4==4.9.3
 boto3==1.16.19
-botocore==1.19.19
+botocore==1.19.20
 certifi==2020.6.20
 cffi==1.14.3
 chardet==3.0.4
