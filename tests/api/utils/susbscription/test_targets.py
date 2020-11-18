@@ -1,12 +1,19 @@
-from src.api.utils.subscription import targets
+"""Target Tests."""
 
+# Standard Python Libraries
 from unittest import mock
+
+# Third-Party Libraries
 from faker import Faker
+
+# cisagov Libraries
+from api.utils.subscription import targets
 
 fake = Faker()
 
 
 def test_batch_targets():
+    """Test Batch Targets."""
     subscription = {
         "target_email_list": [
             {"email": fake.email()},
@@ -39,6 +46,7 @@ def test_batch_targets():
 
 
 def test_get_target_available_templates():
+    """Test Available Templates."""
     templates = ["a", "b", "c"]
     result = targets.get_target_available_templates(
         "test@test.com",
@@ -73,6 +81,7 @@ def test_get_target_available_templates():
 
 
 def test_assign_targets():
+    """Test Assign Targets."""
     with mock.patch("api.services.TargetHistoryService.get_list", return_value=[]):
         sub_level = {
             "template_uuids": ["a", "b", "c"],

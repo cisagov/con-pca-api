@@ -1,6 +1,10 @@
-import requests
+"""Download Templates from API."""
+# Standard Python Libraries
 import argparse
 import json
+
+# Third-Party Libraries
+import requests
 
 parser = argparse.ArgumentParser(description="Download templates from an api url")
 

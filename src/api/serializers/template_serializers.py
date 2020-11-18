@@ -1,22 +1,13 @@
-"""
-Template Serializers.
-
-These are Django Rest Framework Serializers. These are used for
-serializing data coming from the db into a request response.
-"""
+"""Template Serializers."""
 # Third-Party Libraries
-from api.serializers.subscriptions_serializers import (
-    SubscriptionSerializer,
-)
 from rest_framework import serializers
+
+# cisagov Libraries
+from api.serializers.subscriptions_serializers import SubscriptionSerializer
 
 
 class TemplateAppearanceSerializer(serializers.Serializer):
-    """
-    This is the Template Serializer.
-
-    This holds values for template Appearance Score.
-    """
+    """TemplateAppearanceSerializer."""
 
     grammar = serializers.IntegerField()
     link_domain = serializers.IntegerField()
@@ -24,11 +15,7 @@ class TemplateAppearanceSerializer(serializers.Serializer):
 
 
 class TemplateSenderSerializer(serializers.Serializer):
-    """
-    This is the Template Sender Serializer.
-
-    This holds values for template Sender Score.
-    """
+    """TemplateSenderSerializer."""
 
     external = serializers.IntegerField()
     internal = serializers.IntegerField()
@@ -36,22 +23,14 @@ class TemplateSenderSerializer(serializers.Serializer):
 
 
 class TemplateRelevancySerializer(serializers.Serializer):
-    """
-    This is the Template Relevancy Serializer.
-
-    This holds values for template Relevancy Score.
-    """
+    """TemplateRelevancySerializer."""
 
     organization = serializers.IntegerField()
     public_news = serializers.IntegerField()
 
 
 class TemplateBehaviorSerializer(serializers.Serializer):
-    """
-    This is the Template Behavior Model.
-
-    This holds values for template Behavior Score.
-    """
+    """TemplateBehaviorSerializer."""
 
     fear = serializers.IntegerField()
     duty_obligation = serializers.IntegerField()
@@ -60,11 +39,7 @@ class TemplateBehaviorSerializer(serializers.Serializer):
 
 
 class TemplateSerializer(serializers.Serializer):
-    """
-    This is the Template GET Serializer.
-
-    This is a formats the data coming out of the Db.
-    """
+    """TemplateSerializer."""
 
     template_uuid = serializers.UUIDField()
     name = serializers.CharField()
@@ -93,11 +68,7 @@ class TemplateSerializer(serializers.Serializer):
 
 
 class TemplatePostSerializer(serializers.Serializer):
-    """
-    This is the Template POST Serializer.
-
-    This is a formats the data coming out of the Db.
-    """
+    """TemplatePostSerializer."""
 
     name = serializers.CharField()
     landing_page_uuid = serializers.CharField(required=False, allow_null=True)
@@ -124,6 +95,8 @@ class TemplatePostSerializer(serializers.Serializer):
 
 
 class TemplatePatchSerializer(serializers.Serializer):
+    """TemplatePatchSerializer."""
+
     name = serializers.CharField(required=False)
     landing_page_uuid = serializers.CharField(required=False, allow_null=True)
     deception_score = serializers.IntegerField(required=False)
@@ -145,20 +118,20 @@ class TemplatePatchSerializer(serializers.Serializer):
 
 
 class TemplateResponseSerializer(serializers.Serializer):
+    """TemplateResponseSerializer."""
+
     template_uuid = serializers.UUIDField()
 
 
 class TemplateStopResponseSerializer(serializers.Serializer):
+    """TemplateStopResponseSerializer."""
+
     template = TemplateSerializer()
     subscriptions = SubscriptionSerializer(many=True)
 
 
 class TemplateQuerySerializer(serializers.Serializer):
-    """
-    Serializes templete Query.
-
-    This is sets queries we can run on db collection.
-    """
+    """TemplateQuerySerializer."""
 
     name = serializers.CharField(required=False)
     deception_score = serializers.IntegerField(required=False)

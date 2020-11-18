@@ -3,16 +3,19 @@ Template Views.
 
 This handles the api for all the Template urls.
 """
+# Third-Party Libraries
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+# cisagov Libraries
 from api.manager import CampaignManager
 from api.serializers.template_serializers import (
     TemplateQuerySerializer,
     TemplateStopResponseSerializer,
 )
-from api.services import TemplateService, SubscriptionService
+from api.services import SubscriptionService, TemplateService
 from api.utils.subscription.actions import stop_subscription
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.views import APIView
 
 campaign_manager = CampaignManager()
 
@@ -91,3 +94,61 @@ class TemplateStopView(APIView):
         resp = {"template": template, "subscriptions": updated_subscriptions}
         serializer = TemplateStopResponseSerializer(resp)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+
+
+class SendingTestEmailsView(APIView):
+    """SendingTestEmailsView."""
+
+    def post(self, request):
+        """Post."""
+        sp = request.data.copy()
+        # build the template
+        # send the test
+        # tear the template down
+        sent_template = None
+        try:
+            if sp.get("template").get("name"):
+                tmp_template = sp.get("template")
+                tmp_template["html"] = str(tmp_template["html"]).replace(
+                    "<%URL%>", "{{.URL}}"
+                )
+                sent_template = campaign_manager.generate_email_template(
+                    tmp_template.get("name") + "_test",
+                    tmp_template.get("html"),
+                    tmp_template.get("subject"),
+                    tmp_template.get("text"),
+                )
+
+            test_send = self._build_test_smtp(sp)
+            test_response = campaign_manager.send_test_email(test_send)
+        finally:
+            if sent_template:
+                campaign_manager.delete_email_template(sent_template.id)
+
+        return Response(test_response)
+
+    def _build_test_smtp(self, sp):
+        smtp = sp.get("smtp")
+        if sp.get("template").get("name"):
+            template = sp.get("template")
+            template["name"] = template["name"] + "_test"
+        else:
+            template = {"name": sp.get("template").get("name")}
+
+        smtp_test = {
+            "template": template,
+            "first_name": sp.get("first_name"),
+            "last_name": sp.get("last_name"),
+            "email": sp.get("email"),
+            "position": sp.get("position"),
+            "url": "https://www.google.com",
+            "smtp": {
+                "from_address": smtp.get("from_address"),
+                "host": smtp.get("host"),
+                "username": smtp.get("username"),
+                "password": smtp.get("password"),
+                "ignore_cert_errors": smtp.get("ignore_cert_errors"),
+                "headers": smtp.get("headers"),
+            },
+        }
+        return smtp_test

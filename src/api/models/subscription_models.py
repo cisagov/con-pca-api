@@ -3,10 +3,10 @@ Models.
 
 These are not Django Models, there are created using Schematics Models
 """
-# Third-Party Libraries
+# cisagov Libraries
 from api.models.customer_models import CustomerContactModel
+from api.models.phishing_models import PhishingResultsModel, SubscriptionTargetModel
 from database.repository.models import Model
-from api.models.phishing_models import SubscriptionTargetModel, PhishingResultsModel
 from database.repository.types import (
     BooleanType,
     DateTimeType,

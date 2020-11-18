@@ -1,7 +1,10 @@
 """Tempalte Selector Util."""
-from api.utils.template.personalize import personalize_template
-from api.services import TagService, TemplateService
+# Standard Python Libraries
 import random
+
+# cisagov Libraries
+from api.services import TagService, TemplateService
+from api.utils.template.personalize import personalize_template
 
 tag_service = TagService()
 tempalte_service = TemplateService()
@@ -14,6 +17,7 @@ def get_num_templates_per_batch(diversity_level="moderate"):
 
 
 def group_templates(templates):
+    """Group Templates by score."""
     template_score_to_level = {"high": 5, "medium": 2, "low": 0}
     template_groups = {"low": [], "medium": [], "high": []}
     for template in templates:
@@ -28,6 +32,7 @@ def group_templates(templates):
 
 
 def randomize_templates(template_data):
+    """Randomize Templates."""
     return random.sample(list(template_data.keys()), len(list(template_data.keys())))
 
 

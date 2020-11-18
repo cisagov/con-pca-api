@@ -1,23 +1,22 @@
-"""
-Customer Views.
+"""Customer Views."""
+# Third-Party Libraries
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-This handles the api for all the Template urls.
-"""
+# cisagov Libraries
 from api.serializers.customer_serializers import (
     CustomerQuerySerializer,
     SectorGetSerializer,
 )
-from api.utils.sector_industry_utils import get_sectors_industries
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.views import APIView
 from api.services import CustomerService
+from api.utils.sector_industry_utils import get_sectors_industries
 
 customer_service = CustomerService()
 
 
 class CustomerListView(APIView):
-    """ CustomerListView """
+    """CustomerListView."""
 
     def get(self, request):
         """Get method."""
@@ -47,30 +46,30 @@ class CustomerListView(APIView):
 
 
 class CustomerView(APIView):
-    """ CustomerView """
+    """CustomerView."""
 
     def get(self, request, customer_uuid):
-        """ GET """
+        """Get."""
         customer = customer_service.get(customer_uuid)
         return Response(customer)
 
     def patch(self, request, customer_uuid):
-        """ PATCH """
+        """Patch."""
         put_data = request.data.copy()
         updated_response = customer_service.update(customer_uuid, put_data)
         return Response(updated_response, status=status.HTTP_202_ACCEPTED)
 
     def delete(self, request, customer_uuid):
-        """ DELETE """
+        """Delete."""
         delete_response = customer_service.delete(customer_uuid)
         return Response(delete_response, status=status.HTTP_200_OK)
 
 
 class SectorIndustryView(APIView):
-    """ SectoryIndustryView """
+    """SectorIndustryView."""
 
     def get(self, request):
-        """ GET """
+        """Get."""
         sectors_industries = get_sectors_industries()
         serializer = SectorGetSerializer(sectors_industries, many=True)
         return Response(serializer.data)

@@ -1,15 +1,19 @@
-import logging
-import boto3
-import json
-import os
+"""Queue Tasks Lambda Function."""
+# Standard Python Libraries
 from datetime import datetime
-import dateutil.parser
+import json
+import logging
+import os
 
-from lambda_functions.tasks.process_tasks import update_task
+# Third-Party Libraries
+import boto3
+import dateutil.parser
+from django.core.wsgi import get_wsgi_application
+
+# cisagov Libraries
 from api.services import SubscriptionService
 from api.utils.generic import format_json
-
-from django.core.wsgi import get_wsgi_application
+from lambda_functions.tasks.process_tasks import update_task
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -18,6 +22,7 @@ application = get_wsgi_application()
 
 
 def lambda_handler(event, context):
+    """Handle CloudWatch Event."""
     logger.info("Getting tasks to queue.")
     tasks = get_tasks_to_queue()
 
@@ -28,6 +33,7 @@ def lambda_handler(event, context):
 
 
 def get_tasks_to_queue():
+    """Get Tasks to Queue."""
     subscription_service = SubscriptionService()
     tasks_to_queue = []
     for s in subscription_service.get_list():
@@ -50,6 +56,7 @@ def get_tasks_to_queue():
 
 
 def queue_tasks(tasks):
+    """Queue Tasks in SQS."""
     sqs = boto3.client("sqs")
 
     for task in tasks:

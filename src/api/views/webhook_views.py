@@ -1,18 +1,19 @@
 """Webhook View."""
+# Standard Python Libraries
 from datetime import datetime
 
+# Third-Party Libraries
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+# cisagov Libraries
 from api.manager import CampaignManager
-
 from api.serializers import webhook_serializers
-
+from api.services import CampaignService, SubscriptionService
 from api.utils import webhooks
 from api.utils.generic import format_ztime
 from api.utils.template import templates
-from api.services import SubscriptionService, CampaignService
 
 manager = CampaignManager()
 subscription_service = SubscriptionService()
@@ -40,7 +41,7 @@ class IncomingWebhookView(APIView):
         return False
 
     def has_corresponding_opened_event(self, timeline, webhook_data):
-        """Check if webhook click response has corresponding opened timeline entry"""
+        """Check if webhook click response has corresponding opened timeline entry."""
         for moment in timeline:
             if (
                 moment["message"] == "Email Opened"
@@ -50,6 +51,7 @@ class IncomingWebhookView(APIView):
         return False
 
     def mark_phishing_results_dirty(self, subscription, campaign):
+        """Mark phish results dirty."""
         for cycle in subscription["cycles"]:
             if campaign["campaign_id"] in cycle["campaigns_in_cycle"]:
                 cycle["phish_results_dirty"] = True

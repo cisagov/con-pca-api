@@ -1,5 +1,7 @@
-from api.utils.generic import format_ztime
+"""Template Utils."""
+# cisagov Libraries
 from api.services import TargetHistoryService
+from api.utils.generic import format_ztime
 
 target_history_service = TargetHistoryService()
 
@@ -7,6 +9,7 @@ deception_level = {"high": 3, "moderate": 2, "low": 1}
 
 
 def update_target_history(template_uuid, email, time):
+    """Update Target History."""
     # check if email target exists, if not, create
     data = {
         "template_uuid": template_uuid,

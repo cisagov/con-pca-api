@@ -1,30 +1,34 @@
+"""Yearly Reports View."""
+# Standard Python Libraries
 from datetime import datetime
-from api.manager import CampaignManager
-from api.services import (
-    CustomerService,
-    SubscriptionService,
-    DHSContactService,
-    RecommendationService,
-)
 
+# Third-Party Libraries
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+# cisagov Libraries
+from api.manager import CampaignManager
+from api.services import (
+    CustomerService,
+    DHSContactService,
+    RecommendationService,
+    SubscriptionService,
+)
 from reports.utils import (
-    get_subscription_stats_for_yearly,
-    get_related_subscription_stats,
-    get_template_details,
-    get_statistic_from_group,
-    ratio_to_percent,
-    format_timedelta,
-    get_statistic_from_region_group,
-    set_cycle_quarters,
-    cycle_stats_to_percentage_trend_graph_data,
     cycle_stats_to_click_rate_vs_report_rate,
+    cycle_stats_to_percentage_trend_graph_data,
     determine_trend,
-    get_yearly_start_dates,
+    format_timedelta,
+    get_related_subscription_stats,
     get_relevant_recommendations,
+    get_statistic_from_group,
+    get_statistic_from_region_group,
+    get_subscription_stats_for_yearly,
+    get_template_details,
+    get_yearly_start_dates,
+    ratio_to_percent,
+    set_cycle_quarters,
 )
 
 # GoPhish API Manager
@@ -36,11 +40,10 @@ recommendation_service = RecommendationService()
 
 
 class YearlyReportsView(APIView):
-    """
-    Yearly Reports
-    """
+    """YearlyReportsView."""
 
     def get(self, request, **kwargs):
+        """Get."""
         subscription_uuid = self.kwargs["subscription_uuid"]
         start_date_param = self.kwargs["start_date"]
         start_date = datetime.strptime(start_date_param, "%Y-%m-%dT%H:%M:%S.%f%z")

@@ -1,33 +1,30 @@
-"""
-Reports Views.
+"""Reports Views."""
+# Third-Party Libraries
+from django.http import FileResponse, JsonResponse
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-This handles the api for all the Reports urls.
-"""
+# cisagov Libraries
 from api.manager import CampaignManager
-from api.models.template_models import (
-    DeceptionLevelStatsModel,
-)
+from api.models.template_models import DeceptionLevelStatsModel
+from api.notifications import EmailSender
 from api.serializers.reports_serializers import (
     EmailReportsGetSerializer,
     ReportsGetSerializer,
 )
-from django.http import FileResponse, JsonResponse
-from api.notifications import EmailSender
+from api.services import SubscriptionService, TemplateService
+from api.utils.reports import download_pdf
 from reports.utils import (
     campaign_templates_to_string,
     get_cycles_breakdown,
     get_most_successful_campaigns,
     get_related_subscription_stats,
+    get_relevant_recommendations,
     get_reports_to_click,
     get_statistic_from_group,
     get_subscription_stats_for_cycle,
     get_template_details,
-    get_relevant_recommendations,
 )
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from api.utils.reports import download_pdf
-from api.services import TemplateService, SubscriptionService
 
 # database services
 template_service = TemplateService()
@@ -41,7 +38,7 @@ class ReportsView(APIView):
     """ReportsView."""
 
     def get(self, request, subscription_uuid):
-        """Get Method."""
+        """Get."""
         subscription_uuid = self.kwargs["subscription_uuid"]
         subscription = subscription_service.get(subscription_uuid)
 
@@ -155,6 +152,7 @@ class ReportsView(APIView):
 
 
 def monthly_report_email_view(request, subscription_uuid, cycle, cycle_uuid=None):
+    """Email monthly report."""
     subscription = subscription_service.get(subscription_uuid)
     sender = EmailSender(subscription, "monthly_report", cycle, cycle_uuid)
     sender.send()
@@ -163,7 +161,7 @@ def monthly_report_email_view(request, subscription_uuid, cycle, cycle_uuid=None
 
 
 def monthly_reports_pdf_view(request, subscription_uuid, cycle, cycle_uuid=None):
-    """Monthly_reports_pdf_view."""
+    """Download monthly report."""
     return FileResponse(
         download_pdf("monthly", subscription_uuid, cycle, cycle_uuid),
         as_attachment=True,
@@ -172,6 +170,7 @@ def monthly_reports_pdf_view(request, subscription_uuid, cycle, cycle_uuid=None)
 
 
 def cycle_report_email_view(request, subscription_uuid, cycle):
+    """Email cycle report."""
     subscription = subscription_service.get(subscription_uuid)
     sender = EmailSender(subscription, "cycle_report", cycle)
     sender.send()
@@ -180,7 +179,7 @@ def cycle_report_email_view(request, subscription_uuid, cycle):
 
 
 def cycle_reports_pdf_view(request, subscription_uuid, cycle):
-    """Cycle_reports_pdf_view."""
+    """Download cycle reprot."""
     return FileResponse(
         download_pdf(
             "cycle",
@@ -193,6 +192,7 @@ def cycle_reports_pdf_view(request, subscription_uuid, cycle):
 
 
 def yearly_report_email_view(request, subscription_uuid, cycle):
+    """Email yearly report."""
     subscription = subscription_service.get(subscription_uuid)
     sender = EmailSender(subscription, "yearly_report", cycle)
     sender.send()
@@ -201,7 +201,7 @@ def yearly_report_email_view(request, subscription_uuid, cycle):
 
 
 def yearly_reports_pdf_view(request, subscription_uuid, cycle):
-    """Yearly_reports_pdf_view."""
+    """Download yearly report."""
     return FileResponse(
         download_pdf(
             "yearly",

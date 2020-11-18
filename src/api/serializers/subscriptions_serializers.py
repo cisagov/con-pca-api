@@ -1,14 +1,20 @@
-from api.serializers.customer_serializers import CustomerContactSerializer
-from api.serializers.campaign_serializers import GoPhishCampaignsSerializer
-from api.serializers.phishing_serializers import (
-    SubscriptionTargetSerializer,
-    PhishingResultsSerializer,
-)
+"""Subscription Serializers."""
 
+# Third-Party Libraries
 from rest_framework import serializers
+
+# cisagov Libraries
+from api.serializers.campaign_serializers import GoPhishCampaignsSerializer
+from api.serializers.customer_serializers import CustomerContactSerializer
+from api.serializers.phishing_serializers import (
+    PhishingResultsSerializer,
+    SubscriptionTargetSerializer,
+)
 
 
 class SubscriptionEmailHistorySerializer(serializers.Serializer):
+    """SubscriptionEmailHistorySerializer."""
+
     report_type = serializers.CharField(max_length=255)
     sent = serializers.DateTimeField()
     email_to = serializers.EmailField()
@@ -18,12 +24,16 @@ class SubscriptionEmailHistorySerializer(serializers.Serializer):
 
 
 class SubscriptionClicksSerializer(serializers.Serializer):
+    """SubscriptionClicksSerializer."""
+
     source_ip = serializers.CharField(max_length=100)
     timestamp = serializers.DateTimeField()
     target_uuid = serializers.UUIDField()
 
 
 class CycleSerializer(serializers.Serializer):
+    """CycleSerializer."""
+
     cycle_uuid = serializers.CharField()
     start_date = serializers.DateTimeField()
     end_date = serializers.DateTimeField()
@@ -36,6 +46,8 @@ class CycleSerializer(serializers.Serializer):
 
 
 class SubscriptionTasksSerializer(serializers.Serializer):
+    """SubscriptionTasksSerializer."""
+
     task_uuid = serializers.CharField()
     message_type = serializers.CharField()
     scheduled_date = serializers.DateTimeField()
@@ -46,6 +58,8 @@ class SubscriptionTasksSerializer(serializers.Serializer):
 
 
 class SubscriptionSerializer(serializers.Serializer):
+    """SubscriptionSerializer."""
+
     # created by mongodb
     subscription_uuid = serializers.UUIDField(required=False)
     # values being passed in.
@@ -94,6 +108,8 @@ class SubscriptionSerializer(serializers.Serializer):
 
 
 class SubscriptionPostSerializer(serializers.Serializer):
+    """SubscriptionPostSerializer."""
+
     customer_uuid = serializers.CharField()
     name = serializers.CharField(max_length=100)
     target_domain = serializers.CharField(required=False)
@@ -119,6 +135,8 @@ class SubscriptionPostSerializer(serializers.Serializer):
 
 
 class SubscriptionPatchSerializer(serializers.Serializer):
+    """SubscriptionPatchSerializer."""
+
     customer_uuid = serializers.CharField(required=False)
     name = serializers.CharField(required=False, max_length=100)
     target_domain = serializers.CharField(required=False)
@@ -152,10 +170,14 @@ class SubscriptionPatchSerializer(serializers.Serializer):
 
 
 class SubscriptionResponseSerializer(serializers.Serializer):
+    """SubscriptionResponseSerializer."""
+
     subscription_uuid = serializers.UUIDField()
 
 
 class SubscriptionQuerySerializer(serializers.Serializer):
+    """SubscriptionQuerySerializer."""
+
     customer_uuid = serializers.CharField(required=False)
     name = serializers.CharField(required=False)
     url = serializers.CharField(required=False)

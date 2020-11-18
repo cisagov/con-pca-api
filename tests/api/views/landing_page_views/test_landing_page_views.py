@@ -1,13 +1,17 @@
-import pytest
+"""Landing Page View Tests."""
+# Standard Python Libraries
 from unittest import mock
+
+# Third-Party Libraries
 from faker import Faker
 from gophish.models import Page
-
+import pytest
 
 fake = Faker()
 
 
 def get_customer():
+    """Sample Customer."""
     return {
         "customer_uuid": fake.uuid4(),
         "name": fake.name(),
@@ -39,6 +43,7 @@ def get_customer():
 
 
 def new_customer():
+    """Sample Customer."""
     return {
         "name": fake.name(),
         "identifier": fake.word(),
@@ -65,6 +70,7 @@ def new_customer():
 
 
 def get_landing_page_object():
+    """Sample Landing Page Object."""
     landing_page = Page(
         name="landing page",
         html="etest",
@@ -75,6 +81,7 @@ def get_landing_page_object():
 
 
 def get_landing_page():
+    """Sample Landing Page."""
     return {
         "landing_page_uuid": "1234",
         "gophish_template_id": 1234,
@@ -89,6 +96,7 @@ def get_landing_page():
 
 
 def get_landing_page_query():
+    """Sample Landing Page Query."""
     return {
         "gophish_template_id": 1234,
         "name": "landing page",
@@ -102,6 +110,7 @@ def get_landing_page_query():
 
 
 def get_landing_page_patch():
+    """Sample Landing Page Patch Response."""
     return {
         "gophish_template_id": 1234,
         "name": "landing page",
@@ -111,6 +120,7 @@ def get_landing_page_patch():
 
 
 def get_landing_page_delete():
+    """Sample Landing Page Delete Response."""
     return {"gophish_template_id": 1234}
 
 
@@ -126,6 +136,7 @@ def test_landing_page_view_get(
     mock_udpate,
     client,
 ):
+    """Landing Page View Get Test."""
     response = client.patch(
         "/api/v1/landingpage/1234/",
         get_landing_page_patch(),
@@ -143,6 +154,7 @@ def test_landing_page_view_get(
 )
 @pytest.mark.django_db
 def test_landing_page_list_view_post(mock_delete, client):
+    """Landing Page List View Post Test."""
     response = client.delete("/api/v1/landingpage/1234/")
     assert mock_delete.called
     assert response.status_code == 200

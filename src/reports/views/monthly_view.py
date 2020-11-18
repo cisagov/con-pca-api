@@ -1,26 +1,24 @@
+"""Monthly Report View."""
 # Standard Python Libraries
 from datetime import datetime
 
 # Third-Party Libraries
-# Local Libraries
-# Django Libraries
-from api.manager import CampaignManager
 from django.utils import timezone
 import pytz
-
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+# cisagov Libraries
+from api.manager import CampaignManager
+from api.services import CustomerService, DHSContactService, SubscriptionService
 from reports.utils import (
+    get_reports_to_click,
+    get_statistic_from_group,
+    get_stats_low_med_high_by_level,
     get_subscription_stats_for_month,
     get_template_details,
-    get_statistic_from_group,
-    get_reports_to_click,
-    get_stats_low_med_high_by_level,
 )
-
-from api.services import SubscriptionService, CustomerService, DHSContactService
 
 campaign_manager = CampaignManager()
 subscription_service = SubscriptionService()
@@ -29,11 +27,10 @@ dhs_contact_service = DHSContactService()
 
 
 class MonthlyReportsView(APIView):
-    """
-    Monthly reports
-    """
+    """MonthlyReportsView."""
 
     def getTemplateClickedIndicators(self, subscription_stats):
+        """Get Template Clicked Indicators."""
         key_vals = {
             "grammar": {"0": 0, "1": 0, "2": 0},
             "link_domain": {"0": 0, "1": 0},
@@ -147,6 +144,7 @@ class MonthlyReportsView(APIView):
         subscription_stats["indicator_ranking"] = indicator_formatted
 
     def getMonthlyStats(self, subscription):
+        """Get Monthly Stats."""
         start_date_param = self.kwargs["start_date"]
         target_report_date = datetime.strptime(
             start_date_param, "%Y-%m-%dT%H:%M:%S.%f%z"
@@ -250,6 +248,7 @@ class MonthlyReportsView(APIView):
         return percent_rate
 
     def get(self, request, **kwargs):
+        """Get."""
         subscription_uuid = self.kwargs["subscription_uuid"]
         subscription = subscription_service.get(subscription_uuid)
         customer = customer_service.get(subscription["customer_uuid"])

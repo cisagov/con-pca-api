@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=emulateIE7" />
-    <title>Coverage for src\api\models\subscription_models.py: 98%</title>
+    <title>Coverage for src\api\models\subscription_models.py: 100%</title>
     <link rel="stylesheet" href="style.css" type="text/css" />
     <script type="text/javascript" src="jquery.min.js"></script>
     <script type="text/javascript" src="jquery.hotkeys.js"></script>
@@ -18,7 +18,7 @@
       <div class="content">
         <h1>
           Coverage for <b>src\api\models\subscription_models.py</b> :
-          <span class="pc_cov">98%</span>
+          <span class="pc_cov">100%</span>
         </h1>
         <img
           id="keyboard_icon"
@@ -26,20 +26,20 @@
           alt="Show keyboard shortcuts"
         />
         <h2 class="stats">
-          60 statements &nbsp;
+          61 statements &nbsp;
           <button
             type="button"
             class="run shortkey_r button_toggle_run"
             title="Toggle lines run"
           >
-            59 run
+            61 run
           </button>
           <button
             type="button"
             class="mis show_mis shortkey_m button_toggle_mis"
             title="Toggle lines missing"
           >
-            1 missing
+            0 missing
           </button>
           <button
             type="button"
@@ -105,7 +105,7 @@
       <p id="t6" class="pln">
         <span class="n"><a href="#t6">6</a></span
         ><span class="t"
-          ><span class="com"># Third-Party Libraries</span>&nbsp;</span
+          ><span class="com"># cisagov Libraries</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t7" class="run">
@@ -121,23 +121,23 @@
       <p id="t8" class="run">
         <span class="n"><a href="#t8">8</a></span
         ><span class="t"
-          ><span class="key">from</span> <span class="nam">database</span
-          ><span class="op">.</span><span class="nam">repository</span
-          ><span class="op">.</span><span class="nam">models</span>
+          ><span class="key">from</span> <span class="nam">api</span
+          ><span class="op">.</span><span class="nam">models</span
+          ><span class="op">.</span><span class="nam">phishing_models</span>
           <span class="key">import</span>
-          <span class="nam">Model</span>&nbsp;</span
+          <span class="nam">PhishingResultsModel</span
+          ><span class="op">,</span>
+          <span class="nam">SubscriptionTargetModel</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t9" class="run">
         <span class="n"><a href="#t9">9</a></span
         ><span class="t"
-          ><span class="key">from</span> <span class="nam">api</span
-          ><span class="op">.</span><span class="nam">models</span
-          ><span class="op">.</span><span class="nam">phishing_models</span>
+          ><span class="key">from</span> <span class="nam">database</span
+          ><span class="op">.</span><span class="nam">repository</span
+          ><span class="op">.</span><span class="nam">models</span>
           <span class="key">import</span>
-          <span class="nam">SubscriptionTargetModel</span
-          ><span class="op">,</span>
-          <span class="nam">PhishingResultsModel</span>&nbsp;</span
+          <span class="nam">Model</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t10" class="run">
@@ -504,16 +504,24 @@
           ><span class="op">(</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t65" class="pln">
+      <p id="t65" class="run">
         <span class="n"><a href="#t65">65</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
+        ><span class="t">
+          <span class="nam">total_targets</span> <span class="op">=</span>
+          <span class="nam">IntType</span><span class="op">(</span
+          ><span class="op">)</span>&nbsp;</span
+        ><span class="r"></span>
       </p>
       <p id="t66" class="pln">
         <span class="n"><a href="#t66">66</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t67" class="run">
+      <p id="t67" class="pln">
         <span class="n"><a href="#t67">67</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t68" class="run">
+        <span class="n"><a href="#t68">68</a></span
         ><span class="t"
           ><span class="key">class</span>
           <span class="nam">ScheduledTaskModel</span><span class="op">(</span
@@ -521,50 +529,42 @@
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t68" class="pln">
-        <span class="n"><a href="#t68">68</a></span
+      <p id="t69" class="pln">
+        <span class="n"><a href="#t69">69</a></span
         ><span class="t"> <span class="str">"""</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t69" class="pln">
-        <span class="n"><a href="#t69">69</a></span
+      <p id="t70" class="pln">
+        <span class="n"><a href="#t70">70</a></span
         ><span class="t"
           ><span class="str"> This is the Scheduled Task Model.</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t70" class="pln">
-        <span class="n"><a href="#t70">70</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
       <p id="t71" class="pln">
         <span class="n"><a href="#t71">71</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t72" class="pln">
+        <span class="n"><a href="#t72">72</a></span
         ><span class="t"
           ><span class="str"> This keeps track of a list of active tasks.</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t72" class="pln">
-        <span class="n"><a href="#t72">72</a></span
+      <p id="t73" class="pln">
+        <span class="n"><a href="#t73">73</a></span
         ><span class="t"><span class="str"> """</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t73" class="pln">
-        <span class="n"><a href="#t73">73</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t74" class="run">
+      <p id="t74" class="pln">
         <span class="n"><a href="#t74">74</a></span
-        ><span class="t">
-          <span class="nam">task_uuid</span> <span class="op">=</span>
-          <span class="nam">StringType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
+        ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
       <p id="t75" class="run">
         <span class="n"><a href="#t75">75</a></span
         ><span class="t">
-          <span class="nam">message_type</span> <span class="op">=</span>
+          <span class="nam">task_uuid</span> <span class="op">=</span>
           <span class="nam">StringType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
@@ -572,45 +572,61 @@
       <p id="t76" class="run">
         <span class="n"><a href="#t76">76</a></span
         ><span class="t">
-          <span class="nam">scheduled_date</span> <span class="op">=</span>
-          <span class="nam">DateTimeType</span><span class="op">(</span
+          <span class="nam">message_type</span> <span class="op">=</span>
+          <span class="nam">StringType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t77" class="run">
         <span class="n"><a href="#t77">77</a></span
         ><span class="t">
-          <span class="nam">executed</span> <span class="op">=</span>
-          <span class="nam">BooleanType</span><span class="op">(</span
+          <span class="nam">scheduled_date</span> <span class="op">=</span>
+          <span class="nam">DateTimeType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t78" class="run">
         <span class="n"><a href="#t78">78</a></span
         ><span class="t">
-          <span class="nam">executed_date</span> <span class="op">=</span>
-          <span class="nam">DateTimeType</span><span class="op">(</span
+          <span class="nam">queued</span> <span class="op">=</span>
+          <span class="nam">BooleanType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t79" class="run">
         <span class="n"><a href="#t79">79</a></span
         ><span class="t">
+          <span class="nam">executed</span> <span class="op">=</span>
+          <span class="nam">BooleanType</span><span class="op">(</span
+          ><span class="op">)</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t80" class="run">
+        <span class="n"><a href="#t80">80</a></span
+        ><span class="t">
+          <span class="nam">executed_date</span> <span class="op">=</span>
+          <span class="nam">DateTimeType</span><span class="op">(</span
+          ><span class="op">)</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t81" class="run">
+        <span class="n"><a href="#t81">81</a></span
+        ><span class="t">
           <span class="nam">error</span> <span class="op">=</span>
           <span class="nam">StringType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t80" class="pln">
-        <span class="n"><a href="#t80">80</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t81" class="pln">
-        <span class="n"><a href="#t81">81</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t82" class="run">
+      <p id="t82" class="pln">
         <span class="n"><a href="#t82">82</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t83" class="pln">
+        <span class="n"><a href="#t83">83</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t84" class="run">
+        <span class="n"><a href="#t84">84</a></span
         ><span class="t"
           ><span class="key">class</span>
           <span class="nam">SubscriptionModel</span><span class="op">(</span
@@ -618,68 +634,68 @@
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t83" class="pln">
-        <span class="n"><a href="#t83">83</a></span
+      <p id="t85" class="pln">
+        <span class="n"><a href="#t85">85</a></span
         ><span class="t"> <span class="str">"""</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t84" class="pln">
-        <span class="n"><a href="#t84">84</a></span
+      <p id="t86" class="pln">
+        <span class="n"><a href="#t86">86</a></span
         ><span class="t"
           ><span class="str"> This is the Subscription Model.</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t85" class="pln">
-        <span class="n"><a href="#t85">85</a></span
+      <p id="t87" class="pln">
+        <span class="n"><a href="#t87">87</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t86" class="pln">
-        <span class="n"><a href="#t86">86</a></span
+      <p id="t88" class="pln">
+        <span class="n"><a href="#t88">88</a></span
         ><span class="t"
           ><span class="str">
             This controls all data needed in saving the model.</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t87" class="pln">
-        <span class="n"><a href="#t87">87</a></span
+      <p id="t89" class="pln">
+        <span class="n"><a href="#t89">89</a></span
         ><span class="t"><span class="str"> """</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t88" class="pln">
-        <span class="n"><a href="#t88">88</a></span
+      <p id="t90" class="pln">
+        <span class="n"><a href="#t90">90</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t89" class="pln">
-        <span class="n"><a href="#t89">89</a></span
+      <p id="t91" class="pln">
+        <span class="n"><a href="#t91">91</a></span
         ><span class="t">
           <span class="com"># created by mongodb</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t90" class="run">
-        <span class="n"><a href="#t90">90</a></span
+      <p id="t92" class="run">
+        <span class="n"><a href="#t92">92</a></span
         ><span class="t">
           <span class="nam">subscription_uuid</span> <span class="op">=</span>
           <span class="nam">UUIDType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t91" class="pln">
-        <span class="n"><a href="#t91">91</a></span
+      <p id="t93" class="pln">
+        <span class="n"><a href="#t93">93</a></span
         ><span class="t">
           <span class="com"># values being passed in.</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t92" class="run">
-        <span class="n"><a href="#t92">92</a></span
+      <p id="t94" class="run">
+        <span class="n"><a href="#t94">94</a></span
         ><span class="t">
           <span class="nam">customer_uuid</span> <span class="op">=</span>
           <span class="nam">UUIDType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t93" class="run">
-        <span class="n"><a href="#t93">93</a></span
+      <p id="t95" class="run">
+        <span class="n"><a href="#t95">95</a></span
         ><span class="t">
           <span class="nam">tasks</span> <span class="op">=</span>
           <span class="nam">ListType</span><span class="op">(</span
@@ -688,26 +704,10 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t94" class="run">
-        <span class="n"><a href="#t94">94</a></span
-        ><span class="t">
-          <span class="nam">name</span> <span class="op">=</span>
-          <span class="nam">StringType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t95" class="run">
-        <span class="n"><a href="#t95">95</a></span
-        ><span class="t">
-          <span class="nam">url</span> <span class="op">=</span>
-          <span class="nam">StringType</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
       <p id="t96" class="run">
         <span class="n"><a href="#t96">96</a></span
         ><span class="t">
-          <span class="nam">target_domain</span> <span class="op">=</span>
+          <span class="nam">name</span> <span class="op">=</span>
           <span class="nam">StringType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
@@ -715,7 +715,7 @@
       <p id="t97" class="run">
         <span class="n"><a href="#t97">97</a></span
         ><span class="t">
-          <span class="nam">keywords</span> <span class="op">=</span>
+          <span class="nam">url</span> <span class="op">=</span>
           <span class="nam">StringType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
@@ -723,21 +723,37 @@
       <p id="t98" class="run">
         <span class="n"><a href="#t98">98</a></span
         ><span class="t">
-          <span class="nam">start_date</span> <span class="op">=</span>
-          <span class="nam">DateTimeType</span><span class="op">(</span
+          <span class="nam">target_domain</span> <span class="op">=</span>
+          <span class="nam">StringType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t99" class="run">
         <span class="n"><a href="#t99">99</a></span
         ><span class="t">
-          <span class="nam">end_date</span> <span class="op">=</span>
-          <span class="nam">DateTimeType</span><span class="op">(</span
+          <span class="nam">keywords</span> <span class="op">=</span>
+          <span class="nam">StringType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t100" class="run">
         <span class="n"><a href="#t100">100</a></span
+        ><span class="t">
+          <span class="nam">start_date</span> <span class="op">=</span>
+          <span class="nam">DateTimeType</span><span class="op">(</span
+          ><span class="op">)</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t101" class="run">
+        <span class="n"><a href="#t101">101</a></span
+        ><span class="t">
+          <span class="nam">end_date</span> <span class="op">=</span>
+          <span class="nam">DateTimeType</span><span class="op">(</span
+          ><span class="op">)</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t102" class="run">
+        <span class="n"><a href="#t102">102</a></span
         ><span class="t">
           <span class="nam">primary_contact</span> <span class="op">=</span>
           <span class="nam">ModelType</span><span class="op">(</span
@@ -745,24 +761,24 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t101" class="run">
-        <span class="n"><a href="#t101">101</a></span
+      <p id="t103" class="run">
+        <span class="n"><a href="#t103">103</a></span
         ><span class="t">
           <span class="nam">dhs_contact_uuid</span> <span class="op">=</span>
           <span class="nam">UUIDType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t102" class="run">
-        <span class="n"><a href="#t102">102</a></span
+      <p id="t104" class="run">
+        <span class="n"><a href="#t104">104</a></span
         ><span class="t">
           <span class="nam">status</span> <span class="op">=</span>
           <span class="nam">StringType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t103" class="run">
-        <span class="n"><a href="#t103">103</a></span
+      <p id="t105" class="run">
+        <span class="n"><a href="#t105">105</a></span
         ><span class="t">
           <span class="nam">target_email_list</span> <span class="op">=</span>
           <span class="nam">ListType</span><span class="op">(</span
@@ -771,8 +787,8 @@
           ><span class="op">)</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t104" class="run">
-        <span class="n"><a href="#t104">104</a></span
+      <p id="t106" class="run">
+        <span class="n"><a href="#t106">106</a></span
         ><span class="t">
           <span class="nam">target_email_list_cached_copy</span>
           <span class="op">=</span> <span class="nam">ListType</span
@@ -782,8 +798,8 @@
           ><span class="op">)</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t105" class="run">
-        <span class="n"><a href="#t105">105</a></span
+      <p id="t107" class="run">
+        <span class="n"><a href="#t107">107</a></span
         ><span class="t">
           <span class="nam">templates_selected_uuid_list</span>
           <span class="op">=</span> <span class="nam">ListType</span
@@ -791,24 +807,24 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t106" class="run">
-        <span class="n"><a href="#t106">106</a></span
+      <p id="t108" class="run">
+        <span class="n"><a href="#t108">108</a></span
         ><span class="t">
           <span class="nam">sending_profile_name</span>
           <span class="op">=</span> <span class="nam">StringType</span
           ><span class="op">(</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t107" class="run">
-        <span class="n"><a href="#t107">107</a></span
+      <p id="t109" class="run">
+        <span class="n"><a href="#t109">109</a></span
         ><span class="t">
           <span class="nam">active</span> <span class="op">=</span>
           <span class="nam">BooleanType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t108" class="run">
-        <span class="n"><a href="#t108">108</a></span
+      <p id="t110" class="run">
+        <span class="n"><a href="#t110">110</a></span
         ><span class="t">
           <span class="nam">archived</span> <span class="op">=</span>
           <span class="nam">BooleanType</span><span class="op">(</span
@@ -816,8 +832,8 @@
           ><span class="key">False</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t109" class="run">
-        <span class="n"><a href="#t109">109</a></span
+      <p id="t111" class="run">
+        <span class="n"><a href="#t111">111</a></span
         ><span class="t">
           <span class="nam">manually_stopped</span> <span class="op">=</span>
           <span class="nam">BooleanType</span><span class="op">(</span
@@ -825,8 +841,8 @@
           ><span class="key">False</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t110" class="run">
-        <span class="n"><a href="#t110">110</a></span
+      <p id="t112" class="run">
+        <span class="n"><a href="#t112">112</a></span
         ><span class="t">
           <span class="nam">cycles</span> <span class="op">=</span>
           <span class="nam">ListType</span><span class="op">(</span
@@ -835,16 +851,16 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t111" class="run">
-        <span class="n"><a href="#t111">111</a></span
+      <p id="t113" class="run">
+        <span class="n"><a href="#t113">113</a></span
         ><span class="t">
           <span class="nam">email_report_history</span>
           <span class="op">=</span> <span class="nam">ListType</span
           ><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t112" class="pln">
-        <span class="n"><a href="#t112">112</a></span
+      <p id="t114" class="pln">
+        <span class="n"><a href="#t114">114</a></span
         ><span class="t">
           <span class="nam">ModelType</span><span class="op">(</span
           ><span class="nam">SubscriptionEmailHistoryModel</span
@@ -853,110 +869,63 @@
           ><span class="op">[</span><span class="op">]</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t113" class="pln">
-        <span class="n"><a href="#t113">113</a></span
+      <p id="t115" class="pln">
+        <span class="n"><a href="#t115">115</a></span
         ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t114" class="run">
-        <span class="n"><a href="#t114">114</a></span
+      <p id="t116" class="run">
+        <span class="n"><a href="#t116">116</a></span
         ><span class="t">
           <span class="nam">stagger_emails</span> <span class="op">=</span>
           <span class="nam">BooleanType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t115" class="pln">
-        <span class="n"><a href="#t115">115</a></span
+      <p id="t117" class="run">
+        <span class="n"><a href="#t117">117</a></span
+        ><span class="t">
+          <span class="nam">continuous_subscription</span>
+          <span class="op">=</span> <span class="nam">BooleanType</span
+          ><span class="op">(</span><span class="op">)</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t118" class="pln">
+        <span class="n"><a href="#t118">118</a></span
         ><span class="t">
           <span class="com"># db data tracking added below</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t116" class="run">
-        <span class="n"><a href="#t116">116</a></span
+      <p id="t119" class="run">
+        <span class="n"><a href="#t119">119</a></span
         ><span class="t">
           <span class="nam">created_by</span> <span class="op">=</span>
           <span class="nam">StringType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t117" class="run">
-        <span class="n"><a href="#t117">117</a></span
+      <p id="t120" class="run">
+        <span class="n"><a href="#t120">120</a></span
         ><span class="t">
           <span class="nam">cb_timestamp</span> <span class="op">=</span>
           <span class="nam">DateTimeType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t118" class="run">
-        <span class="n"><a href="#t118">118</a></span
+      <p id="t121" class="run">
+        <span class="n"><a href="#t121">121</a></span
         ><span class="t">
           <span class="nam">last_updated_by</span> <span class="op">=</span>
           <span class="nam">StringType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t119" class="run">
-        <span class="n"><a href="#t119">119</a></span
+      <p id="t122" class="run">
+        <span class="n"><a href="#t122">122</a></span
         ><span class="t">
           <span class="nam">lub_timestamp</span> <span class="op">=</span>
           <span class="nam">DateTimeType</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t120" class="pln">
-        <span class="n"><a href="#t120">120</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t121" class="pln">
-        <span class="n"><a href="#t121">121</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t122" class="run">
-        <span class="n"><a href="#t122">122</a></span
-        ><span class="t"
-          ><span class="key">def</span>
-          <span class="nam">validate_subscription</span><span class="op">(</span
-          ><span class="nam">data_object</span><span class="op">)</span
-          ><span class="op">:</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t123" class="pln">
-        <span class="n"><a href="#t123">123</a></span
-        ><span class="t"> <span class="str">"""</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t124" class="pln">
-        <span class="n"><a href="#t124">124</a></span
-        ><span class="t"
-          ><span class="str"> This is an the validate_subscription.</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t125" class="pln">
-        <span class="n"><a href="#t125">125</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t126" class="pln">
-        <span class="n"><a href="#t126">126</a></span
-        ><span class="t"
-          ><span class="str"> This shows basic validation for the model.</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t127" class="pln">
-        <span class="n"><a href="#t127">127</a></span
-        ><span class="t"><span class="str"> """</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t128" class="mis show_mis">
-        <span class="n"><a href="#t128">128</a></span
-        ><span class="t">
-          <span class="key">return</span>
-          <span class="nam">SubscriptionModel</span><span class="op">(</span
-          ><span class="nam">data_object</span><span class="op">)</span
-          ><span class="op">.</span><span class="nam">validate</span
-          ><span class="op">(</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
     </div>
@@ -966,7 +935,7 @@
           <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp;
           <a class="nav" href="https://coverage.readthedocs.io"
             >coverage.py v5.3</a
-          >, created at 2020-10-22 14:23 -0600
+          >, created at 2020-11-18 12:27 -0700
         </p>
       </div>
     </div>

@@ -5,8 +5,7 @@ Here we set all setting needed for djnago apps within this repo.
 """
 # Standard Python Libraries
 import os
-
-from socket import gethostname, gethostbyname
+from socket import gethostbyname, gethostname
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -34,6 +33,14 @@ CORS_ORIGIN_WHITELIST = os.environ.get("CORS_ORIGIN_WHITELIST", "").split(",")
 CORS_ALLOWED_ORIGIN_REGEXES = os.environ.get("CORS_ALLOWED_ORIGIN_REGEXES", "").split(
     ","
 )
+
+# Setting for running pytests.
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": "memory:",
+    }
+}
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 15000000  # 15 MB
 
@@ -143,9 +150,9 @@ SERVER_EMAIL = os.environ.get("SMTP_FROM")
 SES_ASSUME_ROLE_ARN = os.environ.get("SES_ASSUME_ROLE_ARN")
 USE_SES = int(os.environ.get("USE_SES", default=0))
 
-EXTRA_BCC_EMAILS = os.environ.get("EXTRA_BCC_EMAILS", [])
-if EXTRA_BCC_EMAILS:
-    EXTRA_BCC_EMAILS = EXTRA_BCC_EMAILS.split(",")
+EXTRA_BCC_EMAILS = []
+if os.environ.get("EXTRA_BCC_EMAILS"):
+    EXTRA_BCC_EMAILS = os.environ.get("EXTRA_BCC_EMAILS", "").split(",")
 
 if DEBUG == 0:
     # Note: in prod, Port must be 465 to use SSL
@@ -153,7 +160,7 @@ if DEBUG == 0:
     EMAIL_BACKEND = "django_smtp_ssl.SSLEmailBackend"
     EMAIL_USE_SSL = True
 else:
-    EMAIL_PORT = os.environ.get("SMTP_PORT", 587)
+    EMAIL_PORT = int(os.environ.get("SMTP_PORT", 587))
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
     EMAIL_USE_TLS = True
 

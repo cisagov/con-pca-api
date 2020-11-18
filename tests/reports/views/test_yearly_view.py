@@ -1,14 +1,17 @@
-from src.reports.views import yearly_view
-import pytest
-from unittest import mock
-from faker import Faker
+"""Reports Yearly View Tests."""
+# Standard Python Libraries
 from datetime import datetime, timezone
+from unittest import mock
 
+# Third-Party Libraries
+from faker import Faker
+import pytest
 
 fake = Faker()
 
 
 def subscription():
+    """Sample Subscription."""
     return {
         "subscription_uuid": "12334",
         "active": True,
@@ -105,6 +108,7 @@ def subscription():
 
 
 def get_customer():
+    """Sample Customer."""
     return {
         "customer_uuid": fake.uuid4(),
         "name": fake.name(),
@@ -136,6 +140,7 @@ def get_customer():
 
 
 def get_dhs():
+    """Sample DHS Contact."""
     return {
         "dhs_contact_uuid": "1234",
         "first_name": fake.first_name(),
@@ -154,6 +159,7 @@ def get_dhs():
 
 
 def get_recommendation():
+    """Sample Recommendation."""
     return {
         "recommendations_uuid": "1234",
         "name": "foo bar",
@@ -169,6 +175,7 @@ def get_recommendation():
 
 
 def generate_subscription_stat_details():
+    """Sample Stats."""
     return {
         "campaign_results": [
             {
@@ -196,6 +203,7 @@ def generate_subscription_stat_details():
 
 
 def template():
+    """Sample Template."""
     return {
         "appearance": {"grammar": 0, "link_domain": 1, "logo_graphics": 0},
         "behavior": {"curiosity": 1, "duty_obligation": 0, "fear": 0, "greed": 0},
@@ -250,6 +258,7 @@ def test_year_view_get(
     mock_get_relevant_recommendations,
     client,
 ):
+    """Yearly View Report Get Test."""
     result = client.get("/reports/1234/yearly/2020-07-30T19:37:54.960Z/")
 
     assert result.status_code == 202

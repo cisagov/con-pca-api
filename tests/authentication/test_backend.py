@@ -1,18 +1,22 @@
-import hmac
+"""Backend Authentication Tests."""
+# Standard Python Libraries
 import hashlib
+import hmac
 import os
 import time
-
-from django.http import HttpRequest
-
 from unittest import mock
+
+# Third-Party Libraries
+from django.http import HttpRequest
 import pytest
 from rest_framework import exceptions
 
+# cisagov Libraries
 from src.authentication import backend
 
 
 def test_gophish_authenticate():
+    """Test Gophish Auth."""
     request = HttpRequest()
     request._body = b'{"success": true}'
     gp_sign = hmac.new(
@@ -27,6 +31,7 @@ def test_gophish_authenticate():
 
 @mock.patch.dict(os.environ, {"COGNITO_DEPLOYMENT_MODE": "Development"})
 def test_develop_auth():
+    """Test Dev Auth."""
     request = HttpRequest()
     auth = backend.JSONWebTokenAuthentication()
     user, token = auth.authenticate(request)
@@ -37,6 +42,7 @@ def test_develop_auth():
 
 @mock.patch.dict(os.environ, {"COGNITO_DEPLOYMENT_MODE": "Production"})
 def test_local_auth():
+    """Test Local Auth."""
     request = HttpRequest()
     request.META["HTTP_AUTHORIZATION"] = os.environ["LOCAL_API_KEY"]
     auth = backend.JSONWebTokenAuthentication()
@@ -47,6 +53,7 @@ def test_local_auth():
 
 @mock.patch.dict(os.environ, {"COGNITO_DEPLOYMENT_MODE": "Production"})
 def test_reports_auth():
+    """Test Reports Auth."""
     request = HttpRequest()
     request.META["HTTP_AUTHORIZATION"] = f"bearer {os.environ['LOCAL_API_KEY']}"
     auth = backend.JSONWebTokenAuthentication()
@@ -61,6 +68,7 @@ def test_reports_auth():
     return_value={"exp": int(time.time()) - 1},
 )
 def test_expired_token(mock_validate):
+    """Test Expired JWT."""
     request = HttpRequest()
     request.META["HTTP_AUTHORIZATION"] = "bearer fakejwt"
     auth = backend.JSONWebTokenAuthentication()
@@ -74,6 +82,7 @@ def test_expired_token(mock_validate):
     os.environ, {"COGNITO_DEPLOYMENT_MODE": "Production", "COGNITO_AUDIENCE": "good"}
 )
 def test_invalid_client_auth():
+    """Test Invalid Client."""
     request = HttpRequest()
     request.META["HTTP_AUTHORIZATION"] = "bearer fakejwt"
     auth = backend.JSONWebTokenAuthentication()
@@ -94,6 +103,7 @@ def test_invalid_client_auth():
     os.environ, {"COGNITO_DEPLOYMENT_MODE": "Production", "COGNITO_AUDIENCE": "good"}
 )
 def test_cognito_group_auth():
+    """Test Group Auth."""
     request = HttpRequest()
     request.META["HTTP_AUTHORIZATION"] = "bearer fakejwt"
 
@@ -112,6 +122,7 @@ def test_cognito_group_auth():
 
 
 def test_cognito_auth():
+    """Test Cognito Auth."""
     os.environ["COGNITO_DEPLOYMENT_MODE"] = "Production"
     os.environ["COGNITO_AUDIENCE"] = "good"
     request = HttpRequest()

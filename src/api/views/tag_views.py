@@ -3,12 +3,15 @@ Tag Views.
 
 This handles the api for all the Tag urls.
 """
-from api.serializers.tag_serializers import TagQuerySerializer
-from api.services import TagService
-from api.utils.tag.tags import check_tag_format
+# Third-Party Libraries
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+# cisagov Libraries
+from api.serializers.tag_serializers import TagQuerySerializer
+from api.services import TagService
+from api.utils.tag.tags import check_tag_format
 
 tag_service = TagService()
 

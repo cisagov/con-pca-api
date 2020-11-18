@@ -1,19 +1,20 @@
-import logging
-import json
-import dateutil.parser
-
-from api.utils.subscription.static import YEARLY_MINUTES, MONTHLY_MINUTES, CYCLE_MINUTES
-from api.utils.subscription.subscriptions import send_start_notification
-from api.utils.subscription.cycles import get_last_run_cycle
-from api.utils.subscription import actions
-from api.services import SubscriptionService, CampaignService
-
-from api.notifications import EmailSender
-
+"""Process Tasks Lambda Function."""
+# Standard Python Libraries
 from datetime import datetime, timedelta
+import json
+import logging
 from uuid import uuid4
 
+# Third-Party Libraries
+import dateutil.parser
 from django.core.wsgi import get_wsgi_application
+
+# cisagov Libraries
+from api.notifications import EmailSender
+from api.services import CampaignService, SubscriptionService
+from api.utils.subscription import actions
+from api.utils.subscription.cycles import get_last_run_cycle
+from api.utils.subscription.static import CYCLE_MINUTES, MONTHLY_MINUTES, YEARLY_MINUTES
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -25,6 +26,7 @@ campaign_service = CampaignService()
 
 
 def lambda_handler(event, context):
+    """Handle SQS Event."""
     for record in event["Records"]:
         payload = json.loads(record["body"])
         subscription_uuid = payload["subscription_uuid"]
@@ -52,6 +54,7 @@ def lambda_handler(event, context):
 
 
 def update_task(subscription_uuid, task):
+    """Update Subscription Task."""
     return subscription_service.update_nested(
         uuid=subscription_uuid,
         field="tasks.$",
@@ -61,6 +64,7 @@ def update_task(subscription_uuid, task):
 
 
 def add_new_task(subscription_uuid, scheduled_date, message_type):
+    """Add new task."""
     logger.info("checking for new task to add")
 
     new_date = {
@@ -89,6 +93,7 @@ def add_new_task(subscription_uuid, scheduled_date, message_type):
 
 
 def execute_task(subscription, message_type):
+    """Execute Task."""
     task = {
         "start_subscription": start_subscription,
         "start_subscription_email": start_subscription_email,
@@ -102,28 +107,31 @@ def execute_task(subscription, message_type):
 
 
 def start_subscription(subscription):
+    """Start Subscription Task."""
     actions.start_subscription(subscription["subscription_uuid"])
 
 
 def start_subscription_email(subscription):
-    send_start_notification(subscription)
+    """Start Subscription Email Task."""
+    sender = EmailSender(subscription, "subscription_started")
+    sender.send()
     subscription_service.update(
         subscription["subscription_uuid"], {"status": "In Progress"}
     )
 
 
 def start_subscription_cycle(subscription):
+    """Start Subscription Cycle Task."""
     actions.start_subscription(subscription["subscription_uuid"], new_cycle=True)
 
 
 def stop_subscription(subscription):
+    """Stop Subscription Task."""
     actions.stop_subscription(subscription)
 
 
 def email_subscription_monthly(subscription):
-    """
-    schedule the next monthly subscription report email
-    """
+    """Email Monthly Report Task."""
     # Send email
     sender = EmailSender(
         subscription,
@@ -141,9 +149,7 @@ def email_subscription_monthly(subscription):
 
 
 def email_subscription_cycle(subscription):
-    """
-    schedule the next subscription cycle report email
-    """
+    """Email Cycle Report Task."""
     # Send email
     selected_cycle = get_last_run_cycle(subscription["cycles"][-2:])
 
@@ -160,9 +166,7 @@ def email_subscription_cycle(subscription):
 
 
 def email_subscription_yearly(subscription):
-    """
-    schedule the next yearly subscription report email
-    """
+    """Email Yearly Report Task."""
     # Send email
     cycle = subscription["cycles"][-1]["start_date"].isoformat()
     sender = EmailSender(subscription, "yearly_report", cycle)

@@ -1,29 +1,29 @@
+"""Subscription Actions."""
+# Standard Python Libraries
 import logging
-import uuid
 import random
+import uuid
 
+# cisagov Libraries
 from api.manager import CampaignManager
-from api.utils.subscription.campaigns import (
-    generate_campaigns,
-    stop_campaigns,
+from api.services import (
+    CampaignService,
+    CustomerService,
+    LandingPageService,
+    SubscriptionService,
 )
+from api.utils.subscription.campaigns import generate_campaigns, stop_campaigns
 from api.utils.subscription.subscriptions import (
     calculate_subscription_start_end_date,
-    init_subscription_tasks,
     create_subscription_name,
-    get_subscription_cycles,
-    send_stop_notification,
     get_staggered_dates_in_range,
+    get_subscription_cycles,
+    init_subscription_tasks,
+    send_stop_notification,
 )
 from api.utils.subscription.targets import batch_targets
 from api.utils.subscription.template_selector import personalize_template_batch
 from api.utils.template.templates import deception_level
-from api.services import (
-    CustomerService,
-    SubscriptionService,
-    LandingPageService,
-    CampaignService,
-)
 
 # GoPhish Campaign Manager
 campaign_manager = CampaignManager()
@@ -34,6 +34,7 @@ campaign_service = CampaignService()
 
 
 def create_subscription(subscription):
+    """Create Subscription."""
     customer = customer_service.get(subscription["customer_uuid"])
 
     subscription["name"] = create_subscription_name(customer)
@@ -54,6 +55,7 @@ def create_subscription(subscription):
 
 
 def restart_subscription(subscription_uuid):
+    """Restart Subscription."""
     subscription = subscription_service.get(subscription_uuid)
     data = {
         "status": "Queued",
@@ -73,16 +75,7 @@ def restart_subscription(subscription_uuid):
 
 
 def start_subscription(subscription_uuid, new_cycle=False):
-    """
-    Returns a subscription from database.
-
-    Parameters:
-        data (dict): posted data of subscription to start.
-        subscription_uuid (str): uuid of subscription to restart.
-
-    Returns:
-        dict: returns response of updated/created subscription from database.
-    """
+    """Start Subscription."""
     subscription = subscription_service.get(subscription_uuid)
 
     if new_cycle:
@@ -197,10 +190,7 @@ def start_subscription(subscription_uuid, new_cycle=False):
 
 
 def stop_subscription(subscription):
-    """
-    Stops a given subscription.
-    Returns updated subscription.
-    """
+    """Stop Subscription."""
     # Stop Campaigns
     stop_campaigns(subscription["campaigns"])
 

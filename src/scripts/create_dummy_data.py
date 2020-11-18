@@ -22,7 +22,7 @@ import requests
 
 
 def load_file(data_file):
-    """This loads json file of dummy data from data/dummy_data.json."""
+    """Load json file of dummy data from data/dummy_data.json."""
     current_dir = os.path.dirname(os.path.abspath(__file__))
     data_file = os.path.join(current_dir, data_file)
     with open(data_file, "r") as f:
@@ -30,29 +30,8 @@ def load_file(data_file):
     return data
 
 
-# def clean_up_first():
-# """" drop the collections before starting to add data """
-#  mongo_uri = "mongodb://{}:{}@{}:{}/".format(
-#     settings.DB_CONFIG["DB_USER"],
-#     settings.DB_CONFIG["DB_PW"],
-#     settings.DB_CONFIG["DB_HOST"],
-#     settings.DB_CONFIG["DB_PORT"],
-# )
-# client = MongoClient(mongo_uri)
-
-
 def create_customers(customers):
-    """Create Customers.
-
-    Args:
-        customers (list[dict]): Customer Post Dict
-
-    Raises:
-        err: Error from API, Non-200
-
-    Returns:
-        list: list of created uuid's
-    """
+    """Create Customers."""
     created_customer_uuids = []
     for customer in customers:
         try:
@@ -76,14 +55,7 @@ def create_customers(customers):
 
 
 def create_dhs_contacts(dhs_contacts):
-    """Create DHS Contacts.
-
-    Args:
-        dhs_contacts (list[Dict]): DHS Post DICT
-
-    Returns:
-        list: Created Customer uuid
-    """
+    """Create DHS Contacts."""
     created_dhs_contacts_uuids = []
     for c in dhs_contacts:
         resp = requests.post("http://localhost:8000/api/v1/dhscontacts/", json=c)
@@ -102,16 +74,7 @@ def create_dhs_contacts(dhs_contacts):
 
 
 def create_subscriptions(subscriptions, customer, dhs_contact):
-    """Create Subscriptions.
-
-    Args:
-        subscriptions (list[dict]): List of subscription Post Dicts
-        customer (dict): Customer data
-        dhs_contact (dict): DHS Dict
-
-    Returns:
-        list: List of created uuid's
-    """
+    """Create Subscriptions."""
     created_subcription_uuids = []
     for subscription in subscriptions:
         subscription["customer_uuid"] = customer
@@ -137,14 +100,7 @@ def create_subscriptions(subscriptions, customer, dhs_contact):
 
 
 def create_recommendations(recommendations):
-    """Create Recommendations.
-
-    Args:
-        recommendations (list[dict]): List of Recommendation Post Dicts
-
-    Returns:
-        list: List of created Recommendation uuid's
-    """
+    """Create Recommendations."""
     created_recommendations_uuids = []
     for rec in recommendations:
         resp = requests.post("http://localhost:8000/api/v1/recommendations/", json=rec)
@@ -165,7 +121,7 @@ def create_recommendations(recommendations):
 
 
 def main():
-    """This if the main def that runs creating data."""
+    """Run Main."""
     print("Step 1/6: Loading Json Data")
     json_data = load_file("data/dummy_data.json")
     print("Done loading data")

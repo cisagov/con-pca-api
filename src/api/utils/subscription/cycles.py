@@ -1,14 +1,17 @@
 """Cycles Util."""
-# Third-Party Libraries
-from api.utils.generic import format_ztime
-from api.services import CampaignService
+# Standard Python Libraries
 from datetime import datetime
+
+# cisagov Libraries
+from api.services import CampaignService
+from api.utils.generic import format_ztime
 
 campaign_service = CampaignService()
 
 
 def get_reported_emails(subscription):
-    """Get Reported Emails.
+    """
+    Get Reported Emails.
 
     Args:
         subscription (object): subscription object
@@ -28,6 +31,7 @@ def get_reported_emails(subscription):
 
 
 def get_campaign_reports(campaign):
+    """Get Campaign Reports."""
     reported_emails = []
     for item in campaign["timeline"]:
         if item["message"] == "Email Reported":
@@ -42,6 +46,7 @@ def get_campaign_reports(campaign):
 
 
 def get_cycle_reports(cycle, campaign_reports):
+    """Get Cycle Reports."""
     cycle_reports = []
     for reports in campaign_reports:
         if reports["campaign_id"] in cycle["campaigns_in_cycle"]:
@@ -59,7 +64,8 @@ def get_cycle_reports(cycle, campaign_reports):
 
 
 def delete_reported_emails(subscription, data):
-    """Delete Reported Emails.
+    """
+    Delete Reported Emails.
 
     Args:
         campaigns (list): list of gophish campaigns
@@ -95,7 +101,8 @@ def delete_reported_emails(subscription, data):
 
 
 def update_reported_emails(subscription, data):
-    """Update Reported Emails.
+    """
+    Update Reported Emails.
 
     Args:
         campaigns (list): list of gophish campaigns
@@ -161,7 +168,8 @@ def update_reported_emails(subscription, data):
 
 
 def override_total_reported(subscription, cycle_data_override):
-    """Override Total Reported.
+    """
+    Override Total Reported.
 
     Args:
         subscription (dict): subscription object
@@ -184,12 +192,17 @@ def override_total_reported(subscription, cycle_data_override):
 
 
 def get_cycle(subscription, cycle_data_override):
-    for cycle in subscription["cycles"]:
-        if cycle["cycle_uuid"] == cycle_data_override["cycle_uuid"]:
-            return cycle
+    """Get Cycle."""
+    return next(
+        filter(
+            lambda x: x["cycle_uuid"] == cycle_data_override["cycle_uuid"],
+            subscription["cycles"],
+        )
+    )
 
 
 def get_last_run_cycle(cycles):
+    """Get Last Run Cycle."""
     now = datetime.now()
     return min(
         cycles,

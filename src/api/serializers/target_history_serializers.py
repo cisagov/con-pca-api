@@ -1,23 +1,18 @@
+# Third-Party Libraries
+"""TargetHistory Serializers."""
+# Third-Party Libraries
 from rest_framework import serializers
 
 
 class TemplateStatusSerializer(serializers.Serializer):
-    """
-    Serializes Template Status.
-
-    This handles nested data for Tempalte history
-    """
+    """TemplateStatusSerializer."""
 
     template_uuid = serializers.CharField()
     sent_timestamp = serializers.DateTimeField(required=False)
 
 
 class TargetHistorySerializer(serializers.Serializer):
-    """
-    Serializes Template History.
-
-    This handles the history of a targets tempaltes.
-    """
+    """TargetHistorySerializer."""
 
     # created by mongodb
     target_uuid = serializers.UUIDField()
@@ -32,11 +27,7 @@ class TargetHistorySerializer(serializers.Serializer):
 
 
 class TargetHistoryPostSerializer(serializers.Serializer):
-    """
-    Serializes Template History.
-
-    This handles the history of a targets tempaltes.
-    """
+    """TargetHistoryPostSerializer."""
 
     # User Defined
     email = serializers.EmailField(required=True)
@@ -44,21 +35,13 @@ class TargetHistoryPostSerializer(serializers.Serializer):
 
 
 class TargetHistoryPatchSerializer(serializers.Serializer):
-    """
-    Serializes Template History.
-
-    This handles the history of a targets tempaltes.
-    """
+    """TargetHistoryPatchSerializer."""
 
     # User Defined
     history_list = TemplateStatusSerializer(many=True)
 
 
 class TargetHistoryResponseSerializer(serializers.Serializer):
-    """
-    Serializes the response for a Tag (replaceable token in a template).
-
-    This is a formats the data coming out of the Db.
-    """
+    """TargetHistoryResponseSerializer."""
 
     target_uuid = serializers.UUIDField()

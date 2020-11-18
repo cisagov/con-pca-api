@@ -1,4 +1,4 @@
-"""Subscription Campaigns."""
+"""Subscription Campaign Utils."""
 
 # Standard Python Libraries
 from datetime import datetime, timedelta
@@ -6,14 +6,15 @@ import logging
 
 # Third-Party Libraries
 from bs4 import BeautifulSoup
+
+# cisagov Libraries
 from api.manager import CampaignManager
 from api.serializers import campaign_serializers
+from api.services import CampaignService, LandingPageService
 from api.utils.generic import format_ztime
-from api.utils.subscription.targets import assign_targets
-from api.utils.subscription.subscriptions import get_staggered_dates_in_range
 from api.utils.subscription.static import CAMPAIGN_MINUTES, DEFAULT_X_GOPHISH_CONTACT
-
-from api.services import LandingPageService, CampaignService
+from api.utils.subscription.subscriptions import get_staggered_dates_in_range
+from api.utils.subscription.targets import assign_targets
 
 campaign_manager = CampaignManager()
 landing_page_service = LandingPageService()
@@ -21,7 +22,8 @@ campaign_service = CampaignService()
 
 
 def generate_campaigns(subscription, landing_page, sub_levels, cycle_uuid):
-    """Generate_campaigns.
+    """
+    Generate_campaigns.
 
     Args:
         subscription (dict): subscription
@@ -43,7 +45,8 @@ def generate_campaigns(subscription, landing_page, sub_levels, cycle_uuid):
 
 
 def create_campaign(subscription, sub_level, landing_page, cycle_uuid):
-    """Create campaign.
+    """
+    Create campaign.
 
     Args:
         subscription (dict): subscription
@@ -104,21 +107,14 @@ def create_campaign(subscription, sub_level, landing_page, cycle_uuid):
 
 
 def stop_campaigns(campaigns):
+    """Stop Campaigns."""
     for campaign in campaigns:
         if campaign["status"] != "stopped":
             stop_campaign(campaign)
 
 
 def stop_campaign(campaign):
-    """
-    Stops a given campaign.
-
-    Delete Campaign
-
-    Delete Template
-
-    Returns updated Campaign
-    """
+    """Stop Campaign."""
     # Complete Campaign
     try:
         campaign_manager.complete_campaign(campaign_id=campaign["campaign_id"])
@@ -168,11 +164,7 @@ def __create_campaign(
     index,
     cycle_uuid,
 ):
-    """
-    Create and Save Campaigns.
-
-    This method handles the creation of each campain with given template, target group, and data.
-    """
+    """Create Campaign."""
     base_name = f"{subscription['name']}.{deception_level}.{index}"
 
     created_template = campaign_manager.create_email_template(
@@ -243,15 +235,6 @@ def __create_campaign(
 def __create_campaign_smtp(
     campaign_name, template_from_address, cycle_uuid, subscription_sending_profile_name
 ):
-    """[summary]
-
-    Args:
-        campaign_name (String): Generated name for campaign in gophish
-        template_from_address (String): Tempate From address
-
-    Returns:
-        SMTP[object]: returning newly created sending profile from gophish
-    """
     sending_profiles = campaign_manager.get_sending_profile()
     sending_profile = next(
         iter(
@@ -285,6 +268,7 @@ def __create_campaign_smtp(
 
 
 def get_campaign_from_address(sending_profile, template_from_address):
+    """Get campaign from address."""
     # Get template display name
     if "<" in template_from_address:
         template_display = template_from_address.split("<")[0].strip()
@@ -308,14 +292,6 @@ def get_campaign_from_address(sending_profile, template_from_address):
 
 
 def __set_smtp_headers(sending_profile, cycle_uuid):
-    """Set SMTP headers.
-
-    This will set up headers: X-Gophish-Contact Header and  DHS-PHISH Header.
-
-    Args:
-        sending_profile (object): SMTP object
-        cycle_uuid (string): Cycle uuid
-    """
     if not sending_profile.headers:
         sending_profile.headers = []
 
@@ -325,6 +301,7 @@ def __set_smtp_headers(sending_profile, cycle_uuid):
 
 
 def set_dhs_phish_header(sending_profile, cycle_uuid):
+    """Set DHS Phish Header."""
     for header in sending_profile.headers:
         if header["key"] == "DHS-PHISH":
             header["value"] = cycle_uuid
@@ -336,6 +313,7 @@ def set_dhs_phish_header(sending_profile, cycle_uuid):
 
 
 def set_x_gophish_contact_header(sending_profile):
+    """Set X Gophish Contact Header."""
     for header in sending_profile.headers:
         if header["key"] == "X-Gophish-Contact":
             header["value"] = DEFAULT_X_GOPHISH_CONTACT

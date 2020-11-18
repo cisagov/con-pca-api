@@ -1,9 +1,13 @@
+"""Customer Util Tests."""
+# Third-Party Libraries
 from faker import Faker
 
+# cisagov Libraries
 from src.api.utils.customer import customers
 
 
 def test_get_full_customer_address():
+    """Test Customer Full Address."""
     fake = Faker()
     street_address = fake.street_address()
     city = fake.city()

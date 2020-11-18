@@ -1,24 +1,28 @@
+"""Backend Authentication."""
 # Based on https://github.com/labd/django-cognito-jwt under MIT license
-import time
-import hmac
+# Standard Python Libraries
 import hashlib
+import hmac
 import os
+import time
 
+# Third-Party Libraries
 from django.apps import apps as django_apps
-from config import settings
 from django.utils.encoding import smart_text
 from django.utils.translation import ugettext as _
 from rest_framework import exceptions
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 
+# cisagov Libraries
 from authentication.validator import TokenError, TokenValidator
+from config import settings
 
 
 class JSONWebTokenAuthentication(BaseAuthentication):
-    """Token based authentication using the JSON Web Token standard."""
+    """JSONWebTokenAuthentication."""
 
     def authenticate(self, request):
-        """Entrypoint for Django Rest Framework"""
+        """Authenticate Request."""
         # Gophish Authentication
         gp_sign = request.headers.get("X-Gophish-Signature")
         if gp_sign:
@@ -91,10 +95,12 @@ class JSONWebTokenAuthentication(BaseAuthentication):
         return (user, jwt_token)
 
     def get_user_model(self):
+        """Get User Model."""
         user_model = getattr(settings, "COGNITO_USER_MODEL", settings.AUTH_USER_MODEL)
         return django_apps.get_model(user_model, require_ready=False)
 
     def get_jwt_token(self, request):
+        """Get JWT Token from request."""
         auth = get_authorization_header(request).split()
         if not auth or smart_text(auth[0].lower()) != "bearer":
             return None
@@ -112,6 +118,7 @@ class JSONWebTokenAuthentication(BaseAuthentication):
         return auth[1]
 
     def get_token_validator(self, request):
+        """Get Token Validator."""
         return TokenValidator(
             settings.COGNITO_AWS_REGION,
             settings.COGNITO_USER_POOL,
@@ -119,8 +126,7 @@ class JSONWebTokenAuthentication(BaseAuthentication):
         )
 
     def authenticate_header(self, request):
-        """
-        Method required by the DRF in order to return 401 responses for authentication failures, instead of 403.
-        More details in https://www.django-rest-framework.org/api-guide/authentication/#custom-authentication.
-        """
+        """Authenticate Header."""
+        # Method required by the DRF in order to return 401 responses for authentication failures, instead of 403.
+        # More details in https://www.django-rest-framework.org/api-guide/authentication/#custom-authentication.
         return "Bearer: api"

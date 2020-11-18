@@ -1,16 +1,12 @@
-"""
-Recommendation Views.
+"""Recommendation Views."""
 
-This handles the api for all the Template urls.
-"""
 # Third-Party Libraries
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework import status
 
-# Local Libraries
+# cisagov Libraries
 from api.serializers.recommendations_serializers import RecommendationsQuerySerializer
-
 from api.services import RecommendationService
 
 recommendation_service = RecommendationService()

@@ -1,9 +1,5 @@
-"""
-Models.
-
-These are not Django Models, there are created using Schematics Models
-"""
-# Third-Party Libraries
+"""Landing Page Models."""
+# cisagov Libraries
 from database.repository.models import Model
 from database.repository.types import (
     BooleanType,
@@ -15,9 +11,7 @@ from database.repository.types import (
 
 
 class LandingPageModel(Model):
-    """
-    This is the Landing Page Model
-    """
+    """LandingPageModel."""
 
     # Created via service
     landing_page_uuid = UUIDType()

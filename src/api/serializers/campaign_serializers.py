@@ -1,16 +1,24 @@
+"""Campaign Serializers."""
+# Third-Party Libraries
 from rest_framework import serializers
+
+# cisagov Libraries
 from api.serializers.phishing_serializers import (
-    SubscriptionTargetSerializer,
     PhishingResultsSerializer,
+    SubscriptionTargetSerializer,
 )
 
 
 class SendingHeaderSerializer(serializers.Serializer):
+    """SendingHeaderSerializer."""
+
     key = serializers.CharField(max_length=255)
     value = serializers.CharField(max_length=255)
 
 
 class GoPhishSmtpSerializer(serializers.Serializer):
+    """GoPhishSmtpSerializer."""
+
     id = serializers.IntegerField(default=0)
     name = serializers.CharField(max_length=255)
     host = serializers.CharField(max_length=255)
@@ -22,6 +30,8 @@ class GoPhishSmtpSerializer(serializers.Serializer):
 
 
 class GoPhishTimelineSerializer(serializers.Serializer):
+    """GoPhishTimelineSerializer."""
+
     email = serializers.EmailField(required=False, allow_null=True, allow_blank=True)
     time = serializers.DateTimeField()
     message = serializers.CharField(max_length=255)
@@ -30,6 +40,8 @@ class GoPhishTimelineSerializer(serializers.Serializer):
 
 
 class GoPhishGroupSerializer(serializers.Serializer):
+    """GoPhishGroupSerializer."""
+
     id = serializers.IntegerField(required=False)
     name = serializers.CharField(max_length=255)
     targets = SubscriptionTargetSerializer(many=True)
@@ -37,6 +49,8 @@ class GoPhishGroupSerializer(serializers.Serializer):
 
 
 class GoPhishResultSerializer(serializers.Serializer):
+    """GoPhishResultSerializer."""
+
     id = serializers.CharField()
     first_name = serializers.CharField(max_length=255)
     last_name = serializers.CharField(max_length=255)
@@ -50,6 +64,8 @@ class GoPhishResultSerializer(serializers.Serializer):
 
 
 class GoPhishCampaignsSerializer(serializers.Serializer):
+    """GoPhishCampaignsSerializer."""
+
     campaign_uuid = serializers.UUIDField()
     campaign_id = serializers.IntegerField(required=False)
     subscription_uuid = serializers.UUIDField()
@@ -79,6 +95,8 @@ class GoPhishCampaignsSerializer(serializers.Serializer):
 
 
 class GoPhishCampaignsPostSerializer(serializers.Serializer):
+    """GoPhishCampaignsPostSerializer."""
+
     campaign_id = serializers.IntegerField()
     subscription_uuid = serializers.CharField()
     cycle_uuid = serializers.CharField()
@@ -103,6 +121,8 @@ class GoPhishCampaignsPostSerializer(serializers.Serializer):
 
 
 class GoPhishCampaignsPatchSerializer(serializers.Serializer):
+    """GoPhishCampaignsPatchSerializer."""
+
     campaign_id = serializers.IntegerField(required=False)
     subscription_uuid = serializers.CharField(required=False)
     cycle_uuid = serializers.CharField(required=False)
@@ -127,4 +147,6 @@ class GoPhishCampaignsPatchSerializer(serializers.Serializer):
 
 
 class GoPhishCampaignsResponseSerializer(serializers.Serializer):
+    """GoPhishCampaignsResponseSerializer."""
+
     campaign_uuid = serializers.UUIDField()

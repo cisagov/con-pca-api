@@ -1,14 +1,21 @@
-from src.api.utils import aws_utils
+"""AWS Util Tests."""
+# Standard Python Libraries
+from io import BytesIO
 import os
 from unittest import mock
-from io import BytesIO
+
+# Third-Party Libraries
 from faker import Faker
+
+# cisagov Libraries
+from src.api.utils import aws_utils
 
 fake = Faker()
 
 
 @mock.patch("boto3.client")
 def test_get_client(mock_client):
+    """Test Client."""
     aws = aws_utils.AWS()
     aws.get_client("s3")
     assert mock_client.called
@@ -16,6 +23,7 @@ def test_get_client(mock_client):
 
 @mock.patch("boto3.client")
 def test_s3(mock_client):
+    """Test S3."""
     os.environ["AWS_S3_IMAGE_BUCKET"] = "test_bucket"
     s3 = aws_utils.S3()
     mock_client.assert_called_with(service_name="s3")
@@ -30,6 +38,7 @@ def test_s3(mock_client):
 
 @mock.patch("boto3.client")
 def test_ses(mock_client):
+    """Test SES."""
     ses = aws_utils.SES()
     ses.send_message(
         sender=fake.email(),
@@ -47,6 +56,7 @@ def test_ses(mock_client):
 
 @mock.patch("boto3.client")
 def test_sts(mock_client):
+    """Test STS."""
     sts = aws_utils.STS()
     mock_client.assert_called_with(service_name="sts")
     sts.assume_role_client("s3", "testarn")

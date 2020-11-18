@@ -1,7 +1,12 @@
-from src.api.utils.subscription import campaigns
+"""Subscription Campaign Util Tests."""
+# Standard Python Libraries
+from unittest import mock
+
+# Third-Party Libraries
 from gophish.models import SMTP
 
-from unittest import mock
+# cisagov Libraries
+from src.api.utils.subscription import campaigns
 
 
 @mock.patch("api.manager.CampaignManager.complete_campaign")
@@ -18,6 +23,7 @@ def test_stop_campaigns(
     mock_del_camp,
     mock_comp,
 ):
+    """Test Stop."""
     to_stop = [
         {
             "campaign_uuid": "test",
@@ -59,6 +65,7 @@ def test_stop_campaigns(
 
 
 def test_get_campaign_from_addres():
+    """Test Get Campaign From Address."""
     smtp = SMTP(name="Test SMTP")
     smtp.from_address = "Test <test@test.com>"
     template_from_address = "other@other.com"
@@ -72,6 +79,7 @@ def test_get_campaign_from_addres():
 
 
 def test_set_smtp_headers():
+    """Test Set SMTP Headers."""
     smtp = SMTP(name="Test SMTP")
     cycle_uuid = "test"
     campaigns.__set_smtp_headers(smtp, cycle_uuid)

@@ -29,7 +29,7 @@ class Model(BaseModel):
     """Standard data validation model."""
 
     def document_model(self, render_to_yaml=False):
-        """Document to Model."""
+        """Convert Document to Model."""
         model_name = str(self).split(" ")[0][1:]
         model_doc_json = {
             model_name: {"type": "object", "required": [], "properties": {}}
@@ -47,7 +47,7 @@ class Model(BaseModel):
 
     @staticmethod
     def document_field(field):
-        """Generic method that can be used to validate a model."""
+        """Validate a model."""
         if type(field) is UUIDType:
             return {"type": "string", "format": "UUID", "example": field._mock()}
 
@@ -111,6 +111,6 @@ class Model(BaseModel):
             return {"ERROR": f"Unable to generate documentation for {field.name}"}
 
     def validate(self, *args, **kwargs):
-        """Generic method that can be used to validate a model."""
+        """Validate a model."""
         super(Model, self).validate(*args, **kwargs)
         return self.to_native()

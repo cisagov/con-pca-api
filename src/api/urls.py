@@ -4,22 +4,23 @@ API URLs.
 This lists all urls under the API app.
 """
 # Third-Party Libraries
+from django.urls import path
+
+# cisagov Libraries
 from api.views import (
     customer_views,
     cycle_views,
     dhs_views,
     image_views,
+    landing_page_views,
     recommendations_views,
     report_views,
     sendingprofile_views,
     subscription_views,
+    tag_views,
     template_views,
     webhook_views,
-    landing_page_views,
-    test_email_views,
-    tag_views,
 )
-from django.urls import path
 
 urlpatterns = [
     path(
@@ -204,7 +205,7 @@ urlpatterns = [
     ),
     path(
         "v1/test_email/",
-        test_email_views.SendingTestEmailsView.as_view(),
+        template_views.SendingTestEmailsView.as_view(),
         name="test_email_api",
     ),
 ]

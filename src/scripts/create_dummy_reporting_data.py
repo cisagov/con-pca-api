@@ -8,15 +8,15 @@ load and creation of data.
 from datetime import datetime, timedelta
 import json
 import os
-import time
 import random
+import time
 
 # Third-Party Libraries
 import requests
 
 
 def load_file(data_file):
-    """This loads json file of dummy data from data/dummy_data.json."""
+    """Load json file of dummy data from data/dummy_data.json."""
     current_dir = os.path.dirname(os.path.abspath(__file__))
     data_file = os.path.join(current_dir, data_file)
     with open(data_file, "r") as f:
@@ -25,7 +25,7 @@ def load_file(data_file):
 
 
 def main():
-    """This if the main def that runs creating data."""
+    """Run Main."""
     print("loading dummy json data")
     json_data = load_file("data/reporting_dummy_data.json")
     print("done loading data")
@@ -129,13 +129,6 @@ def main():
         time.sleep(5)
 
     print("created subcription_list: {}".format(created_subcription_uuids))
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    output_file = os.path.join(
-        current_dir,
-        "data/created_dummy_data_{}.json".format(
-            datetime.now().strftime("%Y_%m_%d_%H%M%S")
-        ),
-    )
     print("Add previous data for reporting")
     for sub_id in created_customer_uuids:
         print(sub_id)
@@ -193,6 +186,7 @@ def main():
 def generate_webhooks_for_target(
     target, campaign_id, start_date=-1, decpection_rate=-1
 ):
+    """Generate Webhooks."""
     if decpection_rate < 0:
         random.seed()
         decpection_rate = random.random()
@@ -246,6 +240,7 @@ def generate_webhooks_for_target(
 
 
 def build_webhook(camp_id, target_email, time, message):
+    """Build Webhook."""
     return {
         "campaign_id": camp_id,
         "email": target_email,
@@ -256,6 +251,7 @@ def build_webhook(camp_id, target_email, time, message):
 
 
 def get_date_in_range(start, end, rand_val, val_mod=1):
+    """Get Date in Range."""
     if val_mod > 1:
         val_mod = 1 / val_mod
     start_time = start

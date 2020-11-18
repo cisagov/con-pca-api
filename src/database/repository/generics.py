@@ -5,8 +5,10 @@ Here we create a GenericRepositoryInterface that wraps GenericRepository.
 GenericRepositoryInterface controlles direct db transations
 GenericRepository controlles db conectvivity and async transations
 """
+# Standard Python Libraries
 import asyncio
 
+# Third-Party Libraries
 from bson.codec_options import CodecOptions
 from motor.motor_asyncio import AsyncIOMotorClient
 
@@ -113,6 +115,7 @@ class GenericRepositoryInterface(object):
         return self.repository.get(uuid, fields or {})
 
     def get_single(self, parameters, fields=None):
+        """Find single item from database."""
         return self.repository.get_single(parameters, fields or {})
 
     def create(self, generic_object):
@@ -143,9 +146,7 @@ class GenericRepositoryInterface(object):
         return self.repository.update_nested(uuid, generic_object, params)
 
     def push_nested_item(self, uuid, generic_object, params=None):
-        """
-        Pushes item to nested list.
-        """
+        """Pushes item to nested list."""
         return self.repository.push_nested_item(uuid, generic_object, params)
 
     def delete(self, uuid):
@@ -267,6 +268,7 @@ class GenericRepository(object):
         return await self.collection.find_one({self.uuid_name: uuid}, fields)
 
     async def get_single(self, params, fields=None):
+        """Find single item from database."""
         if params is None:
             params = {}
         params = format_params(self.model_cls, params)
@@ -310,6 +312,7 @@ class GenericRepository(object):
         return await self.collection.update_one(object_params, {"$set": object})
 
     async def push_nested_item(self, uuid, object, params=None):
+        """Pushes item to a nested list in a document."""
         object_params = {self.uuid_name: uuid}
         if params:
             object_params = {**object_params, **params}

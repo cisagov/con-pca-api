@@ -1,14 +1,20 @@
-from src.api.utils.subscription import subscriptions
-from faker import Faker
+"""Subscription Util Tests."""
+# Standard Python Libraries
 from datetime import datetime, timedelta, timezone
-from src.api.utils.subscription.static import CYCLE_MINUTES, DELAY_MINUTES
-
 from unittest import mock
+
+# Third-Party Libraries
+from faker import Faker
+
+# cisagov Libraries
+from src.api.utils.subscription import subscriptions
+from src.api.utils.subscription.static import CYCLE_MINUTES, DELAY_MINUTES
 
 fake = Faker()
 
 
 def subscription():
+    """Sample subscription."""
     return {
         "subscription_uuid": "12334",
         "status": "  Waiting on SRF",
@@ -36,6 +42,7 @@ def subscription():
 
 
 def subscription_queued():
+    """Sample Queued Subscription."""
     return {
         "subscription_uuid": "12334",
         "status": "Queued",
@@ -63,6 +70,7 @@ def subscription_queued():
 
 
 def subscription_no_cycles():
+    """Sample Subscription No Cycles."""
     return {
         "subscription_uuid": "12334",
         "status": "  Waiting on SRF",
@@ -71,6 +79,7 @@ def subscription_no_cycles():
 
 
 def test_create_subscription_name():
+    """Test Name Create."""
     with mock.patch(
         "api.services.SubscriptionService.get_list",
         return_value=[{"active": True, "name": "test_1.1"}],
@@ -112,6 +121,7 @@ def test_create_subscription_name():
 
 
 def test_calculate_subscription_start_end_date():
+    """Test Start End Date."""
     # less than current date
     start_date = datetime.now() - timedelta(days=3)
     start, end = subscriptions.calculate_subscription_start_end_date(start_date)
@@ -136,6 +146,7 @@ def test_calculate_subscription_start_end_date():
 
 
 def test_get_subscription_cycles():
+    """Test Get Subscription Cycles."""
     campaigns = [
         {"campaign_id": 1},
         {"campaign_id": 2},
@@ -170,6 +181,7 @@ def test_get_subscription_cycles():
 
 
 def test_init_subscription_tasks():
+    """Test init subscription tasks."""
     start = datetime.now()
     result = subscriptions.init_subscription_tasks(start, True)
     assert len(result) == 5
@@ -181,6 +193,7 @@ def test_init_subscription_tasks():
 
 
 def test_get_staggered_dates_in_range():
+    """Test Stagger Dates."""
     start = datetime.now()
     result = subscriptions.get_staggered_dates_in_range(start, 3)
     assert len(result) == 3
@@ -191,6 +204,7 @@ def test_get_staggered_dates_in_range():
 
 @mock.patch("api.services.SubscriptionService.update_nested")
 def test_add_remove_continuous_subscription_task(mock_update):
+    """Test continuous subscription tasks."""
     subscription_uuid = "1234"
     now = datetime.now()
     tasks = [

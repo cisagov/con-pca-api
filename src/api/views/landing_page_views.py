@@ -1,15 +1,13 @@
-"""
-Landing Page Views
-
-This handles the api for all the landing Page URLS
-"""
+"""LandingPage Views."""
 # Third-Party Libraries
-from api.manager import CampaignManager
-from api.serializers.landing_page_serializers import LandingPageQuerySerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from api.services import SubscriptionService, LandingPageService
+
+# cisagov Libraries
+from api.manager import CampaignManager
+from api.serializers.landing_page_serializers import LandingPageQuerySerializer
+from api.services import LandingPageService, SubscriptionService
 
 campaign_manager = CampaignManager()
 
@@ -18,7 +16,7 @@ landing_page_service = LandingPageService()
 
 
 class LandingPagesListView(APIView):
-    """LandingPagesListView"""
+    """LandingPagesListView."""
 
     def get(self, request):
         """Get method."""

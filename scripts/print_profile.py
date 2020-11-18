@@ -1,5 +1,7 @@
-import sys
+"""Prints cProfile."""
+# Standard Python Libraries
 import pstats
+import sys
 
 profile_file = sys.argv[1]
 

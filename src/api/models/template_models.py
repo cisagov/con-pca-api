@@ -1,9 +1,5 @@
-"""
-Models.
-
-These are not Django Models, there are created using Schematics Models
-"""
-# Third-Party Libraries
+"""Template Models."""
+# cisagov Libraries
 from database.repository.models import Model
 from database.repository.types import (
     BooleanType,
@@ -16,11 +12,7 @@ from database.repository.types import (
 
 
 class TemplateAppearanceModel(Model):
-    """
-    This is the Template Appearance Model.
-
-    This holds values for template Appearance Score.
-    """
+    """TemplateAppearanceModel."""
 
     grammar = IntType()
     link_domain = IntType()
@@ -28,11 +20,7 @@ class TemplateAppearanceModel(Model):
 
 
 class TemplateSenderModel(Model):
-    """
-    This is the Template Sender Model.
-
-    This holds values for template Sender Score.
-    """
+    """TemplateSenderModel."""
 
     external = IntType()
     internal = IntType()
@@ -40,22 +28,14 @@ class TemplateSenderModel(Model):
 
 
 class TemplateRelevancyModel(Model):
-    """
-    This is the Template Relevancy Model.
-
-    This holds values for template Relevancy Score.
-    """
+    """TemplateRelevancyModel."""
 
     organization = IntType()
     public_news = IntType()
 
 
 class TemplateBehaviorModel(Model):
-    """
-    This is the Template Behavior Model.
-
-    This holds values for template Behavior Score.
-    """
+    """TemplateBehaviorModel."""
 
     fear = IntType()
     duty_obligation = IntType()
@@ -64,6 +44,8 @@ class TemplateBehaviorModel(Model):
 
 
 class TemplateModel(Model):
+    """TemplateModel."""
+
     # Created via service
     template_uuid = UUIDType()
 
@@ -93,7 +75,7 @@ class TemplateModel(Model):
 
 
 class DeceptionLevelStatsModel:
-    """Statistics for a deception level."""
+    """DeceptionLevelStatsModel."""
 
     level = StringType()
     level_number = IntType()
@@ -105,12 +87,7 @@ class DeceptionLevelStatsModel:
     email_reported = IntType()
 
     def __init__(self, level, level_number):
-        """Init.
-
-        Args:
-            level (string): level type
-            level_number (int): level number
-        """
+        """Create Model."""
         self.level = level
         self.level_number = level_number
         self.sent = 0

@@ -1,30 +1,17 @@
-"""
-Models.
-
-These are not Django Models, there are created using Schematics Models
-"""
-# Local Libraries
-from database.repository.models import Model
-from database.repository.types import (
-    DateTimeType,
-    ModelType,
-    StringType,
-    UUIDType,
-)
+"""Recommendation Models."""
+# cisagov Libraries
 from api.models.template_models import (
     TemplateAppearanceModel,
-    TemplateSenderModel,
-    TemplateRelevancyModel,
     TemplateBehaviorModel,
+    TemplateRelevancyModel,
+    TemplateSenderModel,
 )
+from database.repository.models import Model
+from database.repository.types import DateTimeType, ModelType, StringType, UUIDType
 
 
 class RecommendationsModel(Model):
-    """
-    This is the Recommendation Model.
-
-    This holds the values and recommendation text.
-    """
+    """Recommendation Model."""
 
     recommendations_uuid = UUIDType()
     name = StringType()
