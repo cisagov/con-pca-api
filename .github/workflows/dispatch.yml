@@ -18,6 +18,6 @@ jobs:
         uses: peter-evans/repository-dispatch@v1
         with:
           token: ${{ secrets.CON_PCA_ACCESS_TOKEN }}
-          repository: cisagov/con-pca
+          repository: cisagov/con-pca-cicd
           event-type: deploy
           client-payload: '{"trigger": "con-pca-api", "env": "${{ steps.ref.outputs.branch }}"}'
