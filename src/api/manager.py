@@ -1,14 +1,10 @@
 """GoPhish API Manager."""
-
 # Standard Python Libraries
 import json
 import logging
 
 # Third-Party Libraries
-
 from faker import Faker
-
-# GoPhish Libraries
 from gophish import Gophish
 from gophish.models import SMTP, Campaign, Group, Page, Template, User
 import requests

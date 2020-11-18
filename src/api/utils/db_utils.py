@@ -6,10 +6,7 @@ import os
 import uuid
 
 # cisagov Libraries
-
 from config import settings
-
-# Models
 from database.service import Service
 
 

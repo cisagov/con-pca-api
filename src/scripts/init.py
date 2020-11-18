@@ -5,10 +5,7 @@ import os
 import time
 
 # Third-Party Libraries
-
 from faker import Faker
-
-# Third Party Libraries
 from gophish import Gophish
 from gophish.models import SMTP, Page, Webhook
 import requests
