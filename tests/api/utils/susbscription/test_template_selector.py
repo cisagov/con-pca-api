@@ -1,12 +1,18 @@
-from src.api.utils.subscription import template_selector
-
+"""Template Selector Tests."""
+# Standard Python Libraries
 from unittest import mock
+
+# Third-Party Libraries
 from faker import Faker
+
+# cisagov Libraries
+from src.api.utils.subscription import template_selector
 
 fake = Faker()
 
 
 def create_templates():
+    """Create Sample Templates."""
     templates = []
 
     for i in range(0, 15):
@@ -34,11 +40,8 @@ def create_templates():
     return templates
 
 
-def create_subscription():
-    return {"url": fake.url(), "keywords": " ".join(fake.words())}
-
-
 def test_get_num_templates_per_batch():
+    """Test Num Templates."""
     assert template_selector.get_num_templates_per_batch("high") == 8
     assert template_selector.get_num_templates_per_batch("moderate") == 5
     assert template_selector.get_num_templates_per_batch("low") == 3
@@ -46,6 +49,7 @@ def test_get_num_templates_per_batch():
 
 
 def test_group_templates():
+    """Test Group Templates."""
     templates = create_templates()
     result = template_selector.group_templates(templates)
     assert len(result["low"]) == 15
@@ -54,6 +58,7 @@ def test_group_templates():
 
 
 def test_batch_templates():
+    """Test Batch Templates."""
     templates = {
         "high": list(range(1, 15)),
         "medium": list(range(1, 15)),
@@ -71,9 +76,10 @@ def test_batch_templates():
 @mock.patch("api.utils.db_utils.get_list", return_value=[])
 @mock.patch("api.utils.template.personalize.personalize_template")
 def test_personalize_templates(mock_personalize, mocked_get_list):
+    """Test Personalize Templates."""
     templates = create_templates()
     grouped_templates = template_selector.group_templates(templates)
-    subscription = create_subscription()
+    subscription = {"url": fake.url(), "keywords": " ".join(fake.words())}
 
     sub_levels = {"high": {}, "moderate": {}, "low": {}}
     sub_levels = template_selector.batch_templates(grouped_templates, 5, sub_levels)

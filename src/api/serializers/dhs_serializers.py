@@ -1,12 +1,10 @@
+"""DHSContact Serializer."""
+# Third-Party Libraries
 from rest_framework import serializers
 
 
 class DHSContactSerializer(serializers.Serializer):
-    """
-    This is the CustomerContact Serializer.
-
-    This is a formats the data coming out of the Db.
-    """
+    """DHSContactSerializer."""
 
     dhs_contact_uuid = serializers.UUIDField()
     first_name = serializers.CharField(max_length=250)
@@ -38,6 +36,8 @@ class DHSContactSerializer(serializers.Serializer):
 
 
 class DHSContactPostSerializer(serializers.Serializer):
+    """DHSContactPostSerializer."""
+
     first_name = serializers.CharField(max_length=250)
     last_name = serializers.CharField(max_length=250)
     title = serializers.CharField(max_length=250, allow_null=True, allow_blank=True)
@@ -59,10 +59,14 @@ class DHSContactPostSerializer(serializers.Serializer):
 
 
 class DHSContactResponseSerializer(serializers.Serializer):
+    """DHSContactResponseSerializer."""
+
     dhs_contact_uuid = serializers.UUIDField()
 
 
 class DHSContactPatchSerializer(serializers.Serializer):
+    """DHSContactPatchSerializer."""
+
     first_name = serializers.CharField(required=False, max_length=250)
     last_name = serializers.CharField(required=False, max_length=250)
     title = serializers.CharField(
@@ -88,6 +92,8 @@ class DHSContactPatchSerializer(serializers.Serializer):
 
 
 class DHSContactQuerySerializer(serializers.Serializer):
+    """DHSContactQuerySerializer."""
+
     dhs_contact_uuid = serializers.UUIDField(required=False)
     first_name = serializers.CharField(required=False)
     last_name = serializers.CharField(required=False)

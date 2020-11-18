@@ -1,3 +1,5 @@
+"""TargetHistory Models."""
+# cisagov Libraries
 from database.repository.models import Model
 from database.repository.types import (
     DateTimeType,
@@ -10,22 +12,14 @@ from database.repository.types import (
 
 
 class TemplateStatusModel(Model):
-    """
-    Template Status Model.
-
-    This tracks the template uuid and timestamp of being sent.
-    """
+    """TemplateStatusModel."""
 
     template_uuid = UUIDType()
     sent_timestamp = DateTimeType()
 
 
 class TargetHistoryModel(Model):
-    """
-    Template History Model.
-
-    This tracks the history of tempaltes sent to a user.
-    """
+    """TargetHistoryModel."""
 
     # created by mongodb
     target_uuid = UUIDType()

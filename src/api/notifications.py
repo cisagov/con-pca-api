@@ -1,17 +1,21 @@
+"""Notifications."""
+# Standard Python Libraries
 from datetime import datetime
 from email.mime.image import MIMEImage
 import logging
+import os
 
-from config import settings
+# Third-Party Libraries
 from django.core.mail.message import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
-from api.utils.reports import download_pdf
+# cisagov Libraries
 from api.manager import CampaignManager
-from api.utils.aws_utils import SES
-from api.utils.subscription.static import DEFAULT_X_GOPHISH_CONTACT
 from api.services import DHSContactService, SubscriptionService, TemplateService
-import os
+from api.utils.aws_utils import SES
+from api.utils.reports import download_pdf
+from api.utils.subscription.static import DEFAULT_X_GOPHISH_CONTACT
+from config import settings
 
 dhs_contact_service = DHSContactService()
 subscription_service = SubscriptionService()
@@ -22,16 +26,19 @@ STATIC_DIR = os.path.abspath(f"{BASE_DIR}/static")
 
 
 class EmailSender:
+    """Class for sending email notifications."""
+
     def __init__(self, subscription, message_type, cycle=None, cycle_uuid=None):
+        """Init Email Sender."""
         self.subscription = subscription
         self.cycle_uuid = cycle_uuid
-        self.notification = self.set_notification(message_type)
-        self.attachment = self.get_attachment(cycle)
+        self.notification = self._set_notification(message_type)
+        self.attachment = self._get_attachment(cycle)
         self.dhs_contact = dhs_contact_service.get(
             self.subscription.get("dhs_contact_uuid")
         )
 
-        self.context = self.set_context()
+        self.context = self._set_context()
 
         self.text_content = render_to_string(
             f"emails/{self.notification['path']}.txt", self.context
@@ -40,10 +47,23 @@ class EmailSender:
             f"emails/{self.notification['path']}.html", self.context
         )
 
-        self.to = self.set_to()
-        self.bcc = self.set_bcc()
+        self.to = self._set_to()
+        self.bcc = self._set_bcc()
 
-    def get_attachment(self, cycle):
+    def send(self):
+        """Send email."""
+        try:
+            if settings.USE_SES:
+                self._send_ses()
+            else:
+                self._send_django()
+
+            self._add_email_report_history()
+        except Exception as e:
+            logging.exception(e)
+            raise e
+
+    def _get_attachment(self, cycle):
         if "report" in self.notification["path"]:
             return download_pdf(
                 report_type=self.notification["link"],
@@ -52,18 +72,6 @@ class EmailSender:
                 cycle_uuid=self.cycle_uuid,
             )
         return None
-
-    def send(self):
-        try:
-            if settings.USE_SES:
-                self._send_ses()
-            else:
-                self._send_django()
-
-            self.add_email_report_history()
-        except Exception as e:
-            logging.exception(e)
-            raise e
 
     def _send_django(self):
         message = EmailMultiAlternatives(
@@ -112,7 +120,7 @@ class EmailSender:
             binary_attachments=binary_attachments,
         )
 
-    def add_email_report_history(self):
+    def _add_email_report_history(self):
         data = {
             "report_type": self.notification["type"],
             "sent": datetime.now(),
@@ -131,7 +139,7 @@ class EmailSender:
 
         return resp
 
-    def set_context(self):
+    def _set_context(self):
         campaign_manager = CampaignManager()
 
         first_name = self.subscription.get("primary_contact").get("first_name").title()
@@ -195,13 +203,13 @@ class EmailSender:
             "x_gophish_contact": DEFAULT_X_GOPHISH_CONTACT,
         }
 
-    def set_to(self):
+    def _set_to(self):
         recipient = self.subscription.get("primary_contact").get("email")
         return [
             f"{self.context['first_name']} {self.context['last_name']} <{recipient}>"
         ]
 
-    def set_bcc(self):
+    def _set_bcc(self):
         dhs_contact = self.dhs_contact.get("email")
 
         bcc = [f"DHS <{dhs_contact}>"] if dhs_contact else []
@@ -211,7 +219,7 @@ class EmailSender:
 
         return bcc
 
-    def set_notification(self, message_type):
+    def _set_notification(self, message_type):
         return {
             "monthly_report": {
                 "subject": "DHS CISA Phishing Subscription Status Report",

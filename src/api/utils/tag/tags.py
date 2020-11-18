@@ -1,6 +1,9 @@
-from faker import Faker
-
+"""Tag Utils."""
+# Standard Python Libraries
 import re
+
+# Third-Party Libraries
+from faker import Faker
 
 
 def check_tag_format(tag):
@@ -21,6 +24,7 @@ def check_tag_format(tag):
 
 
 def get_faker_tags(with_values: bool = False):
+    """Get Faker Tags."""
     fake = Faker()
     tags = []
     for func in dir(fake):

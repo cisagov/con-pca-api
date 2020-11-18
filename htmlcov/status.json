@@ -1,34 +1,21 @@
 {
+  "format": 2,
+  "version": "5.3",
+  "globals": "45fb87dcd1251109c254273a76c6d399",
   "files": {
     "src___init___py": {
       "hash": "59cdb056c1edc38a82ebae99e1ec70e8",
       "index": {
         "html_filename": "src___init___py.html",
-        "nums": [
-          1,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
+        "nums": [1, 0, 0, 0, 0, 0, 0],
         "relative_filename": "src\\__init__.py"
       }
     },
     "src_api___init___py": {
-      "hash": "af9d0d0de0ea3b71d198bc63f1499a7d",
+      "hash": "074658c2e037eebff7c0f5b780eafc71",
       "index": {
+        "nums": [1, 0, 0, 0, 0, 0, 0],
         "html_filename": "src_api___init___py.html",
-        "nums": [
-          1,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\__init__.py"
       }
     },
@@ -36,239 +23,119 @@
       "hash": "a4e6e56a8b9aba121b11a405a5b99daf",
       "index": {
         "html_filename": "src_api_admin_py.html",
-        "nums": [
-          1,
-          1,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
+        "nums": [1, 1, 0, 0, 0, 0, 0],
         "relative_filename": "src\\api\\admin.py"
       }
     },
     "src_api_manager_py": {
-      "hash": "ca9ae5c22c4cc20ed6597b79c2ecaed1",
+      "hash": "2a9cbe6e6be7bf178f4ba1055fc93990",
       "index": {
+        "nums": [1, 91, 0, 61, 0, 0, 0],
         "html_filename": "src_api_manager_py.html",
-        "nums": [
-          1,
-          145,
-          0,
-          81,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\manager.py"
       }
     },
     "src_api_models_campaign_models_py": {
-      "hash": "c16953dc89ac495553688b7abe06f70d",
+      "hash": "9af8dab45731213f0bbe4587f94ee995",
       "index": {
+        "nums": [1, 64, 0, 0, 0, 0, 0],
         "html_filename": "src_api_models_campaign_models_py.html",
-        "nums": [
-          1,
-          66,
-          0,
-          1,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\models\\campaign_models.py"
       }
     },
     "src_api_models_customer_models_py": {
-      "hash": "2e746d8cb5ccaaf27f644258077bc8f7",
+      "hash": "b105d99fe0fe488bd394706d190c8f1c",
       "index": {
+        "nums": [1, 28, 0, 0, 0, 0, 0],
         "html_filename": "src_api_models_customer_models_py.html",
-        "nums": [
-          1,
-          30,
-          0,
-          1,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\models\\customer_models.py"
       }
     },
     "src_api_models_dhs_models_py": {
-      "hash": "8307874bd1098ce1dfdbd46cf4abffed",
+      "hash": "69093af1cb4a5b89558f1c55436de3ed",
       "index": {
+        "nums": [1, 16, 0, 0, 0, 0, 0],
         "html_filename": "src_api_models_dhs_models_py.html",
-        "nums": [
-          1,
-          18,
-          0,
-          1,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\models\\dhs_models.py"
       }
     },
     "src_api_models_landing_page_models_py": {
-      "hash": "a67dedea67f782095e4badabe5a4638f",
+      "hash": "8d462d0934a936e7aeff04dbfb0e993d",
       "index": {
+        "nums": [1, 12, 0, 0, 0, 0, 0],
         "html_filename": "src_api_models_landing_page_models_py.html",
-        "nums": [
-          1,
-          14,
-          0,
-          1,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\models\\landing_page_models.py"
       }
     },
     "src_api_models_phishing_models_py": {
-      "hash": "af0c13beb7f367055a6f97fcea357e87",
+      "hash": "d93317a71ce1ac1d2d26e1c5262cea4b",
       "index": {
+        "nums": [1, 13, 0, 0, 0, 0, 0],
         "html_filename": "src_api_models_phishing_models_py.html",
-        "nums": [
-          1,
-          13,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\models\\phishing_models.py"
       }
     },
     "src_api_models_recommendations_models_py": {
-      "hash": "ff4a4463ac54568b8831a67a293e9835",
+      "hash": "267437e9a16e9ed4b76db20173fde187",
       "index": {
+        "nums": [1, 15, 0, 0, 0, 0, 0],
         "html_filename": "src_api_models_recommendations_models_py.html",
-        "nums": [
-          1,
-          17,
-          0,
-          1,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\models\\recommendations_models.py"
       }
     },
     "src_api_models_subscription_models_py": {
-      "hash": "58dc1ace7e3ac77eb9cc87eb604ae29d",
+      "hash": "62fa5e0d93be3913d9f6b27886a4eee4",
       "index": {
+        "nums": [1, 61, 0, 0, 0, 0, 0],
         "html_filename": "src_api_models_subscription_models_py.html",
-        "nums": [
-          1,
-          60,
-          0,
-          1,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\models\\subscription_models.py"
       }
     },
     "src_api_models_tag_models_py": {
-      "hash": "1fcd44364e59e5aeadf0bcdbe850a067",
+      "hash": "aad0fefd58dd62e2693f20560aa07fd3",
       "index": {
+        "nums": [1, 12, 0, 0, 0, 0, 0],
         "html_filename": "src_api_models_tag_models_py.html",
-        "nums": [
-          1,
-          14,
-          0,
-          1,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\models\\tag_models.py"
       }
     },
     "src_api_models_target_history_models_py": {
-      "hash": "cce585b9f8a2f6bfef590b4ca4b18123",
+      "hash": "51f1d65d4d81c9b990f455991d91c8ba",
       "index": {
+        "nums": [1, 13, 0, 0, 0, 0, 0],
         "html_filename": "src_api_models_target_history_models_py.html",
-        "nums": [
-          1,
-          15,
-          0,
-          1,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\models\\target_history_models.py"
       }
     },
     "src_api_models_template_models_py": {
-      "hash": "59c815cf24c0db96b8fe4f93ca839374",
+      "hash": "8e6597994fe60edc56b52369db9f9dd3",
       "index": {
+        "nums": [1, 57, 0, 0, 0, 0, 0],
         "html_filename": "src_api_models_template_models_py.html",
-        "nums": [
-          1,
-          59,
-          0,
-          1,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\models\\template_models.py"
       }
     },
     "src_api_notifications_py": {
-      "hash": "12dfc20bc9b6702ba8d4bef372bfa0d0",
+      "hash": "e9f1e4d0da700a1d532b8f9cd5ae223e",
       "index": {
+        "nums": [1, 101, 0, 36, 0, 0, 0],
         "html_filename": "src_api_notifications_py.html",
-        "nums": [
-          1,
-          100,
-          0,
-          33,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\notifications.py"
       }
     },
     "src_api_serializers_campaign_serializers_py": {
-      "hash": "2d9ecd4be4c8d876514b79ad461373a5",
+      "hash": "1ed2ef0db6e547d69626df15ea7e7465",
       "index": {
+        "nums": [1, 109, 0, 0, 0, 0, 0],
         "html_filename": "src_api_serializers_campaign_serializers_py.html",
-        "nums": [
-          1,
-          109,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\serializers\\campaign_serializers.py"
       }
     },
     "src_api_serializers_customer_serializers_py": {
-      "hash": "c895c6bcf3989521a65f38b68ab5b26c",
+      "hash": "c59e9b11429a74c7b97b74dae0322a0b",
       "index": {
+        "nums": [1, 73, 0, 0, 0, 0, 0],
         "html_filename": "src_api_serializers_customer_serializers_py.html",
-        "nums": [
-          1,
-          73,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\serializers\\customer_serializers.py"
       }
     },
@@ -276,175 +143,87 @@
       "hash": "20ee64ee07dff68cfe894482bec6cd57",
       "index": {
         "html_filename": "src_api_serializers_cycle_serializers_py.html",
-        "nums": [
-          1,
-          17,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
+        "nums": [1, 17, 0, 0, 0, 0, 0],
         "relative_filename": "src\\api\\serializers\\cycle_serializers.py"
       }
     },
     "src_api_serializers_dhs_serializers_py": {
-      "hash": "68f753804103074e1e610fac59a6a2c8",
+      "hash": "ebd022c28415f29c3fb5062f7bd38ae5",
       "index": {
+        "nums": [1, 49, 0, 0, 0, 0, 0],
         "html_filename": "src_api_serializers_dhs_serializers_py.html",
-        "nums": [
-          1,
-          49,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\serializers\\dhs_serializers.py"
       }
     },
     "src_api_serializers_landing_page_serializers_py": {
-      "hash": "a6aff75a3101ca8958392901148b236c",
+      "hash": "14ee648e3092dadea3c623f3cc5a98a9",
       "index": {
+        "nums": [1, 32, 0, 0, 0, 0, 0],
         "html_filename": "src_api_serializers_landing_page_serializers_py.html",
-        "nums": [
-          1,
-          36,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\serializers\\landing_page_serializers.py"
       }
     },
     "src_api_serializers_phishing_serializers_py": {
-      "hash": "e5c90a8121afc1c134ecfb67057d91bf",
+      "hash": "76bdf285c705ba9ab6d127e347892d03",
       "index": {
+        "nums": [1, 12, 0, 0, 0, 0, 0],
         "html_filename": "src_api_serializers_phishing_serializers_py.html",
-        "nums": [
-          1,
-          12,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\serializers\\phishing_serializers.py"
       }
     },
     "src_api_serializers_recommendations_serializers_py": {
-      "hash": "6559dae295c99e7c22a40a24dd1f47f5",
+      "hash": "00e961faad73d9f57fe70a3c4935888f",
       "index": {
+        "nums": [1, 37, 0, 0, 0, 0, 0],
         "html_filename": "src_api_serializers_recommendations_serializers_py.html",
-        "nums": [
-          1,
-          37,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\serializers\\recommendations_serializers.py"
       }
     },
     "src_api_serializers_reports_serializers_py": {
-      "hash": "cd94fea3982f7275e75f7d13c3be6222",
+      "hash": "0f809bdd5879a32fccedaa0e4c7c3d3b",
       "index": {
+        "nums": [1, 19, 0, 0, 0, 0, 0],
         "html_filename": "src_api_serializers_reports_serializers_py.html",
-        "nums": [
-          1,
-          19,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\serializers\\reports_serializers.py"
       }
     },
     "src_api_serializers_sendingprofile_serializers_py": {
-      "hash": "dc851d9adfb97252dd992ceaf3795955",
+      "hash": "72f465fe5c5d2f1cff4ad5b1f82905ac",
       "index": {
+        "nums": [1, 40, 0, 0, 0, 0, 0],
         "html_filename": "src_api_serializers_sendingprofile_serializers_py.html",
-        "nums": [
-          1,
-          40,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\serializers\\sendingprofile_serializers.py"
       }
     },
     "src_api_serializers_subscriptions_serializers_py": {
-      "hash": "240db3ef4c5432d3d015a8a3c0539207",
+      "hash": "dbea14d8feb93d0956c5a4e050d388eb",
       "index": {
+        "nums": [1, 120, 0, 0, 0, 0, 0],
         "html_filename": "src_api_serializers_subscriptions_serializers_py.html",
-        "nums": [
-          1,
-          121,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\serializers\\subscriptions_serializers.py"
       }
     },
     "src_api_serializers_tag_serializers_py": {
-      "hash": "bc078a7554929fd815e4f833632049c7",
+      "hash": "59f82e8b8723c52344059eed1435d169",
       "index": {
+        "nums": [1, 32, 0, 0, 0, 0, 0],
         "html_filename": "src_api_serializers_tag_serializers_py.html",
-        "nums": [
-          1,
-          34,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\serializers\\tag_serializers.py"
       }
     },
     "src_api_serializers_target_history_serializers_py": {
-      "hash": "7780d9033376c258a5f675e681c1b1b4",
+      "hash": "e7a0a6dea759128e59e289b4c92fca87",
       "index": {
+        "nums": [1, 20, 0, 0, 0, 0, 0],
         "html_filename": "src_api_serializers_target_history_serializers_py.html",
-        "nums": [
-          1,
-          19,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\serializers\\target_history_serializers.py"
       }
     },
     "src_api_serializers_template_serializers_py": {
-      "hash": "dd2d0efde08c6a2926ee9eb4f2d3eecd",
+      "hash": "c29f1e17339a7986f5ec3de5e83634bc",
       "index": {
+        "nums": [1, 92, 0, 0, 0, 0, 0],
         "html_filename": "src_api_serializers_template_serializers_py.html",
-        "nums": [
-          1,
-          92,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\serializers\\template_serializers.py"
       }
     },
@@ -452,47 +231,23 @@
       "hash": "d5fb85f103dd025416712ed90a0a8896",
       "index": {
         "html_filename": "src_api_serializers_webhook_serializers_py.html",
-        "nums": [
-          1,
-          7,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
+        "nums": [1, 7, 0, 0, 0, 0, 0],
         "relative_filename": "src\\api\\serializers\\webhook_serializers.py"
       }
     },
     "src_api_services_py": {
-      "hash": "ecb70e01eb29942634e6d44126101bd0",
+      "hash": "5d52cf59cf9c6c34fe251b6472c1ec1a",
       "index": {
+        "nums": [1, 104, 0, 40, 0, 0, 0],
         "html_filename": "src_api_services_py.html",
-        "nums": [
-          1,
-          124,
-          0,
-          42,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\services.py"
       }
     },
     "src_api_urls_py": {
-      "hash": "08d0c8f803b9c10cceff6447176f3ade",
+      "hash": "f0df5721c89837db89bab296fd5a24eb",
       "index": {
+        "nums": [1, 3, 0, 0, 0, 0, 0],
         "html_filename": "src_api_urls_py.html",
-        "nums": [
-          1,
-          7,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\urls.py"
       }
     },
@@ -500,79 +255,39 @@
       "hash": "938776ebcfef3c74ba3d1923af01a9ae",
       "index": {
         "html_filename": "src_api_utils___init___py.html",
-        "nums": [
-          1,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
+        "nums": [1, 0, 0, 0, 0, 0, 0],
         "relative_filename": "src\\api\\utils\\__init__.py"
       }
     },
     "src_api_utils_aws_utils_py": {
-      "hash": "a288c5b53373e802e09b67839bc05343",
+      "hash": "10580e09162800a33ffa1f40149eb78e",
       "index": {
+        "nums": [1, 56, 0, 1, 0, 0, 0],
         "html_filename": "src_api_utils_aws_utils_py.html",
-        "nums": [
-          1,
-          58,
-          0,
-          1,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\utils\\aws_utils.py"
       }
     },
     "src_api_utils_customer_customers_py": {
-      "hash": "567c4fa57471328f98da14742b9c720a",
+      "hash": "3e7a9229a5fc97e33b4e4e90b1c906ff",
       "index": {
+        "nums": [1, 9, 0, 0, 0, 0, 0],
         "html_filename": "src_api_utils_customer_customers_py.html",
-        "nums": [
-          1,
-          9,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\utils\\customer\\customers.py"
       }
     },
     "src_api_utils_db_utils_py": {
-      "hash": "a2a0899657546025b27362769637b8a0",
+      "hash": "5f793af2d084b08537416b4296823f13",
       "index": {
+        "nums": [1, 59, 0, 25, 0, 0, 0],
         "html_filename": "src_api_utils_db_utils_py.html",
-        "nums": [
-          1,
-          97,
-          0,
-          63,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\utils\\db_utils.py"
       }
     },
     "src_api_utils_generic_py": {
-      "hash": "af5dea455f482a6ec4dcdbd3e34f09ae",
+      "hash": "20dfa50638c7de40ddb9375ec4897cca",
       "index": {
+        "nums": [1, 14, 0, 3, 0, 0, 0],
         "html_filename": "src_api_utils_generic_py.html",
-        "nums": [
-          1,
-          16,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\utils\\generic.py"
       }
     },
@@ -580,223 +295,111 @@
       "hash": "0e08e903981a18fa8a4c96b020800552",
       "index": {
         "html_filename": "src_api_utils_landing_pages_py.html",
-        "nums": [
-          1,
-          15,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
+        "nums": [1, 15, 0, 0, 0, 0, 0],
         "relative_filename": "src\\api\\utils\\landing_pages.py"
       }
     },
     "src_api_utils_reports_py": {
-      "hash": "0857b68973e0d23ed67f1dc5819e0581",
+      "hash": "52baac1fe60c8faaaa55dabeb4523636",
       "index": {
+        "nums": [1, 35, 0, 29, 0, 0, 0],
         "html_filename": "src_api_utils_reports_py.html",
-        "nums": [
-          1,
-          39,
-          0,
-          32,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\utils\\reports.py"
       }
     },
     "src_api_utils_sector_industry_utils_py": {
-      "hash": "7a3d76b17c6fddb1dcf583b98806214c",
+      "hash": "6c6fe9e114a20d687df88d99e183c9da",
       "index": {
+        "nums": [1, 3, 0, 0, 0, 0, 0],
         "html_filename": "src_api_utils_sector_industry_utils_py.html",
-        "nums": [
-          1,
-          3,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\utils\\sector_industry_utils.py"
       }
     },
     "src_api_utils_subscription_actions_py": {
-      "hash": "686f52b2cb64c29d7524753736fd0ba5",
+      "hash": "e0052870a61e3e361b17e63198fb9fb8",
       "index": {
+        "nums": [1, 79, 0, 53, 0, 0, 0],
         "html_filename": "src_api_utils_subscription_actions_py.html",
-        "nums": [
-          1,
-          75,
-          0,
-          46,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\utils\\subscription\\actions.py"
       }
     },
     "src_api_utils_subscription_campaigns_py": {
-      "hash": "b7f6561cdc7d3490939845bdfecb7919",
+      "hash": "b4e79de60852c39cb05662b95649c024",
       "index": {
+        "nums": [1, 118, 0, 55, 0, 0, 0],
         "html_filename": "src_api_utils_subscription_campaigns_py.html",
-        "nums": [
-          1,
-          118,
-          0,
-          55,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\utils\\subscription\\campaigns.py"
       }
     },
     "src_api_utils_subscription_cycles_py": {
-      "hash": "61039d3e516acaa8fc4c927802dd87fb",
+      "hash": "bf6969969278c3c861e27829ee13eb1a",
       "index": {
+        "nums": [1, 75, 0, 2, 0, 0, 0],
         "html_filename": "src_api_utils_subscription_cycles_py.html",
-        "nums": [
-          1,
-          73,
-          0,
-          2,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\utils\\subscription\\cycles.py"
       }
     },
     "src_api_utils_subscription_static_py": {
-      "hash": "7ef128b20275b1cc6e1a5a79980564ae",
+      "hash": "a81ec498fe2bba162ed6ba36fc25346b",
       "index": {
+        "nums": [1, 7, 0, 0, 0, 0, 0],
         "html_filename": "src_api_utils_subscription_static_py.html",
-        "nums": [
-          1,
-          7,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\utils\\subscription\\static.py"
       }
     },
     "src_api_utils_subscription_subscriptions_py": {
-      "hash": "5405e2b521c4cf1b630f5733e0ea8814",
+      "hash": "b01e68641055cc88f11fc05ad7b19f98",
       "index": {
+        "nums": [1, 55, 0, 2, 0, 0, 0],
         "html_filename": "src_api_utils_subscription_subscriptions_py.html",
-        "nums": [
-          1,
-          47,
-          0,
-          4,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\utils\\subscription\\subscriptions.py"
       }
     },
     "src_api_utils_subscription_targets_py": {
-      "hash": "fe940b18aabc3aac3794c1f7339c3e16",
+      "hash": "541415724f84289861def2d62352b354",
       "index": {
+        "nums": [1, 32, 0, 0, 0, 0, 0],
         "html_filename": "src_api_utils_subscription_targets_py.html",
-        "nums": [
-          1,
-          32,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\utils\\subscription\\targets.py"
       }
     },
     "src_api_utils_subscription_template_selector_py": {
-      "hash": "dab778e7a7c5ce9666fb64ef497424af",
+      "hash": "9a8ba5dba583898b51a3e5c3178a8b42",
       "index": {
+        "nums": [1, 49, 0, 16, 0, 0, 0],
         "html_filename": "src_api_utils_subscription_template_selector_py.html",
-        "nums": [
-          1,
-          48,
-          0,
-          6,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\utils\\subscription\\template_selector.py"
       }
     },
     "src_api_utils_tag_tags_py": {
-      "hash": "fb4cf1bf22d11d576535fc4e3028a26b",
+      "hash": "26554997730b3242fbfe4b3784917f52",
       "index": {
+        "nums": [1, 20, 0, 0, 0, 0, 0],
         "html_filename": "src_api_utils_tag_tags_py.html",
-        "nums": [
-          1,
-          20,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\utils\\tag\\tags.py"
       }
     },
     "src_api_utils_template_personalize_py": {
-      "hash": "4e9c7bb9cc33c87948cd5e433f7b2142",
+      "hash": "0b1b6cc23df982a071518a0818c5905c",
       "index": {
+        "nums": [1, 45, 0, 7, 0, 0, 0],
         "html_filename": "src_api_utils_template_personalize_py.html",
-        "nums": [
-          1,
-          45,
-          0,
-          7,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\utils\\template\\personalize.py"
       }
     },
     "src_api_utils_template_templates_py": {
-      "hash": "36ba31faa812b217357b9f240af66a85",
+      "hash": "65ec9cfab4a935f6a162501ad404a775",
       "index": {
+        "nums": [1, 10, 0, 0, 0, 0, 0],
         "html_filename": "src_api_utils_template_templates_py.html",
-        "nums": [
-          1,
-          11,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\utils\\template\\templates.py"
       }
     },
     "src_api_utils_webhooks_py": {
-      "hash": "f7bf909ebb28725242ff7daf677f81c6",
+      "hash": "a3ab85550bbc9a20769b7f86eb439e56",
       "index": {
+        "nums": [1, 8, 0, 0, 0, 0, 0],
         "html_filename": "src_api_utils_webhooks_py.html",
-        "nums": [
-          1,
-          8,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\utils\\webhooks.py"
       }
     },
@@ -804,319 +407,159 @@
       "hash": "65d376590a9074d3ce9c051f7e5659ae",
       "index": {
         "html_filename": "src_api_views_campaign_views_py.html",
-        "nums": [
-          1,
-          20,
-          0,
-          6,
-          0,
-          0,
-          0
-        ],
+        "nums": [1, 20, 0, 6, 0, 0, 0],
         "relative_filename": "src\\api\\views\\campaign_views.py"
       }
     },
     "src_api_views_customer_views_py": {
-      "hash": "52b25f0c40ce4f61b175a3f4560a2882",
+      "hash": "bc0eec7e7cf5adc63870f364fcae73cc",
       "index": {
+        "nums": [1, 38, 0, 0, 0, 0, 0],
         "html_filename": "src_api_views_customer_views_py.html",
-        "nums": [
-          1,
-          45,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\views\\customer_views.py"
       }
     },
     "src_api_views_cycle_views_py": {
-      "hash": "7c56afb9a1cdebcac387243a3a386ff1",
+      "hash": "2c3cb70329e71809fffc068bf95586bd",
       "index": {
+        "nums": [1, 25, 0, 15, 0, 0, 0],
         "html_filename": "src_api_views_cycle_views_py.html",
-        "nums": [
-          1,
-          28,
-          0,
-          15,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\views\\cycle_views.py"
       }
     },
     "src_api_views_dhs_views_py": {
-      "hash": "e709a093d5f06fad61781466d99ea94f",
+      "hash": "a65de2a8dd9286c00df2c2fcc50ebcf8",
       "index": {
+        "nums": [1, 28, 0, 0, 0, 0, 0],
         "html_filename": "src_api_views_dhs_views_py.html",
-        "nums": [
-          1,
-          36,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\views\\dhs_views.py"
       }
     },
     "src_api_views_image_views_py": {
-      "hash": "36b347913262b0f6de7e2e78b1669634",
+      "hash": "cc416b849df3f044beba5e2cca5fd06d",
       "index": {
+        "nums": [1, 10, 0, 0, 0, 0, 0],
         "html_filename": "src_api_views_image_views_py.html",
-        "nums": [
-          1,
-          12,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\views\\image_views.py"
       }
     },
     "src_api_views_landing_page_views_py": {
-      "hash": "286b527e1b250a730de9b612251edc08",
+      "hash": "dd9936747205418aae6e558b2f604ca2",
       "index": {
+        "nums": [1, 54, 0, 7, 0, 0, 0],
         "html_filename": "src_api_views_landing_page_views_py.html",
-        "nums": [
-          1,
-          74,
-          0,
-          14,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\views\\landing_page_views.py"
       }
     },
     "src_api_views_recommendations_views_py": {
-      "hash": "203690f1cbccb5eeb749c974af6eb21d",
+      "hash": "193f432e594ba5838aeb4dab75e322fa",
       "index": {
+        "nums": [1, 31, 0, 18, 0, 0, 0],
         "html_filename": "src_api_views_recommendations_views_py.html",
-        "nums": [
-          1,
-          37,
-          0,
-          18,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\views\\recommendations_views.py"
       }
     },
     "src_api_views_report_views_py": {
-      "hash": "62fa49a8dfefd6afac9145cb51661b78",
+      "hash": "6edbb06d9d333e949d4691c96f8e90b2",
       "index": {
+        "nums": [1, 74, 0, 27, 0, 0, 0],
         "html_filename": "src_api_views_report_views_py.html",
-        "nums": [
-          1,
-          76,
-          0,
-          27,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\views\\report_views.py"
       }
     },
     "src_api_views_sendingprofile_views_py": {
-      "hash": "58ad0fea0140b3fc61cac8bf8911a3d3",
+      "hash": "9ac1050146a94f814649ca684a75a8e6",
       "index": {
+        "nums": [1, 44, 0, 15, 0, 0, 0],
         "html_filename": "src_api_views_sendingprofile_views_py.html",
-        "nums": [
-          1,
-          52,
-          0,
-          13,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\views\\sendingprofile_views.py"
       }
     },
     "src_api_views_subscription_views_py": {
-      "hash": "1722bd274f4c3901a8f3f0550c55d23c",
+      "hash": "b8f9186452417e6c6fc8f5ab0907e8ca",
       "index": {
+        "nums": [1, 85, 0, 5, 0, 0, 0],
         "html_filename": "src_api_views_subscription_views_py.html",
-        "nums": [
-          1,
-          96,
-          0,
-          5,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\views\\subscription_views.py"
       }
     },
     "src_api_views_tag_views_py": {
-      "hash": "3452efa7e71382903134ab587df8df5d",
+      "hash": "ed35f016dbf3a63d215f5112e00ff180",
       "index": {
+        "nums": [1, 34, 0, 20, 0, 0, 0],
         "html_filename": "src_api_views_tag_views_py.html",
-        "nums": [
-          1,
-          40,
-          0,
-          20,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\views\\tag_views.py"
       }
     },
     "src_api_views_template_views_py": {
-      "hash": "6e006ac13fb355726a8f1510caa4aaae",
+      "hash": "2ce33c3fb45178786404dd24d5f29376",
       "index": {
+        "nums": [1, 71, 0, 20, 0, 0, 0],
         "html_filename": "src_api_views_template_views_py.html",
-        "nums": [
-          1,
-          56,
-          0,
-          1,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\views\\template_views.py"
       }
     },
     "src_api_views_webhook_views_py": {
-      "hash": "a0dd4e0b58561ab724282be43fece4a6",
+      "hash": "3f3dd659e766d21f9764ee364835c746",
       "index": {
+        "nums": [1, 50, 0, 0, 0, 0, 0],
         "html_filename": "src_api_views_webhook_views_py.html",
-        "nums": [
-          1,
-          52,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\api\\views\\webhook_views.py"
       }
     },
     "src_authentication___init___py": {
-      "hash": "af9d0d0de0ea3b71d198bc63f1499a7d",
+      "hash": "8b3dafc0cf222cd16755807aa9472079",
       "index": {
+        "nums": [1, 0, 0, 0, 0, 0, 0],
         "html_filename": "src_authentication___init___py.html",
-        "nums": [
-          1,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\authentication\\__init__.py"
       }
     },
     "src_authentication_backend_py": {
-      "hash": "74e5789acc5b4714680bee8339a2f3e9",
+      "hash": "e85289002060d57b1c647e4b16b88764",
       "index": {
+        "nums": [1, 69, 0, 11, 0, 0, 0],
         "html_filename": "src_authentication_backend_py.html",
-        "nums": [
-          1,
-          69,
-          0,
-          11,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\authentication\\backend.py"
       }
     },
     "src_authentication_validator_py": {
-      "hash": "828bd5767d94294865ca1de6257ac8b6",
+      "hash": "8ccc3f28e5c562e41b9bbf5b12aae973",
       "index": {
+        "nums": [1, 47, 0, 27, 0, 0, 0],
         "html_filename": "src_authentication_validator_py.html",
-        "nums": [
-          1,
-          47,
-          0,
-          27,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\authentication\\validator.py"
       }
     },
     "src_config___init___py": {
-      "hash": "af9d0d0de0ea3b71d198bc63f1499a7d",
+      "hash": "8b3dafc0cf222cd16755807aa9472079",
       "index": {
+        "nums": [1, 0, 0, 0, 0, 0, 0],
         "html_filename": "src_config___init___py.html",
-        "nums": [
-          1,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\config\\__init__.py"
       }
     },
     "src_config_settings_py": {
-      "hash": "e921db28ba2f84d8659b2011f5481fe8",
+      "hash": "2ffbaefd0714412b1d3dbcce84cc63db",
       "index": {
+        "nums": [1, 61, 0, 6, 0, 0, 0],
         "html_filename": "src_config_settings_py.html",
-        "nums": [
-          1,
-          57,
-          0,
-          5,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\config\\settings.py"
       }
     },
     "src_config_urls_py": {
-      "hash": "8ffc2bbb513fe35dfdd7f244aa9e47f9",
+      "hash": "8fdd20eae2a945da3c073476a769b2b7",
       "index": {
+        "nums": [1, 4, 0, 0, 0, 0, 0],
         "html_filename": "src_config_urls_py.html",
-        "nums": [
-          1,
-          4,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\config\\urls.py"
       }
     },
     "src_config_views_py": {
-      "hash": "015d7df4a6720d8565925939a27c08fe",
+      "hash": "c0d292af4bb9f5107cd7196bc6d10fdd",
       "index": {
+        "nums": [1, 3, 0, 0, 0, 0, 0],
         "html_filename": "src_config_views_py.html",
-        "nums": [
-          1,
-          3,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\config\\views.py"
       }
     },
@@ -1124,15 +567,7 @@
       "hash": "59cdb056c1edc38a82ebae99e1ec70e8",
       "index": {
         "html_filename": "src_database___init___py.html",
-        "nums": [
-          1,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
+        "nums": [1, 0, 0, 0, 0, 0, 0],
         "relative_filename": "src\\database\\__init__.py"
       }
     },
@@ -1140,127 +575,63 @@
       "hash": "59cdb056c1edc38a82ebae99e1ec70e8",
       "index": {
         "html_filename": "src_database_repository___init___py.html",
-        "nums": [
-          1,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
+        "nums": [1, 0, 0, 0, 0, 0, 0],
         "relative_filename": "src\\database\\repository\\__init__.py"
       }
     },
     "src_database_repository_generics_py": {
-      "hash": "f31a9e21cd649987580ce0caf005db66",
+      "hash": "ceea22d89067d621691e43dd531b42e9",
       "index": {
+        "nums": [1, 136, 0, 88, 0, 0, 0],
         "html_filename": "src_database_repository_generics_py.html",
-        "nums": [
-          1,
-          120,
-          0,
-          80,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\database\\repository\\generics.py"
       }
     },
     "src_database_repository_models_py": {
-      "hash": "8c76c26c0bc3cc4a47c6062f39c09173",
+      "hash": "d017b8cae7bd45a1387316999501fe5c",
       "index": {
+        "nums": [1, 66, 0, 57, 0, 0, 0],
         "html_filename": "src_database_repository_models_py.html",
-        "nums": [
-          1,
-          66,
-          0,
-          57,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\database\\repository\\models.py"
       }
     },
     "src_database_repository_tools_py": {
-      "hash": "a21b7678f0a0640082cfa36ed85df9b3",
+      "hash": "6edc6e03796f0410ae4a0c5aaec186d0",
       "index": {
+        "nums": [1, 9, 0, 7, 0, 0, 0],
         "html_filename": "src_database_repository_tools_py.html",
-        "nums": [
-          1,
-          9,
-          0,
-          7,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\database\\repository\\tools.py"
       }
     },
     "src_database_repository_types_py": {
-      "hash": "a90809c023a9908fc8bf9c85b25d9273",
+      "hash": "6b38353733cc3de057edaea13bb9f371",
       "index": {
+        "nums": [1, 55, 0, 1, 0, 0, 0],
         "html_filename": "src_database_repository_types_py.html",
-        "nums": [
-          1,
-          55,
-          0,
-          1,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\database\\repository\\types.py"
       }
     },
     "src_database_service_py": {
-      "hash": "fa077d8394569b5bebad4df08ebe85a4",
+      "hash": "cf5496f9a9b6d1e0ef6774bb6dfbdb71",
       "index": {
+        "nums": [1, 25, 0, 9, 0, 0, 0],
         "html_filename": "src_database_service_py.html",
-        "nums": [
-          1,
-          35,
-          0,
-          18,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\database\\service.py"
       }
     },
     "src_lambda_functions___init___py": {
-      "hash": "af9d0d0de0ea3b71d198bc63f1499a7d",
+      "hash": "8b3dafc0cf222cd16755807aa9472079",
       "index": {
+        "nums": [1, 0, 0, 0, 0, 0, 0],
         "html_filename": "src_lambda_functions___init___py.html",
-        "nums": [
-          1,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\lambda_functions\\__init__.py"
       }
     },
     "src_lambda_functions_tasks___init___py": {
-      "hash": "af9d0d0de0ea3b71d198bc63f1499a7d",
+      "hash": "8b3dafc0cf222cd16755807aa9472079",
       "index": {
+        "nums": [1, 0, 0, 0, 0, 0, 0],
         "html_filename": "src_lambda_functions_tasks___init___py.html",
-        "nums": [
-          1,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\lambda_functions\\tasks\\__init__.py"
       }
     },
@@ -1268,15 +639,7 @@
       "hash": "c85367560922c0a5219b347363a1397c",
       "index": {
         "html_filename": "src_lambda_functions_tasks_handler_py.html",
-        "nums": [
-          1,
-          79,
-          0,
-          46,
-          0,
-          0,
-          0
-        ],
+        "nums": [1, 79, 0, 46, 0, 0, 0],
         "relative_filename": "src\\lambda_functions\\tasks\\handler.py"
       }
     },
@@ -1284,15 +647,7 @@
       "hash": "af9d0d0de0ea3b71d198bc63f1499a7d",
       "index": {
         "html_filename": "src_notifications___init___py.html",
-        "nums": [
-          1,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
+        "nums": [1, 0, 0, 0, 0, 0, 0],
         "relative_filename": "src\\notifications\\__init__.py"
       }
     },
@@ -1300,164 +655,89 @@
       "hash": "72a4d5e2002b080cf6a7b4d1dba6ee9a",
       "index": {
         "html_filename": "src_notifications_views_py.html",
-        "nums": [
-          1,
-          102,
-          0,
-          72,
-          0,
-          0,
-          0
-        ],
+        "nums": [1, 102, 0, 72, 0, 0, 0],
         "relative_filename": "src\\notifications\\views.py"
       }
     },
     "src_reports___init___py": {
-      "hash": "af9d0d0de0ea3b71d198bc63f1499a7d",
+      "hash": "8b3dafc0cf222cd16755807aa9472079",
       "index": {
+        "nums": [1, 0, 0, 0, 0, 0, 0],
         "html_filename": "src_reports___init___py.html",
-        "nums": [
-          1,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\reports\\__init__.py"
       }
     },
     "src_reports_urls_py": {
-      "hash": "f57ffa1cccfaddda131e502fa0b14175",
+      "hash": "fc7dd3f2b927691bb50174c5a786d26f",
       "index": {
+        "nums": [1, 3, 0, 0, 0, 0, 0],
         "html_filename": "src_reports_urls_py.html",
-        "nums": [
-          1,
-          3,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\reports\\urls.py"
       }
     },
     "src_reports_utils_py": {
-      "hash": "cf7d441a0ff6b5afc0df67e21f001623",
+      "hash": "a7fef083c3168a2a78c39eddd52c1b05",
       "index": {
+        "nums": [1, 716, 0, 191, 0, 0, 0],
         "html_filename": "src_reports_utils_py.html",
-        "nums": [
-          1,
-          689,
-          0,
-          192,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\reports\\utils.py"
       }
     },
     "src_reports_views___init___py": {
-      "hash": "af9d0d0de0ea3b71d198bc63f1499a7d",
+      "hash": "8b3dafc0cf222cd16755807aa9472079",
       "index": {
+        "nums": [1, 0, 0, 0, 0, 0, 0],
         "html_filename": "src_reports_views___init___py.html",
-        "nums": [
-          1,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\reports\\views\\__init__.py"
       }
     },
     "src_reports_views_cycle_view_py": {
-      "hash": "6fc768b43bb087f259e3c7b84cce1166",
+      "hash": "8c1d5c15b8a01e2d33c3e59c6e55bd18",
       "index": {
+        "nums": [1, 94, 0, 14, 0, 0, 0],
         "html_filename": "src_reports_views_cycle_view_py.html",
-        "nums": [
-          1,
-          93,
-          0,
-          15,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\reports\\views\\cycle_view.py"
       }
     },
     "src_reports_views_monthly_view_py": {
-      "hash": "3501d0ee2a5af2d3de1ee0c13226a291",
+      "hash": "54a50f55277985b9d5a344a84c77e015",
       "index": {
+        "nums": [1, 108, 0, 14, 0, 0, 0],
         "html_filename": "src_reports_views_monthly_view_py.html",
-        "nums": [
-          1,
-          110,
-          0,
-          17,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\reports\\views\\monthly_view.py"
       }
     },
     "src_reports_views_system_view_py": {
-      "hash": "33a1a54c8db286888729ee18de81a134",
+      "hash": "1b86ca5589a0592d49b0aa6f1492f003",
       "index": {
+        "nums": [1, 84, 0, 6, 0, 0, 0],
         "html_filename": "src_reports_views_system_view_py.html",
-        "nums": [
-          1,
-          76,
-          0,
-          13,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\reports\\views\\system_view.py"
       }
     },
     "src_reports_views_yearly_view_py": {
-      "hash": "befe9f9c0d27910388d276f8b81d3231",
+      "hash": "9743255eeac174fde5f5a45cd6aecb01",
       "index": {
+        "nums": [1, 40, 0, 1, 0, 0, 0],
         "html_filename": "src_reports_views_yearly_view_py.html",
-        "nums": [
-          1,
-          41,
-          0,
-          1,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\reports\\views\\yearly_view.py"
       }
     },
     "src_scripts_init_py": {
-      "hash": "437aabeecfce0f9bc9cd50ed30b7f9cf",
+      "hash": "ddd2e264afe782c56139d96932d26278",
       "index": {
+        "nums": [1, 142, 0, 111, 0, 0, 0],
         "html_filename": "src_scripts_init_py.html",
-        "nums": [
-          1,
-          142,
-          0,
-          111,
-          0,
-          0,
-          0
-        ],
         "relative_filename": "src\\scripts\\init.py"
       }
+    },
+    "src_lambda_functions_tasks_process_tasks_py": {
+      "hash": "5058d8491b007a2b91cfc171a846913e",
+      "index": {
+        "nums": [1, 76, 0, 39, 0, 0, 0],
+        "html_filename": "src_lambda_functions_tasks_process_tasks_py.html",
+        "relative_filename": "src\\lambda_functions\\tasks\\process_tasks.py"
+      }
     }
-  },
-  "format": 2,
-  "globals": "45fb87dcd1251109c254273a76c6d399",
-  "version": "5.3"
+  }
 }

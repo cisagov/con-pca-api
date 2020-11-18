@@ -1,13 +1,11 @@
-"""
-Landing Page Serializers.
-
-These are Django Rest Framework Serializers. These are used for
-serializing data coming from the db into a request response.
-"""
+"""LandingPage Serializers."""
+# Third-Party Libraries
 from rest_framework import serializers
 
 
 class LandingPageSerializer(serializers.Serializer):
+    """LandingPageSerializer."""
+
     landing_page_uuid = serializers.UUIDField()
     gophish_template_id = serializers.IntegerField()
     name = serializers.CharField()
@@ -21,6 +19,8 @@ class LandingPageSerializer(serializers.Serializer):
 
 
 class LandingPagePostSerializer(serializers.Serializer):
+    """LandingPagePostSerializer."""
+
     gophish_template_id = serializers.IntegerField()
     name = serializers.CharField()
     is_default_template = serializers.BooleanField(default=False)
@@ -28,6 +28,8 @@ class LandingPagePostSerializer(serializers.Serializer):
 
 
 class LandingPagePatchSerializer(serializers.Serializer):
+    """LandingPagePatchSerializer."""
+
     gophish_template_id = serializers.IntegerField(required=False)
     name = serializers.CharField(required=False)
     is_default_template = serializers.BooleanField(default=False, required=False)
@@ -35,10 +37,14 @@ class LandingPagePatchSerializer(serializers.Serializer):
 
 
 class LandingPageResponseSerializer(serializers.Serializer):
+    """LandingPagePatchSerializer."""
+
     landing_page_uuid = serializers.UUIDField()
 
 
 class LandingPageQuerySerializer(serializers.Serializer):
+    """LandingPagePatchSerializer."""
+
     gophish_template_id = serializers.IntegerField(required=False)
     name = serializers.CharField(required=False)
     is_default_template = serializers.BooleanField(default=False)

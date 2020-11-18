@@ -48,6 +48,7 @@ class Service:
         return await self.service.get(uuid, fields)
 
     async def get_single(self, parameters, fields=None):
+        """Find single item from database."""
         return await self.service.get_single(parameters, fields)
 
     async def create(self, to_create):
@@ -75,13 +76,12 @@ class Service:
         Given a json object, it wil validate the fields and update a db entrie.
         This will return the objectID of the updated object
         """
-
         resp = await self.service.update_nested(uuid, to_update, params)
         return resp.raw_result
 
     async def push_nested_item(self, uuid, item, params=None):
         """
-        Push
+        Push.
 
         Given a json object, it will add that object to an array in the document.
         """

@@ -1,7 +1,10 @@
-from src.api.utils.tag import tags
+"""Tag Util Tests."""
+# cisagov Libraries
+from api.utils.tag import tags
 
 
 def test_check_tag_format():
+    """Test check tag format."""
     tag1 = "<%TEST%>"
     assert tags.check_tag_format(tag1)
 
@@ -13,6 +16,7 @@ def test_check_tag_format():
 
 
 def test_get_faker_tags():
+    """Test get faker tag."""
     faker_tags = tags.get_faker_tags()
     for tag in faker_tags:
         assert tag["tag"].startswith("<%FAKER")

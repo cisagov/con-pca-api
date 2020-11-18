@@ -2,21 +2,15 @@
 # Standard Python Libraries
 import asyncio
 import datetime
+import os
 import uuid
 
-# Models
-from database.service import Service
+# cisagov Libraries
 from config import settings
-import os
+from database.service import Service
 
 
 def __db_service(collection_name, model):
-    """
-    Db_service.
-
-    This is a method for handling db connection in api.
-    Might refactor this into database lib.
-    """
     mongo_uri = get_mongo_uri()
 
     service = Service(
@@ -29,6 +23,7 @@ def __db_service(collection_name, model):
 
 
 def get_mongo_uri():
+    """Get Mongo Connection String."""
     if os.environ.get("MONGO_TYPE", "MONGO") == "DOCUMENTDB":
         mongo_uri = "mongodb://{}:{}@{}:{}/?ssl=true&ssl_ca_certs=rds-combined-ca-bundle.pem&retryWrites=false".format(
             settings.DB_CONFIG["DB_USER"],
@@ -47,11 +42,6 @@ def get_mongo_uri():
 
 
 def __get_service_loop(collection, model):
-    """
-    Get Service Loop.
-
-    Getting loop for asyncio and service for DB.
-    """
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     service = __db_service(collection, model)
@@ -59,7 +49,7 @@ def __get_service_loop(collection, model):
 
 
 def get_list(parameters, collection, model, fields=None):
-    """Gets list of documents from database."""
+    """Get list of documents from database."""
     service, loop = __get_service_loop(collection, model)
     return loop.run_until_complete(
         service.filter_list(parameters=parameters, fields=fields)
@@ -67,12 +57,7 @@ def get_list(parameters, collection, model, fields=None):
 
 
 def save_single(post_data, collection, model):
-    """
-    Save_data method.
-
-    This method takes in
-    post_data and saves it to the db with the required feilds.
-    """
+    """Save Single."""
     service, loop = __get_service_loop(collection, model)
     create_timestamp = datetime.datetime.utcnow()
     current_user = "dev user"
@@ -84,13 +69,13 @@ def save_single(post_data, collection, model):
 
 
 def get(uuid, collection, model, fields=None):
-    """Gets single record by uuid"""
+    """Get."""
     service, loop = __get_service_loop(collection, model)
     return loop.run_until_complete(service.get(uuid=uuid, fields=fields))
 
 
 def get_single(parameters, collection, model, fields=None):
-    """gets single record by given params"""
+    """Get Single."""
     service, loop = __get_service_loop(collection, model)
     return loop.run_until_complete(
         service.get_single(parameters=parameters, fields=fields)
@@ -98,7 +83,7 @@ def get_single(parameters, collection, model, fields=None):
 
 
 def update_single(uuid, put_data, collection, model):
-    """Updates single item by uuid in database"""
+    """Update Single."""
     service, loop = __get_service_loop(collection, model)
     put_data["last_updated_by"] = "dev user"
     put_data["lub_timestamp"] = datetime.datetime.utcnow()
@@ -107,6 +92,7 @@ def update_single(uuid, put_data, collection, model):
 
 
 def push_nested_item(uuid, field, put_data, collection, model, params=None):
+    """Push Nested Item."""
     service, loop = __get_service_loop(collection, model)
 
     list_update_object = {field: put_data}
@@ -118,7 +104,7 @@ def push_nested_item(uuid, field, put_data, collection, model, params=None):
 
 def update_nested_single(uuid, field, put_data, collection, model, params=None):
     """
-    update_nested_single method.
+    Update Nested Single.
 
     This builds $addToSet object for db, updates, then returns.
 
@@ -147,14 +133,14 @@ def update_nested_single(uuid, field, put_data, collection, model, params=None):
 
 
 def delete_single(uuid, collection, model):
-    """ Deletes object by uuid from database """
+    """Delete Single."""
     service, loop = __get_service_loop(collection, model)
 
     return loop.run_until_complete(service.delete(uuid=uuid))
 
 
 def exists(parameters, collection, model):
-    """Check if item exists for given parameter."""
+    """Check exists."""
     service, loop = __get_service_loop(collection, model)
     document_list = loop.run_until_complete(
         service.filter_list(parameters=parameters, fields={"_id": 1})

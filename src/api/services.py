@@ -1,38 +1,40 @@
+"""Database Services."""
+# Standard Python Libraries
 import logging
-from rest_framework import serializers
+
+# Third-Party Libraries
 import pymongo
+from rest_framework import serializers
 
+# cisagov Libraries
+from api.models import (
+    campaign_models,
+    customer_models,
+    dhs_models,
+    landing_page_models,
+    recommendations_models,
+    subscription_models,
+    tag_models,
+    target_history_models,
+    template_models,
+)
+from api.serializers import (
+    campaign_serializers,
+    customer_serializers,
+    dhs_serializers,
+    landing_page_serializers,
+    recommendations_serializers,
+    subscriptions_serializers,
+    tag_serializers,
+    target_history_serializers,
+    template_serializers,
+)
 from api.utils import db_utils as db
-
-from api.models import campaign_models
-from api.serializers import campaign_serializers
-
-from api.models import customer_models
-from api.serializers import customer_serializers
-
-from api.models import dhs_models
-from api.serializers import dhs_serializers
-
-from api.models import landing_page_models
-from api.serializers import landing_page_serializers
-
-from api.models import recommendations_models
-from api.serializers import recommendations_serializers
-
-from api.models import subscription_models
-from api.serializers import subscriptions_serializers
-
-from api.models import tag_models
-from api.serializers import tag_serializers
-
-from api.models import target_history_models
-from api.serializers import target_history_serializers
-
-from api.models import template_models
-from api.serializers import template_serializers
 
 
 class DBService:
+    """Base Class for a Service."""
+
     def __init__(
         self,
         collection,
@@ -40,12 +42,14 @@ class DBService:
         save_serializer,
         update_serializer,
     ):
+        """Init Base Class."""
         self.collection = collection
         self.model = model
         self.save_serializer = save_serializer
         self.update_serializer = update_serializer
 
     def validate_serializer(self, serializer):
+        """Validate Serializer."""
         try:
             serializer.is_valid(raise_exception=True)
         except serializers.ValidationError as e:
@@ -53,6 +57,7 @@ class DBService:
             raise e
 
     def convert_fields(self, fields):
+        """Convert Fields."""
         if not fields:
             return None
         result = {}
@@ -61,6 +66,7 @@ class DBService:
         return result
 
     def delete(self, uuid):
+        """Delete."""
         return db.delete_single(
             uuid=str(uuid),
             collection=self.collection,
@@ -68,6 +74,7 @@ class DBService:
         )
 
     def get(self, uuid, fields=None):
+        """Get."""
         fields = self.convert_fields(fields)
         return db.get(
             uuid=str(uuid),
@@ -77,6 +84,7 @@ class DBService:
         )
 
     def get_single(self, parameters, fields=None):
+        """Get Single."""
         fields = self.convert_fields(fields)
         return db.get_single(
             parameters=parameters,
@@ -86,6 +94,7 @@ class DBService:
         )
 
     def get_list(self, parameters=None, fields=None):
+        """Get List."""
         fields = self.convert_fields(fields)
         return db.get_list(
             parameters=parameters,
@@ -95,6 +104,7 @@ class DBService:
         )
 
     def save(self, data):
+        """Save."""
         serializer = self.save_serializer(data=data)
         self.validate_serializer(serializer)
         result = db.save_single(
@@ -110,6 +120,7 @@ class DBService:
         return result
 
     def update(self, uuid, data):
+        """Update."""
         serializer = self.update_serializer(data=data)
         self.validate_serializer(serializer)
         result = db.update_single(
@@ -118,7 +129,6 @@ class DBService:
             collection=self.collection,
             model=self.model,
         )
-        print(result)
         if type(result) is dict:
             if result.get("errors"):
                 logging.error(result.get("errors"))
@@ -126,6 +136,7 @@ class DBService:
         return result
 
     def update_nested(self, uuid, field, data, params=None):
+        """Update Nested."""
         return db.update_nested_single(
             uuid=str(uuid),
             field=field,
@@ -136,6 +147,7 @@ class DBService:
         )
 
     def push_nested(self, uuid, field, data, params=None):
+        """Push Nested."""
         return db.push_nested_item(
             uuid=str(uuid),
             field=field,
@@ -146,6 +158,7 @@ class DBService:
         )
 
     def exists(self, parameters=None):
+        """Check exists."""
         return db.exists(
             parameters=parameters,
             collection=self.collection,
@@ -154,7 +167,10 @@ class DBService:
 
 
 class CampaignService(DBService):
+    """CampaignService."""
+
     def __init__(self):
+        """Init CampaignService."""
         return super().__init__(
             collection="campaign",
             model=campaign_models.GoPhishCampaignsModel,
@@ -164,7 +180,10 @@ class CampaignService(DBService):
 
 
 class LandingPageService(DBService):
+    """LandingPageService."""
+
     def __init__(self):
+        """Init LandingPageService."""
         return super().__init__(
             collection="landing_page",
             model=landing_page_models.LandingPageModel,
@@ -173,6 +192,7 @@ class LandingPageService(DBService):
         )
 
     def clear_and_set_default(self, uuid):
+        """Set Deaujlt Landing Page."""
         db_url = db.get_mongo_uri()
         client = pymongo.MongoClient(db_url)
         collection = client["pca_data_dev"]["landing_page"]
@@ -185,7 +205,10 @@ class LandingPageService(DBService):
 
 
 class SubscriptionService(DBService):
+    """SubscriptionService."""
+
     def __init__(self):
+        """Init SubscriptionService."""
         self.campaign_service = CampaignService()
         return super().__init__(
             collection="subscription",
@@ -195,6 +218,7 @@ class SubscriptionService(DBService):
         )
 
     def get(self, uuid, fields=None):
+        """Get Subscription."""
         fields = self.convert_fields(fields)
         subscription = db.get(
             uuid=str(uuid), collection=self.collection, model=self.model, fields=fields
@@ -208,7 +232,10 @@ class SubscriptionService(DBService):
 
 
 class RecommendationService(DBService):
+    """RecommendationService."""
+
     def __init__(self):
+        """Init RecommendationService."""
         return super().__init__(
             collection="recommendations",
             model=recommendations_models.RecommendationsModel,
@@ -218,7 +245,10 @@ class RecommendationService(DBService):
 
 
 class TemplateService(DBService):
+    """TemplateService."""
+
     def __init__(self):
+        """Init TemplateService."""
         return super().__init__(
             collection="template",
             model=template_models.TemplateModel,
@@ -228,7 +258,10 @@ class TemplateService(DBService):
 
 
 class TagService(DBService):
+    """TagService."""
+
     def __init__(self):
+        """Init TagService."""
         return super().__init__(
             collection="tag_definition",
             model=tag_models.TagModel,
@@ -238,7 +271,10 @@ class TagService(DBService):
 
 
 class DHSContactService(DBService):
+    """DHSContactService."""
+
     def __init__(self):
+        """Init DHSContactService."""
         return super().__init__(
             collection="dhs_contact",
             model=dhs_models.DHSContactModel,
@@ -248,7 +284,10 @@ class DHSContactService(DBService):
 
 
 class CustomerService(DBService):
+    """CustomerService."""
+
     def __init__(self):
+        """Init CustomerService."""
         return super().__init__(
             collection="customer",
             model=customer_models.CustomerModel,
@@ -258,7 +297,10 @@ class CustomerService(DBService):
 
 
 class TargetHistoryService(DBService):
+    """TargetHistoryService."""
+
     def __init__(self):
+        """Init TargetHistoryService."""
         return super().__init__(
             collection="target",
             model=target_history_models.TargetHistoryModel,

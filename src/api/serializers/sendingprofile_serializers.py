@@ -1,22 +1,17 @@
-"""
-Sending Profile Serializers.
-
-These are Django Rest Framework Serializers. These are used for
-serializing data coming from the db into a request response.
-"""
+"""Sending Profile Serializers."""
 # Third-Party Libraries
 from rest_framework import serializers
 
 
 class HeaderSerializer(serializers.Serializer):
+    """HeaderSerializer."""
+
     key = serializers.CharField()
     value = serializers.CharField()
 
 
 class SendingProfileSerializer(serializers.Serializer):
-    """
-    This is the Sending Profile Serializer.
-    """
+    """SendingProfileSerializer."""
 
     id = serializers.IntegerField()
     name = serializers.CharField()
@@ -31,9 +26,7 @@ class SendingProfileSerializer(serializers.Serializer):
 
 
 class SendingProfilePatchSerializer(serializers.Serializer):
-    """
-    This is the Sending Profile Serializer.
-    """
+    """SendingProfilePatchSerializer."""
 
     name = serializers.CharField(required=False)
     username = serializers.CharField(required=False)
@@ -47,9 +40,7 @@ class SendingProfilePatchSerializer(serializers.Serializer):
 
 
 class SendingProfilePatchResponseSerializer(serializers.Serializer):
-    """
-    This is the Sending Profile Serializer.
-    """
+    """SendingProfilePatchResponseSerializer."""
 
     id = serializers.IntegerField()
     name = serializers.CharField()
@@ -64,10 +55,12 @@ class SendingProfilePatchResponseSerializer(serializers.Serializer):
 
 
 class SendingProfileDeleteSerializer(serializers.Serializer):
+    """SendingProfileDeleteSerializer."""
+
     id = serializers.IntegerField()
 
 
 class SendingProfileDeleteResponseSerializer(serializers.Serializer):
-    """"""
+    """SendingProfileDeleteResponseSerializer."""
 
     id = serializers.IntegerField()

@@ -1,13 +1,14 @@
+"""App Init Script."""
 # Standard Python Libraries
-import os
-import requests
 import json
+import os
 import time
 
-# Third Party Libraries
+# Third-Party Libraries
+from faker import Faker
 from gophish import Gophish
 from gophish.models import SMTP, Page, Webhook
-from faker import Faker
+import requests
 
 API_KEY = None
 URL = None
@@ -42,6 +43,7 @@ WEBHOOKS = [
 
 
 def set_init():
+    """Global Variables for Init."""
     global API_KEY
     API_KEY = os.environ.get("GP_API_KEY")
 
@@ -56,9 +58,7 @@ def set_init():
 
 
 def create_sending_profile(profiles):
-    """
-    Create Gophish sending profiles
-    """
+    """Create Gophish sending profiles."""
     existing_names = {smtp.name for smtp in API.smtp.get()}
 
     if len(existing_names) <= 0:
@@ -81,9 +81,7 @@ def create_sending_profile(profiles):
 
 
 def create_default_landing_page():
-    """
-    Create a Gophish landing page
-    """
+    """Create a Gophish landing page."""
     pages = [
         {"name": "Phished", "html": load_file("data/landing.html", jsonfile=False)}
     ]
@@ -102,6 +100,7 @@ def create_default_landing_page():
 
 
 def create_webhook(webhooks):
+    """Init Webhooks."""
     existing_names = {webhook.name for webhook in API.webhooks.get()}
 
     for webhook in webhooks:
@@ -120,6 +119,7 @@ def create_webhook(webhooks):
 
 
 def create_templates():
+    """Init Templates."""
     existing_names = [
         t["name"]
         for t in requests.get(
@@ -157,6 +157,7 @@ def create_templates():
 
 
 def create_tags():
+    """Init Tags."""
     tags = load_file("data/tags.json")
     tags.extend(get_faker_tags())
     existing_tags = requests.get(
@@ -203,6 +204,7 @@ def create_tags():
 
 
 def get_faker_tags(with_values: bool = False):
+    """Init Faker Tags."""
     fake = Faker()
     tags = []
     for func in dir(fake):
@@ -232,10 +234,12 @@ def get_faker_tags(with_values: bool = False):
 
 
 def get_headers():
+    """Init Headers."""
     return {"Authorization": os.environ.get("LOCAL_API_KEY")}
 
 
 def wait_connection():
+    """Wait for server to start."""
     for i in range(1, 15):
         try:
             requests.get(f"{LOCAL_URL}/", headers=get_headers())
@@ -246,6 +250,7 @@ def wait_connection():
 
 
 def load_file(data_file, jsonfile=True):
+    """Get content from data directory."""
     current_dir = os.path.dirname(os.path.abspath(__file__))
     data_file = os.path.join(current_dir, data_file)
     with open(data_file, "r") as f:
@@ -257,6 +262,7 @@ def load_file(data_file, jsonfile=True):
 
 
 def main():
+    """Entrypoint to script."""
     set_init()
 
     print("Waiting for api to initialize")

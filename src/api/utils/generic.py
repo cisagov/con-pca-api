@@ -2,16 +2,9 @@
 # Standard Python Libraries
 from datetime import datetime, timedelta
 
-# Third-Party Libraries
-from faker import Faker
-
 
 def current_season():
-    """
-    Current Season.
-
-    This returns the current season of given Date.
-    """
+    """Get Current Season."""
     today = datetime.today()
     Y = today.year
     seasons = [
@@ -36,26 +29,8 @@ def format_ztime(datetime_string):
     return t
 
 
-def customer_spoof_email(customer_info):
-    """Customer Spoof Email.
-
-    Grabs email domain from customer list and
-    creates random spoofed email.
-    Args:
-        customer_info (dict): customer info dict
-
-    Returns:
-        string: returns spoofed email with customer email domain.
-    """
-    fake = Faker()
-    _, customer_domain = customer_info["contact_list"][0]["email"].split("@")
-    spoof_email = "{}.{}@{}".format(
-        fake.first_name().lower(), fake.last_name().lower(), customer_domain
-    )
-    return spoof_email
-
-
 def format_json(o):
+    """Format Json."""
     if isinstance(o, datetime):
         return o.isoformat()
     else:

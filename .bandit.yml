@@ -11,3 +11,5 @@ tests:
 
 skips:
   - B101 # skip "assert used" check since assertions are required in pytests
+  - B110 # Try, Except, Pass detected.
+  - B311 # Standard pseudo-random generators are not suitable for security/cryptographic purposes.

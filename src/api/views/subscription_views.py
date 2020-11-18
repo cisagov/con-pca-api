@@ -1,18 +1,22 @@
+"""Subscription Views."""
+# Standard Python Libraries
 import logging
 
-from api.manager import CampaignManager
-from api.services import SubscriptionService, CampaignService
-from api.utils.subscription.actions import (
-    stop_subscription,
-    create_subscription,
-    restart_subscription,
-)
-from api.utils.subscription.subscriptions import add_remove_continuous_subscription_task
-from reports.utils import update_phish_results
+# Third-Party Libraries
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+# cisagov Libraries
+from api.manager import CampaignManager
+from api.services import CampaignService, SubscriptionService
+from api.utils.subscription.actions import (
+    create_subscription,
+    restart_subscription,
+    stop_subscription,
+)
+from api.utils.subscription.subscriptions import add_remove_continuous_subscription_task
+from reports.utils import update_phish_results
 
 campaign_manager = CampaignManager()
 
@@ -24,7 +28,7 @@ class SubscriptionsListView(APIView):
     """SubscriptionsListView."""
 
     def get(self, request):
-        """Get method."""
+        """Get."""
         parameters = {"archived": {"$in": [False, None]}}
         archivedParm = request.GET.get("archived")
         if archivedParm:
@@ -63,7 +67,7 @@ class SubscriptionsListView(APIView):
         return Response(subscription_list)
 
     def post(self, request, format=None):
-        """Post method."""
+        """Post."""
         resp = create_subscription(request.data.copy())
         return Response(resp, status=status.HTTP_201_CREATED)
 
@@ -72,7 +76,7 @@ class SubscriptionView(APIView):
     """SubscriptionsView."""
 
     def get(self, request, subscription_uuid):
-        """Get method."""
+        """Get."""
         subscription = subscription_service.get(subscription_uuid)
         if subscription is None:
             return Response(status=status.HTTP_404_NOT_FOUND)
@@ -80,7 +84,7 @@ class SubscriptionView(APIView):
         return Response(subscription)
 
     def patch(self, request, subscription_uuid):
-        """Patch method."""
+        """Patch."""
         put_data = request.data.copy()
         # Don't add task if tasks dont exist. This means the subscription is already stopped.
         subscription = subscription_service.get(subscription_uuid, fields=["tasks"])
@@ -94,7 +98,7 @@ class SubscriptionView(APIView):
         return Response(updated_response, status=status.HTTP_202_ACCEPTED)
 
     def delete(self, request, subscription_uuid):
-        """Delete method."""
+        """Delete."""
         subscription = subscription_service.get(subscription_uuid)
         if subscription["status"] != "stopped":
             try:
@@ -118,13 +122,13 @@ class SubscriptionsCustomerListView(APIView):
     """SubscriptionsCustomerListView."""
 
     def get(self, request, customer_uuid):
-        """Get method."""
+        """Get."""
         parameters = {"customer_uuid": customer_uuid, "archived": False}
         subscription_list = subscription_service.get_list(parameters)
         return Response(subscription_list)
 
     def post(self, request, customer_uuid):
-        """Post method."""
+        """Post."""
         search_data = request.data.copy()
         cust_arch = {"customer_uuid": customer_uuid, "archived": False}
         parameters = {**search_data, **cust_arch}
@@ -136,7 +140,7 @@ class SubscriptionsTemplateListView(APIView):
     """SubscriptionsTemplateListView."""
 
     def get(self, request, template_uuid):
-        """Get method."""
+        """Get."""
         parameters = {"templates_selected_uuid_list": template_uuid, "archived": False}
         subscription_list = subscription_service.get_list(parameters)
         return Response(subscription_list)
@@ -146,7 +150,7 @@ class SubscriptionStopView(APIView):
     """SubscriptionStopView."""
 
     def get(self, request, subscription_uuid):
-        """Get method."""
+        """Get."""
         subscription = subscription_service.get(subscription_uuid)
         resp = stop_subscription(subscription)
         return Response(resp, status=status.HTTP_202_ACCEPTED)
@@ -156,6 +160,7 @@ class SubscriptionRestartView(APIView):
     """SubscriptionRestartView."""
 
     def get(self, request, subscription_uuid):
+        """Get."""
         created_response = restart_subscription(subscription_uuid)
         return Response(created_response, status=status.HTTP_202_ACCEPTED)
 
@@ -164,12 +169,7 @@ class SubscriptionTargetCacheView(APIView):
     """SubscriptionTargetCacheView."""
 
     def post(self, request, subscription_uuid):
-        """
-        If the campaign is currently running then save the target cache but leave the
-        template_target alone.
-        else
-            copy the target_cache
-        """
+        """Post."""
         target_update_data = request.data.copy()
 
         resp = subscription_service.update(

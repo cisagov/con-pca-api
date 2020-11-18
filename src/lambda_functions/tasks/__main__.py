@@ -1,7 +1,11 @@
+"""Main File for running tasks locally."""
+# Standard Python Libraries
 import json
+
+# cisagov Libraries
+from api.utils.generic import format_json
 from lambda_functions.tasks.process_tasks import lambda_handler
 from lambda_functions.tasks.queue_tasks import get_tasks_to_queue
-from api.utils.generic import format_json
 
 tasks = get_tasks_to_queue()
 for task in tasks:

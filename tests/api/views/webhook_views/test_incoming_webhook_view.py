@@ -1,13 +1,19 @@
-import pytest
+"""IncomingWebhookView Tests."""
+# Standard Python Libraries
 from unittest import mock
-from faker import Faker
 
+# Third-Party Libraries
+from faker import Faker
+import pytest
+
+# cisagov Libraries
 from src.api.views.webhook_views import IncomingWebhookView
 
 fake = Faker()
 
 
 def web_hook_data_campaign_created():
+    """Get CampaignCreated Event."""
     return {
         "campaign_id": 1234,
         "email": "foo.bar@example.com",
@@ -18,6 +24,7 @@ def web_hook_data_campaign_created():
 
 
 def web_hook_data_email_sent():
+    """Get EmailSent Event."""
     return {
         "campaign_id": 1234,
         "email": "foo.bar@example.com",
@@ -28,6 +35,7 @@ def web_hook_data_email_sent():
 
 
 def web_hook_data_clicked_link():
+    """Get Clicked Link Event."""
     return {
         "campaign_id": 1234,
         "email": "foo.bar@example.com",
@@ -38,6 +46,7 @@ def web_hook_data_clicked_link():
 
 
 def get_campaign_data():
+    """Get Campaign Data."""
     return {
         "campaign_id": 1234,
         "subscription_uuid": "12345",
@@ -57,6 +66,7 @@ def get_campaign_data():
 
 
 def get_subscription_data():
+    """Get Subscription Data."""
     return {
         "status": "Queued",
         "subscription_uuid": "12345",
@@ -73,6 +83,7 @@ def get_subscription_data():
 
 @pytest.mark.django_db
 def test_inbound_webhook_view_post_campaign_created(client):
+    """Test Post."""
     result = client.post("/api/v1/inboundwebhook/", web_hook_data_campaign_created())
     assert result.status_code == 200
 
@@ -91,6 +102,7 @@ def test_inbound_webhook_view_post_email_sent(
     mock_campaign_get_list,
     client,
 ):
+    """Test Post Email Sent."""
     result = client.post("/api/v1/inboundwebhook/", web_hook_data_email_sent())
 
     assert mock_campaign_get_list.called
@@ -116,6 +128,7 @@ def test_inbound_webhook_view_post_clicked_link(
     mock_campaign_get_list,
     client,
 ):
+    """Test Clicked Link."""
     result = client.post("/api/v1/inboundwebhook/", web_hook_data_clicked_link())
 
     assert mock_campaign_get_list.called
@@ -129,12 +142,14 @@ def test_inbound_webhook_view_post_clicked_link(
 
 @pytest.mark.django_db
 def test_inbound_webhook_view_post_no_data(client):
+    """Test Post No Data."""
     result = client.post("/api/v1/inboundwebhook/", {})
 
     assert result.status_code == 200
 
 
 def test_inbound_webhook_is_duplicate_timeline_entry():
+    """Test Duplicates."""
     timeline_non_match = [
         {
             "email": None,
@@ -180,6 +195,7 @@ def test_inbound_webhook_is_duplicate_timeline_entry():
 
 
 def test_inbound_webhook_has_corresponding_opened_event():
+    """Test duplicate opened."""
     timeline_non_match = [
         {
             "email": None,
@@ -225,6 +241,7 @@ def test_inbound_webhook_has_corresponding_opened_event():
 
 
 def test_inbound_webhook_mark_phishing_results_dirty():
+    """Test phish results dirty."""
     subscription = {
         "cycles": [{"campaigns_in_cycle": [1234], "phish_results_dirty": False}]
     }

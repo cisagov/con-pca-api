@@ -1,34 +1,37 @@
+"""Cycle Report View."""
+# Standard Python Libraries
 from datetime import datetime, timedelta
 
-from api.manager import CampaignManager
-from reports.utils import get_relevant_recommendations
-
+# Third-Party Libraries
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from reports.utils import (
-    get_subscription_stats_for_cycle,
-    get_related_subscription_stats,
-    get_cycles_breakdown,
-    get_template_details,
-    get_statistic_from_group,
-    get_reports_to_click,
-    campaign_templates_to_string,
-    get_most_successful_campaigns,
-    get_closest_cycle_within_day_range,
-    ratio_to_percent,
-    ratio_to_percent_zero_default,
-    format_timedelta,
-    get_statistic_from_region_group,
-    deception_stats_to_graph_format,
-    set_cycle_quarters,
-)
+# cisagov Libraries
+from api.manager import CampaignManager
 from api.services import (
+    CustomerService,
+    DHSContactService,
     RecommendationService,
     SubscriptionService,
-    DHSContactService,
-    CustomerService,
+)
+from reports.utils import (
+    campaign_templates_to_string,
+    deception_stats_to_graph_format,
+    format_timedelta,
+    get_closest_cycle_within_day_range,
+    get_cycles_breakdown,
+    get_most_successful_campaigns,
+    get_related_subscription_stats,
+    get_relevant_recommendations,
+    get_reports_to_click,
+    get_statistic_from_group,
+    get_statistic_from_region_group,
+    get_subscription_stats_for_cycle,
+    get_template_details,
+    ratio_to_percent,
+    ratio_to_percent_zero_default,
+    set_cycle_quarters,
 )
 
 # GoPhish API Manager
@@ -41,10 +44,10 @@ customer_service = CustomerService()
 
 
 class CycleReportsView(APIView):
+    """CycleReportsView."""
+
     def get(self, request, **kwargs):
-        """
-        Generate the cycle report based off of the provided start date
-        """
+        """Generate the cycle report based off of the provided start date."""
         # Get Args from url
         subscription_uuid = self.kwargs["subscription_uuid"]
         start_date_param = self.kwargs["start_date"]
@@ -309,11 +312,10 @@ class CycleReportsView(APIView):
 
 
 class CycleStatusView(APIView):
+    """CycleStatusView."""
+
     def get(self, request, **kwargs):
-
-        # start_date_param = self.kwargs["start_date"]
-        # start_date = datetime.strptime(start_date_param, "%Y-%m-%dT%H:%M:%S.%f%z")
-
+        """Get."""
         cycle_uuid = self.kwargs["cycle_uuid"]
 
         # Get targeted subscription and associated customer data

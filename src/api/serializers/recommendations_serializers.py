@@ -1,21 +1,19 @@
-"""
-Recommendation Serializers.
-
-These are Django Rest Framework Serializers. These are used for
-serializing data coming from the db into a request response.
-"""
+"""Recommendation Serializers."""
 # Third-Party Libraries
 from rest_framework import serializers
 
+# cisagov Libraries
 from api.serializers.template_serializers import (
     TemplateAppearanceSerializer,
-    TemplateSenderSerializer,
-    TemplateRelevancySerializer,
     TemplateBehaviorSerializer,
+    TemplateRelevancySerializer,
+    TemplateSenderSerializer,
 )
 
 
 class RecommendationsSerializer(serializers.Serializer):
+    """RecommendationsSerializer."""
+
     recommendations_uuid = serializers.UUIDField()
     name = serializers.CharField()
     description = serializers.CharField()
@@ -32,6 +30,8 @@ class RecommendationsSerializer(serializers.Serializer):
 
 
 class RecommendationsPostSerializer(serializers.Serializer):
+    """RecommendationsPostSerializer."""
+
     name = serializers.CharField()
     description = serializers.CharField()
     # Score data
@@ -42,10 +42,14 @@ class RecommendationsPostSerializer(serializers.Serializer):
 
 
 class RecommendationsResponseSerializer(serializers.Serializer):
+    """RecommendationsResponseSerializer."""
+
     recommendations_uuid = serializers.UUIDField()
 
 
 class RecommendationsPatchSerializer(serializers.Serializer):
+    """RecommendationsPatchSerializer."""
+
     name = serializers.CharField(required=False)
     description = serializers.CharField(required=False)
     # Score data
@@ -56,6 +60,8 @@ class RecommendationsPatchSerializer(serializers.Serializer):
 
 
 class RecommendationsQuerySerializer(serializers.Serializer):
+    """RecommendationsQuerySerializer."""
+
     name = serializers.CharField(required=False)
     description = serializers.CharField(required=False)
     created_by = serializers.CharField(required=False)

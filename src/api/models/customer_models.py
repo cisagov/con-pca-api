@@ -3,7 +3,7 @@ Customer Models.
 
 These are not Django Models, there are created using Schematics Models
 """
-# Third-Party Libraries
+# cisagov Libraries
 from database.repository.models import Model
 from database.repository.types import (
     BooleanType,

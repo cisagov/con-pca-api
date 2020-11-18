@@ -1,12 +1,17 @@
+"""Report Utils."""
+# Standard Python Libraries
+import asyncio
 from io import BytesIO
 
+# Third-Party Libraries
 import pyppeteer
-import asyncio
 
+# cisagov Libraries
 from config import settings
 
 
 def download_pdf(report_type, uuid, cycle, cycle_uuid=None):
+    """Download PDF Report."""
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     auth_header = settings.LOCAL_API_KEY if settings.LOCAL_API_KEY else None

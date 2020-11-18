@@ -1,3 +1,5 @@
+"""Static Variables for Subscriptions."""
+# Standard Python Libraries
 import os
 
 DELAY_MINUTES = int(os.environ.get("DELAY_MINUTES", 3))

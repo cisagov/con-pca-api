@@ -1,3 +1,4 @@
+"""Config Url Paths."""
 # Third-Party Libraries
 from django.contrib import admin
 from django.urls import include, path

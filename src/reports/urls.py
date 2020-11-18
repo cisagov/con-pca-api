@@ -1,10 +1,9 @@
+"""Report App Urls."""
+# Third-Party Libraries
 from django.urls import path
-from reports.views import (
-    cycle_view,
-    monthly_view,
-    yearly_view,
-    system_view,
-)
+
+# cisagov Libraries
+from reports.views import cycle_view, monthly_view, system_view, yearly_view
 
 urlpatterns = [
     path(

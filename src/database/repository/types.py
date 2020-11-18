@@ -8,7 +8,6 @@ This is using schematics.type as a base
 import uuid
 
 # Third-Party Libraries
-# These imports are so models.py can import all its types from this file.
 from schematics.types import BooleanType as BaseBooleanType
 from schematics.types import DateTimeType as BaseDateTimeType
 from schematics.types import DictType as BaseDictType

@@ -1,14 +1,19 @@
-import pytest
-from unittest import mock
-from faker import Faker
-from django.core.files.uploadedfile import InMemoryUploadedFile
+"""Image View Tests."""
+# Standard Python Libraries
 from mimetypes import guess_type
+from unittest import mock
+
+# Third-Party Libraries
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from faker import Faker
+import pytest
 
 fake = Faker()
 
 
 @pytest.mark.django_db
 def test_image_view_post(client):
+    """Test Image View Post."""
     with mock.patch(
         "api.utils.aws_utils.S3.upload_fileobj_image"
     ) as mock_upload, mock.patch("boto3.client"):

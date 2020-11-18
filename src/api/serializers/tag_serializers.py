@@ -1,8 +1,10 @@
+"""Tag Serializers."""
+# Third-Party Libraries
 from rest_framework import serializers
 
 
 class TagSerializer(serializers.Serializer):
-    """Serializes a Tag (replaceable token in a template)."""
+    """Tag Serializer."""
 
     tag_definition_uuid = serializers.UUIDField()
     tag = serializers.CharField()
@@ -17,7 +19,7 @@ class TagSerializer(serializers.Serializer):
 
 
 class TagPostSerializer(serializers.Serializer):
-    """Serializes a Tag (replaceable token in a template)."""
+    """TagPost Serializer."""
 
     tag = serializers.CharField(required=True)
     description = serializers.CharField(required=True)
@@ -26,17 +28,13 @@ class TagPostSerializer(serializers.Serializer):
 
 
 class TagResponseSerializer(serializers.Serializer):
-    """
-    Serializes the response for a Tag (replaceable token in a template).
-
-    This is a formats the data coming out of the Db.
-    """
+    """TagResponse Serializer."""
 
     tag_definition_uuid = serializers.UUIDField()
 
 
 class TagPatchSerializer(serializers.Serializer):
-    """Serializes a Tag (replaceable token in a template)."""
+    """TagPatch Serializer."""
 
     tag = serializers.CharField(required=False)
     description = serializers.CharField(required=False)
@@ -44,18 +42,8 @@ class TagPatchSerializer(serializers.Serializer):
     tag_type = serializers.CharField(required=False)
 
 
-class TagDeleteSerializer(serializers.Serializer):
-    """Serializes a Tag (replaceable token in a template)."""
-
-    tag_definition_uuid = serializers.UUIDField()
-
-
 class TagQuerySerializer(serializers.Serializer):
-    """
-    Serializes Tag Query.
-
-    This is sets queries we can run on db collection.
-    """
+    """TagQuery Serializer."""
 
     tag = serializers.CharField(required=False)
     description = serializers.CharField(required=False)

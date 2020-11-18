@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=emulateIE7" />
-    <title>Coverage for src\api\utils\reports.py: 18%</title>
+    <title>Coverage for src\api\utils\reports.py: 17%</title>
     <link rel="stylesheet" href="style.css" type="text/css" />
     <script type="text/javascript" src="jquery.min.js"></script>
     <script type="text/javascript" src="jquery.hotkeys.js"></script>
@@ -18,7 +18,7 @@
       <div class="content">
         <h1>
           Coverage for <b>src\api\utils\reports.py</b> :
-          <span class="pc_cov">18%</span>
+          <span class="pc_cov">17%</span>
         </h1>
         <img
           id="keyboard_icon"
@@ -26,20 +26,20 @@
           alt="Show keyboard shortcuts"
         />
         <h2 class="stats">
-          39 statements &nbsp;
+          35 statements &nbsp;
           <button
             type="button"
             class="run shortkey_r button_toggle_run"
             title="Toggle lines run"
           >
-            7 run
+            6 run
           </button>
           <button
             type="button"
             class="mis show_mis shortkey_m button_toggle_mis"
             title="Toggle lines missing"
           >
-            32 missing
+            29 missing
           </button>
           <button
             type="button"
@@ -74,50 +74,48 @@
       </div>
     </div>
     <div id="source">
-      <p id="t1" class="run">
+      <p id="t1" class="pln">
         <span class="n"><a href="#t1">1</a></span
+        ><span class="t"
+          ><span class="str">"""Report Utils."""</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t2" class="pln">
+        <span class="n"><a href="#t2">2</a></span
+        ><span class="t"
+          ><span class="com"># Standard Python Libraries</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t3" class="run">
+        <span class="n"><a href="#t3">3</a></span
+        ><span class="t"
+          ><span class="key">import</span>
+          <span class="nam">asyncio</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t4" class="run">
+        <span class="n"><a href="#t4">4</a></span
         ><span class="t"
           ><span class="key">from</span> <span class="nam">io</span>
           <span class="key">import</span>
           <span class="nam">BytesIO</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t2" class="pln">
-        <span class="n"><a href="#t2">2</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t3" class="run">
-        <span class="n"><a href="#t3">3</a></span
-        ><span class="t"
-          ><span class="key">import</span>
-          <span class="nam">pyppeteer</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t4" class="run">
-        <span class="n"><a href="#t4">4</a></span
-        ><span class="t"
-          ><span class="key">import</span>
-          <span class="nam">asyncio</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t5" class="run">
+      <p id="t5" class="pln">
         <span class="n"><a href="#t5">5</a></span
-        ><span class="t"
-          ><span class="key">from</span> <span class="nam">contextlib</span>
-          <span class="key">import</span>
-          <span class="nam">suppress</span>&nbsp;</span
-        ><span class="r"></span>
+        ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
       <p id="t6" class="pln">
         <span class="n"><a href="#t6">6</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
+        ><span class="t"
+          ><span class="com"># Third-Party Libraries</span>&nbsp;</span
+        ><span class="r"></span>
       </p>
       <p id="t7" class="run">
         <span class="n"><a href="#t7">7</a></span
         ><span class="t"
-          ><span class="key">from</span> <span class="nam">config</span>
-          <span class="key">import</span>
-          <span class="nam">settings</span>&nbsp;</span
+          ><span class="key">import</span>
+          <span class="nam">pyppeteer</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t8" class="pln">
@@ -126,10 +124,28 @@
       </p>
       <p id="t9" class="pln">
         <span class="n"><a href="#t9">9</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
+        ><span class="t"
+          ><span class="com"># cisagov Libraries</span>&nbsp;</span
+        ><span class="r"></span>
       </p>
       <p id="t10" class="run">
         <span class="n"><a href="#t10">10</a></span
+        ><span class="t"
+          ><span class="key">from</span> <span class="nam">config</span>
+          <span class="key">import</span>
+          <span class="nam">settings</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t11" class="pln">
+        <span class="n"><a href="#t11">11</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t12" class="pln">
+        <span class="n"><a href="#t12">12</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t13" class="run">
+        <span class="n"><a href="#t13">13</a></span
         ><span class="t"
           ><span class="key">def</span> <span class="nam">download_pdf</span
           ><span class="op">(</span><span class="nam">report_type</span
@@ -140,8 +156,14 @@
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t11" class="mis show_mis">
-        <span class="n"><a href="#t11">11</a></span
+      <p id="t14" class="pln">
+        <span class="n"><a href="#t14">14</a></span
+        ><span class="t">
+          <span class="str">"""Download PDF Report."""</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t15" class="mis show_mis">
+        <span class="n"><a href="#t15">15</a></span
         ><span class="t">
           <span class="nam">loop</span> <span class="op">=</span>
           <span class="nam">asyncio</span><span class="op">.</span
@@ -149,16 +171,16 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t12" class="mis show_mis">
-        <span class="n"><a href="#t12">12</a></span
+      <p id="t16" class="mis show_mis">
+        <span class="n"><a href="#t16">16</a></span
         ><span class="t">
           <span class="nam">asyncio</span><span class="op">.</span
           ><span class="nam">set_event_loop</span><span class="op">(</span
           ><span class="nam">loop</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t13" class="mis show_mis">
-        <span class="n"><a href="#t13">13</a></span
+      <p id="t17" class="mis show_mis">
+        <span class="n"><a href="#t17">17</a></span
         ><span class="t">
           <span class="nam">auth_header</span> <span class="op">=</span>
           <span class="nam">settings</span><span class="op">.</span
@@ -168,12 +190,12 @@
           <span class="key">None</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t14" class="pln">
-        <span class="n"><a href="#t14">14</a></span
+      <p id="t18" class="pln">
+        <span class="n"><a href="#t18">18</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t15" class="mis show_mis">
-        <span class="n"><a href="#t15">15</a></span
+      <p id="t19" class="mis show_mis">
+        <span class="n"><a href="#t19">19</a></span
         ><span class="t">
           <span class="nam">response</span> <span class="op">=</span>
           <span class="nam">loop</span><span class="op">.</span
@@ -181,15 +203,15 @@
           ><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t16" class="pln">
-        <span class="n"><a href="#t16">16</a></span
+      <p id="t20" class="pln">
+        <span class="n"><a href="#t20">20</a></span
         ><span class="t">
           <span class="nam">_download_pdf</span
           ><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t17" class="pln">
-        <span class="n"><a href="#t17">17</a></span
+      <p id="t21" class="pln">
+        <span class="n"><a href="#t21">21</a></span
         ><span class="t">
           <span class="nam">report_type</span><span class="op">,</span>
           <span class="nam">uuid</span><span class="op">,</span>
@@ -200,49 +222,14 @@
           ><span class="nam">cycle_uuid</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t18" class="pln">
-        <span class="n"><a href="#t18">18</a></span
-        ><span class="t"> <span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t19" class="pln">
-        <span class="n"><a href="#t19">19</a></span
-        ><span class="t"> <span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t20" class="pln">
-        <span class="n"><a href="#t20">20</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t21" class="mis show_mis">
-        <span class="n"><a href="#t21">21</a></span
-        ><span class="t">
-          <span class="key">with</span> <span class="nam">suppress</span
-          ><span class="op">(</span><span class="nam">asyncio</span
-          ><span class="op">.</span><span class="nam">exceptions</span
-          ><span class="op">.</span><span class="nam">CancelledError</span
-          ><span class="op">)</span><span class="op">:</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t22" class="mis show_mis">
+      <p id="t22" class="pln">
         <span class="n"><a href="#t22">22</a></span
-        ><span class="t">
-          <span class="nam">pending</span> <span class="op">=</span>
-          <span class="nam">asyncio</span><span class="op">.</span
-          ><span class="nam">Task</span><span class="op">.</span
-          ><span class="nam">all_tasks</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
+        ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t23" class="mis show_mis">
+      <p id="t23" class="pln">
         <span class="n"><a href="#t23">23</a></span
-        ><span class="t">
-          <span class="nam">loop</span><span class="op">.</span
-          ><span class="nam">run_until_complete</span><span class="op">(</span
-          ><span class="nam">asyncio</span><span class="op">.</span
-          ><span class="nam">gather</span><span class="op">(</span
-          ><span class="op">*</span><span class="nam">pending</span
-          ><span class="op">)</span><span class="op">)</span>&nbsp;</span
+        ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t24" class="pln">
@@ -542,7 +529,7 @@
           <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp;
           <a class="nav" href="https://coverage.readthedocs.io"
             >coverage.py v5.3</a
-          >, created at 2020-10-01 11:17 -0600
+          >, created at 2020-11-18 12:27 -0700
         </p>
       </div>
     </div>

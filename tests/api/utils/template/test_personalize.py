@@ -1,9 +1,14 @@
+"""Personalize Templates Tests."""
+# Standard Python Libraries
+from unittest import mock
+
+# Third-Party Libraries
 from faker import Faker
+
+# cisagov Libraries
+from src.api.utils.tag.tags import get_faker_tags
 from src.api.utils.template import personalize
 from src.scripts.init import load_file
-from src.api.utils.tag.tags import get_faker_tags
-
-from unittest import mock
 
 fake = Faker()
 
@@ -15,10 +20,9 @@ customer_info = {
     "zip_code": fake.zipcode(),
 }
 
-sub_data = {}
-
 
 def test_customer_name():
+    """Test Customer Name."""
     tag_list = [
         {
             "tag": "<%CUSTOMER_NAME%>",
@@ -36,7 +40,7 @@ def test_customer_name():
         }
     ]
     result = personalize.personalize_template(
-        customer_info, template_data, sub_data, tag_list
+        customer_info, template_data, {}, tag_list
     )
     assert result[0]["data"].startswith(customer_info["name"])
     assert result[0]["from_address"] == f"{customer_info['name']} <test@test.com>"
@@ -44,6 +48,7 @@ def test_customer_name():
 
 @mock.patch("gophish.Gophish")
 def test_tags_file(mocked_gophish):
+    """Test tags file."""
     tags = load_file("data/tags.json")
     for tag in tags:
         template_data = [
@@ -57,7 +62,7 @@ def test_tags_file(mocked_gophish):
         ]
 
         result = personalize.personalize_template(
-            customer_info, template_data, sub_data, tags
+            customer_info, template_data, {}, tags
         )
         if tag["tag_type"] == "gophish":
             assert result[0]["data"].startswith(tag["data_source"])
@@ -67,6 +72,7 @@ def test_tags_file(mocked_gophish):
 
 
 def test_faker_tags():
+    """Test faker tags."""
     tags = get_faker_tags()
     for tag in tags:
         template_data = [
@@ -80,7 +86,7 @@ def test_faker_tags():
         ]
 
         result = personalize.personalize_template(
-            customer_info, template_data, sub_data, tags
+            customer_info, template_data, {}, tags
         )
 
         assert not result[0]["data"].startswith(tag["tag"])

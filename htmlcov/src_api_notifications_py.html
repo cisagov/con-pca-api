@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=emulateIE7" />
-    <title>Coverage for src\api\notifications.py: 67%</title>
+    <title>Coverage for src\api\notifications.py: 64%</title>
     <link rel="stylesheet" href="style.css" type="text/css" />
     <script type="text/javascript" src="jquery.min.js"></script>
     <script type="text/javascript" src="jquery.hotkeys.js"></script>
@@ -18,7 +18,7 @@
       <div class="content">
         <h1>
           Coverage for <b>src\api\notifications.py</b> :
-          <span class="pc_cov">67%</span>
+          <span class="pc_cov">64%</span>
         </h1>
         <img
           id="keyboard_icon"
@@ -26,20 +26,20 @@
           alt="Show keyboard shortcuts"
         />
         <h2 class="stats">
-          100 statements &nbsp;
+          101 statements &nbsp;
           <button
             type="button"
             class="run shortkey_r button_toggle_run"
             title="Toggle lines run"
           >
-            67 run
+            65 run
           </button>
           <button
             type="button"
             class="mis show_mis shortkey_m button_toggle_mis"
             title="Toggle lines missing"
           >
-            33 missing
+            36 missing
           </button>
           <button
             type="button"
@@ -74,16 +74,28 @@
       </div>
     </div>
     <div id="source">
-      <p id="t1" class="run">
+      <p id="t1" class="pln">
         <span class="n"><a href="#t1">1</a></span
+        ><span class="t"
+          ><span class="str">"""Notifications."""</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t2" class="pln">
+        <span class="n"><a href="#t2">2</a></span
+        ><span class="t"
+          ><span class="com"># Standard Python Libraries</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t3" class="run">
+        <span class="n"><a href="#t3">3</a></span
         ><span class="t"
           ><span class="key">from</span> <span class="nam">datetime</span>
           <span class="key">import</span>
           <span class="nam">datetime</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t2" class="run">
-        <span class="n"><a href="#t2">2</a></span
+      <p id="t4" class="run">
+        <span class="n"><a href="#t4">4</a></span
         ><span class="t"
           ><span class="key">from</span> <span class="nam">email</span
           ><span class="op">.</span><span class="nam">mime</span
@@ -92,27 +104,32 @@
           <span class="nam">MIMEImage</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t3" class="run">
-        <span class="n"><a href="#t3">3</a></span
+      <p id="t5" class="run">
+        <span class="n"><a href="#t5">5</a></span
         ><span class="t"
           ><span class="key">import</span>
           <span class="nam">logging</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t4" class="pln">
-        <span class="n"><a href="#t4">4</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t5" class="run">
-        <span class="n"><a href="#t5">5</a></span
-        ><span class="t"
-          ><span class="key">from</span> <span class="nam">config</span>
-          <span class="key">import</span>
-          <span class="nam">settings</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
       <p id="t6" class="run">
         <span class="n"><a href="#t6">6</a></span
+        ><span class="t"
+          ><span class="key">import</span>
+          <span class="nam">os</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t7" class="pln">
+        <span class="n"><a href="#t7">7</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t8" class="pln">
+        <span class="n"><a href="#t8">8</a></span
+        ><span class="t"
+          ><span class="com"># Third-Party Libraries</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t9" class="run">
+        <span class="n"><a href="#t9">9</a></span
         ><span class="t"
           ><span class="key">from</span> <span class="nam">django</span
           ><span class="op">.</span><span class="nam">core</span
@@ -122,8 +139,8 @@
           <span class="nam">EmailMultiAlternatives</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t7" class="run">
-        <span class="n"><a href="#t7">7</a></span
+      <p id="t10" class="run">
+        <span class="n"><a href="#t10">10</a></span
         ><span class="t"
           ><span class="key">from</span> <span class="nam">django</span
           ><span class="op">.</span><span class="nam">template</span
@@ -132,22 +149,18 @@
           <span class="nam">render_to_string</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t8" class="pln">
-        <span class="n"><a href="#t8">8</a></span
+      <p id="t11" class="pln">
+        <span class="n"><a href="#t11">11</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t9" class="run">
-        <span class="n"><a href="#t9">9</a></span
+      <p id="t12" class="pln">
+        <span class="n"><a href="#t12">12</a></span
         ><span class="t"
-          ><span class="key">from</span> <span class="nam">api</span
-          ><span class="op">.</span><span class="nam">utils</span
-          ><span class="op">.</span><span class="nam">reports</span>
-          <span class="key">import</span>
-          <span class="nam">download_pdf</span>&nbsp;</span
+          ><span class="com"># cisagov Libraries</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t10" class="run">
-        <span class="n"><a href="#t10">10</a></span
+      <p id="t13" class="run">
+        <span class="n"><a href="#t13">13</a></span
         ><span class="t"
           ><span class="key">from</span> <span class="nam">api</span
           ><span class="op">.</span><span class="nam">manager</span>
@@ -155,29 +168,8 @@
           <span class="nam">CampaignManager</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t11" class="run">
-        <span class="n"><a href="#t11">11</a></span
-        ><span class="t"
-          ><span class="key">from</span> <span class="nam">api</span
-          ><span class="op">.</span><span class="nam">utils</span
-          ><span class="op">.</span><span class="nam">aws_utils</span>
-          <span class="key">import</span>
-          <span class="nam">SES</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t12" class="run">
-        <span class="n"><a href="#t12">12</a></span
-        ><span class="t"
-          ><span class="key">from</span> <span class="nam">api</span
-          ><span class="op">.</span><span class="nam">utils</span
-          ><span class="op">.</span><span class="nam">subscription</span
-          ><span class="op">.</span><span class="nam">static</span>
-          <span class="key">import</span>
-          <span class="nam">DEFAULT_X_GOPHISH_CONTACT</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t13" class="run">
-        <span class="n"><a href="#t13">13</a></span
+      <p id="t14" class="run">
+        <span class="n"><a href="#t14">14</a></span
         ><span class="t"
           ><span class="key">from</span> <span class="nam">api</span
           ><span class="op">.</span><span class="nam">services</span>
@@ -187,39 +179,43 @@
           <span class="nam">TemplateService</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t14" class="run">
-        <span class="n"><a href="#t14">14</a></span
-        ><span class="t"
-          ><span class="key">import</span>
-          <span class="nam">os</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t15" class="pln">
+      <p id="t15" class="run">
         <span class="n"><a href="#t15">15</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
+        ><span class="t"
+          ><span class="key">from</span> <span class="nam">api</span
+          ><span class="op">.</span><span class="nam">utils</span
+          ><span class="op">.</span><span class="nam">aws_utils</span>
+          <span class="key">import</span>
+          <span class="nam">SES</span>&nbsp;</span
+        ><span class="r"></span>
       </p>
       <p id="t16" class="run">
         <span class="n"><a href="#t16">16</a></span
         ><span class="t"
-          ><span class="nam">dhs_contact_service</span>
-          <span class="op">=</span> <span class="nam">DHSContactService</span
-          ><span class="op">(</span><span class="op">)</span>&nbsp;</span
+          ><span class="key">from</span> <span class="nam">api</span
+          ><span class="op">.</span><span class="nam">utils</span
+          ><span class="op">.</span><span class="nam">reports</span>
+          <span class="key">import</span>
+          <span class="nam">download_pdf</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t17" class="run">
         <span class="n"><a href="#t17">17</a></span
         ><span class="t"
-          ><span class="nam">subscription_service</span>
-          <span class="op">=</span> <span class="nam">SubscriptionService</span
-          ><span class="op">(</span><span class="op">)</span>&nbsp;</span
+          ><span class="key">from</span> <span class="nam">api</span
+          ><span class="op">.</span><span class="nam">utils</span
+          ><span class="op">.</span><span class="nam">subscription</span
+          ><span class="op">.</span><span class="nam">static</span>
+          <span class="key">import</span>
+          <span class="nam">DEFAULT_X_GOPHISH_CONTACT</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t18" class="run">
         <span class="n"><a href="#t18">18</a></span
         ><span class="t"
-          ><span class="nam">template_service</span> <span class="op">=</span>
-          <span class="nam">TemplateService</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
+          ><span class="key">from</span> <span class="nam">config</span>
+          <span class="key">import</span>
+          <span class="nam">settings</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t19" class="pln">
@@ -228,6 +224,34 @@
       </p>
       <p id="t20" class="run">
         <span class="n"><a href="#t20">20</a></span
+        ><span class="t"
+          ><span class="nam">dhs_contact_service</span>
+          <span class="op">=</span> <span class="nam">DHSContactService</span
+          ><span class="op">(</span><span class="op">)</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t21" class="run">
+        <span class="n"><a href="#t21">21</a></span
+        ><span class="t"
+          ><span class="nam">subscription_service</span>
+          <span class="op">=</span> <span class="nam">SubscriptionService</span
+          ><span class="op">(</span><span class="op">)</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t22" class="run">
+        <span class="n"><a href="#t22">22</a></span
+        ><span class="t"
+          ><span class="nam">template_service</span> <span class="op">=</span>
+          <span class="nam">TemplateService</span><span class="op">(</span
+          ><span class="op">)</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t23" class="pln">
+        <span class="n"><a href="#t23">23</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t24" class="run">
+        <span class="n"><a href="#t24">24</a></span
         ><span class="t"
           ><span class="nam">BASE_DIR</span> <span class="op">=</span>
           <span class="nam">os</span><span class="op">.</span
@@ -243,8 +267,8 @@
           ><span class="op">)</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t21" class="run">
-        <span class="n"><a href="#t21">21</a></span
+      <p id="t25" class="run">
+        <span class="n"><a href="#t25">25</a></span
         ><span class="t"
           ><span class="nam">STATIC_DIR</span> <span class="op">=</span>
           <span class="nam">os</span><span class="op">.</span
@@ -254,23 +278,34 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t22" class="pln">
-        <span class="n"><a href="#t22">22</a></span
+      <p id="t26" class="pln">
+        <span class="n"><a href="#t26">26</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t23" class="pln">
-        <span class="n"><a href="#t23">23</a></span
+      <p id="t27" class="pln">
+        <span class="n"><a href="#t27">27</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t24" class="run">
-        <span class="n"><a href="#t24">24</a></span
+      <p id="t28" class="run">
+        <span class="n"><a href="#t28">28</a></span
         ><span class="t"
           ><span class="key">class</span> <span class="nam">EmailSender</span
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t25" class="run">
-        <span class="n"><a href="#t25">25</a></span
+      <p id="t29" class="pln">
+        <span class="n"><a href="#t29">29</a></span
+        ><span class="t">
+          <span class="str">"""Class for sending email notifications."""</span
+          >&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t30" class="pln">
+        <span class="n"><a href="#t30">30</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t31" class="run">
+        <span class="n"><a href="#t31">31</a></span
         ><span class="t">
           <span class="key">def</span> <span class="nam">__init__</span
           ><span class="op">(</span><span class="nam">self</span
@@ -283,45 +318,51 @@
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t26" class="run">
-        <span class="n"><a href="#t26">26</a></span
+      <p id="t32" class="pln">
+        <span class="n"><a href="#t32">32</a></span
+        ><span class="t">
+          <span class="str">"""Init Email Sender."""</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t33" class="run">
+        <span class="n"><a href="#t33">33</a></span
         ><span class="t">
           <span class="nam">self</span><span class="op">.</span
           ><span class="nam">subscription</span> <span class="op">=</span>
           <span class="nam">subscription</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t27" class="run">
-        <span class="n"><a href="#t27">27</a></span
+      <p id="t34" class="run">
+        <span class="n"><a href="#t34">34</a></span
         ><span class="t">
           <span class="nam">self</span><span class="op">.</span
           ><span class="nam">cycle_uuid</span> <span class="op">=</span>
           <span class="nam">cycle_uuid</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t28" class="run">
-        <span class="n"><a href="#t28">28</a></span
+      <p id="t35" class="run">
+        <span class="n"><a href="#t35">35</a></span
         ><span class="t">
           <span class="nam">self</span><span class="op">.</span
           ><span class="nam">notification</span> <span class="op">=</span>
           <span class="nam">self</span><span class="op">.</span
-          ><span class="nam">set_notification</span><span class="op">(</span
+          ><span class="nam">_set_notification</span><span class="op">(</span
           ><span class="nam">message_type</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t29" class="run">
-        <span class="n"><a href="#t29">29</a></span
+      <p id="t36" class="run">
+        <span class="n"><a href="#t36">36</a></span
         ><span class="t">
           <span class="nam">self</span><span class="op">.</span
           ><span class="nam">attachment</span> <span class="op">=</span>
           <span class="nam">self</span><span class="op">.</span
-          ><span class="nam">get_attachment</span><span class="op">(</span
+          ><span class="nam">_get_attachment</span><span class="op">(</span
           ><span class="nam">cycle</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t30" class="run">
-        <span class="n"><a href="#t30">30</a></span
+      <p id="t37" class="run">
+        <span class="n"><a href="#t37">37</a></span
         ><span class="t">
           <span class="nam">self</span><span class="op">.</span
           ><span class="nam">dhs_contact</span> <span class="op">=</span>
@@ -329,8 +370,8 @@
           ><span class="nam">get</span><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t31" class="pln">
-        <span class="n"><a href="#t31">31</a></span
+      <p id="t38" class="pln">
+        <span class="n"><a href="#t38">38</a></span
         ><span class="t">
           <span class="nam">self</span><span class="op">.</span
           ><span class="nam">subscription</span><span class="op">.</span
@@ -339,71 +380,23 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t32" class="pln">
-        <span class="n"><a href="#t32">32</a></span
-        ><span class="t"> <span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t33" class="pln">
-        <span class="n"><a href="#t33">33</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t34" class="run">
-        <span class="n"><a href="#t34">34</a></span
-        ><span class="t">
-          <span class="nam">self</span><span class="op">.</span
-          ><span class="nam">context</span> <span class="op">=</span>
-          <span class="nam">self</span><span class="op">.</span
-          ><span class="nam">set_context</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t35" class="pln">
-        <span class="n"><a href="#t35">35</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t36" class="run">
-        <span class="n"><a href="#t36">36</a></span
-        ><span class="t">
-          <span class="nam">self</span><span class="op">.</span
-          ><span class="nam">text_content</span> <span class="op">=</span>
-          <span class="nam">render_to_string</span
-          ><span class="op">(</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t37" class="pln">
-        <span class="n"><a href="#t37">37</a></span
-        ><span class="t">
-          <span class="str">f"emails/{self.notification['path']}.txt"</span
-          ><span class="op">,</span> <span class="nam">self</span
-          ><span class="op">.</span><span class="nam">context</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t38" class="pln">
-        <span class="n"><a href="#t38">38</a></span
-        ><span class="t"> <span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t39" class="run">
+      <p id="t39" class="pln">
         <span class="n"><a href="#t39">39</a></span
-        ><span class="t">
-          <span class="nam">self</span><span class="op">.</span
-          ><span class="nam">html_content</span> <span class="op">=</span>
-          <span class="nam">render_to_string</span
-          ><span class="op">(</span>&nbsp;</span
+        ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t40" class="pln">
         <span class="n"><a href="#t40">40</a></span
-        ><span class="t">
-          <span class="str">f"emails/{self.notification['path']}.html"</span
-          ><span class="op">,</span> <span class="nam">self</span
-          ><span class="op">.</span><span class="nam">context</span>&nbsp;</span
-        ><span class="r"></span>
+        ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t41" class="pln">
+      <p id="t41" class="run">
         <span class="n"><a href="#t41">41</a></span
-        ><span class="t"> <span class="op">)</span>&nbsp;</span
+        ><span class="t">
+          <span class="nam">self</span><span class="op">.</span
+          ><span class="nam">context</span> <span class="op">=</span>
+          <span class="nam">self</span><span class="op">.</span
+          ><span class="nam">_set_context</span><span class="op">(</span
+          ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t42" class="pln">
@@ -414,37 +407,172 @@
         <span class="n"><a href="#t43">43</a></span
         ><span class="t">
           <span class="nam">self</span><span class="op">.</span
-          ><span class="nam">to</span> <span class="op">=</span>
-          <span class="nam">self</span><span class="op">.</span
-          ><span class="nam">set_to</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
+          ><span class="nam">text_content</span> <span class="op">=</span>
+          <span class="nam">render_to_string</span
+          ><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t44" class="run">
+      <p id="t44" class="pln">
         <span class="n"><a href="#t44">44</a></span
         ><span class="t">
-          <span class="nam">self</span><span class="op">.</span
-          ><span class="nam">bcc</span> <span class="op">=</span>
-          <span class="nam">self</span><span class="op">.</span
-          ><span class="nam">set_bcc</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
+          <span class="str">f"emails/{self.notification['path']}.txt"</span
+          ><span class="op">,</span> <span class="nam">self</span
+          ><span class="op">.</span><span class="nam">context</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t45" class="pln">
         <span class="n"><a href="#t45">45</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
+        ><span class="t"> <span class="op">)</span>&nbsp;</span
+        ><span class="r"></span>
       </p>
       <p id="t46" class="run">
         <span class="n"><a href="#t46">46</a></span
         ><span class="t">
-          <span class="key">def</span> <span class="nam">get_attachment</span
+          <span class="nam">self</span><span class="op">.</span
+          ><span class="nam">html_content</span> <span class="op">=</span>
+          <span class="nam">render_to_string</span
+          ><span class="op">(</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t47" class="pln">
+        <span class="n"><a href="#t47">47</a></span
+        ><span class="t">
+          <span class="str">f"emails/{self.notification['path']}.html"</span
+          ><span class="op">,</span> <span class="nam">self</span
+          ><span class="op">.</span><span class="nam">context</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t48" class="pln">
+        <span class="n"><a href="#t48">48</a></span
+        ><span class="t"> <span class="op">)</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t49" class="pln">
+        <span class="n"><a href="#t49">49</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t50" class="run">
+        <span class="n"><a href="#t50">50</a></span
+        ><span class="t">
+          <span class="nam">self</span><span class="op">.</span
+          ><span class="nam">to</span> <span class="op">=</span>
+          <span class="nam">self</span><span class="op">.</span
+          ><span class="nam">_set_to</span><span class="op">(</span
+          ><span class="op">)</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t51" class="run">
+        <span class="n"><a href="#t51">51</a></span
+        ><span class="t">
+          <span class="nam">self</span><span class="op">.</span
+          ><span class="nam">bcc</span> <span class="op">=</span>
+          <span class="nam">self</span><span class="op">.</span
+          ><span class="nam">_set_bcc</span><span class="op">(</span
+          ><span class="op">)</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t52" class="pln">
+        <span class="n"><a href="#t52">52</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t53" class="run">
+        <span class="n"><a href="#t53">53</a></span
+        ><span class="t">
+          <span class="key">def</span> <span class="nam">send</span
+          ><span class="op">(</span><span class="nam">self</span
+          ><span class="op">)</span><span class="op">:</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t54" class="pln">
+        <span class="n"><a href="#t54">54</a></span
+        ><span class="t"> <span class="str">"""Send email."""</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t55" class="mis show_mis">
+        <span class="n"><a href="#t55">55</a></span
+        ><span class="t">
+          <span class="key">try</span><span class="op">:</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t56" class="mis show_mis">
+        <span class="n"><a href="#t56">56</a></span
+        ><span class="t">
+          <span class="key">if</span> <span class="nam">settings</span
+          ><span class="op">.</span><span class="nam">USE_SES</span
+          ><span class="op">:</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t57" class="mis show_mis">
+        <span class="n"><a href="#t57">57</a></span
+        ><span class="t">
+          <span class="nam">self</span><span class="op">.</span
+          ><span class="nam">_send_ses</span><span class="op">(</span
+          ><span class="op">)</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t58" class="pln">
+        <span class="n"><a href="#t58">58</a></span
+        ><span class="t">
+          <span class="key">else</span><span class="op">:</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t59" class="mis show_mis">
+        <span class="n"><a href="#t59">59</a></span
+        ><span class="t">
+          <span class="nam">self</span><span class="op">.</span
+          ><span class="nam">_send_django</span><span class="op">(</span
+          ><span class="op">)</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t60" class="pln">
+        <span class="n"><a href="#t60">60</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t61" class="mis show_mis">
+        <span class="n"><a href="#t61">61</a></span
+        ><span class="t">
+          <span class="nam">self</span><span class="op">.</span
+          ><span class="nam">_add_email_report_history</span
+          ><span class="op">(</span><span class="op">)</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t62" class="mis show_mis">
+        <span class="n"><a href="#t62">62</a></span
+        ><span class="t">
+          <span class="key">except</span> <span class="nam">Exception</span>
+          <span class="key">as</span> <span class="nam">e</span
+          ><span class="op">:</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t63" class="mis show_mis">
+        <span class="n"><a href="#t63">63</a></span
+        ><span class="t">
+          <span class="nam">logging</span><span class="op">.</span
+          ><span class="nam">exception</span><span class="op">(</span
+          ><span class="nam">e</span><span class="op">)</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t64" class="mis show_mis">
+        <span class="n"><a href="#t64">64</a></span
+        ><span class="t">
+          <span class="key">raise</span> <span class="nam">e</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t65" class="pln">
+        <span class="n"><a href="#t65">65</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t66" class="run">
+        <span class="n"><a href="#t66">66</a></span
+        ><span class="t">
+          <span class="key">def</span> <span class="nam">_get_attachment</span
           ><span class="op">(</span><span class="nam">self</span
           ><span class="op">,</span> <span class="nam">cycle</span
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t47" class="run">
-        <span class="n"><a href="#t47">47</a></span
+      <p id="t67" class="run">
+        <span class="n"><a href="#t67">67</a></span
         ><span class="t">
           <span class="key">if</span> <span class="str">"report"</span>
           <span class="key">in</span> <span class="nam">self</span
@@ -453,15 +581,15 @@
           ><span class="op">]</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t48" class="mis show_mis">
-        <span class="n"><a href="#t48">48</a></span
+      <p id="t68" class="mis show_mis">
+        <span class="n"><a href="#t68">68</a></span
         ><span class="t">
           <span class="key">return</span> <span class="nam">download_pdf</span
           ><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t49" class="pln">
-        <span class="n"><a href="#t49">49</a></span
+      <p id="t69" class="pln">
+        <span class="n"><a href="#t69">69</a></span
         ><span class="t">
           <span class="nam">report_type</span><span class="op">=</span
           ><span class="nam">self</span><span class="op">.</span
@@ -470,8 +598,8 @@
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t50" class="pln">
-        <span class="n"><a href="#t50">50</a></span
+      <p id="t70" class="pln">
+        <span class="n"><a href="#t70">70</a></span
         ><span class="t">
           <span class="nam">uuid</span><span class="op">=</span
           ><span class="nam">self</span><span class="op">.</span
@@ -480,15 +608,15 @@
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t51" class="pln">
-        <span class="n"><a href="#t51">51</a></span
+      <p id="t71" class="pln">
+        <span class="n"><a href="#t71">71</a></span
         ><span class="t">
           <span class="nam">cycle</span><span class="op">=</span
           ><span class="nam">cycle</span><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t52" class="pln">
-        <span class="n"><a href="#t52">52</a></span
+      <p id="t72" class="pln">
+        <span class="n"><a href="#t72">72</a></span
         ><span class="t">
           <span class="nam">cycle_uuid</span><span class="op">=</span
           ><span class="nam">self</span><span class="op">.</span
@@ -496,122 +624,40 @@
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t53" class="pln">
-        <span class="n"><a href="#t53">53</a></span
+      <p id="t73" class="pln">
+        <span class="n"><a href="#t73">73</a></span
         ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t54" class="run">
-        <span class="n"><a href="#t54">54</a></span
+      <p id="t74" class="run">
+        <span class="n"><a href="#t74">74</a></span
         ><span class="t">
           <span class="key">return</span>
           <span class="key">None</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t55" class="pln">
-        <span class="n"><a href="#t55">55</a></span
+      <p id="t75" class="pln">
+        <span class="n"><a href="#t75">75</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t56" class="run">
-        <span class="n"><a href="#t56">56</a></span
-        ><span class="t">
-          <span class="key">def</span> <span class="nam">send</span
-          ><span class="op">(</span><span class="nam">self</span
-          ><span class="op">)</span><span class="op">:</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t57" class="mis show_mis">
-        <span class="n"><a href="#t57">57</a></span
-        ><span class="t">
-          <span class="key">try</span><span class="op">:</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t58" class="mis show_mis">
-        <span class="n"><a href="#t58">58</a></span
-        ><span class="t">
-          <span class="key">if</span> <span class="nam">settings</span
-          ><span class="op">.</span><span class="nam">USE_SES</span
-          ><span class="op">:</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t59" class="mis show_mis">
-        <span class="n"><a href="#t59">59</a></span
-        ><span class="t">
-          <span class="nam">self</span><span class="op">.</span
-          ><span class="nam">_send_ses</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t60" class="pln">
-        <span class="n"><a href="#t60">60</a></span
-        ><span class="t">
-          <span class="key">else</span><span class="op">:</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t61" class="mis show_mis">
-        <span class="n"><a href="#t61">61</a></span
-        ><span class="t">
-          <span class="nam">self</span><span class="op">.</span
-          ><span class="nam">_send_django</span><span class="op">(</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t62" class="pln">
-        <span class="n"><a href="#t62">62</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t63" class="mis show_mis">
-        <span class="n"><a href="#t63">63</a></span
-        ><span class="t">
-          <span class="nam">self</span><span class="op">.</span
-          ><span class="nam">add_email_report_history</span
-          ><span class="op">(</span><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t64" class="mis show_mis">
-        <span class="n"><a href="#t64">64</a></span
-        ><span class="t">
-          <span class="key">except</span> <span class="nam">Exception</span>
-          <span class="key">as</span> <span class="nam">e</span
-          ><span class="op">:</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t65" class="mis show_mis">
-        <span class="n"><a href="#t65">65</a></span
-        ><span class="t">
-          <span class="nam">logging</span><span class="op">.</span
-          ><span class="nam">exception</span><span class="op">(</span
-          ><span class="nam">e</span><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t66" class="mis show_mis">
-        <span class="n"><a href="#t66">66</a></span
-        ><span class="t">
-          <span class="key">raise</span> <span class="nam">e</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t67" class="pln">
-        <span class="n"><a href="#t67">67</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t68" class="run">
-        <span class="n"><a href="#t68">68</a></span
+      <p id="t76" class="run">
+        <span class="n"><a href="#t76">76</a></span
         ><span class="t">
           <span class="key">def</span> <span class="nam">_send_django</span
           ><span class="op">(</span><span class="nam">self</span
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t69" class="mis show_mis">
-        <span class="n"><a href="#t69">69</a></span
+      <p id="t77" class="mis show_mis">
+        <span class="n"><a href="#t77">77</a></span
         ><span class="t">
           <span class="nam">message</span> <span class="op">=</span>
           <span class="nam">EmailMultiAlternatives</span
           ><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t70" class="pln">
-        <span class="n"><a href="#t70">70</a></span
+      <p id="t78" class="pln">
+        <span class="n"><a href="#t78">78</a></span
         ><span class="t">
           <span class="nam">subject</span><span class="op">=</span
           ><span class="nam">self</span><span class="op">.</span
@@ -620,8 +666,8 @@
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t71" class="pln">
-        <span class="n"><a href="#t71">71</a></span
+      <p id="t79" class="pln">
+        <span class="n"><a href="#t79">79</a></span
         ><span class="t">
           <span class="nam">body</span><span class="op">=</span
           ><span class="nam">self</span><span class="op">.</span
@@ -629,8 +675,8 @@
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t72" class="pln">
-        <span class="n"><a href="#t72">72</a></span
+      <p id="t80" class="pln">
+        <span class="n"><a href="#t80">80</a></span
         ><span class="t">
           <span class="nam">from_email</span><span class="op">=</span
           ><span class="nam">settings</span><span class="op">.</span
@@ -638,49 +684,49 @@
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t73" class="pln">
-        <span class="n"><a href="#t73">73</a></span
+      <p id="t81" class="pln">
+        <span class="n"><a href="#t81">81</a></span
         ><span class="t">
           <span class="nam">to</span><span class="op">=</span
           ><span class="nam">self</span><span class="op">.</span
           ><span class="nam">to</span><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t74" class="pln">
-        <span class="n"><a href="#t74">74</a></span
+      <p id="t82" class="pln">
+        <span class="n"><a href="#t82">82</a></span
         ><span class="t">
           <span class="nam">bcc</span><span class="op">=</span
           ><span class="nam">self</span><span class="op">.</span
           ><span class="nam">bcc</span><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t75" class="pln">
-        <span class="n"><a href="#t75">75</a></span
+      <p id="t83" class="pln">
+        <span class="n"><a href="#t83">83</a></span
         ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t76" class="pln">
-        <span class="n"><a href="#t76">76</a></span
+      <p id="t84" class="pln">
+        <span class="n"><a href="#t84">84</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t77" class="mis show_mis">
-        <span class="n"><a href="#t77">77</a></span
+      <p id="t85" class="mis show_mis">
+        <span class="n"><a href="#t85">85</a></span
         ><span class="t">
           <span class="nam">image_files</span> <span class="op">=</span>
           <span class="op">[</span><span class="str">"cisa_logo.png"</span
           ><span class="op">]</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t78" class="mis show_mis">
-        <span class="n"><a href="#t78">78</a></span
+      <p id="t86" class="mis show_mis">
+        <span class="n"><a href="#t86">86</a></span
         ><span class="t">
           <span class="key">for</span> <span class="nam">image_file</span>
           <span class="key">in</span> <span class="nam">image_files</span
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t79" class="mis show_mis">
-        <span class="n"><a href="#t79">79</a></span
+      <p id="t87" class="mis show_mis">
+        <span class="n"><a href="#t87">87</a></span
         ><span class="t">
           <span class="nam">fp</span> <span class="op">=</span>
           <span class="nam">open</span><span class="op">(</span
@@ -692,8 +738,8 @@
           <span class="str">"rb"</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t80" class="mis show_mis">
-        <span class="n"><a href="#t80">80</a></span
+      <p id="t88" class="mis show_mis">
+        <span class="n"><a href="#t88">88</a></span
         ><span class="t">
           <span class="nam">msgImage</span> <span class="op">=</span>
           <span class="nam">MIMEImage</span><span class="op">(</span
@@ -704,16 +750,16 @@
           ><span class="str">"png"</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t81" class="mis show_mis">
-        <span class="n"><a href="#t81">81</a></span
+      <p id="t89" class="mis show_mis">
+        <span class="n"><a href="#t89">89</a></span
         ><span class="t">
           <span class="nam">fp</span><span class="op">.</span
           ><span class="nam">close</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t82" class="mis show_mis">
-        <span class="n"><a href="#t82">82</a></span
+      <p id="t90" class="mis show_mis">
+        <span class="n"><a href="#t90">90</a></span
         ><span class="t">
           <span class="nam">msgImage</span><span class="op">.</span
           ><span class="nam">add_header</span><span class="op">(</span
@@ -722,8 +768,8 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t83" class="mis show_mis">
-        <span class="n"><a href="#t83">83</a></span
+      <p id="t91" class="mis show_mis">
+        <span class="n"><a href="#t91">91</a></span
         ><span class="t">
           <span class="nam">message</span><span class="op">.</span
           ><span class="nam">attach</span><span class="op">(</span
@@ -731,12 +777,12 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t84" class="pln">
-        <span class="n"><a href="#t84">84</a></span
+      <p id="t92" class="pln">
+        <span class="n"><a href="#t92">92</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t85" class="mis show_mis">
-        <span class="n"><a href="#t85">85</a></span
+      <p id="t93" class="mis show_mis">
+        <span class="n"><a href="#t93">93</a></span
         ><span class="t">
           <span class="nam">message</span><span class="op">.</span
           ><span class="nam">attach_alternative</span><span class="op">(</span
@@ -746,27 +792,27 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t86" class="pln">
-        <span class="n"><a href="#t86">86</a></span
+      <p id="t94" class="pln">
+        <span class="n"><a href="#t94">94</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t87" class="mis show_mis">
-        <span class="n"><a href="#t87">87</a></span
+      <p id="t95" class="mis show_mis">
+        <span class="n"><a href="#t95">95</a></span
         ><span class="t">
           <span class="key">if</span> <span class="nam">self</span
           ><span class="op">.</span><span class="nam">attachment</span
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t88" class="mis show_mis">
-        <span class="n"><a href="#t88">88</a></span
+      <p id="t96" class="mis show_mis">
+        <span class="n"><a href="#t96">96</a></span
         ><span class="t">
           <span class="nam">message</span><span class="op">.</span
           ><span class="nam">attach</span><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t89" class="pln">
-        <span class="n"><a href="#t89">89</a></span
+      <p id="t97" class="pln">
+        <span class="n"><a href="#t97">97</a></span
         ><span class="t">
           <span class="str">"subscription_report.pdf"</span
           ><span class="op">,</span> <span class="nam">self</span
@@ -777,17 +823,17 @@
           <span class="str">"application/pdf"</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t90" class="pln">
-        <span class="n"><a href="#t90">90</a></span
+      <p id="t98" class="pln">
+        <span class="n"><a href="#t98">98</a></span
         ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t91" class="pln">
-        <span class="n"><a href="#t91">91</a></span
+      <p id="t99" class="pln">
+        <span class="n"><a href="#t99">99</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t92" class="mis show_mis">
-        <span class="n"><a href="#t92">92</a></span
+      <p id="t100" class="mis show_mis">
+        <span class="n"><a href="#t100">100</a></span
         ><span class="t">
           <span class="nam">message</span><span class="op">.</span
           ><span class="nam">send</span><span class="op">(</span
@@ -795,47 +841,47 @@
           ><span class="key">False</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t93" class="pln">
-        <span class="n"><a href="#t93">93</a></span
+      <p id="t101" class="pln">
+        <span class="n"><a href="#t101">101</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t94" class="run">
-        <span class="n"><a href="#t94">94</a></span
+      <p id="t102" class="run">
+        <span class="n"><a href="#t102">102</a></span
         ><span class="t">
           <span class="key">def</span> <span class="nam">_send_ses</span
           ><span class="op">(</span><span class="nam">self</span
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t95" class="mis show_mis">
-        <span class="n"><a href="#t95">95</a></span
+      <p id="t103" class="mis show_mis">
+        <span class="n"><a href="#t103">103</a></span
         ><span class="t">
           <span class="nam">ses</span> <span class="op">=</span>
           <span class="nam">SES</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t96" class="pln">
-        <span class="n"><a href="#t96">96</a></span
+      <p id="t104" class="pln">
+        <span class="n"><a href="#t104">104</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t97" class="mis show_mis">
-        <span class="n"><a href="#t97">97</a></span
+      <p id="t105" class="mis show_mis">
+        <span class="n"><a href="#t105">105</a></span
         ><span class="t">
           <span class="key">if</span> <span class="nam">self</span
           ><span class="op">.</span><span class="nam">attachment</span
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t98" class="mis show_mis">
-        <span class="n"><a href="#t98">98</a></span
+      <p id="t106" class="mis show_mis">
+        <span class="n"><a href="#t106">106</a></span
         ><span class="t">
           <span class="nam">binary_attachments</span> <span class="op">=</span>
           <span class="op">[</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t99" class="pln">
-        <span class="n"><a href="#t99">99</a></span
+      <p id="t107" class="pln">
+        <span class="n"><a href="#t107">107</a></span
         ><span class="t">
           <span class="op">{</span><span class="str">"filename"</span
           ><span class="op">:</span>
@@ -848,38 +894,38 @@
           ><span class="op">}</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t100" class="pln">
-        <span class="n"><a href="#t100">100</a></span
+      <p id="t108" class="pln">
+        <span class="n"><a href="#t108">108</a></span
         ><span class="t"> <span class="op">]</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t101" class="pln">
-        <span class="n"><a href="#t101">101</a></span
+      <p id="t109" class="pln">
+        <span class="n"><a href="#t109">109</a></span
         ><span class="t">
           <span class="key">else</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t102" class="mis show_mis">
-        <span class="n"><a href="#t102">102</a></span
+      <p id="t110" class="mis show_mis">
+        <span class="n"><a href="#t110">110</a></span
         ><span class="t">
           <span class="nam">binary_attachments</span> <span class="op">=</span>
           <span class="key">None</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t103" class="pln">
-        <span class="n"><a href="#t103">103</a></span
+      <p id="t111" class="pln">
+        <span class="n"><a href="#t111">111</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t104" class="mis show_mis">
-        <span class="n"><a href="#t104">104</a></span
+      <p id="t112" class="mis show_mis">
+        <span class="n"><a href="#t112">112</a></span
         ><span class="t">
           <span class="nam">ses</span><span class="op">.</span
           ><span class="nam">send_message</span
           ><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t105" class="pln">
-        <span class="n"><a href="#t105">105</a></span
+      <p id="t113" class="pln">
+        <span class="n"><a href="#t113">113</a></span
         ><span class="t">
           <span class="nam">sender</span><span class="op">=</span
           ><span class="nam">settings</span><span class="op">.</span
@@ -887,16 +933,16 @@
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t106" class="pln">
-        <span class="n"><a href="#t106">106</a></span
+      <p id="t114" class="pln">
+        <span class="n"><a href="#t114">114</a></span
         ><span class="t">
           <span class="nam">to</span><span class="op">=</span
           ><span class="nam">self</span><span class="op">.</span
           ><span class="nam">to</span><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t107" class="pln">
-        <span class="n"><a href="#t107">107</a></span
+      <p id="t115" class="pln">
+        <span class="n"><a href="#t115">115</a></span
         ><span class="t">
           <span class="nam">subject</span><span class="op">=</span
           ><span class="nam">self</span><span class="op">.</span
@@ -905,16 +951,16 @@
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t108" class="pln">
-        <span class="n"><a href="#t108">108</a></span
+      <p id="t116" class="pln">
+        <span class="n"><a href="#t116">116</a></span
         ><span class="t">
           <span class="nam">bcc</span><span class="op">=</span
           ><span class="nam">self</span><span class="op">.</span
           ><span class="nam">bcc</span><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t109" class="pln">
-        <span class="n"><a href="#t109">109</a></span
+      <p id="t117" class="pln">
+        <span class="n"><a href="#t117">117</a></span
         ><span class="t">
           <span class="nam">text</span><span class="op">=</span
           ><span class="nam">self</span><span class="op">.</span
@@ -922,8 +968,8 @@
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t110" class="pln">
-        <span class="n"><a href="#t110">110</a></span
+      <p id="t118" class="pln">
+        <span class="n"><a href="#t118">118</a></span
         ><span class="t">
           <span class="nam">html</span><span class="op">=</span
           ><span class="nam">self</span><span class="op">.</span
@@ -931,8 +977,8 @@
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t111" class="pln">
-        <span class="n"><a href="#t111">111</a></span
+      <p id="t119" class="pln">
+        <span class="n"><a href="#t119">119</a></span
         ><span class="t">
           <span class="nam">attachments</span><span class="op">=</span
           ><span class="op">[</span><span class="nam">os</span
@@ -944,41 +990,41 @@
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t112" class="pln">
-        <span class="n"><a href="#t112">112</a></span
+      <p id="t120" class="pln">
+        <span class="n"><a href="#t120">120</a></span
         ><span class="t">
           <span class="nam">binary_attachments</span><span class="op">=</span
           ><span class="nam">binary_attachments</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t113" class="pln">
-        <span class="n"><a href="#t113">113</a></span
+      <p id="t121" class="pln">
+        <span class="n"><a href="#t121">121</a></span
         ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t114" class="pln">
-        <span class="n"><a href="#t114">114</a></span
+      <p id="t122" class="pln">
+        <span class="n"><a href="#t122">122</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t115" class="run">
-        <span class="n"><a href="#t115">115</a></span
+      <p id="t123" class="run">
+        <span class="n"><a href="#t123">123</a></span
         ><span class="t">
           <span class="key">def</span>
-          <span class="nam">add_email_report_history</span
+          <span class="nam">_add_email_report_history</span
           ><span class="op">(</span><span class="nam">self</span
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t116" class="mis show_mis">
-        <span class="n"><a href="#t116">116</a></span
+      <p id="t124" class="mis show_mis">
+        <span class="n"><a href="#t124">124</a></span
         ><span class="t">
           <span class="nam">data</span> <span class="op">=</span>
           <span class="op">{</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t117" class="pln">
-        <span class="n"><a href="#t117">117</a></span
+      <p id="t125" class="pln">
+        <span class="n"><a href="#t125">125</a></span
         ><span class="t">
           <span class="str">"report_type"</span><span class="op">:</span>
           <span class="nam">self</span><span class="op">.</span
@@ -987,8 +1033,8 @@
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t118" class="pln">
-        <span class="n"><a href="#t118">118</a></span
+      <p id="t126" class="pln">
+        <span class="n"><a href="#t126">126</a></span
         ><span class="t">
           <span class="str">"sent"</span><span class="op">:</span>
           <span class="nam">datetime</span><span class="op">.</span
@@ -996,8 +1042,8 @@
           ><span class="op">)</span><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t119" class="pln">
-        <span class="n"><a href="#t119">119</a></span
+      <p id="t127" class="pln">
+        <span class="n"><a href="#t127">127</a></span
         ><span class="t">
           <span class="str">"email_to"</span><span class="op">:</span>
           <span class="nam">self</span><span class="op">.</span
@@ -1009,8 +1055,8 @@
           ><span class="op">)</span><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t120" class="pln">
-        <span class="n"><a href="#t120">120</a></span
+      <p id="t128" class="pln">
+        <span class="n"><a href="#t128">128</a></span
         ><span class="t">
           <span class="str">"email_from"</span><span class="op">:</span>
           <span class="nam">settings</span><span class="op">.</span
@@ -1018,8 +1064,8 @@
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t121" class="pln">
-        <span class="n"><a href="#t121">121</a></span
+      <p id="t129" class="pln">
+        <span class="n"><a href="#t129">129</a></span
         ><span class="t">
           <span class="str">"bcc"</span><span class="op">:</span>
           <span class="nam">self</span><span class="op">.</span
@@ -1029,64 +1075,9 @@
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t122" class="pln">
-        <span class="n"><a href="#t122">122</a></span
-        ><span class="t"> <span class="op">}</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t123" class="pln">
-        <span class="n"><a href="#t123">123</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t124" class="mis show_mis">
-        <span class="n"><a href="#t124">124</a></span
-        ><span class="t">
-          <span class="nam">logging</span><span class="op">.</span
-          ><span class="nam">info</span><span class="op">(</span
-          ><span class="nam">data</span><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t125" class="pln">
-        <span class="n"><a href="#t125">125</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t126" class="mis show_mis">
-        <span class="n"><a href="#t126">126</a></span
-        ><span class="t">
-          <span class="nam">resp</span> <span class="op">=</span>
-          <span class="nam">subscription_service</span><span class="op">.</span
-          ><span class="nam">push_nested</span
-          ><span class="op">(</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t127" class="pln">
-        <span class="n"><a href="#t127">127</a></span
-        ><span class="t">
-          <span class="nam">uuid</span><span class="op">=</span
-          ><span class="nam">self</span><span class="op">.</span
-          ><span class="nam">subscription</span><span class="op">[</span
-          ><span class="str">"subscription_uuid"</span><span class="op">]</span
-          ><span class="op">,</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t128" class="pln">
-        <span class="n"><a href="#t128">128</a></span
-        ><span class="t">
-          <span class="nam">field</span><span class="op">=</span
-          ><span class="str">"email_report_history"</span
-          ><span class="op">,</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t129" class="pln">
-        <span class="n"><a href="#t129">129</a></span
-        ><span class="t">
-          <span class="nam">data</span><span class="op">=</span
-          ><span class="nam">data</span><span class="op">,</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
       <p id="t130" class="pln">
         <span class="n"><a href="#t130">130</a></span
-        ><span class="t"> <span class="op">)</span>&nbsp;</span
+        ><span class="t"> <span class="op">}</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t131" class="pln">
@@ -1096,36 +1087,91 @@
       <p id="t132" class="mis show_mis">
         <span class="n"><a href="#t132">132</a></span
         ><span class="t">
-          <span class="key">return</span>
-          <span class="nam">resp</span>&nbsp;</span
+          <span class="nam">logging</span><span class="op">.</span
+          ><span class="nam">info</span><span class="op">(</span
+          ><span class="nam">data</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t133" class="pln">
         <span class="n"><a href="#t133">133</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t134" class="run">
+      <p id="t134" class="mis show_mis">
         <span class="n"><a href="#t134">134</a></span
         ><span class="t">
-          <span class="key">def</span> <span class="nam">set_context</span
+          <span class="nam">resp</span> <span class="op">=</span>
+          <span class="nam">subscription_service</span><span class="op">.</span
+          ><span class="nam">push_nested</span
+          ><span class="op">(</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t135" class="pln">
+        <span class="n"><a href="#t135">135</a></span
+        ><span class="t">
+          <span class="nam">uuid</span><span class="op">=</span
+          ><span class="nam">self</span><span class="op">.</span
+          ><span class="nam">subscription</span><span class="op">[</span
+          ><span class="str">"subscription_uuid"</span><span class="op">]</span
+          ><span class="op">,</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t136" class="pln">
+        <span class="n"><a href="#t136">136</a></span
+        ><span class="t">
+          <span class="nam">field</span><span class="op">=</span
+          ><span class="str">"email_report_history"</span
+          ><span class="op">,</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t137" class="pln">
+        <span class="n"><a href="#t137">137</a></span
+        ><span class="t">
+          <span class="nam">data</span><span class="op">=</span
+          ><span class="nam">data</span><span class="op">,</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t138" class="pln">
+        <span class="n"><a href="#t138">138</a></span
+        ><span class="t"> <span class="op">)</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t139" class="pln">
+        <span class="n"><a href="#t139">139</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t140" class="mis show_mis">
+        <span class="n"><a href="#t140">140</a></span
+        ><span class="t">
+          <span class="key">return</span>
+          <span class="nam">resp</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t141" class="pln">
+        <span class="n"><a href="#t141">141</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t142" class="run">
+        <span class="n"><a href="#t142">142</a></span
+        ><span class="t">
+          <span class="key">def</span> <span class="nam">_set_context</span
           ><span class="op">(</span><span class="nam">self</span
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t135" class="run">
-        <span class="n"><a href="#t135">135</a></span
+      <p id="t143" class="run">
+        <span class="n"><a href="#t143">143</a></span
         ><span class="t">
           <span class="nam">campaign_manager</span> <span class="op">=</span>
           <span class="nam">CampaignManager</span><span class="op">(</span
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t136" class="pln">
-        <span class="n"><a href="#t136">136</a></span
+      <p id="t144" class="pln">
+        <span class="n"><a href="#t144">144</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t137" class="run">
-        <span class="n"><a href="#t137">137</a></span
+      <p id="t145" class="run">
+        <span class="n"><a href="#t145">145</a></span
         ><span class="t">
           <span class="nam">first_name</span> <span class="op">=</span>
           <span class="nam">self</span><span class="op">.</span
@@ -1139,8 +1185,8 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t138" class="run">
-        <span class="n"><a href="#t138">138</a></span
+      <p id="t146" class="run">
+        <span class="n"><a href="#t146">146</a></span
         ><span class="t">
           <span class="nam">last_name</span> <span class="op">=</span>
           <span class="nam">self</span><span class="op">.</span
@@ -1154,10 +1200,9 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t139" class="run">
-        <span class="n"><a href="#t139">139</a></span
+      <p id="t147" class="run">
+        <span class="n"><a href="#t147">147</a></span
         ><span class="t">
-          <span class="nam">current_cycle</span> <span class="op">=</span>
           <span class="nam">current_cycle</span> <span class="op">=</span>
           <span class="nam">self</span><span class="op">.</span
           ><span class="nam">subscription</span><span class="op">.</span
@@ -1167,8 +1212,8 @@
           ><span class="num">1</span><span class="op">]</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t140" class="run">
-        <span class="n"><a href="#t140">140</a></span
+      <p id="t148" class="run">
+        <span class="n"><a href="#t148">148</a></span
         ><span class="t">
           <span class="nam">cycle_uuid</span> <span class="op">=</span>
           <span class="nam">current_cycle</span><span class="op">.</span
@@ -1177,24 +1222,24 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t141" class="pln">
-        <span class="n"><a href="#t141">141</a></span
+      <p id="t149" class="pln">
+        <span class="n"><a href="#t149">149</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t142" class="run">
-        <span class="n"><a href="#t142">142</a></span
+      <p id="t150" class="run">
+        <span class="n"><a href="#t150">150</a></span
         ><span class="t">
           <span class="nam">dhs_contact</span> <span class="op">=</span>
           <span class="nam">self</span><span class="op">.</span
           ><span class="nam">dhs_contact</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t143" class="pln">
-        <span class="n"><a href="#t143">143</a></span
+      <p id="t151" class="pln">
+        <span class="n"><a href="#t151">151</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t144" class="pln">
-        <span class="n"><a href="#t144">144</a></span
+      <p id="t152" class="pln">
+        <span class="n"><a href="#t152">152</a></span
         ><span class="t">
           <span class="com"
             ># Putting .split on the start and end date because sometimes it
@@ -1202,8 +1247,8 @@
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t145" class="run">
-        <span class="n"><a href="#t145">145</a></span
+      <p id="t153" class="run">
+        <span class="n"><a href="#t153">153</a></span
         ><span class="t">
           <span class="key">if</span> <span class="key">not</span>
           <span class="nam">isinstance</span><span class="op">(</span
@@ -1215,8 +1260,8 @@
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t146" class="mis show_mis">
-        <span class="n"><a href="#t146">146</a></span
+      <p id="t154" class="mis show_mis">
+        <span class="n"><a href="#t154">154</a></span
         ><span class="t">
           <span class="nam">start_date</span> <span class="op">=</span>
           <span class="nam">datetime</span><span class="op">.</span
@@ -1224,8 +1269,8 @@
           ><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t147" class="pln">
-        <span class="n"><a href="#t147">147</a></span
+      <p id="t155" class="pln">
+        <span class="n"><a href="#t155">155</a></span
         ><span class="t">
           <span class="nam">self</span><span class="op">.</span
           ><span class="nam">subscription</span><span class="op">.</span
@@ -1239,8 +1284,8 @@
           <span class="str">"%Y-%m-%dT%H:%M:%S"</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t148" class="pln">
-        <span class="n"><a href="#t148">148</a></span
+      <p id="t156" class="pln">
+        <span class="n"><a href="#t156">156</a></span
         ><span class="t">
           <span class="op">)</span><span class="op">.</span
           ><span class="nam">strftime</span><span class="op">(</span
@@ -1248,14 +1293,14 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t149" class="pln">
-        <span class="n"><a href="#t149">149</a></span
+      <p id="t157" class="pln">
+        <span class="n"><a href="#t157">157</a></span
         ><span class="t">
           <span class="key">else</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t150" class="run">
-        <span class="n"><a href="#t150">150</a></span
+      <p id="t158" class="run">
+        <span class="n"><a href="#t158">158</a></span
         ><span class="t">
           <span class="nam">start_date</span> <span class="op">=</span>
           <span class="nam">self</span><span class="op">.</span
@@ -1265,12 +1310,12 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t151" class="pln">
-        <span class="n"><a href="#t151">151</a></span
+      <p id="t159" class="pln">
+        <span class="n"><a href="#t159">159</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t152" class="run">
-        <span class="n"><a href="#t152">152</a></span
+      <p id="t160" class="run">
+        <span class="n"><a href="#t160">160</a></span
         ><span class="t">
           <span class="key">if</span> <span class="nam">self</span
           ><span class="op">.</span><span class="nam">notification</span
@@ -1280,8 +1325,8 @@
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t153" class="run">
-        <span class="n"><a href="#t153">153</a></span
+      <p id="t161" class="mis show_mis">
+        <span class="n"><a href="#t161">161</a></span
         ><span class="t">
           <span class="nam">end_date</span> <span class="op">=</span>
           <span class="nam">datetime</span><span class="op">.</span
@@ -1292,14 +1337,14 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t154" class="pln">
-        <span class="n"><a href="#t154">154</a></span
+      <p id="t162" class="pln">
+        <span class="n"><a href="#t162">162</a></span
         ><span class="t">
           <span class="key">else</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t155" class="run">
-        <span class="n"><a href="#t155">155</a></span
+      <p id="t163" class="run">
+        <span class="n"><a href="#t163">163</a></span
         ><span class="t">
           <span class="nam">end_date</span> <span class="op">=</span>
           <span class="nam">self</span><span class="op">.</span
@@ -1309,20 +1354,20 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t156" class="pln">
-        <span class="n"><a href="#t156">156</a></span
+      <p id="t164" class="pln">
+        <span class="n"><a href="#t164">164</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t157" class="run">
-        <span class="n"><a href="#t157">157</a></span
+      <p id="t165" class="run">
+        <span class="n"><a href="#t165">165</a></span
         ><span class="t">
           <span class="key">if</span> <span class="nam">end_date</span>
           <span class="key">is</span> <span class="key">not</span>
           <span class="key">None</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t158" class="run">
-        <span class="n"><a href="#t158">158</a></span
+      <p id="t166" class="mis show_mis">
+        <span class="n"><a href="#t166">166</a></span
         ><span class="t">
           <span class="key">if</span> <span class="key">not</span>
           <span class="nam">isinstance</span><span class="op">(</span
@@ -1331,8 +1376,8 @@
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t159" class="run">
-        <span class="n"><a href="#t159">159</a></span
+      <p id="t167" class="mis show_mis">
+        <span class="n"><a href="#t167">167</a></span
         ><span class="t">
           <span class="nam">end_date</span> <span class="op">=</span>
           <span class="nam">datetime</span><span class="op">.</span
@@ -1340,8 +1385,8 @@
           ><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t160" class="pln">
-        <span class="n"><a href="#t160">160</a></span
+      <p id="t168" class="pln">
+        <span class="n"><a href="#t168">168</a></span
         ><span class="t">
           <span class="nam">end_date</span><span class="op">.</span
           ><span class="nam">split</span><span class="op">(</span
@@ -1351,17 +1396,51 @@
           <span class="str">"%Y-%m-%dT%H:%M:%S"</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t161" class="pln">
-        <span class="n"><a href="#t161">161</a></span
+      <p id="t169" class="pln">
+        <span class="n"><a href="#t169">169</a></span
         ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t162" class="pln">
-        <span class="n"><a href="#t162">162</a></span
+      <p id="t170" class="pln">
+        <span class="n"><a href="#t170">170</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t163" class="run">
-        <span class="n"><a href="#t163">163</a></span
+      <p id="t171" class="pln">
+        <span class="n"><a href="#t171">171</a></span
+        ><span class="t">
+          <span class="com"
+            ># Required to convert list of UUID's to strings for DB query</span
+          >&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t172" class="run">
+        <span class="n"><a href="#t172">172</a></span
+        ><span class="t">
+          <span class="nam">uuid_string_list</span> <span class="op">=</span>
+          <span class="nam">list</span><span class="op">(</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t173" class="pln">
+        <span class="n"><a href="#t173">173</a></span
+        ><span class="t">
+          <span class="nam">map</span><span class="op">(</span
+          ><span class="nam">str</span><span class="op">,</span>
+          <span class="nam">self</span><span class="op">.</span
+          ><span class="nam">subscription</span><span class="op">.</span
+          ><span class="nam">get</span><span class="op">(</span
+          ><span class="str">"templates_selected_uuid_list"</span
+          ><span class="op">,</span> <span class="op">[</span
+          ><span class="op">]</span><span class="op">)</span
+          ><span class="op">)</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t174" class="pln">
+        <span class="n"><a href="#t174">174</a></span
+        ><span class="t"> <span class="op">)</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t175" class="run">
+        <span class="n"><a href="#t175">175</a></span
         ><span class="t">
           <span class="nam">templates</span> <span class="op">=</span>
           <span class="nam">template_service</span><span class="op">.</span
@@ -1369,59 +1448,37 @@
           ><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t164" class="pln">
-        <span class="n"><a href="#t164">164</a></span
-        ><span class="t"> <span class="op">{</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t165" class="pln">
-        <span class="n"><a href="#t165">165</a></span
+      <p id="t176" class="pln">
+        <span class="n"><a href="#t176">176</a></span
         ><span class="t">
-          <span class="str">"template_uuid"</span><span class="op">:</span>
-          <span class="op">{</span>&nbsp;</span
+          <span class="nam">parameters</span><span class="op">=</span
+          ><span class="op">{</span><span class="str">"template_uuid"</span
+          ><span class="op">:</span> <span class="op">{</span
+          ><span class="str">"$in"</span><span class="op">:</span>
+          <span class="nam">uuid_string_list</span><span class="op">}</span
+          ><span class="op">}</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t166" class="pln">
-        <span class="n"><a href="#t166">166</a></span
-        ><span class="t">
-          <span class="str">"$in"</span><span class="op">:</span>
-          <span class="nam">self</span><span class="op">.</span
-          ><span class="nam">subscription</span><span class="op">.</span
-          ><span class="nam">get</span><span class="op">(</span
-          ><span class="str">"templates_selected_uuid_list"</span
-          ><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t167" class="pln">
-        <span class="n"><a href="#t167">167</a></span
-        ><span class="t"> <span class="op">}</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t168" class="pln">
-        <span class="n"><a href="#t168">168</a></span
-        ><span class="t"> <span class="op">}</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t169" class="pln">
-        <span class="n"><a href="#t169">169</a></span
+      <p id="t177" class="pln">
+        <span class="n"><a href="#t177">177</a></span
         ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t170" class="run">
-        <span class="n"><a href="#t170">170</a></span
+      <p id="t178" class="run">
+        <span class="n"><a href="#t178">178</a></span
         ><span class="t">
           <span class="nam">phishing_email</span> <span class="op">=</span>
           <span class="nam">list</span><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t171" class="pln">
-        <span class="n"><a href="#t171">171</a></span
+      <p id="t179" class="pln">
+        <span class="n"><a href="#t179">179</a></span
         ><span class="t">
           <span class="nam">filter</span><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t172" class="pln">
-        <span class="n"><a href="#t172">172</a></span
+      <p id="t180" class="pln">
+        <span class="n"><a href="#t180">180</a></span
         ><span class="t">
           <span class="key">lambda</span> <span class="nam">x</span
           ><span class="op">:</span> <span class="nam">x</span
@@ -1434,21 +1491,21 @@
           ><span class="op">)</span><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t173" class="pln">
-        <span class="n"><a href="#t173">173</a></span
+      <p id="t181" class="pln">
+        <span class="n"><a href="#t181">181</a></span
         ><span class="t">
           <span class="nam">campaign_manager</span><span class="op">.</span
           ><span class="nam">get_sending_profile</span><span class="op">(</span
           ><span class="op">)</span><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t174" class="pln">
-        <span class="n"><a href="#t174">174</a></span
+      <p id="t182" class="pln">
+        <span class="n"><a href="#t182">182</a></span
         ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t175" class="pln">
-        <span class="n"><a href="#t175">175</a></span
+      <p id="t183" class="pln">
+        <span class="n"><a href="#t183">183</a></span
         ><span class="t">
           <span class="op">)</span><span class="op">[</span
           ><span class="num">0</span><span class="op">]</span
@@ -1456,23 +1513,23 @@
           ><span class="nam">from_address</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t176" class="pln">
-        <span class="n"><a href="#t176">176</a></span
+      <p id="t184" class="pln">
+        <span class="n"><a href="#t184">184</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t177" class="run">
-        <span class="n"><a href="#t177">177</a></span
+      <p id="t185" class="run">
+        <span class="n"><a href="#t185">185</a></span
         ><span class="t">
           <span class="nam">campaign_smtps</span> <span class="op">=</span>
           <span class="op">[</span><span class="op">]</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t178" class="pln">
-        <span class="n"><a href="#t178">178</a></span
+      <p id="t186" class="pln">
+        <span class="n"><a href="#t186">186</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t179" class="run">
-        <span class="n"><a href="#t179">179</a></span
+      <p id="t187" class="run">
+        <span class="n"><a href="#t187">187</a></span
         ><span class="t">
           <span class="key">for</span> <span class="nam">campaign</span>
           <span class="key">in</span> <span class="nam">self</span
@@ -1482,8 +1539,8 @@
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t180" class="mis show_mis">
-        <span class="n"><a href="#t180">180</a></span
+      <p id="t188" class="mis show_mis">
+        <span class="n"><a href="#t188">188</a></span
         ><span class="t">
           <span class="nam">campaign_smtps</span><span class="op">.</span
           ><span class="nam">append</span><span class="op">(</span
@@ -1492,12 +1549,12 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t181" class="pln">
-        <span class="n"><a href="#t181">181</a></span
+      <p id="t189" class="pln">
+        <span class="n"><a href="#t189">189</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t182" class="run">
-        <span class="n"><a href="#t182">182</a></span
+      <p id="t190" class="run">
+        <span class="n"><a href="#t190">190</a></span
         ><span class="t">
           <span class="nam">email_count</span> <span class="op">=</span>
           <span class="nam">len</span><span class="op">(</span
@@ -1508,89 +1565,89 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t183" class="pln">
-        <span class="n"><a href="#t183">183</a></span
+      <p id="t191" class="pln">
+        <span class="n"><a href="#t191">191</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t184" class="run">
-        <span class="n"><a href="#t184">184</a></span
+      <p id="t192" class="run">
+        <span class="n"><a href="#t192">192</a></span
         ><span class="t">
           <span class="key">return</span> <span class="op">{</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t185" class="pln">
-        <span class="n"><a href="#t185">185</a></span
+      <p id="t193" class="pln">
+        <span class="n"><a href="#t193">193</a></span
         ><span class="t">
           <span class="str">"first_name"</span><span class="op">:</span>
           <span class="nam">first_name</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t186" class="pln">
-        <span class="n"><a href="#t186">186</a></span
+      <p id="t194" class="pln">
+        <span class="n"><a href="#t194">194</a></span
         ><span class="t">
           <span class="str">"last_name"</span><span class="op">:</span>
           <span class="nam">last_name</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t187" class="pln">
-        <span class="n"><a href="#t187">187</a></span
+      <p id="t195" class="pln">
+        <span class="n"><a href="#t195">195</a></span
         ><span class="t">
           <span class="str">"start_date"</span><span class="op">:</span>
           <span class="nam">start_date</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t188" class="pln">
-        <span class="n"><a href="#t188">188</a></span
+      <p id="t196" class="pln">
+        <span class="n"><a href="#t196">196</a></span
         ><span class="t">
           <span class="str">"end_date"</span><span class="op">:</span>
           <span class="nam">end_date</span><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t189" class="pln">
-        <span class="n"><a href="#t189">189</a></span
+      <p id="t197" class="pln">
+        <span class="n"><a href="#t197">197</a></span
         ><span class="t">
           <span class="str">"cycle_uuid"</span><span class="op">:</span>
           <span class="nam">cycle_uuid</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t190" class="pln">
-        <span class="n"><a href="#t190">190</a></span
+      <p id="t198" class="pln">
+        <span class="n"><a href="#t198">198</a></span
         ><span class="t">
           <span class="str">"templates"</span><span class="op">:</span>
           <span class="nam">templates</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t191" class="pln">
-        <span class="n"><a href="#t191">191</a></span
+      <p id="t199" class="pln">
+        <span class="n"><a href="#t199">199</a></span
         ><span class="t">
           <span class="str">"phishing_email"</span><span class="op">:</span>
           <span class="nam">phishing_email</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t192" class="pln">
-        <span class="n"><a href="#t192">192</a></span
+      <p id="t200" class="pln">
+        <span class="n"><a href="#t200">200</a></span
         ><span class="t">
           <span class="str">"email_count"</span><span class="op">:</span>
           <span class="nam">email_count</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t193" class="pln">
-        <span class="n"><a href="#t193">193</a></span
+      <p id="t201" class="pln">
+        <span class="n"><a href="#t201">201</a></span
         ><span class="t">
           <span class="str">"dhs_contact"</span><span class="op">:</span>
           <span class="nam">dhs_contact</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t194" class="pln">
-        <span class="n"><a href="#t194">194</a></span
+      <p id="t202" class="pln">
+        <span class="n"><a href="#t202">202</a></span
         ><span class="t">
           <span class="str">"phishing_domain"</span><span class="op">:</span>
           <span class="nam">phishing_email</span><span class="op">.</span
@@ -1598,36 +1655,39 @@
           ><span class="str">"@"</span><span class="op">)</span
           ><span class="op">[</span><span class="op">-</span
           ><span class="num">1</span><span class="op">]</span
-          ><span class="op">,</span>&nbsp;</span
+          ><span class="op">.</span><span class="nam">replace</span
+          ><span class="op">(</span><span class="str">">"</span
+          ><span class="op">,</span> <span class="str">""</span
+          ><span class="op">)</span><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t195" class="pln">
-        <span class="n"><a href="#t195">195</a></span
+      <p id="t203" class="pln">
+        <span class="n"><a href="#t203">203</a></span
         ><span class="t">
           <span class="str">"x_gophish_contact"</span><span class="op">:</span>
           <span class="nam">DEFAULT_X_GOPHISH_CONTACT</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t196" class="pln">
-        <span class="n"><a href="#t196">196</a></span
+      <p id="t204" class="pln">
+        <span class="n"><a href="#t204">204</a></span
         ><span class="t"> <span class="op">}</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t197" class="pln">
-        <span class="n"><a href="#t197">197</a></span
+      <p id="t205" class="pln">
+        <span class="n"><a href="#t205">205</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t198" class="run">
-        <span class="n"><a href="#t198">198</a></span
+      <p id="t206" class="run">
+        <span class="n"><a href="#t206">206</a></span
         ><span class="t">
-          <span class="key">def</span> <span class="nam">set_to</span
+          <span class="key">def</span> <span class="nam">_set_to</span
           ><span class="op">(</span><span class="nam">self</span
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t199" class="run">
-        <span class="n"><a href="#t199">199</a></span
+      <p id="t207" class="run">
+        <span class="n"><a href="#t207">207</a></span
         ><span class="t">
           <span class="nam">recipient</span> <span class="op">=</span>
           <span class="nam">self</span><span class="op">.</span
@@ -1639,14 +1699,14 @@
           ><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t200" class="run">
-        <span class="n"><a href="#t200">200</a></span
+      <p id="t208" class="run">
+        <span class="n"><a href="#t208">208</a></span
         ><span class="t">
           <span class="key">return</span> <span class="op">[</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t201" class="pln">
-        <span class="n"><a href="#t201">201</a></span
+      <p id="t209" class="pln">
+        <span class="n"><a href="#t209">209</a></span
         ><span class="t">
           <span class="str"
             >f"{self.context['first_name']} {self.context['last_name']}
@@ -1654,69 +1714,9 @@
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t202" class="pln">
-        <span class="n"><a href="#t202">202</a></span
-        ><span class="t"> <span class="op">]</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t203" class="pln">
-        <span class="n"><a href="#t203">203</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t204" class="run">
-        <span class="n"><a href="#t204">204</a></span
-        ><span class="t">
-          <span class="key">def</span> <span class="nam">set_bcc</span
-          ><span class="op">(</span><span class="nam">self</span
-          ><span class="op">)</span><span class="op">:</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t205" class="run">
-        <span class="n"><a href="#t205">205</a></span
-        ><span class="t">
-          <span class="nam">dhs_contact</span> <span class="op">=</span>
-          <span class="nam">self</span><span class="op">.</span
-          ><span class="nam">dhs_contact</span><span class="op">.</span
-          ><span class="nam">get</span><span class="op">(</span
-          ><span class="str">"email"</span><span class="op">)</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t206" class="pln">
-        <span class="n"><a href="#t206">206</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t207" class="run">
-        <span class="n"><a href="#t207">207</a></span
-        ><span class="t">
-          <span class="nam">bcc</span> <span class="op">=</span>
-          <span class="op">[</span
-          ><span class="str">f"DHS &lt;{dhs_contact}>"</span
-          ><span class="op">]</span> <span class="key">if</span>
-          <span class="nam">dhs_contact</span> <span class="key">else</span>
-          <span class="op">[</span><span class="op">]</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t208" class="pln">
-        <span class="n"><a href="#t208">208</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
-      <p id="t209" class="run">
-        <span class="n"><a href="#t209">209</a></span
-        ><span class="t">
-          <span class="key">if</span> <span class="nam">settings</span
-          ><span class="op">.</span><span class="nam">DEBUG</span>
-          <span class="op">==</span> <span class="num">0</span
-          ><span class="op">:</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t210" class="mis show_mis">
+      <p id="t210" class="pln">
         <span class="n"><a href="#t210">210</a></span
-        ><span class="t">
-          <span class="nam">bcc</span><span class="op">.</span
-          ><span class="nam">extend</span><span class="op">(</span
-          ><span class="nam">settings</span><span class="op">.</span
-          ><span class="nam">EXTRA_BCC_EMAILS</span
-          ><span class="op">)</span>&nbsp;</span
+        ><span class="t"> <span class="op">]</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t211" class="pln">
@@ -1726,250 +1726,310 @@
       <p id="t212" class="run">
         <span class="n"><a href="#t212">212</a></span
         ><span class="t">
+          <span class="key">def</span> <span class="nam">_set_bcc</span
+          ><span class="op">(</span><span class="nam">self</span
+          ><span class="op">)</span><span class="op">:</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t213" class="run">
+        <span class="n"><a href="#t213">213</a></span
+        ><span class="t">
+          <span class="nam">dhs_contact</span> <span class="op">=</span>
+          <span class="nam">self</span><span class="op">.</span
+          ><span class="nam">dhs_contact</span><span class="op">.</span
+          ><span class="nam">get</span><span class="op">(</span
+          ><span class="str">"email"</span><span class="op">)</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t214" class="pln">
+        <span class="n"><a href="#t214">214</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t215" class="run">
+        <span class="n"><a href="#t215">215</a></span
+        ><span class="t">
+          <span class="nam">bcc</span> <span class="op">=</span>
+          <span class="op">[</span
+          ><span class="str">f"DHS &lt;{dhs_contact}>"</span
+          ><span class="op">]</span> <span class="key">if</span>
+          <span class="nam">dhs_contact</span> <span class="key">else</span>
+          <span class="op">[</span><span class="op">]</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t216" class="pln">
+        <span class="n"><a href="#t216">216</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t217" class="run">
+        <span class="n"><a href="#t217">217</a></span
+        ><span class="t">
+          <span class="key">if</span> <span class="nam">settings</span
+          ><span class="op">.</span><span class="nam">DEBUG</span>
+          <span class="op">==</span> <span class="num">0</span
+          ><span class="op">:</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t218" class="mis show_mis">
+        <span class="n"><a href="#t218">218</a></span
+        ><span class="t">
+          <span class="nam">bcc</span><span class="op">.</span
+          ><span class="nam">extend</span><span class="op">(</span
+          ><span class="nam">settings</span><span class="op">.</span
+          ><span class="nam">EXTRA_BCC_EMAILS</span
+          ><span class="op">)</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t219" class="pln">
+        <span class="n"><a href="#t219">219</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t220" class="run">
+        <span class="n"><a href="#t220">220</a></span
+        ><span class="t">
           <span class="key">return</span>
           <span class="nam">bcc</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t213" class="pln">
-        <span class="n"><a href="#t213">213</a></span
+      <p id="t221" class="pln">
+        <span class="n"><a href="#t221">221</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t214" class="run">
-        <span class="n"><a href="#t214">214</a></span
+      <p id="t222" class="run">
+        <span class="n"><a href="#t222">222</a></span
         ><span class="t">
-          <span class="key">def</span> <span class="nam">set_notification</span
+          <span class="key">def</span> <span class="nam">_set_notification</span
           ><span class="op">(</span><span class="nam">self</span
           ><span class="op">,</span> <span class="nam">message_type</span
           ><span class="op">)</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t215" class="run">
-        <span class="n"><a href="#t215">215</a></span
+      <p id="t223" class="run">
+        <span class="n"><a href="#t223">223</a></span
         ><span class="t">
           <span class="key">return</span> <span class="op">{</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t216" class="pln">
-        <span class="n"><a href="#t216">216</a></span
+      <p id="t224" class="pln">
+        <span class="n"><a href="#t224">224</a></span
         ><span class="t">
           <span class="str">"monthly_report"</span><span class="op">:</span>
           <span class="op">{</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t217" class="pln">
-        <span class="n"><a href="#t217">217</a></span
+      <p id="t225" class="pln">
+        <span class="n"><a href="#t225">225</a></span
         ><span class="t">
           <span class="str">"subject"</span><span class="op">:</span>
           <span class="str">"DHS CISA Phishing Subscription Status Report"</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t218" class="pln">
-        <span class="n"><a href="#t218">218</a></span
+      <p id="t226" class="pln">
+        <span class="n"><a href="#t226">226</a></span
         ><span class="t">
           <span class="str">"path"</span><span class="op">:</span>
           <span class="str">"monthly_report"</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t219" class="pln">
-        <span class="n"><a href="#t219">219</a></span
+      <p id="t227" class="pln">
+        <span class="n"><a href="#t227">227</a></span
         ><span class="t">
           <span class="str">"link"</span><span class="op">:</span>
           <span class="str">"monthly"</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t220" class="pln">
-        <span class="n"><a href="#t220">220</a></span
+      <p id="t228" class="pln">
+        <span class="n"><a href="#t228">228</a></span
         ><span class="t">
           <span class="str">"type"</span><span class="op">:</span>
           <span class="str">"Monthly"</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t221" class="pln">
-        <span class="n"><a href="#t221">221</a></span
+      <p id="t229" class="pln">
+        <span class="n"><a href="#t229">229</a></span
         ><span class="t">
           <span class="op">}</span><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t222" class="pln">
-        <span class="n"><a href="#t222">222</a></span
+      <p id="t230" class="pln">
+        <span class="n"><a href="#t230">230</a></span
         ><span class="t">
           <span class="str">"cycle_report"</span><span class="op">:</span>
           <span class="op">{</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t223" class="pln">
-        <span class="n"><a href="#t223">223</a></span
+      <p id="t231" class="pln">
+        <span class="n"><a href="#t231">231</a></span
         ><span class="t">
           <span class="str">"subject"</span><span class="op">:</span>
           <span class="str">"DHS CISA Phishing Subscription Cycle Report"</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t224" class="pln">
-        <span class="n"><a href="#t224">224</a></span
+      <p id="t232" class="pln">
+        <span class="n"><a href="#t232">232</a></span
         ><span class="t">
           <span class="str">"path"</span><span class="op">:</span>
           <span class="str">"cycle_report"</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t225" class="pln">
-        <span class="n"><a href="#t225">225</a></span
+      <p id="t233" class="pln">
+        <span class="n"><a href="#t233">233</a></span
         ><span class="t">
           <span class="str">"link"</span><span class="op">:</span>
           <span class="str">"cycle"</span><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t226" class="pln">
-        <span class="n"><a href="#t226">226</a></span
+      <p id="t234" class="pln">
+        <span class="n"><a href="#t234">234</a></span
         ><span class="t">
           <span class="str">"type"</span><span class="op">:</span>
           <span class="str">"Cycle"</span><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t227" class="pln">
-        <span class="n"><a href="#t227">227</a></span
+      <p id="t235" class="pln">
+        <span class="n"><a href="#t235">235</a></span
         ><span class="t">
           <span class="op">}</span><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t228" class="pln">
-        <span class="n"><a href="#t228">228</a></span
+      <p id="t236" class="pln">
+        <span class="n"><a href="#t236">236</a></span
         ><span class="t">
           <span class="str">"yearly_report"</span><span class="op">:</span>
           <span class="op">{</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t229" class="pln">
-        <span class="n"><a href="#t229">229</a></span
+      <p id="t237" class="pln">
+        <span class="n"><a href="#t237">237</a></span
         ><span class="t">
           <span class="str">"subject"</span><span class="op">:</span>
           <span class="str">"DHS CISA Phishing Subscription Yearly Report"</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t230" class="pln">
-        <span class="n"><a href="#t230">230</a></span
+      <p id="t238" class="pln">
+        <span class="n"><a href="#t238">238</a></span
         ><span class="t">
           <span class="str">"path"</span><span class="op">:</span>
           <span class="str">"yearly_report"</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t231" class="pln">
-        <span class="n"><a href="#t231">231</a></span
+      <p id="t239" class="pln">
+        <span class="n"><a href="#t239">239</a></span
         ><span class="t">
           <span class="str">"link"</span><span class="op">:</span>
           <span class="str">"yearly"</span><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t232" class="pln">
-        <span class="n"><a href="#t232">232</a></span
+      <p id="t240" class="pln">
+        <span class="n"><a href="#t240">240</a></span
         ><span class="t">
           <span class="str">"type"</span><span class="op">:</span>
           <span class="str">"Yearly"</span><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t233" class="pln">
-        <span class="n"><a href="#t233">233</a></span
+      <p id="t241" class="pln">
+        <span class="n"><a href="#t241">241</a></span
         ><span class="t">
           <span class="op">}</span><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t234" class="pln">
-        <span class="n"><a href="#t234">234</a></span
+      <p id="t242" class="pln">
+        <span class="n"><a href="#t242">242</a></span
         ><span class="t">
           <span class="str">"subscription_started"</span
           ><span class="op">:</span> <span class="op">{</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t235" class="pln">
-        <span class="n"><a href="#t235">235</a></span
+      <p id="t243" class="pln">
+        <span class="n"><a href="#t243">243</a></span
         ><span class="t">
           <span class="str">"subject"</span><span class="op">:</span>
           <span class="str">"DHS CISA Phishing Subscription Started"</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t236" class="pln">
-        <span class="n"><a href="#t236">236</a></span
+      <p id="t244" class="pln">
+        <span class="n"><a href="#t244">244</a></span
         ><span class="t">
           <span class="str">"path"</span><span class="op">:</span>
           <span class="str">"subscription_started"</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t237" class="pln">
-        <span class="n"><a href="#t237">237</a></span
+      <p id="t245" class="pln">
+        <span class="n"><a href="#t245">245</a></span
         ><span class="t">
           <span class="str">"link"</span><span class="op">:</span>
           <span class="key">None</span><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t238" class="pln">
-        <span class="n"><a href="#t238">238</a></span
+      <p id="t246" class="pln">
+        <span class="n"><a href="#t246">246</a></span
         ><span class="t">
           <span class="str">"type"</span><span class="op">:</span>
           <span class="str">"Cycle Start Notification"</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t239" class="pln">
-        <span class="n"><a href="#t239">239</a></span
+      <p id="t247" class="pln">
+        <span class="n"><a href="#t247">247</a></span
         ><span class="t">
           <span class="op">}</span><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t240" class="pln">
-        <span class="n"><a href="#t240">240</a></span
+      <p id="t248" class="pln">
+        <span class="n"><a href="#t248">248</a></span
         ><span class="t">
           <span class="str">"subscription_stopped"</span
           ><span class="op">:</span> <span class="op">{</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t241" class="pln">
-        <span class="n"><a href="#t241">241</a></span
+      <p id="t249" class="pln">
+        <span class="n"><a href="#t249">249</a></span
         ><span class="t">
           <span class="str">"subject"</span><span class="op">:</span>
           <span class="str">"DHS CISA Phishing Subscription Stopped"</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t242" class="pln">
-        <span class="n"><a href="#t242">242</a></span
+      <p id="t250" class="pln">
+        <span class="n"><a href="#t250">250</a></span
         ><span class="t">
           <span class="str">"path"</span><span class="op">:</span>
           <span class="str">"subscription_stopped"</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t243" class="pln">
-        <span class="n"><a href="#t243">243</a></span
+      <p id="t251" class="pln">
+        <span class="n"><a href="#t251">251</a></span
         ><span class="t">
           <span class="str">"link"</span><span class="op">:</span>
           <span class="key">None</span><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t244" class="pln">
-        <span class="n"><a href="#t244">244</a></span
+      <p id="t252" class="pln">
+        <span class="n"><a href="#t252">252</a></span
         ><span class="t">
           <span class="str">"type"</span><span class="op">:</span>
           <span class="str">"Cycle Complete"</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t245" class="pln">
-        <span class="n"><a href="#t245">245</a></span
+      <p id="t253" class="pln">
+        <span class="n"><a href="#t253">253</a></span
         ><span class="t">
           <span class="op">}</span><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t246" class="pln">
-        <span class="n"><a href="#t246">246</a></span
+      <p id="t254" class="pln">
+        <span class="n"><a href="#t254">254</a></span
         ><span class="t">
           <span class="op">}</span><span class="op">.</span
           ><span class="nam">get</span><span class="op">(</span
@@ -1984,7 +2044,7 @@
           <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp;
           <a class="nav" href="https://coverage.readthedocs.io"
             >coverage.py v5.3</a
-          >, created at 2020-10-28 09:16 -0600
+          >, created at 2020-11-18 12:27 -0700
         </p>
       </div>
     </div>

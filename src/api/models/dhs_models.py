@@ -1,25 +1,17 @@
+"""DHS Contact Models."""
+# cisagov Libraries
 from database.repository.models import Model
 from database.repository.types import (
-    StringType,
-    EmailType,
     BooleanType,
-    UUIDType,
     DateTimeType,
+    EmailType,
+    StringType,
+    UUIDType,
 )
 
 
 class DHSContactModel(Model):
-    """
-    This is the DHSContact Model.
-
-    This is a format to hold contact information in the subscription model.
-    first_name = StringType(required=True)
-    last_name = StringType(required=True)
-    title = StringType(required=True)
-    phone = StringType()
-    email = EmailType(required=True)
-    notes = StringType()
-    """
+    """DHSContactModel."""
 
     dhs_contact_uuid = UUIDType()
     first_name = StringType()

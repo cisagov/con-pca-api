@@ -1,3 +1,6 @@
+"""Campaign Models."""
+# cisagov Libraries
+from api.models.phishing_models import PhishingResultsModel, SubscriptionTargetModel
 from database.repository.models import Model
 from database.repository.types import (
     BooleanType,
@@ -9,15 +12,18 @@ from database.repository.types import (
     StringType,
     UUIDType,
 )
-from api.models.phishing_models import SubscriptionTargetModel, PhishingResultsModel
 
 
 class SendingHeaderModel(Model):
+    """SendingHeaderModel."""
+
     key = StringType()
     value = StringType()
 
 
 class GoPhishSmtpModel(Model):
+    """GoPhishSmtpModel."""
+
     id = IntType()
     name = StringType()
     host = StringType()
@@ -29,6 +35,8 @@ class GoPhishSmtpModel(Model):
 
 
 class GoPhishTimelineModel(Model):
+    """GoPhishTimelineModel."""
+
     email = StringType()
     time = DateTimeType()
     message = StringType()
@@ -37,6 +45,8 @@ class GoPhishTimelineModel(Model):
 
 
 class GoPhishGroupModel(Model):
+    """GoPhishGroupModel."""
+
     id = IntType()
     name = StringType()
     targets = ListType(ModelType(SubscriptionTargetModel))
@@ -44,6 +54,8 @@ class GoPhishGroupModel(Model):
 
 
 class GoPhishResultModel(Model):
+    """GoPhishResultModel."""
+
     id = StringType()
     first_name = StringType()
     last_name = StringType()
@@ -57,6 +69,8 @@ class GoPhishResultModel(Model):
 
 
 class GoPhishCampaignsModel(Model):
+    """GoPhishCampaignsModel."""
+
     campaign_uuid = UUIDType()
     campaign_id = IntType()
     subscription_uuid = UUIDType()

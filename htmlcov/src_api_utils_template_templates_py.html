@@ -26,13 +26,13 @@
           alt="Show keyboard shortcuts"
         />
         <h2 class="stats">
-          11 statements &nbsp;
+          10 statements &nbsp;
           <button
             type="button"
             class="run shortkey_r button_toggle_run"
             title="Toggle lines run"
           >
-            11 run
+            10 run
           </button>
           <button
             type="button"
@@ -77,17 +77,13 @@
       <p id="t1" class="pln">
         <span class="n"><a href="#t1">1</a></span
         ><span class="t"
-          ><span class="str">"""Tempalte Utils."""</span>&nbsp;</span
+          ><span class="str">"""Template Utils."""</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t2" class="run">
+      <p id="t2" class="pln">
         <span class="n"><a href="#t2">2</a></span
         ><span class="t"
-          ><span class="key">from</span> <span class="nam">api</span
-          ><span class="op">.</span><span class="nam">utils</span
-          ><span class="op">.</span><span class="nam">generic</span>
-          <span class="key">import</span>
-          <span class="nam">format_ztime</span>&nbsp;</span
+          ><span class="com"># cisagov Libraries</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t3" class="run">
@@ -99,24 +95,34 @@
           <span class="nam">TargetHistoryService</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t4" class="pln">
+      <p id="t4" class="run">
         <span class="n"><a href="#t4">4</a></span
+        ><span class="t"
+          ><span class="key">from</span> <span class="nam">api</span
+          ><span class="op">.</span><span class="nam">utils</span
+          ><span class="op">.</span><span class="nam">generic</span>
+          <span class="key">import</span>
+          <span class="nam">format_ztime</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t5" class="pln">
+        <span class="n"><a href="#t5">5</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t5" class="run">
-        <span class="n"><a href="#t5">5</a></span
+      <p id="t6" class="run">
+        <span class="n"><a href="#t6">6</a></span
         ><span class="t"
           ><span class="nam">target_history_service</span>
           <span class="op">=</span> <span class="nam">TargetHistoryService</span
           ><span class="op">(</span><span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t6" class="pln">
-        <span class="n"><a href="#t6">6</a></span
+      <p id="t7" class="pln">
+        <span class="n"><a href="#t7">7</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t7" class="run">
-        <span class="n"><a href="#t7">7</a></span
+      <p id="t8" class="run">
+        <span class="n"><a href="#t8">8</a></span
         ><span class="t"
           ><span class="nam">deception_level</span> <span class="op">=</span>
           <span class="op">{</span><span class="str">"high"</span
@@ -128,94 +134,95 @@
           ><span class="op">}</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t8" class="pln">
-        <span class="n"><a href="#t8">8</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
-      </p>
       <p id="t9" class="pln">
         <span class="n"><a href="#t9">9</a></span
         ><span class="t">&nbsp;</span><span class="r"></span>
       </p>
-      <p id="t10" class="run">
+      <p id="t10" class="pln">
         <span class="n"><a href="#t10">10</a></span
+        ><span class="t">&nbsp;</span><span class="r"></span>
+      </p>
+      <p id="t11" class="run">
+        <span class="n"><a href="#t11">11</a></span
         ><span class="t"
           ><span class="key">def</span>
           <span class="nam">update_target_history</span><span class="op">(</span
-          ><span class="nam">campaign_info</span><span class="op">,</span>
-          <span class="nam">seralized_data</span><span class="op">)</span
+          ><span class="nam">template_uuid</span><span class="op">,</span>
+          <span class="nam">email</span><span class="op">,</span>
+          <span class="nam">time</span><span class="op">)</span
           ><span class="op">:</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t11" class="pln">
-        <span class="n"><a href="#t11">11</a></span
-        ><span class="t">
-          <span class="str">"""Update target History.</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t12" class="pln">
         <span class="n"><a href="#t12">12</a></span
-        ><span class="t">&nbsp;</span><span class="r"></span>
+        ><span class="t">
+          <span class="str">"""Update Target History."""</span>&nbsp;</span
+        ><span class="r"></span>
       </p>
       <p id="t13" class="pln">
         <span class="n"><a href="#t13">13</a></span
-        ><span class="t"><span class="str"> Args:</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t14" class="pln">
-        <span class="n"><a href="#t14">14</a></span
-        ><span class="t"
-          ><span class="str"> campaign_info (dict): campaign_info</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t15" class="pln">
-        <span class="n"><a href="#t15">15</a></span
-        ><span class="t"
-          ><span class="str"> seralized_data (dict): seralized_data</span
-          >&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t16" class="pln">
-        <span class="n"><a href="#t16">16</a></span
-        ><span class="t"><span class="str"> """</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t17" class="pln">
-        <span class="n"><a href="#t17">17</a></span
         ><span class="t">
           <span class="com"># check if email target exists, if not, create</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t18" class="run">
-        <span class="n"><a href="#t18">18</a></span
+      <p id="t14" class="run">
+        <span class="n"><a href="#t14">14</a></span
         ><span class="t">
           <span class="nam">data</span> <span class="op">=</span>
           <span class="op">{</span>&nbsp;</span
         ><span class="r"></span>
       </p>
+      <p id="t15" class="pln">
+        <span class="n"><a href="#t15">15</a></span
+        ><span class="t">
+          <span class="str">"template_uuid"</span><span class="op">:</span>
+          <span class="nam">template_uuid</span
+          ><span class="op">,</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t16" class="pln">
+        <span class="n"><a href="#t16">16</a></span
+        ><span class="t">
+          <span class="str">"sent_timestamp"</span><span class="op">:</span>
+          <span class="nam">format_ztime</span><span class="op">(</span
+          ><span class="nam">time</span><span class="op">)</span
+          ><span class="op">,</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t17" class="pln">
+        <span class="n"><a href="#t17">17</a></span
+        ><span class="t"> <span class="op">}</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t18" class="run">
+        <span class="n"><a href="#t18">18</a></span
+        ><span class="t">
+          <span class="nam">target</span> <span class="op">=</span>
+          <span class="nam">target_history_service</span
+          ><span class="op">.</span><span class="nam">get_single</span
+          ><span class="op">(</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
       <p id="t19" class="pln">
         <span class="n"><a href="#t19">19</a></span
         ><span class="t">
-          <span class="str">"template_uuid"</span><span class="op">:</span>
-          <span class="nam">campaign_info</span><span class="op">[</span
-          ><span class="str">"template_uuid"</span><span class="op">]</span
-          ><span class="op">,</span>&nbsp;</span
+          <span class="op">{</span><span class="str">"email"</span
+          ><span class="op">:</span> <span class="nam">email</span
+          ><span class="op">}</span><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t20" class="pln">
         <span class="n"><a href="#t20">20</a></span
         ><span class="t">
-          <span class="str">"sent_timestamp"</span><span class="op">:</span>
-          <span class="nam">format_ztime</span><span class="op">(</span
-          ><span class="nam">seralized_data</span><span class="op">[</span
-          ><span class="str">"time"</span><span class="op">]</span
-          ><span class="op">)</span><span class="op">,</span>&nbsp;</span
+          <span class="nam">fields</span><span class="op">=</span
+          ><span class="op">[</span><span class="str">"target_uuid"</span
+          ><span class="op">]</span><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t21" class="pln">
         <span class="n"><a href="#t21">21</a></span
-        ><span class="t"> <span class="op">}</span>&nbsp;</span
+        ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t22" class="pln">
@@ -225,42 +232,20 @@
       <p id="t23" class="run">
         <span class="n"><a href="#t23">23</a></span
         ><span class="t">
-          <span class="key">if</span>
-          <span class="nam">target_history_service</span
-          ><span class="op">.</span><span class="nam">exists</span
-          ><span class="op">(</span><span class="op">{</span
-          ><span class="str">"email"</span><span class="op">:</span>
-          <span class="nam">seralized_data</span><span class="op">[</span
-          ><span class="str">"email"</span><span class="op">]</span
-          ><span class="op">}</span><span class="op">)</span
+          <span class="key">if</span> <span class="nam">target</span
           ><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t24" class="run">
         <span class="n"><a href="#t24">24</a></span
         ><span class="t">
-          <span class="nam">target</span> <span class="op">=</span>
-          <span class="nam">target_history_service</span
-          ><span class="op">.</span><span class="nam">get_list</span
-          ><span class="op">(</span><span class="op">{</span
-          ><span class="str">"email"</span><span class="op">:</span>
-          <span class="nam">seralized_data</span><span class="op">[</span
-          ><span class="str">"email"</span><span class="op">]</span
-          ><span class="op">}</span><span class="op">)</span
-          ><span class="op">[</span><span class="num">0</span
-          ><span class="op">]</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t25" class="run">
-        <span class="n"><a href="#t25">25</a></span
-        ><span class="t">
           <span class="nam">target_history_service</span
           ><span class="op">.</span><span class="nam">push_nested</span
           ><span class="op">(</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t26" class="pln">
-        <span class="n"><a href="#t26">26</a></span
+      <p id="t25" class="pln">
+        <span class="n"><a href="#t25">25</a></span
         ><span class="t">
           <span class="nam">uuid</span><span class="op">=</span
           ><span class="nam">target</span><span class="op">[</span
@@ -268,53 +253,57 @@
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t27" class="pln">
-        <span class="n"><a href="#t27">27</a></span
+      <p id="t26" class="pln">
+        <span class="n"><a href="#t26">26</a></span
         ><span class="t">
           <span class="nam">field</span><span class="op">=</span
           ><span class="str">"history_list"</span
           ><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t28" class="pln">
-        <span class="n"><a href="#t28">28</a></span
+      <p id="t27" class="pln">
+        <span class="n"><a href="#t27">27</a></span
         ><span class="t">
           <span class="nam">data</span><span class="op">=</span
           ><span class="nam">data</span><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
+      <p id="t28" class="pln">
+        <span class="n"><a href="#t28">28</a></span
+        ><span class="t"> <span class="op">)</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
       <p id="t29" class="pln">
         <span class="n"><a href="#t29">29</a></span
-        ><span class="t"> <span class="op">)</span>&nbsp;</span
+        ><span class="t">
+          <span class="key">else</span><span class="op">:</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t30" class="pln">
         <span class="n"><a href="#t30">30</a></span
         ><span class="t">
-          <span class="key">else</span><span class="op">:</span>&nbsp;</span
-        ><span class="r"></span>
-      </p>
-      <p id="t31" class="pln">
-        <span class="n"><a href="#t31">31</a></span
-        ><span class="t">
           <span class="com"># create new target history if not exisiting</span
           >&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t32" class="run">
-        <span class="n"><a href="#t32">32</a></span
+      <p id="t31" class="run">
+        <span class="n"><a href="#t31">31</a></span
         ><span class="t">
-          <span class="nam">target_hist</span> <span class="op">=</span>
-          <span class="op">{</span>&nbsp;</span
+          <span class="nam">target_history_service</span
+          ><span class="op">.</span><span class="nam">save</span
+          ><span class="op">(</span>&nbsp;</span
+        ><span class="r"></span>
+      </p>
+      <p id="t32" class="pln">
+        <span class="n"><a href="#t32">32</a></span
+        ><span class="t"> <span class="op">{</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t33" class="pln">
         <span class="n"><a href="#t33">33</a></span
         ><span class="t">
           <span class="str">"email"</span><span class="op">:</span>
-          <span class="nam">seralized_data</span><span class="op">[</span
-          ><span class="str">"email"</span><span class="op">]</span
-          ><span class="op">,</span>&nbsp;</span
+          <span class="nam">email</span><span class="op">,</span>&nbsp;</span
         ><span class="r"></span>
       </p>
       <p id="t34" class="pln">
@@ -330,13 +319,9 @@
         ><span class="t"> <span class="op">}</span>&nbsp;</span
         ><span class="r"></span>
       </p>
-      <p id="t36" class="run">
+      <p id="t36" class="pln">
         <span class="n"><a href="#t36">36</a></span
-        ><span class="t">
-          <span class="nam">target_history_service</span
-          ><span class="op">.</span><span class="nam">save</span
-          ><span class="op">(</span><span class="nam">target_hist</span
-          ><span class="op">)</span>&nbsp;</span
+        ><span class="t"> <span class="op">)</span>&nbsp;</span
         ><span class="r"></span>
       </p>
     </div>
@@ -346,7 +331,7 @@
           <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp;
           <a class="nav" href="https://coverage.readthedocs.io"
             >coverage.py v5.3</a
-          >, created at 2020-10-28 09:16 -0600
+          >, created at 2020-11-18 12:27 -0700
         </p>
       </div>
     </div>

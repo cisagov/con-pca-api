@@ -1,26 +1,37 @@
+"""Authentication Validator."""
 # Based on https://github.com/labd/django-cognito-jwt under MIT license
+# Standard Python Libraries
 import json
 
-import jwt
-import requests
-from config import settings
+# Third-Party Libraries
 from django.core.cache import cache
 from django.utils.functional import cached_property
+import jwt
 from jwt.algorithms import RSAAlgorithm
+import requests
+
+# cisagov Libraries
+from config import settings
 
 
 class TokenError(Exception):
+    """TokenError."""
+
     pass
 
 
 class TokenValidator:
+    """TokenValidator."""
+
     def __init__(self, aws_region, aws_user_pool, audience):
+        """Create TokenValidator."""
         self.aws_region = aws_region
         self.aws_user_pool = aws_user_pool
         self.audience = audience
 
     @cached_property
     def pool_url(self):
+        """Get User Pool Url."""
         return "https://cognito-idp.{}.amazonaws.com/{}".format(
             self.aws_region,
             self.aws_user_pool,
@@ -54,6 +65,7 @@ class TokenValidator:
             return RSAAlgorithm.from_jwk(jwk_data)
 
     def validate(self, token):
+        """Validate Token."""
         public_key = self._get_public_key(token)
         if not public_key:
             raise TokenError("No key found for this token")

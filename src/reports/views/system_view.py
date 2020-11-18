@@ -1,16 +1,18 @@
-from api.manager import CampaignManager
-from api.services import CustomerService, SubscriptionService, CampaignService
-
+"""System Reports View."""
+# Third-Party Libraries
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+# cisagov Libraries
+from api.manager import CampaignManager
+from api.services import CampaignService, CustomerService, SubscriptionService
 from reports.utils import (
-    generate_campaign_statistics,
-    consolidate_campaign_group_stats,
-    format_timedelta,
     append_timeline_moment,
     calc_ratios,
+    consolidate_campaign_group_stats,
+    format_timedelta,
+    generate_campaign_statistics,
     get_gov_group_stats,
     get_unique_moments,
 )
@@ -22,11 +24,10 @@ campaign_service = CampaignService()
 
 
 class SystemReportsView(APIView):
-    def get(self, request, **kwargs):
-        """
-        Generate the cycle report based off of the provided start date
-        """
+    """SystemReportsView."""
 
+    def get(self, request, **kwargs):
+        """Get."""
         sub_parameters = {"archived": {"$in": [False, None]}}
         subscriptions = subscription_service.get_list(sub_parameters)
 
@@ -97,12 +98,6 @@ class SystemReportsView(APIView):
         return Response(context, status=status.HTTP_202_ACCEPTED)
 
     def _get_timeline_list(self, subscriptions):
-        """Get_timeline_list.
-        Args:
-            subscriptions (subscription): subscriptions object
-        Returns:
-            dict: returns dict holding timeline states and list
-        """
         cycles_started = 0
         monthly_reports_sent = 0
         cycle_reports_sent = 0
@@ -136,10 +131,6 @@ class SystemReportsView(APIView):
         }
 
     def _get_customer_type_count(self):
-        """Customer_type_count.
-        Returns:
-            dict: dict created with customer stats
-        """
         customers = customer_service.get_list()
         federal_customers = 0
         state_customers = 0
@@ -170,8 +161,10 @@ class SystemReportsView(APIView):
 
 
 class SubsriptionReportsListView(APIView):
-    def get(self, request, **kwargs):
+    """SubsriptionReportsListView."""
 
+    def get(self, request, **kwargs):
+        """Get."""
         subscription_uuid = self.kwargs["subscription_uuid"]
         subscription = subscription_service.get(subscription_uuid)
         context = subscription["email_report_history"]

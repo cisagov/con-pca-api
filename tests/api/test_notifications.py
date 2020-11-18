@@ -1,9 +1,13 @@
+"""Notifications Test."""
+# Standard Python Libraries
 from unittest import mock
 
-from api import notifications
+# Third-Party Libraries
+from faker import Faker
 from gophish.models import SMTP
 
-from faker import Faker
+# cisagov Libraries
+from api import notifications
 
 fake = Faker()
 
@@ -15,6 +19,7 @@ fake = Faker()
 )
 @mock.patch("api.services.DHSContactService.get", return_value={})
 def test_email_sender(mock_dhs_contact_get, mock_smtp, mock_template_list):
+    """Test Email Sender."""
     subscription = {
         "cycles": [{"cycle_uuid": fake.uuid4()}],
         "primary_contact": {

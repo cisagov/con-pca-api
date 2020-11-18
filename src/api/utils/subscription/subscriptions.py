@@ -2,23 +2,25 @@
 # Standard Python Libraries
 from datetime import datetime, timedelta
 from uuid import uuid4
-import dateutil.parser
 
 # Third-Party Libraries
+import dateutil.parser
+
+# cisagov Libraries
 from api.notifications import EmailSender
+from api.services import SubscriptionService
 from api.utils.subscription.static import (
     CYCLE_MINUTES,
+    DELAY_MINUTES,
     MONTHLY_MINUTES,
     YEARLY_MINUTES,
-    DELAY_MINUTES,
 )
-from api.services import SubscriptionService
 
 subscription_service = SubscriptionService()
 
 
 def create_subscription_name(customer: dict):
-    """Returns a subscription name."""
+    """Create subscription name."""
     subscriptions = subscription_service.get_list(
         {"customer_uuid": str(customer["customer_uuid"])}, fields=["name", "identifier"]
     )
@@ -31,7 +33,7 @@ def create_subscription_name(customer: dict):
 
 
 def calculate_subscription_start_end_date(start_date):
-    """Calculates the start and end date for subscription from given start date."""
+    """Calculate Subscription Start and End Date."""
     now = datetime.now()
 
     if not start_date:
@@ -54,7 +56,7 @@ def calculate_subscription_start_end_date(start_date):
 def get_subscription_cycles(
     campaigns, start_date, end_date, new_uuid, total_targets_in_cycle
 ):
-    """Returns cycle data for a subscription."""
+    """Get Initial Subscription Cycles."""
     campaigns_in_cycle = [c["campaign_id"] for c in campaigns]
     return [
         {
@@ -75,28 +77,14 @@ def get_subscription_cycles(
     ]
 
 
-def send_start_notification(subscription):
-    """Send Start Notification.
-
-    Args:
-        subscription (dict): subscription data
-        start_date (datetime): start_date of subscription
-    """
-    sender = EmailSender(subscription, "subscription_started")
-    sender.send()
-
-
 def send_stop_notification(subscription):
-    """Send Stop Notification.
-
-    Args:
-        subscription (dict): subscription data
-    """
+    """Send Stop Notification."""
     sender = EmailSender(subscription, "subscription_stopped")
     sender.send()
 
 
 def init_subscription_tasks(start_date, continuous_subscription):
+    """Create Initial Subscription Tasks."""
     message_types = {
         "start_subscription_email": start_date - timedelta(minutes=5),
         "monthly_report": start_date + timedelta(minutes=MONTHLY_MINUTES),
@@ -126,7 +114,8 @@ def init_subscription_tasks(start_date, continuous_subscription):
 
 
 def get_staggered_dates_in_range(start, intv):
-    """Get Staggered Dates
+    """
+    Get Staggered Dates.
 
     Takes range of dates and gets N dates within them, returns a list of dates.
 
@@ -146,6 +135,7 @@ def get_staggered_dates_in_range(start, intv):
 def add_remove_continuous_subscription_task(
     subscription_uuid, tasks, continuous_subscription
 ):
+    """Change Continuous Subscription Task."""
     # If continuous subscription, change stop_subscription task to start_new_cycle
     if continuous_subscription:
         stop_task = next(

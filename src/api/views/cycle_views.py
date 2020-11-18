@@ -1,4 +1,10 @@
 """Cycle View."""
+# Third-Party Libraries
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+# cisagov Libraries
 from api.serializers.cycle_serializers import CycleEmailReportedListSerializer
 from api.services import SubscriptionService
 from api.utils.subscription.cycles import (
@@ -7,9 +13,6 @@ from api.utils.subscription.cycles import (
     override_total_reported,
     update_reported_emails,
 )
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.views import APIView
 
 subscription_service = SubscriptionService()
 

@@ -1,15 +1,8 @@
-"""sector_industry Utils file for api."""
+"""SectorIndustry Utils."""
 
 
 def get_sectors_industries():
-    """
-    Get sectors and their associated industries
-
-    Returns a list of all sectors and their associated industries
-
-    Temporary Sector/Industry list hard coded on Barrys request. Can be added to
-    a database location later for permanent storage and manipulation at a later date
-    """
+    """Get sectors and their associated industries."""
     sectors = [
         {
             "name": "Chemical",

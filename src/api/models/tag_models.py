@@ -1,18 +1,11 @@
+"""Tag Models."""
+# cisagov Libraries
 from database.repository.models import Model
-from database.repository.types import (
-    DateTimeType,
-    StringType,
-    UUIDType,
-)
+from database.repository.types import DateTimeType, StringType, UUIDType
 
 
 class TagModel(Model):
-    """
-    Tag Model.
-
-    A Tag is a replaceable string in a
-    Template that is replaced by a real value.
-    """
+    """TagModel."""
 
     # created by mongodb
     tag_definition_uuid = UUIDType()

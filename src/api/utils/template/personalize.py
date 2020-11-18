@@ -4,13 +4,12 @@ from datetime import datetime
 import logging
 
 # Third-Party Libraries
-from api.utils.customer.customers import get_full_customer_address
-from api.utils.generic import (
-    current_season,
-    customer_spoof_email,
-)
-from api.utils.tag.tags import get_faker_tags
 from simpleeval import simple_eval
+
+# cisagov Libraries
+from api.utils.customer.customers import get_full_customer_address
+from api.utils.generic import current_season
+from api.utils.tag.tags import get_faker_tags
 
 logger = logging.getLogger(__name__)
 
@@ -63,7 +62,6 @@ def personalize_template(customer_info, template_data, sub_data, tag_list):
         "functions": {
             "current_season": current_season,
             "get_full_customer_address": get_full_customer_address,
-            "customer_spoof_email": customer_spoof_email,
         },
     }
     for t in get_faker_tags(with_values=True):

@@ -1,19 +1,10 @@
-"""
-Customer Serializers.
-
-These are Django Rest Framework Serializers. These are used for
-serializing data coming from the db into a request response.
-"""
+"""Customer Serializers."""
 # Third-Party Libraries
 from rest_framework import serializers
 
 
 class CustomerContactSerializer(serializers.Serializer):
-    """
-    This is the CustomerContact Serializer.
-
-    This is a formats the data coming out of the Db.
-    """
+    """CustomerContact Serializer."""
 
     first_name = serializers.CharField(max_length=250)
     last_name = serializers.CharField(max_length=250)
@@ -38,11 +29,7 @@ class CustomerContactSerializer(serializers.Serializer):
 
 
 class CustomerSerializer(serializers.Serializer):
-    """
-    This is the Customer Serializer.
-
-    This is a formats the data coming out of the Db.
-    """
+    """Customer Serializer."""
 
     # created by mongodb
     customer_uuid = serializers.UUIDField()
@@ -72,11 +59,7 @@ class CustomerSerializer(serializers.Serializer):
 
 
 class CustomerPostSerializer(serializers.Serializer):
-    """
-    This is the CustomerPost Serializer.
-
-    This is a formats the data coming in from the user for a post create.
-    """
+    """CustomerPost Serializer."""
 
     # user created fields
     name = serializers.CharField(max_length=250)
@@ -95,6 +78,8 @@ class CustomerPostSerializer(serializers.Serializer):
 
 
 class CustomerPatchSerializer(serializers.Serializer):
+    """CustomerPatch Serializer."""
+
     name = serializers.CharField(max_length=250, required=False)
     identifier = serializers.CharField(max_length=250, required=False)
     address_1 = serializers.CharField(max_length=250, required=False)
@@ -115,30 +100,26 @@ class CustomerPatchSerializer(serializers.Serializer):
 
 
 class CustomerResponseSerializer(serializers.Serializer):
+    """Customer Response Serializer."""
+
     customer_uuid = serializers.UUIDField()
 
 
 class SectorIndustry(serializers.Serializer):
+    """SectorIndustry Serializer."""
+
     name = serializers.CharField(max_length=250)
 
 
 class SectorGetSerializer(serializers.Serializer):
-    """
-    This is the SectorIndustryGet Serializer.
-
-    This is a formats the data coming out of the Db.
-    """
+    """SectorIndustryGet Serializer."""
 
     name = serializers.CharField(max_length=250)
     industries = SectorIndustry(many=True)
 
 
 class CustomerQuerySerializer(serializers.Serializer):
-    """
-    This is the Customer Query Serializer.
-
-    This is sets queries we can run on db collection.
-    """
+    """Customer Query Serializer."""
 
     # user created fields
     name = serializers.CharField(required=False)

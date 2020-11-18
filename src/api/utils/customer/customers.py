@@ -1,9 +1,8 @@
-def get_full_customer_address(customer_info):
-    """
-    Get_full_customer_address.
+"""Customer Utils."""
 
-    When passed customer info, it will return an assemebed full address.
-    """
+
+def get_full_customer_address(customer_info):
+    """Get Full Customer Address."""
     full_address = []
     full_address.append(customer_info["address_1"])
     if customer_info.get("address_2"):

@@ -1,13 +1,11 @@
+"""Phish Models."""
+# cisagov Libraries
 from database.repository import types
 from database.repository.models import Model
 
 
 class PhishingResultsModel(Model):
-    """
-    This is the Cycle Model.
-
-    This hold the results for each campaign. Filled by webhook response data
-    """
+    """PhishingResultsModel."""
 
     sent = types.IntType()
     opened = types.IntType()
@@ -17,15 +15,7 @@ class PhishingResultsModel(Model):
 
 
 class SubscriptionTargetModel(Model):
-    """
-    This is the Target Model.
-
-    This controls all data needed in saving the model. Current fields are:
-    first_name = StringType()
-    last_name = StringType()
-    position = StringType()
-    email = EmailType(required=True)
-    """
+    """SubscriptionTargetModel."""
 
     first_name = types.StringType()
     last_name = types.StringType()

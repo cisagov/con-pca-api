@@ -1,12 +1,16 @@
-from src.reports.views import monthly_view
-import pytest
+"""Reports Monthly View Tests.."""
+# Standard Python Libraries
 from unittest import mock
+
+# Third-Party Libraries
 from faker import Faker
+import pytest
 
 fake = Faker()
 
 
 def subscription():
+    """Sample Subscription."""
     return {
         "subscription_uuid": "12334",
         "active": True,
@@ -99,6 +103,7 @@ def subscription():
 
 
 def get_customer():
+    """Sample Customer."""
     return {
         "customer_uuid": fake.uuid4(),
         "name": fake.name(),
@@ -130,6 +135,7 @@ def get_customer():
 
 
 def get_dhs():
+    """Sample DHS Contact."""
     return {
         "dhs_contact_uuid": "1234",
         "first_name": fake.first_name(),
@@ -148,6 +154,7 @@ def get_dhs():
 
 
 def template():
+    """Sample Template."""
     return {
         "appearance": {"grammar": 0, "link_domain": 1, "logo_graphics": 0},
         "behavior": {"curiosity": 1, "duty_obligation": 0, "fear": 0, "greed": 0},
@@ -168,6 +175,7 @@ def template():
 
 @pytest.mark.django_db
 def test_monthly_view_get(client):
+    """Get Monthly View Test."""
     with mock.patch(
         "api.services.SubscriptionService.get",
         return_value=subscription(),
@@ -180,7 +188,7 @@ def test_monthly_view_get(client):
     ) as mock_get_dhs_list, mock.patch(
         "api.services.TemplateService.get_list",
         return_value=[template()],
-    ) as mock_get_template_list:
+    ):
         result = client.get("/reports/1234/monthly/2020-12-07T19:37:54.960Z/")
         assert mock_get_sub_single.called
         assert mock_get_customer_list.called

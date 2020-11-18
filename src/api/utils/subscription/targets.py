@@ -1,20 +1,15 @@
 """Target Util."""
+# Standard Python Libraries
 import random
+
+# cisagov Libraries
 from api.services import TargetHistoryService
 
 target_history_service = TargetHistoryService()
 
 
 def batch_targets(subscription, sub_levels: dict):
-    """Batch targets.
-
-    Args:
-        subscription (dict): subscription dict
-        sub_levels (dict): sub_levels dict
-
-    Returns:
-        dict: updated sub_levels
-    """
+    """Batch targets."""
     targets = random.sample(
         subscription["target_email_list"], len(subscription["target_email_list"])
     )
@@ -34,7 +29,7 @@ def batch_targets(subscription, sub_levels: dict):
 
 
 def get_target_available_templates(email, history, templates):
-    """Returns a list of avaiable template uuids."""
+    """Get avaiable template uuids."""
     # Check history of target
     # If no history, return all templates
     if not history:
@@ -55,14 +50,7 @@ def get_target_available_templates(email, history, templates):
 
 
 def assign_targets(sub_level):
-    """Assign Targets.
-
-    Args:
-        sub_level (dict): sub_level
-
-    Returns:
-        dict: updated sub_level
-    """
+    """Assign Targets."""
     target_emails = [target["email"] for target in sub_level["targets"]]
     target_history = target_history_service.get_list({"email": {"$in": target_emails}})
 

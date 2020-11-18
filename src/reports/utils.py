@@ -1,23 +1,23 @@
-"""
-Reporting Utils.
-These are utils for creating reports.
-"""
-from datetime import timedelta, datetime
-import dateutil
-import statistics
+"""Reporting Utils."""
+# Standard Python Libraries
+from datetime import datetime, timedelta
 import logging
-import pytz
 import math
-from django.utils import timezone
+import statistics
 
+# Third-Party Libraries
+import dateutil
+from django.utils import timezone
+import pytz
+
+# cisagov Libraries
 from api.services import (
+    CampaignService,
     CustomerService,
+    RecommendationService,
     SubscriptionService,
     TemplateService,
-    RecommendationService,
-    CampaignService,
 )
-
 from api.utils.subscription.static import DELAY_MINUTES
 
 customer_service = CustomerService()
@@ -62,9 +62,7 @@ def get_closest_cycle_within_day_range(subscription, start_date, day_range=90):
 
 
 def get_cycle_by_date_in_range(subscription, date):
-    """
-    Get the cycle that contains the given date
-    """
+    """Get the cycle that contains the given date."""
     date = _check_type(date)
     utc = pytz.UTC
     if not timezone.is_aware(date):
@@ -94,7 +92,7 @@ def find_send_timeline_moment(email, timeline_items):
     Find the send moment in timeline.
 
     Look through a statistial summary dictionary and find the tracked record corresponding
-    to the provided email
+    to the provided email.
     """
     for moment in timeline_items:
         if moment["email"] == email:
@@ -152,6 +150,7 @@ def generate_time_difference_stats(list_of_times):
 def generate_campaign_statistics(campaign_timeline_summary, reported_override_value=-1):
     """
     Generate campaign statistics based off a campaign_timeline_summary.
+
     Returns a list with stats, containing statistics for the campaign. Also returns a full aggregate of the
     times associated with each possible action (sent,opened,clicked,submitted, and reported) for statistical
     evaluation at a subscritpion level
@@ -322,6 +321,7 @@ def get_clicked_time_period_breakdown(campaign_results):
 
 
 def update_clicked_ratios(time_deltas, time_counts, clicked_ratios, clicked_count):
+    """Update clicked ratios."""
     last_key = None
     for i, key in enumerate(time_deltas, 0):
         if not last_key:
@@ -335,6 +335,7 @@ def update_clicked_ratios(time_deltas, time_counts, clicked_ratios, clicked_coun
 
 
 def date_in_range(date, min_date, max_date):
+    """Check if date is in range."""
     if date >= min_date and date <= max_date:
         return True
     return False
@@ -343,6 +344,7 @@ def date_in_range(date, min_date, max_date):
 def filter_campaign_timeline_by_date_range(
     campaign_timeline_summary, start_date, end_date
 ):
+    """Filter Campaign Timeline."""
     keys_to_remove = []
     for moment in campaign_timeline_summary:
         for key in moment:
@@ -412,15 +414,6 @@ def get_subscription_stats_for_cycle(subscription, cycle_uuid=None, start_date=N
 
     Determine the cycle by the provided start_date.
     """
-    # Get the correct cycle based on the provided start_date
-    # active_cycle = get_cycle_by_date_in_range(subscription, start_date)
-    # active_cycle = None
-    # for cycle in subscription["cycles"]:
-    #    if cycle["cycle_uuid"] == cycle_uuid:
-    #        active_cycle = cycle
-    # if not active_cycle:
-    #    active_cycle = subscription["cycles"][0]
-
     if cycle_uuid:
         active_cycle = subscription["cycles"][0]
         for cycle in subscription["cycles"]:
@@ -473,9 +466,6 @@ def get_subscription_stats_for_yearly(subscription, start_date=None, end_date=No
 
     Determine the time span using start_date and end_date
     """
-    # Get the correct cycle based on the provided start_date
-    # active_cycle = get_cycle_by_date_in_range(subscription, start_date)
-
     # Determine start date if None
     if not end_date:
         # add offset to delay to capture todays cycles
@@ -632,12 +622,14 @@ def _check_for_missing_values(cycles_in_year):
 
 
 def get_override_total_reported_for_campagin(subscription, campaign):
+    """Get override total reported."""
     for cycle in subscription["cycles"]:
         if campaign["campaign_id"] in cycle["campaigns_in_cycle"]:
             return cycle["override_total_reported"]
 
 
 def cycle_in_yearly_timespan(cycle_start, cycle_end, yearly_start, yearly_end):
+    """Check cycle in yearly timespan."""
     # Determine the cycels that lie within a yearly timespan
     # Three checks needed,
     # One: the first cycle possible
@@ -660,7 +652,7 @@ def cycle_in_yearly_timespan(cycle_start, cycle_end, yearly_start, yearly_end):
 
 
 def get_unique_moments(campaign_timeline):
-
+    """Get Unique Moments."""
     retVal = []
     sent_moments = []
     user_moments = []
@@ -697,6 +689,7 @@ def get_unique_moments(campaign_timeline):
 
 
 def set_cycle_quarters(cycles):
+    """Set Cycle Quarters."""
     cycles = sorted(cycles, key=lambda cycle: cycle["start_date"])
     working_cycle_year = cycles[0]["start_date"].year
     current_quarter = 1
@@ -711,6 +704,7 @@ def set_cycle_quarters(cycles):
 
 
 def generate_subscription_stat_details(campaign_results, over_ride_report_val):
+    """Generate Subscription Stat Details."""
     # generate campaign_group stats based off deception level and consolidation of all campaigns
     # All
     consolidated_stats = consolidate_campaign_group_stats(
@@ -795,6 +789,7 @@ def _get_consolidated_stats(consolidated_times, reported_override_value):
 
 
 def count_timeline_moments(moments):
+    """Count Timeline Moments."""
     phishing_result = {
         "sent": 0,
         "opened": 0,
@@ -817,6 +812,7 @@ def count_timeline_moments(moments):
 
 
 def update_phish_results(subscription):
+    """Update Phish Results."""
     if not subscription.get("cycles"):
         return
     for cycle in subscription["cycles"]:
@@ -825,6 +821,7 @@ def update_phish_results(subscription):
 
 
 def generate_cycle_phish_results(subscription, cycle):
+    """Generate Cycle Phish Results."""
     cycle_phish_results = {
         "sent": 0,
         "opened": 0,
@@ -875,6 +872,7 @@ def generate_cycle_phish_results(subscription, cycle):
 def generate_region_stats(subscription_list, cycle_date=None):
     """
     Generate statistics for multiple subscriptions.
+
     Can provide cycle_date to specify a cycle range to use. Given a list of subscriptions, get the phishing results from the cycle value and summarize.
     """
     region_stats = {}
@@ -973,7 +971,6 @@ def get_related_subscription_stats(subscription, start_date=None):
 
 def get_gov_group_stats():
     """Get base stats for all related subscriptions (national, sector, industry, and customer)."""
-
     customers = customer_service.get_list()
 
     fed_customer_uuids = []
@@ -1055,6 +1052,7 @@ def get_statistic_from_group(
 ):
     """
     Get a specific stat if it exists off of the subscription stats consolidation.
+
     Stats : Average, Count, Maximum, Median, Minimum
     """
     try:
@@ -1066,9 +1064,7 @@ def get_statistic_from_group(
 
 
 def get_statistic_from_region_group(region_stats, group, stat):
-    """
-    Get a specific stat if it exists off of the region stats consolidation.
-    """
+    """Get a specific stat if it exists off of the region stats consolidation."""
     if stat in ("sent", "opened", "clicked", "submitted", "reported"):
         try:
             return region_stats[group]["consolidated_values"][stat]
@@ -1081,6 +1077,7 @@ def get_statistic_from_region_group(region_stats, group, stat):
 
 
 def ratio_to_percent(ratio, round_val=2):
+    """Convert ratio to percent."""
     if ratio:
         return "{:.{prec}f}".format(ratio * 100, prec=round_val)
     else:
@@ -1088,6 +1085,7 @@ def ratio_to_percent(ratio, round_val=2):
 
 
 def ratio_to_percent_zero_default(ratio, round_val=2):
+    """Convert Ratio to Percent."""
     if ratio:
         return "{:.{prec}f}".format(ratio * 100, prec=round_val)
     else:
@@ -1095,6 +1093,7 @@ def ratio_to_percent_zero_default(ratio, round_val=2):
 
 
 def format_timedelta(timedelta):
+    """Format Timedelta."""
     ret_val = ""
     plural = ""
     if timedelta:
@@ -1116,7 +1115,7 @@ def format_timedelta(timedelta):
 
 
 def get_reports_to_click(subscription_stats):
-    """Helper function to get reports to click ratio, ensuring division by zero does not happen."""
+    """Get reports to click ratio."""
     try:
         return (
             subscription_stats["stats_all"]["reported"]["count"]
@@ -1129,6 +1128,7 @@ def get_reports_to_click(subscription_stats):
 def get_most_successful_campaigns(subscription_stats, category):
     """
     Get a list of the most succesful campaigns by a given category (submitted, opened, clicked, reported).
+
     Returns a list of the most succesful campagins. Will typically only return one but a
     list is used in case of a tie in the provided category values.
     """
@@ -1190,6 +1190,7 @@ def get_template_details(campaign_results):
 
 
 def get_stats_low_med_high_by_level(subscription_stats):
+    """Get stats by level."""
     data = []
     v = get_statistic_from_group(
         subscription_stats, "stats_low_deception", "sent", "count"
@@ -1260,6 +1261,7 @@ def _get_v_else(v):
 
 
 def get_relevant_recommendations(subscription_stats):
+    """Get recommendations."""
     recommendations_list = recommendation_service.get_list()
     if not recommendations_list:
         return {}
@@ -1287,6 +1289,7 @@ def get_relevant_recommendations(subscription_stats):
 
 
 def get_recomendations_uuid(recommendations_list, sorted_templates):
+    """Get recommendation uuids."""
     recommendations_set = set(recommendations_list[0])
     try:
         templates_set = set([template[2] for template in sorted_templates][0])
@@ -1309,6 +1312,7 @@ def get_recomendations_uuid(recommendations_list, sorted_templates):
 
 
 def deception_stats_to_graph_format(stats):
+    """Convert deception stats to graph format."""
     levels = []
     if stats["stats_high_deception"]:
         levels.append(
@@ -1326,6 +1330,7 @@ def deception_stats_to_graph_format(stats):
 
 
 def detail_deception_to_simple(decep_stats, level_name, level_num):
+    """Convert deception to simple detail."""
     return {
         "level": level_name,
         "clicked": decep_stats["clicked"]["count"],
@@ -1336,6 +1341,7 @@ def detail_deception_to_simple(decep_stats, level_name, level_num):
 
 
 def cycle_stats_to_percentage_trend_graph_data(cycle_stats):
+    """Convert stats to percentage trend."""
     clicked_series = []
     submitted_series = []
     reported_series = []
@@ -1375,6 +1381,7 @@ def cycle_stats_to_percentage_trend_graph_data(cycle_stats):
 
 
 def cycle_stats_to_click_rate_vs_report_rate(cycle_stats):
+    """Convert to click rate vs report rate."""
     low_click_rate = []
     low_report_rate = []
     medium_click_rate = []
@@ -1456,6 +1463,7 @@ def cycle_stats_to_click_rate_vs_report_rate(cycle_stats):
 
 
 def determine_trend(cycle_stats):
+    """Determine Trend."""
     trend = "OneCycle"
     previous_cycle = None
     for cycle in cycle_stats:
@@ -1473,6 +1481,7 @@ def determine_trend(cycle_stats):
 
 
 def get_yearly_start_dates(subscription, target_date):
+    """Get yearly start dates."""
     # target_cycle = get_cycle_by_date_in_range(subscription,target_date)
     # defaulting to None since this was commented out.
     target_cycle = None
