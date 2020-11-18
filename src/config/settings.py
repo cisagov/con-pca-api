@@ -35,12 +35,13 @@ CORS_ALLOWED_ORIGIN_REGEXES = os.environ.get("CORS_ALLOWED_ORIGIN_REGEXES", "").
 )
 
 # Setting for running pytests.
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": "memory:",
+if int(os.environ.get("PYTEST_SETTINGS", 0)) == 1:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": "memory:",
+        }
     }
-}
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 15000000  # 15 MB
 
