@@ -31,8 +31,10 @@ jobs:
           python-version: 3.8
       - name: Upgrade Pip
         run: python -m pip install --upgrade pip
+      - name: Install Test Requirements
+        run: pip install --requirement requirements-test.txt
       - name: Install Requirements
-        run: pip install --requirement requirements-test.txt --no-deps
+        run: pip install --requirement requirements.txt --no-deps
       - name: Copy env
         run: cp etc/env.dist .env
       - name: Pytest/Coverage
