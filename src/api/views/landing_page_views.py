@@ -104,5 +104,9 @@ class LandingPageView(APIView):
 
     def delete(self, request, landing_page_uuid):
         """Delete method."""
-        delete_response = landing_page_service.delete(landing_page_uuid)
+        landing_page = landing_page_service.get(
+            landing_page_uuid, fields=["landing_page_uuid", "gophish_template_id"]
+        )
+        delete_response = landing_page_service.delete(landing_page["landing_page_uuid"])
+        campaign_manager.delete_landing_page(landing_page["gophish_template_id"])
         return Response(delete_response, status=status.HTTP_200_OK)

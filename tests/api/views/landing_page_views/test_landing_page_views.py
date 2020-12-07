@@ -150,11 +150,18 @@ def test_landing_page_view_get(
 
 
 @mock.patch(
+    "api.services.LandingPageService.get",
+    regurn_value={"landing_page_uuid": "1234", "gophish_template_id": 7},
+)
+@mock.patch(
     "api.services.LandingPageService.delete", return_value=get_landing_page_delete()
 )
+@mock.patch("api.manager.CampaignManager.delete_landing_page")
 @pytest.mark.django_db
-def test_landing_page_list_view_post(mock_delete, client):
+def test_landing_page_list_view_post(mock_del_lp, mock_delete, mock_get, client):
     """Landing Page List View Post Test."""
     response = client.delete("/api/v1/landingpage/1234/")
+    assert mock_get.called
     assert mock_delete.called
+    assert mock_del_lp.called
     assert response.status_code == 200
