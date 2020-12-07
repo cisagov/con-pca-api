@@ -42,13 +42,17 @@ def lambda_handler(event, context):
             task["executed"] = True
             task["error"] = ""
             task["executed_date"] = datetime.now()
-            update_task(subscription_uuid, task)
-            add_new_task(
-                subscription_uuid, task["scheduled_date"], task["message_type"]
-            )
+            # If the subscription is not stopping, update and add a new task
+            if not payload.get("stopping_subscription"):
+                update_task(subscription_uuid, task)
+                add_new_task(
+                    subscription_uuid, task["scheduled_date"], task["message_type"]
+                )
             logger.info(f"Successfully executed task {task}")
         except BaseException as e:
             logger.exception(e)
+            task["executed"] = False
+            task["queued"] = False
             task["error"] = str(e)
             update_task(subscription_uuid, task)
 
