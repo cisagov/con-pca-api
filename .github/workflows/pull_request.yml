@@ -32,7 +32,7 @@ jobs:
       - name: Upgrade Pip
         run: python -m pip install --upgrade pip
       - name: Install Requirements
-        run: pip install --upgrade --requirement requirements-test.txt
+        run: pip install --requirement requirements-test.txt --no-deps
       - name: Copy env
         run: cp etc/env.dist .env
       - name: Pytest/Coverage
