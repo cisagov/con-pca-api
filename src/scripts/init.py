@@ -22,14 +22,7 @@ SENDING_PROFILES = [
         "from_address": os.environ.get("GP_SMTP_FROM"),
         "username": os.environ.get("GP_SMTP_USER"),
         "password": os.environ.get("GP_SMTP_PASS"),
-    },
-    {
-        "name": "REPORTING",
-        "host": "TEST",
-        "from_address": "TEST@TEST.TEST",
-        "username": "TESTUSER",
-        "password": "TESTPASSWORD",
-    },
+    }
 ]
 
 WEBHOOKS = [
@@ -269,7 +262,8 @@ def main():
     wait_connection()
 
     print("Step 1/5: Creating Sending Profiles")
-    create_sending_profile(SENDING_PROFILES)
+    if os.environ.get("GP_SMTP_HOST"):
+        create_sending_profile(SENDING_PROFILES)
     print("Step 2/5: Creating Landing Pages")
     create_default_landing_page()
     print("Step 3/5: Create Webhooks")
