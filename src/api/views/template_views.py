@@ -112,7 +112,7 @@ class SendingTestEmailsView(APIView):
                 tmp_template["html"] = str(tmp_template["html"]).replace(
                     "<%URL%>", "{{.URL}}"
                 )
-                sent_template = campaign_manager.generate_email_template(
+                sent_template = campaign_manager.create_email_template(
                     tmp_template.get("name") + "_test",
                     tmp_template.get("html"),
                     tmp_template.get("subject"),
