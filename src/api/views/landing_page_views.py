@@ -64,6 +64,12 @@ class LandingPagesListView(APIView):
         post_data["gophish_template_id"] = landing_page.id
 
         created_response = landing_page_service.save(post_data)
+
+        if post_data["is_default_template"]:
+            landing_page_service.clear_and_set_default(
+                created_response["landing_page_uuid"]
+            )
+
         return Response(created_response, status=status.HTTP_201_CREATED)
 
 
