@@ -14,13 +14,14 @@ from api.serializers.template_serializers import (
     TemplateQuerySerializer,
     TemplateStopResponseSerializer,
 )
-from api.services import SubscriptionService, TemplateService
+from api.services import CampaignService, SubscriptionService, TemplateService
 from api.utils.subscription.actions import stop_subscription
 
 campaign_manager = CampaignManager()
 
 template_service = TemplateService()
 subscription_service = SubscriptionService()
+campaign_service = CampaignService()
 
 
 class TemplatesListView(APIView):
@@ -76,11 +77,18 @@ class TemplateStopView(APIView):
     def get(self, request, template_uuid):
         """Get method."""
         # get subscriptions
-        parameters = {"templates_selected_uuid_list": template_uuid}
-        subscriptions = subscription_service.get_list(parameters)
+        campaigns = campaign_service.get_list(
+            parameters={"template_uuid": template_uuid},
+            fields=["subscription_uuid"],
+        )
 
-        # Stop subscriptions
-        updated_subscriptions = list(map(stop_subscription, subscriptions))
+        subscription_uuids = {c["subscription_uuid"] for c in campaigns}
+        updated_subscriptions = []
+        for uuid in subscription_uuids:
+            subscription = subscription_service.get(uuid)
+            if subscription["active"]:
+                stop_subscription(subscription)
+                updated_subscriptions.append(subscription)
 
         # Get template
         template = template_service.get(template_uuid)
