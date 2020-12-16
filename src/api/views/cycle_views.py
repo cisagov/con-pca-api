@@ -37,10 +37,8 @@ class CycleReportedView(APIView):
         subscription = subscription_service.get(subscription_uuid)
 
         data = request.data.copy()
-        if "override_total_reported" in data and (
-            data["override_total_reported"] is not None
-            and data["override_total_reported"] > -1
-        ):
+
+        if int(data.get("override_total_reported", -1)) > -1:
             override_total_reported(subscription, data)
         else:
             override_total_reported(subscription, data)
@@ -48,7 +46,5 @@ class CycleReportedView(APIView):
             update_reported_emails(subscription, data)
 
         emails_reported_list = get_reported_emails(subscription)
-        subscription_service.update(subscription_uuid, data)
-
         serializer = CycleEmailReportedListSerializer(emails_reported_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

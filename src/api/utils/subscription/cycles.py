@@ -3,10 +3,11 @@
 from datetime import datetime
 
 # cisagov Libraries
-from api.services import CampaignService
+from api.services import CampaignService, SubscriptionService
 from api.utils.generic import format_ztime
 
 campaign_service = CampaignService()
+subscription_service = SubscriptionService()
 
 
 def get_reported_emails(subscription):
@@ -189,6 +190,13 @@ def override_total_reported(subscription, cycle_data_override):
         cycle["override_total_reported"] = cycle_data_override[
             "override_total_reported"
         ]
+
+    subscription_service.update_nested(
+        uuid=subscription["subscription_uuid"],
+        field="cycles.$.override_total_reported",
+        data=cycle["override_total_reported"],
+        params={"cycles.cycle_uuid": cycle["cycle_uuid"]},
+    )
 
 
 def get_cycle(subscription, cycle_data_override):
