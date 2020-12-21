@@ -36,14 +36,16 @@ def test_landing_page_list_view_get(mock_get_list, client):
     return_value=get_landing_page_object(),
 )
 @mock.patch("api.services.LandingPageService.save", return_value=landing_page())
+@mock.patch("api.services.LandingPageService.clear_and_set_default")
 @pytest.mark.django_db
 def test_landing_page_list_view_post(
-    mock_exists, mock_create_landing_page, mock_landing_save, client
+    mock_exists, mock_create_landing_page, mock_landing_save, mock_default, client
 ):
     """Test LandingPage ListView Post."""
     response = client.post("/api/v1/landingpages/", landing_page())
     assert mock_exists.called
     assert mock_create_landing_page.called
     assert mock_landing_save.called
+    assert mock_default.called
 
     assert response.status_code == 201
