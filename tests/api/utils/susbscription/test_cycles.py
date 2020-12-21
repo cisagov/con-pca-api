@@ -133,10 +133,12 @@ def test_update_reported_emails(mock_update):
     assert mock_update.called
 
 
-def test_override_total_reported():
+@mock.patch("api.services.SubscriptionService.update_nested")
+def test_override_total_reported(mock_update):
     """Override Total Reported Test."""
     subscription = {
-        "cycles": [{"cycle_uuid": "1"}, {"cycle_uuid": "2"}, {"cycle_uuid": "3"}]
+        "cycles": [{"cycle_uuid": "1"}, {"cycle_uuid": "2"}, {"cycle_uuid": "3"}],
+        "subscription_uuid": "123",
     }
     cycles.override_total_reported(subscription, {"cycle_uuid": "2"})
     assert len(subscription["cycles"][1].keys()) == 1
@@ -148,6 +150,7 @@ def test_override_total_reported():
         subscription, {"cycle_uuid": "2", "override_total_reported": 3}
     )
     assert subscription["cycles"][1]["override_total_reported"] == 3
+    assert mock_update.called
 
 
 def test_get_cycle():
