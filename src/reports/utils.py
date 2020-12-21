@@ -508,22 +508,12 @@ def get_subscription_stats_for_yearly(subscription, start_date=None, end_date=No
             lambda x: x["campaign_id"] in campaigns_in_year, subscription["campaigns"]
         )
     )
-    all_targets_dirty = []
+    target_count = 0
     for campaign in subscription["campaigns"]:
         for cycle in cycles_in_year:
             if campaign["campaign_id"] in cycle["campaigns"]:
                 cycle["campaign_list"].append(campaign)
-                all_targets_dirty.extend(campaign["target_email_list"])
-
-    # remove dups in list of targets
-    all_targets_clean = []
-    [
-        all_targets_clean.append(x)
-        for x in all_targets_dirty
-        if x not in all_targets_clean
-    ]
-
-    total_unique_targets_in_year = len(all_targets_clean)
+                target_count += len(campaign["target_email_list"])
 
     # Loop through all campaigns in cycle. Check for unique moments, and appending to campaign_timeline_summary
 
@@ -540,7 +530,7 @@ def get_subscription_stats_for_yearly(subscription, start_date=None, end_date=No
             campaign_results, reported_override_val_total
         ),
         cycles_in_year,
-        total_unique_targets_in_year,
+        target_count,
     )
 
 
