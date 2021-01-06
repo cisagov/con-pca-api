@@ -32,6 +32,7 @@ class CampaignManager:
         email_template=None,
         launch_date=None,
         send_by_date=None,
+        url=None,
     ):
         """Generate campaign Method."""
         smtp = SMTP(name=smtp_name)
@@ -42,7 +43,7 @@ class CampaignManager:
             page=landing_page,
             template=email_template,
             smtp=smtp,
-            url=settings.PHISH_URL,
+            url=url,
             launch_date=launch_date,
             send_by_date=send_by_date,
         )

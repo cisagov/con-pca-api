@@ -195,7 +195,8 @@ BROWSERLESS_ENDPOINT = os.environ.get("BROWSERLESS_ENDPOINT", "pca-browserless:3
 # GoPhish
 GP_URL = os.environ.get("GP_URL", "")
 GP_API_KEY = os.environ.get("GP_API_KEY", "")
-PHISH_URL = os.environ.get("PHISH_URL", "")
+GP_LANDING_SUBDOMAIN = os.environ.get("GP_LANDING_SUBDOMAIN", "gp")
+GP_LANDING_PROTOCOL = os.environ.get("GP_LANDING_PROTOCOL", "https")
 
 # API Key for running local scripts
 LOCAL_API_KEY = os.environ.get("LOCAL_API_KEY")
