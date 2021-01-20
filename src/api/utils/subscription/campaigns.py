@@ -15,7 +15,7 @@ from api.utils.generic import format_ztime
 from api.utils.subscription.static import CAMPAIGN_MINUTES, DEFAULT_X_GOPHISH_CONTACT
 from api.utils.subscription.subscriptions import get_staggered_dates_in_range
 from api.utils.subscription.targets import assign_targets
-from config.settings import GP_LANDING_PROTOCOL, GP_LANDING_SUBDOMAIN
+from config.settings import GP_LANDING_SUBDOMAIN
 
 campaign_manager = CampaignManager()
 landing_page_service = LandingPageService()
@@ -239,7 +239,7 @@ def __get_campaign_url(sending_profile):
         sending_profile.from_address.split("<")[-1].split("@")[1].replace(">", "")
     )
     domain = ".".join(sp_domain.split(".")[1:])
-    return f"{GP_LANDING_PROTOCOL}://{GP_LANDING_SUBDOMAIN}.{domain}"
+    return f"http://{GP_LANDING_SUBDOMAIN}.{domain}"
 
 
 def __create_campaign_smtp(
