@@ -80,6 +80,10 @@ class SubscriptionView(APIView):
         subscription = subscription_service.get(subscription_uuid)
         if subscription is None:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+        logging.info(subscription.keys())
+        logging.info(len(subscription.get("campaigns", [])))
+        logging.info(len(subscription.get("cycles", [])))
         update_phish_results(subscription)
         return Response(subscription)
 

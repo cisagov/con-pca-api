@@ -225,6 +225,7 @@ class SubscriptionService(DBService):
         )
 
         if not fields or "campaigns" in fields:
+            logging.info("Getting campaigns")
             subscription["campaigns"] = self.campaign_service.get_list(
                 {"subscription_uuid": str(uuid)}
             )
