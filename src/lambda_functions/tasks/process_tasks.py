@@ -35,7 +35,7 @@ def lambda_handler(event, context):
         logger.info(f"Executing task {task}")
         subscription = subscription_service.get(subscription_uuid)
 
-        task["scheduled_date"] = dateutil.parser.parse(task["scheduled_date"])
+        scheduled_date = dateutil.parser.parse(task["scheduled_date"])
 
         try:
             execute_task(subscription, task["message_type"])
@@ -45,9 +45,7 @@ def lambda_handler(event, context):
             # If the subscription is not stopping, update and add a new task
             if not payload.get("stopping_subscription"):
                 update_task(subscription_uuid, task)
-                add_new_task(
-                    subscription_uuid, task["scheduled_date"], task["message_type"]
-                )
+                add_new_task(subscription_uuid, scheduled_date, task["message_type"])
             logger.info(f"Successfully executed task {task}")
         except BaseException as e:
             logger.exception(e)
