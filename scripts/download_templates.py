@@ -29,9 +29,10 @@ resp = requests.get(
 )
 
 templates = resp.json()
+print(len(templates))
+print(templates[0].keys())
 for template in templates:
     template.pop("template_uuid")
-    template.pop("gophish_template_id")
     template.pop("created_by")
     template.pop("cb_timestamp")
     template.pop("last_updated_by")
