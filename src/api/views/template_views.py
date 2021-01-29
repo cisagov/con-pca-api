@@ -14,14 +14,24 @@ from api.serializers.template_serializers import (
     TemplateQuerySerializer,
     TemplateStopResponseSerializer,
 )
-from api.services import CampaignService, SubscriptionService, TemplateService
+from api.services import (
+    CampaignService,
+    CustomerService,
+    SubscriptionService,
+    TagService,
+    TemplateService,
+)
 from api.utils.subscription.actions import stop_subscription
+from api.utils.subscription.campaigns import get_campaign_from_address
+from api.utils.template.personalize import personalize_template
 
 campaign_manager = CampaignManager()
 
 template_service = TemplateService()
 subscription_service = SubscriptionService()
 campaign_service = CampaignService()
+customer_service = CustomerService()
+tag_service = TagService()
 
 
 class TemplatesListView(APIView):
@@ -115,19 +125,29 @@ class SendingTestEmailsView(APIView):
         # tear the template down
         sent_template = None
         try:
+            if sp.get("customer_uuid"):
+                customer = customer_service.get(sp["customer_uuid"])
+            else:
+                customer = customer_service.get_list()[0]
             if sp.get("template").get("name"):
                 tmp_template = sp.get("template")
                 tmp_template["html"] = str(tmp_template["html"]).replace(
                     "<%URL%>", "{{.URL}}"
                 )
+                personalized_data = personalize_template(
+                    customer_info=customer,
+                    template_data=[tmp_template],
+                    sub_data=None,
+                    tag_list=tag_service.get_list(),
+                )[0]
                 sent_template = campaign_manager.create_email_template(
                     tmp_template.get("name") + "_test",
-                    tmp_template.get("html"),
-                    tmp_template.get("subject"),
+                    personalized_data["data"],
+                    personalized_data["subject"],
                     tmp_template.get("text"),
                 )
 
-            test_send = self._build_test_smtp(sp)
+            test_send = self._build_test_smtp(sp, personalized_data["from_address"])
             test_response = campaign_manager.send_test_email(test_send)
         finally:
             if sent_template:
@@ -135,7 +155,7 @@ class SendingTestEmailsView(APIView):
 
         return Response(test_response)
 
-    def _build_test_smtp(self, sp):
+    def _build_test_smtp(self, sp, from_address):
         smtp = sp.get("smtp")
         if sp.get("template").get("name"):
             template = sp.get("template")
@@ -151,7 +171,7 @@ class SendingTestEmailsView(APIView):
             "position": sp.get("position"),
             "url": "https://www.google.com",
             "smtp": {
-                "from_address": smtp.get("from_address"),
+                "from_address": get_campaign_from_address(smtp, from_address),
                 "host": smtp.get("host"),
                 "username": smtp.get("username"),
                 "password": smtp.get("password"),

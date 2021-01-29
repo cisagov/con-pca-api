@@ -289,9 +289,11 @@ def get_campaign_from_address(sending_profile, template_from_address):
     template_sender = template_from_address.split("@")[0].split("<")[-1]
 
     # Get sending profile domain
-    sp_domain = (
-        sending_profile.from_address.split("<")[-1].split("@")[1].replace(">", "")
-    )
+    if type(sending_profile) is dict:
+        sp_from = sending_profile["from_address"]
+    else:
+        sp_from = sending_profile.from_address
+    sp_domain = sp_from.split("<")[-1].split("@")[1].replace(">", "")
 
     # Generate from address
     if template_display:
