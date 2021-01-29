@@ -238,8 +238,7 @@ def __get_campaign_url(sending_profile):
     sp_domain = (
         sending_profile.from_address.split("<")[-1].split("@")[1].replace(">", "")
     )
-    domain = ".".join(sp_domain.split(".")[1:])
-    return f"http://{GP_LANDING_SUBDOMAIN}.{domain}"
+    return f"http://{GP_LANDING_SUBDOMAIN}.{sp_domain}"
 
 
 def __create_campaign_smtp(
