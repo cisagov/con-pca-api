@@ -222,31 +222,31 @@ class EmailSender:
     def _set_notification(self, message_type):
         return {
             "monthly_report": {
-                "subject": "DHS CISA Phishing Subscription Status Report",
+                "subject": "CISA Phishing Subscription Status Report",
                 "path": "monthly_report",
                 "link": "monthly",
                 "type": "Monthly",
             },
             "cycle_report": {
-                "subject": "DHS CISA Phishing Subscription Cycle Report",
+                "subject": "CISA Phishing Subscription Cycle Report",
                 "path": "cycle_report",
                 "link": "cycle",
                 "type": "Cycle",
             },
             "yearly_report": {
-                "subject": "DHS CISA Phishing Subscription Yearly Report",
+                "subject": "CISA Phishing Subscription Yearly Report",
                 "path": "yearly_report",
                 "link": "yearly",
                 "type": "Yearly",
             },
             "subscription_started": {
-                "subject": "DHS CISA Phishing Subscription Started",
+                "subject": "CISA Phishing Subscription Started",
                 "path": "subscription_started",
                 "link": None,
                 "type": "Cycle Start Notification",
             },
             "subscription_stopped": {
-                "subject": "DHS CISA Phishing Subscription Stopped",
+                "subject": "CISA Phishing Subscription Stopped",
                 "path": "subscription_stopped",
                 "link": None,
                 "type": "Cycle Complete",

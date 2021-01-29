@@ -247,7 +247,7 @@ def campaign():
             "modified_date": "2020-10-30T16:16:49.000Z",
             "headers": [
                 {"key": "X-Gophish-Contact", "value": "vulnerability@cisa.dhs.gov"},
-                {"key": "DHS-PHISH", "value": "1deff1a1-a6b4-4a21-8d45-4cbc17a33741"},
+                {"key": "CISA-PHISH", "value": "1deff1a1-a6b4-4a21-8d45-4cbc17a33741"},
             ],
         },
         "created_by": "dev user",

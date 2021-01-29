@@ -314,11 +314,11 @@ def __set_smtp_headers(sending_profile, cycle_uuid):
 def set_dhs_phish_header(sending_profile, cycle_uuid):
     """Set DHS Phish Header."""
     for header in sending_profile.headers:
-        if header["key"] == "DHS-PHISH":
+        if header["key"] == "CISA-PHISH":
             header["value"] = cycle_uuid
             return
 
-    new_header = {"key": "DHS-PHISH", "value": cycle_uuid}
+    new_header = {"key": "CISA-PHISH", "value": cycle_uuid}
     sending_profile.headers.append(new_header)
     return
 
