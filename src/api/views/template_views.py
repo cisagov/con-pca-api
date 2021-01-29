@@ -147,7 +147,11 @@ class SendingTestEmailsView(APIView):
                     tmp_template.get("text"),
                 )
 
-            test_send = self._build_test_smtp(sp, personalized_data["from_address"])
+                test_send = self._build_test_smtp(sp, personalized_data["from_address"])
+            else:
+                test_send = self._build_test_smtp(
+                    sp, sp.get("smtp").get("from_address")
+                )
             test_response = campaign_manager.send_test_email(test_send)
         finally:
             if sent_template:
