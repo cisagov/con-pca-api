@@ -28,11 +28,10 @@ if DEBUG == 1:
     CORS_ORIGIN_ALLOW_ALL = True
 else:
     CORS_ORIGIN_ALLOW_ALL = False
-
-CORS_ORIGIN_WHITELIST = os.environ.get("CORS_ORIGIN_WHITELIST", "").split(",")
-CORS_ALLOWED_ORIGIN_REGEXES = os.environ.get("CORS_ALLOWED_ORIGIN_REGEXES", "").split(
-    ","
-)
+    CORS_ORIGIN_WHITELIST = os.environ.get("CORS_ORIGIN_WHITELIST", "").split(",")
+    CORS_ALLOWED_ORIGIN_REGEXES = os.environ.get(
+        "CORS_ALLOWED_ORIGIN_REGEXES", ""
+    ).split(",")
 
 # Setting for running pytests.
 if int(os.environ.get("PYTEST_SETTINGS", 0)) == 1:
