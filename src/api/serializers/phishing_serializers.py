@@ -6,10 +6,12 @@ from rest_framework import serializers
 class SubscriptionTargetSerializer(serializers.Serializer):
     """SubscriptionTargetSerializer."""
 
-    first_name = serializers.CharField(max_length=100)
-    last_name = serializers.CharField(max_length=100)
-    position = serializers.CharField(max_length=100)
-    email = serializers.EmailField()
+    first_name = serializers.CharField(
+        max_length=100, allow_blank=True, allow_null=True
+    )
+    last_name = serializers.CharField(max_length=100, allow_blank=True, allow_null=True)
+    position = serializers.CharField(max_length=100, allow_blank=True, allow_null=True)
+    email = serializers.EmailField(allow_blank=False, allow_null=False)
 
 
 class PhishingResultsSerializer(serializers.Serializer):
