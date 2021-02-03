@@ -1,7 +1,7 @@
 {% load tz %}
 Dear {{ first_name }} {{ last_name }},
 
-Thank you for participating in the CISA Phishing. This
+Thank you for participating in CISA Continuous Phishing (Con-PCA). This
 email is to inform you that your campaign has been
 stopped on {{ end_date|localtime }} UTC.
 
