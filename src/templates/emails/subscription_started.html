@@ -7,9 +7,7 @@
 >
   <head>
     <title> </title>
-    <!--[if !mso]><!-- -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!--<![endif]-->
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style type="text/css">
@@ -45,22 +43,6 @@
         margin: 13px 0;
       }
     </style>
-    <!--[if mso]>
-      <xml>
-        <o:OfficeDocumentSettings>
-          <o:AllowPNG />
-          <o:PixelsPerInch>96</o:PixelsPerInch>
-        </o:OfficeDocumentSettings>
-      </xml>
-    <![endif]-->
-    <!--[if lte mso 11]>
-      <style type="text/css">
-        .mj-outlook-group-fix {
-          width: 100% !important;
-        }
-      </style>
-    <![endif]-->
-
     <style type="text/css">
       @media only screen and (min-width: 480px) {
         .mj-column-per-100 {
@@ -205,7 +187,7 @@
                             color: #1b2352;
                           "
                         >
-                          Dear {{ first_name }} {{ last_name }},
+                          Dear {{first_name}} {{last_name}},
                         </div>
                       </td>
                     </tr>
@@ -230,9 +212,9 @@
                         >
                           Thank you for participating in CISA Continuous
                           Phishing (Con-PCA). This email is to inform you that
-                          your campaign has begun starting {{
-                          start_date|localtime }} UTC and will run until {{
-                          end_date|localtime }} UTC.
+                          your campaign has begun starting
+                          {{start_date|localtime}} UTC and will run until
+                          {{end_date|localtime}} UTC.
                         </div>
                       </td>
                     </tr>
@@ -301,9 +283,6 @@
                               All emails coming from the Con-PCA program will
                               have a custom header:
                               <br /><br />CISA-PHISH:{{cycle_uuid}}<br /><br />
-                              <!--
-                                <br /><br />X-Gophish-Contact:{{dhs_contact.email}}<br /><br />
-                               -->
                               Please look for this header. The value for the
                               header is unique to your subscription and changes
                               each cycle.
@@ -394,25 +373,11 @@
                     </tr>
                   </table>
                 </div>
-
-                <!--[if mso | IE]>
-            </td>
-
-        </tr>
-
-                  </table>
-                <![endif]-->
               </td>
             </tr>
           </tbody>
         </table>
       </div>
-
-      <!--[if mso | IE]>
-          </td>
-        </tr>
-      </table>
-      <![endif]-->
     </div>
   </body>
 </html>

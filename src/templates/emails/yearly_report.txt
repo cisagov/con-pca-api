@@ -1,4 +1,4 @@
-Dear {{ first_name }} {{ last_name }},
+Dear {{first_name}} {{last_name}},
 
 
 Thank you for participating in the CISA Phishing Subscription Service Con-PCA. Attached is your yearly phishing report for your review.

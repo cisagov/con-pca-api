@@ -1,10 +1,10 @@
 {% load tz %}
-Dear {{ first_name }} {{ last_name }},
+Dear {{first_name}} {{last_name}},
 
 Thank you for participating in CISA Continuous Phishing (Con-PCA). This
 email is to inform you that your campaign has begun
-starting {{ start_date|localtime }} UTC and will run
-until {{ end_date|localtime }} UTC.
+starting {{start_date|localtime}} UTC and will run
+until {{end_date|localtime}} UTC.
 
 The following template subjects will be used over the
 duration of this cycle.
