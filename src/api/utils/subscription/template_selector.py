@@ -18,7 +18,7 @@ def get_num_templates_per_batch(diversity_level="moderate"):
 
 def group_templates(templates):
     """Group Templates by score."""
-    template_score_to_level = {"high": 5, "medium": 2, "low": 0}
+    template_score_to_level = {"high": 5, "medium": 3, "low": 0}
     template_groups = {"low": [], "medium": [], "high": []}
     for template in templates:
         if template["deception_score"] < template_score_to_level["medium"]:
