@@ -59,7 +59,7 @@ def get_cycle_reports(cycle, campaign_reports):
         "start_date": cycle["start_date"],
         "end_date": cycle["end_date"],
         "email_list": cycle_reports,
-        "override_total_reported": cycle["override_total_reported"],
+        "override_total_reported": cycle.get("override_total_reported", -1),
         "cycle_uuid": cycle["cycle_uuid"],
     }
 

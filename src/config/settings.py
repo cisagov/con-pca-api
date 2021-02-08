@@ -7,6 +7,8 @@ Here we set all setting needed for djnago apps within this repo.
 import os
 from socket import gethostbyname, gethostname
 
+from .db import get_db
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -50,6 +52,8 @@ DB_CONFIG = {
     "DB_PW": os.getenv("DB_PW"),
     "DB_PORT": os.getenv("DB_PORT"),
 }
+
+DB = get_db()
 
 # Cognito
 COGNITO_AWS_REGION = os.getenv("COGNITO_AWS_REGION")

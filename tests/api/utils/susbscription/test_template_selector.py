@@ -19,14 +19,14 @@ def create_templates():
         templates.append(
             {
                 "template_uuid": fake.uuid4(),
-                "deception_score": fake.random_int(0, 1),
+                "deception_score": fake.random_int(0, 2),
                 "descriptive_words": " ".join(fake.words()),
             }
         )
         templates.append(
             {
                 "template_uuid": fake.uuid4(),
-                "deception_score": fake.random_int(2, 4),
+                "deception_score": fake.random_int(3, 4),
                 "descriptive_words": " ".join(fake.words()),
             }
         )
@@ -73,7 +73,7 @@ def test_batch_templates():
     assert len(sub_levels["low"]["template_uuids"]) == 5
 
 
-@mock.patch("api.utils.db_utils.get_list", return_value=[])
+@mock.patch("api.services.DBService.get_list", return_value=[])
 @mock.patch("api.utils.template.personalize.personalize_template")
 def test_personalize_templates(mock_personalize, mocked_get_list):
     """Test Personalize Templates."""
