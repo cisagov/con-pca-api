@@ -16,6 +16,10 @@ help:
 env:
 	cp ./etc/env.dist ./.env
 
+# target: attach = attach to target container
+attach:
+	docker attach --sig-proxy=false pca-api
+
 # target: build = build all containers
 build:
 	docker-compose build

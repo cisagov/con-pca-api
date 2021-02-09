@@ -3,10 +3,10 @@
 from django.http import FileResponse, JsonResponse
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from schematics.types import IntType, StringType
 
 # cisagov Libraries
 from api.manager import CampaignManager
-from api.models.template_models import DeceptionLevelStatsModel
 from api.notifications import EmailSender
 from api.serializers.reports_serializers import (
     EmailReportsGetSerializer,
@@ -32,6 +32,30 @@ subscription_service = SubscriptionService()
 
 # GoPhish API Manager
 campaign_manager = CampaignManager()
+
+
+class DeceptionLevelStatsModel:
+    """DeceptionLevelStatsModel."""
+
+    level = StringType()
+    level_number = IntType()
+    sent = IntType()
+    total = IntType()
+    opened = IntType()
+    clicked = IntType()
+    submitted_data = IntType()
+    email_reported = IntType()
+
+    def __init__(self, level, level_number):
+        """Create Model."""
+        self.level = level
+        self.level_number = level_number
+        self.sent = 0
+        self.total = 0
+        self.opened = 0
+        self.clicked = 0
+        self.submitted_data = 0
+        self.email_reported = 0
 
 
 class ReportsView(APIView):

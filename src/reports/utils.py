@@ -388,7 +388,7 @@ def get_subscription_stats_for_month(subscription, end_date, cycle_uuid=None):
 
         # Get stats and aggregate of all time differences (all times needed for stats like median when consolidated)
         stats, time_aggregate = generate_campaign_statistics(
-            campaign_timeline_summary, active_cycle["override_total_reported"]
+            campaign_timeline_summary, active_cycle.get("override_total_reported", -1)
         )
         campaign_results.append(
             {
@@ -404,7 +404,7 @@ def get_subscription_stats_for_month(subscription, end_date, cycle_uuid=None):
         campaign_timeline_summary = []
 
     return generate_subscription_stat_details(
-        campaign_results, active_cycle["override_total_reported"]
+        campaign_results, active_cycle.get("override_total_reported", -1)
     )
 
 
@@ -437,7 +437,7 @@ def get_subscription_stats_for_cycle(subscription, cycle_uuid=None, start_date=N
             append_timeline_moment(unique_moment, campaign_timeline_summary)
         # Get stats and aggregate of all time differences (all times needed for stats like median when consolidated)
         stats, time_aggregate = generate_campaign_statistics(
-            campaign_timeline_summary, active_cycle["override_total_reported"]
+            campaign_timeline_summary, active_cycle.get("override_total_reported", -1)
         )
         campaign_results.append(
             {
@@ -454,7 +454,7 @@ def get_subscription_stats_for_cycle(subscription, cycle_uuid=None, start_date=N
 
     return (
         generate_subscription_stat_details(
-            campaign_results, active_cycle["override_total_reported"]
+            campaign_results, active_cycle.get("override_total_reported", -1)
         ),
         active_cycle["total_targets"],
     )
@@ -542,7 +542,7 @@ def _get_cycle_results(cycles_in_year, reported_override_val):
             unique_moments = get_unique_moments(campaign["timeline"])
             for unique_moment in unique_moments:
                 append_timeline_moment(unique_moment, cycle_timeline_summary)
-            reported_override_val = cycle["override_total_reported"]
+            reported_override_val = cycle.get("override_total_reported", -1)
             stats = None
             stats, time_aggregate = generate_campaign_statistics(
                 cycle_timeline_summary, reported_override_val
@@ -615,7 +615,7 @@ def get_override_total_reported_for_campagin(subscription, campaign):
     """Get override total reported."""
     for cycle in subscription["cycles"]:
         if campaign["campaign_id"] in cycle["campaigns_in_cycle"]:
-            return cycle["override_total_reported"]
+            return cycle.get("override_total_reported", -1)
 
 
 def cycle_in_yearly_timespan(cycle_start, cycle_end, yearly_start, yearly_end):

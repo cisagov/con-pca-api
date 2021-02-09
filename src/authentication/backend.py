@@ -83,8 +83,6 @@ class JSONWebTokenAuthentication(BaseAuthentication):
             )
             raise exceptions.AuthenticationFailed(msg)
 
-        # USER_MODEL = self.get_user_model()
-        # user = USER_MODEL.objects.get_or_create_for_cognito(jwt_payload)
         if "cognito:groups" in jwt_payload:
             user = {
                 "username": jwt_payload["username"],

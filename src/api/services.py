@@ -1,23 +1,13 @@
 """Database Services."""
 # Standard Python Libraries
+from datetime import datetime
 import logging
+from uuid import uuid4
 
 # Third-Party Libraries
-import pymongo
 from rest_framework import serializers
 
 # cisagov Libraries
-from api.models import (
-    campaign_models,
-    customer_models,
-    dhs_models,
-    landing_page_models,
-    recommendations_models,
-    subscription_models,
-    tag_models,
-    target_history_models,
-    template_models,
-)
 from api.serializers import (
     campaign_serializers,
     customer_serializers,
@@ -29,7 +19,7 @@ from api.serializers import (
     target_history_serializers,
     template_serializers,
 )
-from api.utils import db_utils as db
+from config.settings import DB
 
 
 class DBService:
@@ -38,15 +28,15 @@ class DBService:
     def __init__(
         self,
         collection,
-        model,
         save_serializer,
         update_serializer,
     ):
         """Init Base Class."""
         self.collection = collection
-        self.model = model
         self.save_serializer = save_serializer
         self.update_serializer = update_serializer
+        self.uuid_field = f"{collection}_uuid"
+        self.db = getattr(DB, collection)
 
     def validate_serializer(self, serializer):
         """Validate Serializer."""
@@ -59,111 +49,83 @@ class DBService:
     def convert_fields(self, fields):
         """Convert Fields."""
         if not fields:
-            return None
+            return {"_id": 0}
         result = {}
         for field in fields:
             result[field] = 1
+        result["_id"] = 0
         return result
 
     def delete(self, uuid):
         """Delete."""
-        return db.delete_single(
-            uuid=str(uuid),
-            collection=self.collection,
-            model=self.model,
-        )
+        self.db.delete_one({self.uuid_field: str(uuid)})
+        return {self.uuid_field: str(uuid)}
 
     def get(self, uuid, fields=None):
         """Get."""
         fields = self.convert_fields(fields)
-        return db.get(
-            uuid=str(uuid),
-            collection=self.collection,
-            model=self.model,
-            fields=fields,
+        return self.db.find_one(
+            {self.uuid_field: str(uuid)}, self.convert_fields(fields)
         )
 
     def get_single(self, parameters, fields=None):
         """Get Single."""
         fields = self.convert_fields(fields)
-        return db.get_single(
-            parameters=parameters,
-            collection=self.collection,
-            model=self.model,
-            fields=fields,
-        )
+        return self.db.find_one(parameters, fields)
 
     def get_list(self, parameters=None, fields=None):
         """Get List."""
         fields = self.convert_fields(fields)
-        return db.get_list(
-            parameters=parameters,
-            collection=self.collection,
-            model=self.model,
-            fields=fields,
-        )
+        return list(self.db.find(parameters, fields))
 
     def save(self, data):
         """Save."""
         serializer = self.save_serializer(data=data)
         self.validate_serializer(serializer)
-        result = db.save_single(
-            post_data=serializer.validated_data,
-            collection=self.collection,
-            model=self.model,
-        )
-        if type(result) is dict:
-            if result.get("errors"):
-                logging.error(result.get("errors"))
-                raise Exception(result.get("errors"))
 
-        return result
+        # Add on uuid field
+        data[self.uuid_field] = str(uuid4())
+
+        # Add on db tracking fields
+        data["created_by"] = data["last_updated_by"] = "dev user"
+        data["cb_timestamp"] = data["lub_timestamp"] = datetime.utcnow()
+
+        # Save data
+        self.db.insert_one(data)
+        return {self.uuid_field: data[self.uuid_field]}
 
     def update(self, uuid, data):
         """Update."""
         serializer = self.update_serializer(data=data)
         self.validate_serializer(serializer)
-        result = db.update_single(
-            uuid=str(uuid),
-            put_data=serializer.validated_data,
-            collection=self.collection,
-            model=self.model,
-        )
-        if type(result) is dict:
-            if result.get("errors"):
-                logging.error(result.get("errors"))
-                raise Exception(result.get("errors"))
-        return result
+
+        # Update updated fields
+        data["last_update_by"] = "dev user"
+        data["lub_timestamp"] = datetime.utcnow()
+
+        # Update Data
+        self.db.update_one({self.uuid_field: str(uuid)}, {"$set": data})
+        return {self.uuid_field: uuid}
 
     def update_nested(self, uuid, field, data, params=None):
         """Update Nested."""
-        return db.update_nested_single(
-            uuid=str(uuid),
-            field=field,
-            put_data=data,
-            collection=self.collection,
-            model=self.model,
-            params=params,
-        )
+        return self.db.update_one(
+            {self.uuid_field: str(uuid), **params}, {"$set": {field: data}}
+        ).raw_result
 
-    def push_nested(self, uuid, field, data, params=None):
+    def push_nested(self, uuid, field, data):
         """Push Nested."""
-        return db.push_nested_item(
-            uuid=str(uuid),
-            field=field,
-            put_data=data,
-            collection=self.collection,
-            model=self.model,
-            params=params,
-        )
+        return self.db.update_one(
+            {self.uuid_field: str(uuid)}, {"$push": {field: data}}
+        ).raw_result
 
     def exists(self, parameters=None):
         """Check exists."""
-        return db.exists(
-            parameters=parameters,
-            collection=self.collection,
-            model=self.model,
-        )
+        fields = self.convert_fields([self.uuid_field])
+        result = list(self.db.find(parameters, fields))
+        if result:
+            return True
+        return False
 
 
 class CampaignService(DBService):
@@ -173,7 +135,6 @@ class CampaignService(DBService):
         """Init CampaignService."""
         return super().__init__(
             collection="campaign",
-            model=campaign_models.GoPhishCampaignsModel,
             save_serializer=campaign_serializers.GoPhishCampaignsPostSerializer,
             update_serializer=campaign_serializers.GoPhishCampaignsPatchSerializer,
         )
@@ -186,22 +147,18 @@ class LandingPageService(DBService):
         """Init LandingPageService."""
         return super().__init__(
             collection="landing_page",
-            model=landing_page_models.LandingPageModel,
             save_serializer=landing_page_serializers.LandingPagePostSerializer,
             update_serializer=landing_page_serializers.LandingPagePatchSerializer,
         )
 
     def clear_and_set_default(self, uuid):
-        """Set Deaujlt Landing Page."""
-        db_url = db.get_mongo_uri()
-        client = pymongo.MongoClient(db_url)
-        collection = client["pca_data_dev"]["landing_page"]
+        """Set Default Landing Page."""
         sub_query = {}
         newvalues = {"$set": {"is_default_template": False}}
-        collection.update_many(sub_query, newvalues)
+        self.db.update_many(sub_query, newvalues)
         sub_query = {"landing_page_uuid": str(uuid)}
         newvalues = {"$set": {"is_default_template": True}}
-        collection.update_one(sub_query, newvalues)
+        self.db.update_one(sub_query, newvalues)
 
 
 class SubscriptionService(DBService):
@@ -212,20 +169,17 @@ class SubscriptionService(DBService):
         self.campaign_service = CampaignService()
         return super().__init__(
             collection="subscription",
-            model=subscription_models.SubscriptionModel,
             save_serializer=subscriptions_serializers.SubscriptionPostSerializer,
             update_serializer=subscriptions_serializers.SubscriptionPatchSerializer,
         )
 
     def get(self, uuid, fields=None):
         """Get Subscription."""
-        fields = self.convert_fields(fields)
-        subscription = db.get(
-            uuid=str(uuid), collection=self.collection, model=self.model, fields=fields
+        subscription = self.db.find_one(
+            {self.uuid_field: str(uuid)}, self.convert_fields(fields)
         )
 
         if not fields or "campaigns" in fields:
-            logging.info("Getting campaigns")
             subscription["campaigns"] = self.campaign_service.get_list(
                 {"subscription_uuid": str(uuid)}
             )
@@ -239,7 +193,6 @@ class RecommendationService(DBService):
         """Init RecommendationService."""
         return super().__init__(
             collection="recommendations",
-            model=recommendations_models.RecommendationsModel,
             save_serializer=recommendations_serializers.RecommendationsPostSerializer,
             update_serializer=recommendations_serializers.RecommendationsPatchSerializer,
         )
@@ -252,7 +205,6 @@ class TemplateService(DBService):
         """Init TemplateService."""
         return super().__init__(
             collection="template",
-            model=template_models.TemplateModel,
             save_serializer=template_serializers.TemplatePostSerializer,
             update_serializer=template_serializers.TemplatePatchSerializer,
         )
@@ -265,7 +217,6 @@ class TagService(DBService):
         """Init TagService."""
         return super().__init__(
             collection="tag_definition",
-            model=tag_models.TagModel,
             save_serializer=tag_serializers.TagPostSerializer,
             update_serializer=tag_serializers.TagPatchSerializer,
         )
@@ -278,7 +229,6 @@ class DHSContactService(DBService):
         """Init DHSContactService."""
         return super().__init__(
             collection="dhs_contact",
-            model=dhs_models.DHSContactModel,
             save_serializer=dhs_serializers.DHSContactPostSerializer,
             update_serializer=dhs_serializers.DHSContactPatchSerializer,
         )
@@ -291,7 +241,6 @@ class CustomerService(DBService):
         """Init CustomerService."""
         return super().__init__(
             collection="customer",
-            model=customer_models.CustomerModel,
             save_serializer=customer_serializers.CustomerPostSerializer,
             update_serializer=customer_serializers.CustomerPatchSerializer,
         )
@@ -304,7 +253,6 @@ class TargetHistoryService(DBService):
         """Init TargetHistoryService."""
         return super().__init__(
             collection="target",
-            model=target_history_models.TargetHistoryModel,
             save_serializer=target_history_serializers.TargetHistoryPostSerializer,
             update_serializer=target_history_serializers.TargetHistoryPatchSerializer,
         )
