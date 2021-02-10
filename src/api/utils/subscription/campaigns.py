@@ -37,15 +37,22 @@ def generate_campaigns(subscription, landing_page, sub_levels, cycle_uuid):
     gophish_campaigns = []
     for k in sub_levels.keys():
         # Assign targets to templates in each group
-        assign_targets(sub_levels[k])
-        gophish_campaigns.extend(
-            create_campaign(subscription, sub_levels[k], landing_page, cycle_uuid)
-        )
+        try:
+            assign_targets(sub_levels[k])
+            gophish_campaigns.extend(
+                create_campaigns_for_level(
+                    subscription, sub_levels[k], landing_page, cycle_uuid
+                )
+            )
+        except Exception as e:
+            for campaign in gophish_campaigns:
+                stop_campaign(campaign, cleanup=True)
+            raise e
 
     return gophish_campaigns
 
 
-def create_campaign(subscription, sub_level, landing_page, cycle_uuid):
+def create_campaigns_for_level(subscription, sub_level, landing_page, cycle_uuid):
     """
     Create campaign.
 
@@ -69,15 +76,6 @@ def create_campaign(subscription, sub_level, landing_page, cycle_uuid):
             date_list.append(sub_level["start_date"])
 
     for index, k in enumerate(sub_level["template_targets"].keys()):
-
-        # Create user groups in Gophish
-        target_group = campaign_manager.create_user_group(
-            subscription_name=subscription["name"],
-            deception_level=sub_level["deception_level"],
-            index=index,
-            target_list=sub_level["template_targets"][k],
-        )
-
         template = list(
             filter(
                 lambda x: x["template_uuid"] == k, sub_level["personalized_templates"]
@@ -90,10 +88,9 @@ def create_campaign(subscription, sub_level, landing_page, cycle_uuid):
             if template_lp:
                 landing_page_name = template_lp["name"]
 
-        gophish_campaigns.append(
-            __create_campaign(
+        try:
+            campaign = create_campaign(
                 subscription=subscription,
-                target_group=target_group,
                 landing_page=landing_page_name,
                 template=template,
                 targets=sub_level["template_targets"][k],
@@ -102,7 +99,11 @@ def create_campaign(subscription, sub_level, landing_page, cycle_uuid):
                 index=index,
                 cycle_uuid=cycle_uuid,
             )
-        )
+            gophish_campaigns.append(campaign)
+        except Exception as e:
+            for c in gophish_campaigns:
+                stop_campaign(c, cleanup=True)
+            raise e
 
     return gophish_campaigns
 
@@ -114,7 +115,7 @@ def stop_campaigns(campaigns):
             stop_campaign(campaign)
 
 
-def stop_campaign(campaign):
+def stop_campaign(campaign, cleanup=False):
     """Stop Campaign."""
     # Complete Campaign
     try:
@@ -151,12 +152,12 @@ def stop_campaign(campaign):
         except Exception:
             pass
 
-    campaign_service.update(campaign["campaign_uuid"], campaign)
+    if not cleanup:
+        campaign_service.update(campaign["campaign_uuid"], campaign)
 
 
-def __create_campaign(
+def create_campaign(
     subscription,
-    target_group,
     landing_page,
     template,
     targets,
@@ -165,73 +166,103 @@ def __create_campaign(
     index,
     cycle_uuid,
 ):
-    """Create Campaign."""
-    base_name = f"{subscription['name']}.{deception_level}.{index}"
+    """Create a campaign."""
+    return_data = {}
 
-    created_template = campaign_manager.create_email_template(
-        name=f"{base_name}.{template['name']}",
-        template=template["data"],
-        text=BeautifulSoup(template["data"], "html.parser").get_text(),
-        subject=template["subject"],
-    )
+    try:
+        base_name = f"{subscription['name']}.{deception_level}.{index}"
 
-    campaign_start = start_date
-    campaign_end = start_date + timedelta(minutes=CAMPAIGN_MINUTES)
+        # Create Target Group
+        target_group = campaign_manager.create_user_group(
+            subscription_name=subscription["name"],
+            deception_level=deception_level,
+            index=index,
+            target_list=targets,
+        )
+        return_data.update(
+            {"groups": [campaign_serializers.GoPhishGroupSerializer(target_group).data]}
+        )
 
-    campaign_name = f"{base_name}.{template['name']}.{campaign_start.strftime('%Y-%m-%d')}.{campaign_end.strftime('%Y-%m-%d')}"
-
-    sending_profile = __create_campaign_smtp(
-        campaign_name,
-        template["from_address"],
-        cycle_uuid,
-        subscription["sending_profile_name"],
-    )
-
-    campaign = campaign_manager.create_campaign(
-        campaign_name=campaign_name,
-        smtp_name=sending_profile.name,
-        page_name=landing_page,
-        user_group=target_group,
-        email_template=created_template,
-        launch_date=start_date.strftime("%Y-%m-%dT%H:%M:%S+00:00"),
-        send_by_date=(campaign_end).strftime("%Y-%m-%dT%H:%M:%S+00:00"),
-        url=__get_campaign_url(sending_profile),
-    )
-
-    default_phish_results = {
-        "sent": 0,
-        "opened": 0,
-        "clicked": 0,
-        "submitted": 0,
-        "reported": 0,
-    }
-
-    return {
-        "campaign_id": campaign.id,
-        "name": campaign_name,
-        "created_date": format_ztime(campaign.created_date),
-        "launch_date": campaign_start,
-        "send_by_date": campaign_end,
-        "email_template": created_template.name,
-        "email_template_id": created_template.id,
-        "template_uuid": str(template["template_uuid"]),
-        "landing_page_template": campaign.page.name,
-        "deception_level": deception_level,
-        "status": campaign.status,
-        "results": [],
-        "phish_results": default_phish_results,
-        "groups": [campaign_serializers.GoPhishGroupSerializer(target_group).data],
-        "timeline": [
+        # Create Email Template
+        created_template = campaign_manager.create_email_template(
+            name=f"{base_name}.{template['name']}",
+            template=template["data"],
+            text=BeautifulSoup(template["data"], "html.parser").get_text(),
+            subject=template["subject"],
+        )
+        return_data.update(
             {
-                "email": None,
-                "time": format_ztime(campaign.created_date),
-                "message": "Campaign Created",
-                "details": "",
+                "email_template": created_template.name,
+                "email_template_id": created_template.id,
+                "template_uuid": str(template["template_uuid"]),
             }
-        ],
-        "target_email_list": targets,
-        "smtp": campaign_serializers.GoPhishSmtpSerializer(campaign.smtp).data,
-    }
+        )
+
+        # Calculate Campaign Start and End Date
+        campaign_start = start_date
+        campaign_end = start_date + timedelta(minutes=CAMPAIGN_MINUTES)
+
+        # Generate Campaign Name
+        campaign_name = f"{base_name}.{template['name']}.{campaign_start.strftime('%Y-%m-%d')}.{campaign_end.strftime('%Y-%m-%d')}"
+
+        # Create Sending Profile
+        sending_profile = __create_campaign_smtp(
+            campaign_name,
+            template["from_address"],
+            cycle_uuid,
+            subscription["sending_profile_name"],
+        )
+        return_data.update(
+            {"smtp": campaign_serializers.GoPhishSmtpSerializer(sending_profile).data}
+        )
+
+        # Create Campaign
+        campaign = campaign_manager.create_campaign(
+            campaign_name=campaign_name,
+            smtp_name=sending_profile.name,
+            page_name=landing_page,
+            user_group=target_group,
+            email_template=created_template,
+            launch_date=start_date.strftime("%Y-%m-%dT%H:%M:%S+00:00"),
+            send_by_date=(campaign_end).strftime("%Y-%m-%dT%H:%M:%S+00:00"),
+            url=__get_campaign_url(sending_profile),
+        )
+        return_data.update(
+            {
+                "campaign_id": campaign.id,
+                "name": campaign_name,
+                "created_date": format_ztime(campaign.created_date),
+                "launch_date": campaign_start,
+                "send_by_date": campaign_end,
+                "landing_page_template": campaign.page.name,
+                "deception_level": deception_level,
+                "status": campaign.status,
+                "results": [],
+                "phish_results": {
+                    "sent": 0,
+                    "opened": 0,
+                    "clicked": 0,
+                    "submitted": 0,
+                    "reported": 0,
+                },
+                "timeline": [
+                    {
+                        "email": None,
+                        "time": format_ztime(campaign.created_date),
+                        "message": "Campaign Created",
+                        "details": "",
+                    }
+                ],
+                "target_email_list": targets,
+            }
+        )
+    except Exception as e:
+        logging.exception(e)
+        stop_campaign(return_data, cleanup=True)
+        raise e
+
+    # Return Campaign
+    return return_data
 
 
 def __get_campaign_url(sending_profile):
