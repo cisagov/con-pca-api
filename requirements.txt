@@ -18,7 +18,6 @@ gophish==0.5.1
 gunicorn==20.0.4
 idna==2.10
 jmespath==0.10.0
-motor==2.3.0
 packaging==20.8
 pycparser==2.20
 pyee==8.1.0
