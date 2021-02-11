@@ -24,6 +24,7 @@ from api.services import (
 from api.utils.subscription.actions import stop_subscription
 from api.utils.subscription.campaigns import get_campaign_from_address
 from api.utils.template.personalize import personalize_template
+from api.utils.template.templates import validate_template
 
 campaign_manager = CampaignManager()
 
@@ -55,6 +56,10 @@ class TemplatesListView(APIView):
                 status=status.HTTP_409_CONFLICT,
             )
 
+        is_invalid = validate_template(post_data)
+        if is_invalid:
+            return Response(is_invalid, status=status.HTTP_400_BAD_REQUEST)
+
         created_response = template_service.save(post_data)
         return Response(created_response, status=status.HTTP_201_CREATED)
 
@@ -72,7 +77,13 @@ class TemplateView(APIView):
         put_data = request.data.copy()
         if put_data["landing_page_uuid"] == "0" or not put_data["landing_page_uuid"]:
             put_data["landing_page_uuid"] = None
-        updated_response = template_service.update(template_uuid, put_data)
+
+        template = template_service.get(template_uuid)
+        template.update(put_data)
+        is_invalid = validate_template(template)
+        if is_invalid:
+            return Response(is_invalid, status=status.HTTP_400_BAD_REQUEST)
+        updated_response = template_service.update(template_uuid, template)
         return Response(updated_response, status=status.HTTP_202_ACCEPTED)
 
     def delete(self, request, template_uuid):
