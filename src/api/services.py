@@ -127,6 +127,10 @@ class DBService:
             return True
         return False
 
+    def random(self, count=1):
+        """Select a random record from collection."""
+        return list(self.db.aggregate([{"$sample": {"size": count}}]))
+
 
 class CampaignService(DBService):
     """CampaignService."""
