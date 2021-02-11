@@ -21,17 +21,18 @@ def test_templates_view_get(client):
         assert result.status_code == 200
 
 
-def test_templates_view_patch(client):
+@mock.patch("api.services.TemplateService.get", return_value=template())
+@mock.patch("api.services.TemplateService.update", return_value=template())
+@mock.patch("api.utils.template.templates.validate_template", return_value=None)
+def test_templates_view_patch(mock_validate, mock_patch, mock_get, client):
     """Test Patch."""
-    with mock.patch(
-        "api.services.TemplateService.update",
-        return_value=template(),
-    ) as mock_patch:
-        result = client.patch(
-            "/api/v1/template/1234/", template(), content_type="application/json"
-        )
-        assert mock_patch.called
-        assert result.status_code == 202
+    result = client.patch(
+        "/api/v1/template/1234/", template(), content_type="application/json"
+    )
+    assert mock_patch.called
+    assert result.status_code == 202
+    assert mock_validate.called
+    assert mock_get.called
 
 
 def test_templates_view_delete(client):

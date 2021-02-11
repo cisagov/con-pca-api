@@ -31,7 +31,8 @@ def test_templates_view_list_get(client):
 
 
 @pytest.mark.django_db
-def test_templates_view_list_post(client):
+@mock.patch("api.utils.template.templates.validate_template", return_value=None)
+def test_templates_view_list_post(mock_validate, client):
     """Test Post."""
     with mock.patch(
         "api.services.TemplateService.save",
@@ -44,6 +45,7 @@ def test_templates_view_list_post(client):
         assert mock_post.called
         assert mock_exists.called
         assert result.status_code == 201
+        assert mock_validate.called
 
     with mock.patch(
         "api.services.TemplateService.save",
@@ -56,3 +58,4 @@ def test_templates_view_list_post(client):
         assert not mock_post.called
         assert mock_exists.called
         assert result.status_code == 409
+        assert mock_validate.called
