@@ -71,6 +71,9 @@ debug_ptvsd:
 tasks:
 	docker exec -it pca-api python lambda_functions/tasks/
 
+lambda_export:
+	docker exec -it pca-api python lambda_functions/export.py
+
 lint:
 	pre-commit autoupdate
 	pre-commit run --all-files
