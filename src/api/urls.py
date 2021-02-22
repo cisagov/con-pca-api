@@ -19,6 +19,7 @@ from api.views import (
     subscription_views,
     tag_views,
     template_views,
+    user_views,
     webhook_views,
 )
 
@@ -207,5 +208,20 @@ urlpatterns = [
         "v1/test_email/",
         template_views.SendingTestEmailsView.as_view(),
         name="test_email_api",
+    ),
+    path(
+        "v1/users/",
+        user_views.UsersView.as_view(),
+        name="users_view_api",
+    ),
+    path(
+        "v1/user/<username>/",
+        user_views.UserView.as_view(),
+        name="user_view_api",
+    ),
+    path(
+        "v1/user/<username>/confirm/",
+        user_views.UserConfirmView.as_view(),
+        name="user_confirm_view_api",
     ),
 ]
