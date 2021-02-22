@@ -110,6 +110,11 @@ urlpatterns = [
         name="templates_list_api",
     ),
     path(
+        "v1/templates/import/",
+        template_views.TemplateEmailImportView.as_view(),
+        name="template_import_api",
+    ),
+    path(
         "v1/template/<template_uuid>/",
         template_views.TemplateView.as_view(),
         name="template_get_api",
