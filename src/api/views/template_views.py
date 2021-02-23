@@ -195,3 +195,17 @@ class SendingTestEmailsView(APIView):
             },
         }
         return smtp_test
+
+
+class TemplateEmailImportView(APIView):
+    """TemplateEmailImportView."""
+
+    def post(self, request):
+        """Post."""
+        post_data = request.data.copy()
+        return Response(
+            campaign_manager.import_email(
+                content=post_data["content"],
+                convert_link=post_data["convert_link"],
+            )
+        )

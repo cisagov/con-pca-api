@@ -210,3 +210,17 @@ class CampaignManager:
         """Complete Campaign."""
         if campaign_id:
             return self.gp_api.campaigns.complete(campaign_id=campaign_id)
+
+    def import_email(self, content: str, convert_link: bool):
+        """Import source email."""
+        url = f"{settings.GP_URL}api/import/email"
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {settings.GP_API_KEY}",
+        }
+        resp = requests.post(
+            url=url,
+            json={"content": content, "convert_link": convert_link},
+            headers=headers,
+        )
+        return json.loads(resp.text)
