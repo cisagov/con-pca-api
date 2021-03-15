@@ -115,7 +115,7 @@ def start_subscription(subscription):
 
 def start_subscription_email(subscription):
     """Start Subscription Email Task."""
-    sender = EmailSender(subscription, "subscription_started")
+    sender = EmailSender(subscription, "subscription_started", None)
     sender.send()
     subscription_service.update(
         subscription["subscription_uuid"], {"status": "In Progress"}
@@ -138,7 +138,6 @@ def email_subscription_monthly(subscription):
     sender = EmailSender(
         subscription,
         "monthly_report",
-        datetime.now().isoformat(),
         subscription["cycles"][-1]["cycle_uuid"],
     )
     sender.send()
@@ -155,9 +154,7 @@ def email_subscription_cycle(subscription):
     # Send email
     selected_cycle = get_last_run_cycle(subscription["cycles"][-2:])
 
-    sender = EmailSender(
-        subscription, "cycle_report", selected_cycle["start_date"].isoformat()
-    )
+    sender = EmailSender(subscription, "cycle_report", selected_cycle["cycle_uuid"])
     sender.send()
 
     context = {
@@ -171,7 +168,7 @@ def email_subscription_yearly(subscription):
     """Email Yearly Report Task."""
     # Send email
     cycle = subscription["cycles"][-1]["start_date"].isoformat()
-    sender = EmailSender(subscription, "yearly_report", cycle)
+    sender = EmailSender(subscription, "yearly_report", cycle["cycle_uuid"])
     sender.send()
 
     context = {

@@ -1,7 +1,4 @@
 """Webhook Tests."""
-# Standard Python Libraries
-from unittest import mock
-
 # Third-Party Libraries
 from faker import Faker
 
@@ -9,19 +6,6 @@ from faker import Faker
 from src.api.utils import webhooks
 
 fake = Faker()
-
-
-@mock.patch("api.services.CampaignService.push_nested")
-def test_push_webhook(mock_push):
-    """Push Webhook Test."""
-    webhooks.push_webhook(
-        fake.uuid4(),
-        fake.email(),
-        fake.paragraph(),
-        fake.date_time(),
-        fake.paragraph(),
-    )
-    assert mock_push.called
 
 
 def test_check_opened_event():

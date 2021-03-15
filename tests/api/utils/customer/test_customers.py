@@ -3,7 +3,7 @@
 from faker import Faker
 
 # cisagov Libraries
-from src.api.utils.customer import customers
+from src.api.utils import customer
 
 
 def test_get_full_customer_address():
@@ -22,11 +22,11 @@ def test_get_full_customer_address():
         "zip_code": zip_code,
     }
 
-    full_address = customers.get_full_customer_address(customer_info)
+    full_address = customer.get_full_customer_address(customer_info)
     assert full_address == f"{street_address}\n{city}\n{state}\n{zip_code}"
 
     customer_info["address_2"] = street_address
-    full_address = customers.get_full_customer_address(customer_info)
+    full_address = customer.get_full_customer_address(customer_info)
     assert (
         full_address
         == f"{street_address}\n{street_address}\n{city}\n{state}\n{zip_code}"

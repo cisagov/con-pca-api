@@ -20,3 +20,8 @@ class InboundWebhookSerializer(serializers.Serializer):
     time = serializers.DateTimeField()
     message = serializers.CharField()
     details = serializers.CharField()
+    ip_address = serializers.CharField(required=False, default="UNKNOWN")
+    asn_org = serializers.CharField(required=False, default="UNKNOWN")
+    user_agent = serializers.CharField(required=False, default="UNKOWN")
+    city = serializers.CharField(required=False, default="UNKNOWN")
+    country = serializers.CharField(required=False, default="UNKNOWN")

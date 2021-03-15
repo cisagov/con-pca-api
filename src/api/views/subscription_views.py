@@ -10,13 +10,13 @@ from rest_framework.views import APIView
 # cisagov Libraries
 from api.manager import CampaignManager
 from api.services import CampaignService, SubscriptionService
+from api.utils.stats import update_phish_results
 from api.utils.subscription.actions import (
     create_subscription,
     restart_subscription,
     stop_subscription,
 )
 from api.utils.subscription.subscriptions import add_remove_continuous_subscription_task
-from reports.utils import update_phish_results
 
 campaign_manager = CampaignManager()
 
@@ -80,10 +80,6 @@ class SubscriptionView(APIView):
         subscription = subscription_service.get(subscription_uuid)
         if subscription is None:
             return Response(status=status.HTTP_404_NOT_FOUND)
-
-        logging.info(subscription.keys())
-        logging.info(len(subscription.get("campaigns", [])))
-        logging.info(len(subscription.get("cycles", [])))
         update_phish_results(subscription)
         return Response(subscription)
 
