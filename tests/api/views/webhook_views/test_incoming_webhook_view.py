@@ -90,7 +90,7 @@ def test_inbound_webhook_view_post_campaign_created(client):
 
 @pytest.mark.django_db
 @mock.patch("api.services.CampaignService.get_single", return_value=get_campaign_data())
-@mock.patch("api.utils.webhooks.push_webhook")
+@mock.patch("api.services.CampaignService.push_nested")
 @mock.patch("api.services.CampaignService.update")
 @mock.patch("api.services.SubscriptionService.update_nested")
 @mock.patch("api.utils.template.templates.update_target_history", return_value=None)
@@ -116,7 +116,7 @@ def test_inbound_webhook_view_post_email_sent(
 
 @pytest.mark.django_db
 @mock.patch("api.services.CampaignService.get_single", return_value=get_campaign_data())
-@mock.patch("api.utils.webhooks.push_webhook")
+@mock.patch("api.services.CampaignService.push_nested")
 @mock.patch("api.services.CampaignService.update")
 @mock.patch("api.services.SubscriptionService.update_nested")
 @mock.patch("api.utils.template.templates.update_target_history", return_value=None)

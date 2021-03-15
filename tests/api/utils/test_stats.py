@@ -14,7 +14,7 @@ def test_get_cycle_campaigns():
         {"cycle_uuid": "b"},
         {"cycle_uuid": "c"},
     ]
-    result = stats.get_cycle_campaigns(campaigns, "b")
+    result = stats.get_cycle_campaigns("b", campaigns)
     assert result == [{"cycle_uuid": "b"}, {"cycle_uuid": "b"}]
 
 
@@ -37,13 +37,13 @@ def test_get_event():
 
 def test_get_ratios():
     """Test get ratios."""
-    stats = {
+    data = {
         "sent": {"count": 4},
         "opened": {"count": 2},
         "clicked": {"count": 1},
         "reported": {"count": 0},
     }
-    result = stats.get_ratios(stats)
+    result = stats.get_ratios(data)
     assert result["clicked_ratio"] == 0.25
     assert result["opened_ratio"] == 0.5
     assert result["reported_ratio"] == 0
@@ -51,9 +51,12 @@ def test_get_ratios():
 
 def test_get_time_stats_for_event():
     """Test get time stats for event."""
-    diffs = [timedelta(minutes=3), timedelta(minutes=2), timedelta(minutes=1)]
+    data = {
+        "diffs": [timedelta(minutes=3), timedelta(minutes=2), timedelta(minutes=1)],
+        "count": 3,
+    }
 
-    result = stats.get_time_stats_for_event(diffs)
+    result = stats.get_time_stats_for_event(data)
     assert result["count"] == 3
     assert result["average"] == timedelta(seconds=120)
     assert result["minimum"] == timedelta(seconds=60)
@@ -63,59 +66,51 @@ def test_get_time_stats_for_event():
 
 def test_clean_nonhuman_events():
     """Test clean nonhuman events."""
-    sent_time = datetime.now() - timedelta(days=1)
     events = [
-        {"email": "test1@test.com", "message": "Email Sent", "time": sent_time},
+        {"message": "Email Sent"},
         {
-            "email": "test1@test.com",
             "message": "Email Opened",
-            "time": sent_time + timedelta(seconds=59),
+            "asn_org": "OTHER",
         },
         {
-            "email": "test1@test.com",
             "message": "Clicked Link",
-            "time": sent_time + timedelta(minutes=5),
+            "asn_org": "OTHER",
         },
-        {"email": "test2@test.com", "message": "Email Sent", "time": sent_time},
         {
-            "email": "test1@test.com",
             "message": "Email Opened",
-            "time": sent_time + timedelta(minutes=5),
+            "asn_org": "GOOGLE",
         },
         {
-            "email": "test1@test.com",
-            "message": "Clicked Link",
-            "time": sent_time + timedelta(seconds=59),
+            "message": "Email Opened",
+            "asn_org": "GOOGLE",
         },
-        {"email": "test3@test.com", "message": "Email Sent", "time": sent_time},
+        {
+            "message": "Clicked Link",
+            "asn_org": "GOOGLE",
+        },
+        {
+            "message": "Clicked Link",
+            "asn_org": "GOOGLE",
+        },
     ]
     result = stats.clean_nonhuman_events(events)
-    assert len(result) == 5
+    assert len(result) == 3
     assert {
-        "email": "test1@test.com",
         "message": "Email Opened",
-        "time": sent_time + timedelta(seconds=59),
+        "asn_org": "GOOGLE",
     } not in result
 
     assert {
-        "email": "test1@test.com",
         "message": "Clicked Link",
-        "time": sent_time + timedelta(seconds=59),
+        "time": "GOOGLE",
     } not in result
 
 
 def test_is_nonhuman_event():
     """Test is nonhuman event."""
-    sent_time = datetime.now() - timedelta(days=1)
-    event_time = sent_time + timedelta(minutes=1)
-    result = stats.is_nonhuman_event(sent_time, event_time)
+    result = stats.is_nonhuman_event("GOOGLE")
     assert result is True
-    event_time = sent_time + timedelta(minutes=1, seconds=29)
-    result = stats.is_nonhuman_event(sent_time, event_time)
+    result = stats.is_nonhuman_event("AMAZON-02")
     assert result is True
-    event_time = sent_time + timedelta(minutes=2)
-    result = stats.is_nonhuman_event(sent_time, event_time)
-    assert result is False
-    event_time = sent_time + timedelta(minutes=1, seconds=30)
-    result = stats.is_nonhuman_event(sent_time, event_time)
+    result = stats.is_nonhuman_event("SOMETHING_RANDOM")
     assert result is False

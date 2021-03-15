@@ -581,7 +581,7 @@ def group_campaign_timeline_by_email(timeline):
 
 def clean_nonhuman_events(email_timeline: list):
     """Clean nonhuman events from timeline."""
-    for event in email_timeline:
+    for event in email_timeline.copy():
         if is_nonhuman_event(event.get("asn_org", "UNKNOWN")):
             email_timeline.remove(event)
     return email_timeline
