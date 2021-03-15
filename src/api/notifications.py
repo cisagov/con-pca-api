@@ -13,7 +13,7 @@ from django.template.loader import render_to_string
 from api.manager import CampaignManager
 from api.services import DHSContactService, SubscriptionService, TemplateService
 from api.utils.aws_utils import SES
-from api.utils.reports import download_pdf
+from api.utils.reports.pdf import download_pdf
 from api.utils.subscription.static import DEFAULT_X_GOPHISH_CONTACT
 from config import settings
 
@@ -28,12 +28,12 @@ STATIC_DIR = os.path.abspath(f"{BASE_DIR}/static")
 class EmailSender:
     """Class for sending email notifications."""
 
-    def __init__(self, subscription, message_type, cycle=None, cycle_uuid=None):
+    def __init__(self, subscription, message_type, cycle_uuid):
         """Init Email Sender."""
         self.subscription = subscription
         self.cycle_uuid = cycle_uuid
         self.notification = self._set_notification(message_type)
-        self.attachment = self._get_attachment(cycle)
+        self.attachment = self._get_attachment()
         self.dhs_contact = dhs_contact_service.get(
             self.subscription.get("dhs_contact_uuid")
         )
@@ -63,12 +63,11 @@ class EmailSender:
             logging.exception(e)
             raise e
 
-    def _get_attachment(self, cycle):
+    def _get_attachment(self):
         if "report" in self.notification["path"]:
             return download_pdf(
                 report_type=self.notification["link"],
                 uuid=self.subscription["subscription_uuid"],
-                cycle=cycle,
                 cycle_uuid=self.cycle_uuid,
             )
         return None

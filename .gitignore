@@ -17,3 +17,6 @@ src/staticfiles
 created_dummy_data_*.json
 node_modules
 /.vsenv
+
+*.mmdb
+.geoipupdate.lock

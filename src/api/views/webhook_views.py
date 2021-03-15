@@ -1,8 +1,11 @@
 """Webhook View."""
 # Standard Python Libraries
 from datetime import datetime
+import json
+import logging
 
 # Third-Party Libraries
+import geoip2.database
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -56,6 +59,31 @@ class IncomingWebhookView(APIView):
             if campaign["campaign_id"] in cycle["campaigns_in_cycle"]:
                 cycle["phish_results_dirty"] = True
 
+    def parse_detail(self, detail):
+        """Extract info from detail."""
+        return_value = {}
+        if not detail:
+            return return_value
+
+        detail = json.loads(detail)
+        ip_address = detail.get("browser", {}).get("address")
+        if ip_address:
+            return_value["ip_address"] = ip_address
+            try:
+                with geoip2.database.Reader("GeoLite2-ASN.mmdb") as reader:
+                    response = reader.asn(ip_address)
+                    return_value["asn_org"] = response.autonomous_system_organization
+                with geoip2.database.Reader("GeoLite2-City.mmdb") as reader:
+                    response = reader.city(ip_address)
+                    return_value["city"] = response.city.name
+                    return_value["country"] = response.country.name
+            except Exception as e:
+                logging.exception(e)
+                pass
+        if detail.get("browser", {}).get("user-agent"):
+            return_value["user_agent"] = detail["browser"]["user-agent"]
+        return return_value
+
     def __handle_webhook_data(self, data):
         """
         Handle Webhook Data.
@@ -92,26 +120,27 @@ class IncomingWebhookView(APIView):
                 "Submitted Data",
                 "Email Reported",
             ]:
+                data = {
+                    "email": seralized_data["email"],
+                    "details": seralized_data["details"],
+                }
+                data.update(self.parse_detail(seralized_data["details"]))
                 # If there is not a corresponding opened event to a link being clicked, create one
                 if campaign_event == "Clicked Link":
                     if not webhooks.check_opened_event(
                         campaign["timeline"], seralized_data["email"]
                     ):
-                        webhooks.push_webhook(
-                            campaign_uuid=campaign["campaign_uuid"],
-                            email=seralized_data["email"],
-                            message="Email Opened",
-                            time=datetime.now(),
-                            details=seralized_data["details"],
+                        data["time"] = datetime.now()
+                        data["message"] = "Email Opened"
+                        campaign_service.push_nested(
+                            uuid=campaign["campaign_uuid"], field="timeline", data=data
                         )
 
                 # Add Timeline Data
-                webhooks.push_webhook(
-                    campaign_uuid=campaign["campaign_uuid"],
-                    email=seralized_data["email"],
-                    message=seralized_data["message"],
-                    time=format_ztime(seralized_data["time"]),
-                    details=seralized_data["details"],
+                data["message"] = seralized_data["message"]
+                data["time"] = format_ztime(seralized_data["time"])
+                campaign_service.push_nested(
+                    uuid=campaign["campaign_uuid"], field="timeline", data=data
                 )
 
                 # update campaign to be marked as dirty

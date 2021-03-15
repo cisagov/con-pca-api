@@ -7,7 +7,7 @@ import logging
 from simpleeval import simple_eval
 
 # cisagov Libraries
-from api.utils.customer.customers import get_full_customer_address
+from api.utils.customer import get_full_customer_address
 from api.utils.generic import current_season
 from api.utils.tag.tags import get_faker_tags
 

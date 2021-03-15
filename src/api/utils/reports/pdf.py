@@ -10,16 +10,14 @@ import pyppeteer
 from config import settings
 
 
-def download_pdf(report_type, uuid, cycle, cycle_uuid=None):
+def download_pdf(report_type, uuid, cycle_uuid):
     """Download PDF Report."""
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     auth_header = settings.LOCAL_API_KEY if settings.LOCAL_API_KEY else None
 
     response = loop.run_until_complete(
-        _download_pdf(
-            report_type, uuid, cycle, auth_header=auth_header, cycle_uuid=cycle_uuid
-        )
+        _download_pdf(report_type, uuid, cycle_uuid, auth_header=auth_header)
     )
 
     if response == "500":
@@ -31,16 +29,14 @@ def download_pdf(report_type, uuid, cycle, cycle_uuid=None):
     return buffer
 
 
-async def _download_pdf(report_type, uuid, cycle, auth_header=None, cycle_uuid=None):
+async def _download_pdf(report_type, uuid, cycle_uuid, auth_header=None):
     browser = await pyppeteer.connect(
         browserWSEndpoint=f"ws://{settings.BROWSERLESS_ENDPOINT}",
         ignoreHTTPSErrors=True,
     )
     page = await browser.newPage()
 
-    url = f"{settings.REPORTS_ENDPOINT}/reports/{report_type}/{uuid}/{cycle}/true"
-    if cycle_uuid:
-        url += f"/{cycle_uuid}"
+    url = f"{settings.REPORTS_ENDPOINT}/reports/{report_type}/{uuid}/{cycle_uuid}/true"
     if auth_header:
         url += f"?reportToken={auth_header}"
 

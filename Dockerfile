@@ -4,10 +4,6 @@ FROM python:3.9.1
 RUN apt-get update
 RUN apt-get install nginx -y
 
-# Generate certs
-RUN mkdir /certs
-RUN openssl req -x509 -nodes -days 365 -subj "/C=CA/ST=ID/O=INL/CN=localhost" -newkey rsa:2048 -keyout /certs/server.key -out /certs/server.crt
-
 # Set work directory
 RUN mkdir /app/
 WORKDIR /app
@@ -21,7 +17,7 @@ ENV PYTHONPATH "${PYTHONPATH}:/app"
 # Install dependencies
 RUN pip install --upgrade pip
 COPY requirements.txt /app/requirements.txt
-RUN pip install -r requirements.txt --use-feature=2020-resolver --no-deps
+RUN pip install -r requirements.txt --no-deps
 
 # Copy project
 ADD ./src /app
@@ -30,6 +26,13 @@ ADD ./src /app
 COPY etc/nginx.conf /etc/nginx/conf.d/
 RUN rm -rf /etc/nginx/sites-enabled/
 
+# Install GeoIPUpdate
+WORKDIR /tmp
+RUN wget https://github.com/maxmind/geoipupdate/releases/download/v4.6.0/geoipupdate_4.6.0_linux_amd64.tar.gz
+RUN tar -xzf geoipupdate_4.6.0_linux_amd64.tar.gz
+RUN cp geoipupdate_4.6.0_linux_amd64/geoipupdate /usr/local/bin
+COPY etc/GeoIP.conf /usr/local/etc/GeoIP.conf
+
 # Entrypoint
 COPY ./etc/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod a+x /usr/local/bin/entrypoint.sh
@@ -37,5 +40,7 @@ RUN chmod a+x /usr/local/bin/entrypoint.sh
 EXPOSE 8000
 EXPOSE 80
 EXPOSE 443
+
+WORKDIR /app
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

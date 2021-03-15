@@ -31,7 +31,7 @@ def test_email_sender(mock_dhs_contact_get, mock_smtp, mock_template_list):
         "target_email_list": [],
     }
     message_type = "subscription_started"
-    sender = notifications.EmailSender(subscription, message_type)
+    sender = notifications.EmailSender(subscription, message_type, None)
     assert sender.subscription == subscription
     assert sender.cycle_uuid is None
     assert sender.notification["type"] == "Cycle Start Notification"

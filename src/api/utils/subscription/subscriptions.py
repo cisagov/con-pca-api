@@ -79,7 +79,7 @@ def get_subscription_cycles(
 
 def send_stop_notification(subscription):
     """Send Stop Notification."""
-    sender = EmailSender(subscription, "subscription_stopped")
+    sender = EmailSender(subscription, "subscription_stopped", None)
     sender.send()
 
 

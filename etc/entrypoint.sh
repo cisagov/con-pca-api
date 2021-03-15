@@ -1,5 +1,9 @@
 #!/bin/bash
 
+echo "AccountID $MAXMIND_USER_ID" >> /usr/local/etc/GeoIP.conf
+echo "LicenseKey $MAXMIND_LICENSE_KEY" >> /usr/local/etc/GeoIP.conf
+geoipupdate
+
 echo "Collecting static files"
 python manage.py collectstatic --no-input
 
