@@ -137,7 +137,7 @@ def personalize_template(customer_info, template_data, sub_data, tag_list):
 
         personalized_template_data.append(
             {
-                "template_uuid": template["template_uuid"],
+                "template_uuid": template.get("template_uuid"),
                 "data": cleantext,
                 "name": template_unique_name,
                 "from_address": from_address,
