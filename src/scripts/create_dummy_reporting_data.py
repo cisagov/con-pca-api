@@ -188,8 +188,8 @@ def generate_webhooks_for_target(
 ):
     """Generate Webhooks."""
     if decpection_rate < 0:
-        random.seed()
-        decpection_rate = random.random()
+        random.seed()  # nosec
+        decpection_rate = random.random()  # nosec
     webhooks = []
     if start_date == -1:
         last_event_time = datetime.utcnow()
@@ -200,14 +200,14 @@ def generate_webhooks_for_target(
     )
     if decpection_rate > 0.3 and decpection_rate < 0.95:
         last_event_time = get_date_in_range(
-            last_event_time, end_date, random.random(), 0.5
+            last_event_time, end_date, random.random(), 0.5  # nosec
         )
         webhooks.append(
             build_webhook(campaign_id, target["email"], last_event_time, "Email Opened")
         )
         if decpection_rate > 0.6 and decpection_rate < 0.9:
             last_event_time = get_date_in_range(
-                last_event_time, end_date, random.random()
+                last_event_time, end_date, random.random()  # nosec
             )
             webhooks.append(
                 build_webhook(
@@ -216,7 +216,7 @@ def generate_webhooks_for_target(
             )
         if decpection_rate > 0.75 and decpection_rate < 0.85:
             last_event_time = get_date_in_range(
-                last_event_time, end_date, random.random()
+                last_event_time, end_date, random.random()  # nosec
             )
             webhooks.append(
                 build_webhook(
@@ -224,7 +224,9 @@ def generate_webhooks_for_target(
                 )
             )
     if decpection_rate > 0.85:
-        last_event_time = get_date_in_range(last_event_time, end_date, random.random())
+        last_event_time = get_date_in_range(
+            last_event_time, end_date, random.random()  # nosec
+        )
         webhooks.append(
             build_webhook(
                 campaign_id, target["email"], last_event_time, "Email Reported"

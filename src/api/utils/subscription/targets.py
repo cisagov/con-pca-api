@@ -59,7 +59,9 @@ def assign_targets(sub_level):
         available_templates = get_target_available_templates(
             target["email"], history, sub_level["template_uuids"]
         )
-        selected_template = random.choice(available_templates)
+
+        # Ignore this bandit error, not used for security/cryptography purposes.
+        selected_template = random.choice(available_templates)  # nosec
 
         if not sub_level["template_targets"].get(selected_template):
             sub_level["template_targets"][selected_template] = []

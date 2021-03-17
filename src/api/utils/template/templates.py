@@ -3,6 +3,9 @@
 import logging
 import random
 
+# Third-Party Libraries
+from faker import Faker
+
 # cisagov Libraries
 from api.manager import CampaignManager
 from api.services import CustomerService, TagService, TargetHistoryService
@@ -14,6 +17,7 @@ campaign_manager = CampaignManager()
 target_history_service = TargetHistoryService()
 customer_service = CustomerService()
 tag_service = TagService()
+fake = Faker()
 
 deception_level = {"high": 3, "moderate": 2, "low": 1}
 
@@ -58,12 +62,13 @@ def validate_template(template):
     )[0]
 
     try:
-        rn = random.randint(0, 5000)
+        # Ignore this bandit error, not used for security/cryptography purposes.
+        rn = random.randint(0, 5000)  # nosec
         sending_profile = campaign_manager.create_sending_profile(
             name=f"valid_test_{rn}",
-            username="test",
-            password="test",
-            host="test.com",
+            username=fake.user_name(),
+            password=fake.password(),
+            host=fake.hostname(),
             interface_type="SMTP",
             from_address=get_campaign_from_address(
                 {"from_address": "test@test.com"}, personalized_data["from_address"]

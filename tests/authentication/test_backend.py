@@ -26,7 +26,7 @@ def test_gophish_authenticate():
     auth = backend.JSONWebTokenAuthentication()
     user, token = auth.authenticate(request)
     assert user == {"username": "gophish", "groups": {"develop"}}
-    assert token == "Empty token"
+    assert token == "Empty token"  # nosec
 
 
 @mock.patch.dict(os.environ, {"COGNITO_DEPLOYMENT_MODE": "Development"})
@@ -37,7 +37,7 @@ def test_develop_auth():
     user, token = auth.authenticate(request)
 
     assert user == {"username": "developer user", "groups": {"develop"}}
-    assert token == "Empty token"
+    assert token == "Empty token"  # nosec
 
 
 @mock.patch.dict(os.environ, {"COGNITO_DEPLOYMENT_MODE": "Production"})
@@ -48,7 +48,7 @@ def test_local_auth():
     auth = backend.JSONWebTokenAuthentication()
     user, token = auth.authenticate(request)
     assert user == {"username": "api", "groups": {"develop"}}
-    assert token == "Empty token"
+    assert token == "Empty token"  # nosec
 
 
 @mock.patch.dict(os.environ, {"COGNITO_DEPLOYMENT_MODE": "Production"})
@@ -59,7 +59,7 @@ def test_reports_auth():
     auth = backend.JSONWebTokenAuthentication()
     user, token = auth.authenticate(request)
     assert user == {"usuername": "reports", "groups": {"develop"}}
-    assert token == "Empty token"
+    assert token == "Empty token"  # nosec
 
 
 @mock.patch.dict(os.environ, {"COGNITO_DEPLOYMENT_MODE": "Production"})

@@ -1,5 +1,6 @@
 """Tag Utils."""
 # Standard Python Libraries
+import logging
 import re
 
 # Third-Party Libraries
@@ -48,6 +49,7 @@ def get_faker_tags(with_values: bool = False):
                     tag["value"] = str(getattr(fake, func)())
 
                 tags.append(tag)
-        except Exception:
+        except Exception as e:
+            logging.exception(e)
             pass
     return tags

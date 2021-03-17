@@ -1,3 +1,4 @@
+---
 name: Pull Request
 
 on:
@@ -39,5 +40,8 @@ jobs:
         run: cp etc/env.dist .env
       - name: Pytest/Coverage
         run: |
-          coverage run --omit *.venv*,*test* -m pytest ./tests/ --disable-warnings
+          coverage run \
+            --omit *.venv*,*test* \
+            -m pytest ./tests/
+            --disable-warnings
           coverage report
