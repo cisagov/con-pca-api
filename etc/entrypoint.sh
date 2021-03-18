@@ -13,6 +13,7 @@ python scripts/init.py &
 echo "start nginx service"
 service nginx start
 
+echo "Starting Con-PCA API"
 if [[ $DEBUG -eq 1 ]]
 then
   echo "Run server"
