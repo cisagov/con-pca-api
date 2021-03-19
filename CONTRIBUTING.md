@@ -15,7 +15,7 @@ all of which should be in this repository.
 
 If you want to report a bug or request a new feature, the most direct
 method is to [create an
-issue](https://github.com/cisagov/skeleton-docker/issues) in this
+issue](https://github.com/cisagov/con-pca-api/issues) in this
 repository.  We recommend that you first search through existing
 issues (both open and closed) to check if your particular issue has
 already been reported.  If it has then you might want to add a comment
