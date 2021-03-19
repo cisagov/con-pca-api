@@ -25,7 +25,7 @@ maxminddb==2.0.3
 multidict==5.1.0
 packaging==20.4
 pycparser==2.20
-pyee==8.1.0
+pyee==8.0.0
 PyJWT==1.7.1
 pymongo==3.11.2
 pyparsing==2.4.7
