@@ -63,6 +63,7 @@ def validate_template(template):
 
     try:
         # Ignore this bandit error, not used for security/cryptography purposes.
+        # https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b311-random
         rn = random.randint(0, 5000)  # nosec
         sending_profile = campaign_manager.create_sending_profile(
             name=f"valid_test_{rn}",

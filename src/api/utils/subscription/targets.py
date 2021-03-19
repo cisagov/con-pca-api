@@ -61,6 +61,7 @@ def assign_targets(sub_level):
         )
 
         # Ignore this bandit error, not used for security/cryptography purposes.
+        # https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b311-random
         selected_template = random.choice(available_templates)  # nosec
 
         if not sub_level["template_targets"].get(selected_template):
