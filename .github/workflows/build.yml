@@ -261,7 +261,7 @@ jobs:
           restore-keys: |
             ${{ env.BASE_CACHE_KEY }}
       # A .env file is required in the base directory for
-      # tests to run.
+      # tests to run successfully.
       - name: Copy env.dist
         run: cp etc/env.dist .env
       - name: Install dependencies
