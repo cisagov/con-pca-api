@@ -111,9 +111,9 @@ can create and configure the Python virtual environment with these
 commands:
 
 ```console
-cd skeleton-docker
-pyenv virtualenv <python_version_to_use> skeleton-docker
-pyenv local skeleton-docker
+cd con-pca-api
+pyenv virtualenv <python_version_to_use> con-pca-api
+pyenv local con-pca-api
 pip install --requirement requirements-dev.txt
 ```
 
