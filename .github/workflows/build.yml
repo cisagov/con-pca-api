@@ -59,7 +59,7 @@ jobs:
           restore-keys: |
             ${{ env.BASE_CACHE_KEY }}
       # A .env file is required in the base directory for
-      # docker-compose check to pass.
+      # docker-compose-check pre-commit hook to pass.
       - name: Copy env.dist
         run: cp etc/env.dist .env
       - name: Install dependencies
