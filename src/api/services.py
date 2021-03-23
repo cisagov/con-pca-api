@@ -42,6 +42,7 @@ class DBService:
         """Validate Serializer."""
         try:
             serializer.is_valid(raise_exception=True)
+            return serializer.validated_data
         except serializers.ValidationError as e:
             logging.exception(e)
             raise e
@@ -81,7 +82,7 @@ class DBService:
     def save(self, data):
         """Save."""
         serializer = self.save_serializer(data=data)
-        self.validate_serializer(serializer)
+        data = self.validate_serializer(serializer)
 
         # Add on uuid field
         data[self.uuid_field] = str(uuid4())
@@ -97,7 +98,7 @@ class DBService:
     def update(self, uuid, data):
         """Update."""
         serializer = self.update_serializer(data=data)
-        self.validate_serializer(serializer)
+        data = self.validate_serializer(serializer)
 
         # Update updated fields
         data["last_update_by"] = "dev user"
