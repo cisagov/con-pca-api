@@ -30,6 +30,7 @@ class ReportView(APIView):
     def get(self, request, subscription_uuid, cycle_uuid):
         """Get."""
         subscription = subscription_service.get(subscription_uuid)
+        stats.set_cycle_year_increments(subscription["cycles"])
         cycle = stats.get_subscription_cycle(subscription, cycle_uuid)
         customer = customer_service.get(subscription["customer_uuid"])
         cisa_contact = dhs_contact_service.get(subscription["dhs_contact_uuid"])

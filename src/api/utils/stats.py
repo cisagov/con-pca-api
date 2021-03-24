@@ -5,7 +5,7 @@ import statistics
 
 # cisagov Libraries
 from api.services import CampaignService, CustomerService, SubscriptionService
-from api.utils.generic import batch, format_timedelta, get_date_quarter, parse_time
+from api.utils.generic import batch, format_timedelta, parse_time
 
 customer_service = CustomerService()
 subscription_service = SubscriptionService()
@@ -731,13 +731,26 @@ def detail_deception_to_simple(decep_stats, level_name, level_num):
     }
 
 
-def set_cycle_quarters(cycles):
+def set_cycle_year_increments(cycles):
     """Set Cycle Quarters."""
     cycles = sorted(cycles, key=lambda cycle: cycle["start_date"])
-    for num, cycle in enumerate(cycles, 0):
-        quarter = get_date_quarter(cycle["start_date"])
-        cycle["quarter"] = f"{cycle['start_date'].year} - {quarter}"
-        cycle["increment"] = num
+    year = 0
+    cycle_quarter = 1
+    cycle_increment = 1
+    for cycle in cycles:
+        cycle["year"] = cycle["start_date"].year
+        if cycle["year"] != year:
+            year = cycle["year"]
+            cycle_quarter = 1
+        cycle["quarter"] = f"{year} - {cycle_quarter}"
+        cycle["increment"] = cycle_increment
+        cycle_quarter += 1
+        cycle_increment += 1
+
+    # for num, cycle in enumerate(cycles, 0):
+    #     quarter = get_date_quarter(cycle["start_date"])
+    #     cycle["quarter"] = f"{cycle['start_date'].year} - {quarter}"
+    #     cycle["increment"] = num
 
 
 def get_yearly_cycles(yearly_start, yearly_end, cycles):
