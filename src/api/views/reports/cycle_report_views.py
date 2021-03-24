@@ -129,7 +129,7 @@ def get_cycle_metrics(cycle, cycle_stats, region_stats):
         "total_users_targeted": cycle["total_targets"],
         # Sent
         "emails_sent_over_target_count": round(
-            cycle_stats["stats_all"]["sent"]["count"] / cycle["total_targets"], 0
+            cycle_stats["stats_all"]["sent"]["count"] / cycle["total_targets"], 2
         ),
         "number_of_emails_sent_overall": cycle_stats["stats_all"]["sent"]["count"],
         # Clicked
