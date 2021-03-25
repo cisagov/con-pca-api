@@ -590,7 +590,7 @@ def clean_nonhuman_events(email_timeline: list):
 
 def is_nonhuman_event(asn_org):
     """Determine if nonhuman event."""
-    if asn_org in ["GOOGLE", "AMAZON-02"]:
+    if asn_org in ["GOOGLE", "AMAZON-02", "MICROSOFT-CORP-MSN-AS-BLOCK"]:
         return True
     return False
 
@@ -617,6 +617,11 @@ def generate_cycle_phish_results(subscription, cycle):
             lambda x: x["cycle_uuid"] == cycle["cycle_uuid"], subscription["campaigns"]
         )
     )
+
+    if cycle.get("override_total_reported", -1) > -1:
+        split_override_reports(
+            cycle["override_total_reported"], campaigns, cycle["total_targets"]
+        )
 
     for campaign in campaigns:
         stats = process_campaign(campaign)
