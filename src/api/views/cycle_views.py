@@ -45,6 +45,12 @@ class CycleReportedView(APIView):
             delete_reported_emails(subscription, data)
             update_reported_emails(subscription, data)
 
+        subscription_service.update_nested(
+            uuid=subscription["subscription_uuid"],
+            field="cycles.$.phish_results_dirty",
+            data=True,
+            params={"cycles.cycle_uuid": data["cycle_uuid"]},
+        )
         emails_reported_list = get_reported_emails(subscription)
         serializer = CycleEmailReportedListSerializer(emails_reported_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
