@@ -144,7 +144,9 @@ def get_cycle_metrics(cycle, cycle_stats, region_stats):
         "avg_time_to_first_click": format_timedelta(
             cycle_stats["stats_all"]["clicked"]["average"]
         ),
-        "median_time_to_first_click": cycle_stats["stats_all"]["clicked"]["median"],
+        "median_time_to_first_click": format_timedelta(
+            cycle_stats["stats_all"]["clicked"]["median"]
+        ),
         "number_of_clicked_emails": cycle_stats["stats_all"]["clicked"]["count"],
         "percent_of_clicked_emails": stats.ratio_to_percent(
             stats.get_ratio(

@@ -360,7 +360,7 @@ def click_time_vs_report_time(campaigns):
     return_val = []
     for campaign in campaigns:
         first_click = campaign["clicked"]["minimum"]
-        first_report = campaign["clicked"]["minimum"]
+        first_report = campaign["reported"]["minimum"]
         difference = "N/A"
         if first_click > timedelta() and first_report > timedelta():
             difference = format_timedelta(first_click - first_report)
