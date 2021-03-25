@@ -16,6 +16,7 @@ from api.services import (
 from api.utils import stats
 from api.utils.contact import format_contact_name
 from api.utils.customer import get_company
+from api.utils.generic import format_timedelta
 from api.utils.reports.pdf import download_pdf
 
 subscription_service = SubscriptionService()
@@ -30,6 +31,7 @@ class ReportView(APIView):
     def get(self, request, subscription_uuid, cycle_uuid):
         """Get."""
         subscription = subscription_service.get(subscription_uuid)
+        stats.set_cycle_year_increments(subscription["cycles"])
         cycle = stats.get_subscription_cycle(subscription, cycle_uuid)
         customer = customer_service.get(subscription["customer_uuid"])
         cisa_contact = dhs_contact_service.get(subscription["dhs_contact_uuid"])
@@ -129,16 +131,28 @@ def get_cycle_metrics(cycle, cycle_stats, region_stats):
         "total_users_targeted": cycle["total_targets"],
         # Sent
         "emails_sent_over_target_count": round(
-            cycle_stats["stats_all"]["sent"]["count"] / cycle["total_targets"], 0
+            cycle_stats["stats_all"]["sent"]["count"] / cycle["total_targets"], 2
         ),
         "number_of_emails_sent_overall": cycle_stats["stats_all"]["sent"]["count"],
+        "percent_of_phished_users": stats.ratio_to_percent(
+            stats.get_ratio(
+                cycle_stats["stats_all"]["sent"]["count"],
+                cycle["total_targets"],
+            )
+        ),
         # Clicked
-        "avg_time_to_first_click": cycle_stats["stats_all"]["clicked"]["average"],
-        "median_time_to_first_click": cycle_stats["stats_all"]["clicked"]["median"],
+        "avg_time_to_first_click": format_timedelta(
+            cycle_stats["stats_all"]["clicked"]["average"]
+        ),
+        "median_time_to_first_click": format_timedelta(
+            cycle_stats["stats_all"]["clicked"]["median"]
+        ),
         "number_of_clicked_emails": cycle_stats["stats_all"]["clicked"]["count"],
-        "percent_of_clicked_emails": stats.get_percent_rate(
-            cycle_stats["stats_all"]["clicked"]["count"],
-            cycle_stats["stats_all"]["sent"]["count"],
+        "percent_of_clicked_emails": stats.ratio_to_percent(
+            stats.get_ratio(
+                cycle_stats["stats_all"]["clicked"]["count"],
+                cycle_stats["stats_all"]["sent"]["count"],
+            )
         ),
         # Opened
         "number_of_opened_emails": cycle_stats["stats_all"]["opened"]["count"],
@@ -146,13 +160,17 @@ def get_cycle_metrics(cycle, cycle_stats, region_stats):
         "median_time_to_open": cycle_stats["stats_all"]["opened"]["median"],
         "longest_time_to_open": cycle_stats["stats_all"]["opened"]["maximum"],
         # Reports
-        "avg_time_to_first_report": cycle_stats["stats_all"]["reported"]["average"],
-        "number_of_reports_to_helpdesk": cycle_stats["stats_all"]["reported"]["count"],
-        "percent_report_rate": stats.get_percent_rate(
-            cycle_stats["stats_all"]["reported"]["count"],
-            cycle_stats["stats_all"]["sent"]["count"],
+        "avg_time_to_first_report": format_timedelta(
+            cycle_stats["stats_all"]["reported"]["average"]
         ),
-        "reports_to_clicks_ratio": stats.get_percent_rate(
+        "number_of_reports_to_helpdesk": cycle_stats["stats_all"]["reported"]["count"],
+        "percent_report_rate": stats.ratio_to_percent(
+            stats.get_ratio(
+                cycle_stats["stats_all"]["reported"]["count"],
+                cycle_stats["stats_all"]["sent"]["count"],
+            )
+        ),
+        "reports_to_clicks_ratio": stats.get_ratio(
             cycle_stats["stats_all"]["reported"]["count"],
             cycle_stats["stats_all"]["clicked"]["count"],
         ),
@@ -176,7 +194,7 @@ def get_cycle_metrics(cycle, cycle_stats, region_stats):
         # Template
         "most_successful_template": stats.campaign_templates_to_string(
             stats.get_most_successful_campaigns(
-                cycle_stats["campaign_results"], "reported"
+                cycle_stats["campaign_results"], "clicked"
             )
         ),
     }

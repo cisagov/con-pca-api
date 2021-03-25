@@ -94,8 +94,3 @@ def batch(input_list, n):
         batches.append(input_list[int(last) : int(last + avg)])
         last += avg
     return batches
-
-
-def get_date_quarter(d: datetime):
-    """Get the quarter for a given date."""
-    return (d.month - 1) // 3 + 1
