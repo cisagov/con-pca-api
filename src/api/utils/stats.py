@@ -500,6 +500,7 @@ def process_campaign(campaign: dict, template=None, nonhuman=False):
             "relevancy": template["relevancy"],
             "sender": template["sender"],
         }
+        return_val["deception_score"] = template["deception_score"]
     grouped_timeline = group_campaign_timeline_by_email(campaign_timeline)
     override_total_reported = campaign.get("override_total_reported", -1)
     if override_total_reported > -1:
