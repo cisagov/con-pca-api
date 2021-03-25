@@ -16,6 +16,7 @@ from api.services import (
 from api.utils import stats
 from api.utils.contact import format_contact_name
 from api.utils.customer import get_company
+from api.utils.generic import format_timedelta
 from api.utils.reports.pdf import download_pdf
 
 subscription_service = SubscriptionService()
@@ -140,7 +141,9 @@ def get_cycle_metrics(cycle, cycle_stats, region_stats):
             )
         ),
         # Clicked
-        "avg_time_to_first_click": cycle_stats["stats_all"]["clicked"]["average"],
+        "avg_time_to_first_click": format_timedelta(
+            cycle_stats["stats_all"]["clicked"]["average"]
+        ),
         "median_time_to_first_click": cycle_stats["stats_all"]["clicked"]["median"],
         "number_of_clicked_emails": cycle_stats["stats_all"]["clicked"]["count"],
         "percent_of_clicked_emails": stats.ratio_to_percent(
@@ -155,7 +158,9 @@ def get_cycle_metrics(cycle, cycle_stats, region_stats):
         "median_time_to_open": cycle_stats["stats_all"]["opened"]["median"],
         "longest_time_to_open": cycle_stats["stats_all"]["opened"]["maximum"],
         # Reports
-        "avg_time_to_first_report": cycle_stats["stats_all"]["reported"]["average"],
+        "avg_time_to_first_report": format_timedelta(
+            cycle_stats["stats_all"]["reported"]["average"]
+        ),
         "number_of_reports_to_helpdesk": cycle_stats["stats_all"]["reported"]["count"],
         "percent_report_rate": stats.ratio_to_percent(
             stats.get_ratio(
