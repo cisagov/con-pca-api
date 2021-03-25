@@ -177,7 +177,7 @@ def get_cycle_metrics(cycle, cycle_stats, region_stats):
         # Template
         "most_successful_template": stats.campaign_templates_to_string(
             stats.get_most_successful_campaigns(
-                cycle_stats["campaign_results"], "reported"
+                cycle_stats["campaign_results"], "clicked"
             )
         ),
     }
