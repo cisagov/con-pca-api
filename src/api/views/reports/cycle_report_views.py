@@ -133,6 +133,12 @@ def get_cycle_metrics(cycle, cycle_stats, region_stats):
             cycle_stats["stats_all"]["sent"]["count"] / cycle["total_targets"], 2
         ),
         "number_of_emails_sent_overall": cycle_stats["stats_all"]["sent"]["count"],
+        "percent_of_phished_users": stats.ratio_to_percent(
+            stats.get_ratio(
+                cycle_stats["stats_all"]["sent"]["count"],
+                cycle["total_targets"],
+            )
+        ),
         # Clicked
         "avg_time_to_first_click": cycle_stats["stats_all"]["clicked"]["average"],
         "median_time_to_first_click": cycle_stats["stats_all"]["clicked"]["median"],
