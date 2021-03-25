@@ -178,14 +178,14 @@ def clean_stats(stats: dict):
             stats[stat_key][event_key].pop("diffs", None)
 
 
-def get_percent_rate(numerator, denominator):
-    """Get percentage from numerator and denominator."""
+def get_ratio(numerator, denominator):
+    """Get ratio from numerator and denominator."""
     return (
         0 if not denominator else round(float(numerator or 0) / float(denominator), 2)
     )
 
 
-def ratio_to_percent(ratio, round_val=2):
+def ratio_to_percent(ratio, round_val=0):
     """Convert a ratio to a percentage."""
     if ratio:
         return "{:.{prec}f}".format(ratio * 100, prec=round_val)

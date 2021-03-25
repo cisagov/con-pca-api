@@ -137,9 +137,11 @@ def get_cycle_metrics(cycle, cycle_stats, region_stats):
         "avg_time_to_first_click": cycle_stats["stats_all"]["clicked"]["average"],
         "median_time_to_first_click": cycle_stats["stats_all"]["clicked"]["median"],
         "number_of_clicked_emails": cycle_stats["stats_all"]["clicked"]["count"],
-        "percent_of_clicked_emails": stats.get_percent_rate(
-            cycle_stats["stats_all"]["clicked"]["count"],
-            cycle_stats["stats_all"]["sent"]["count"],
+        "percent_of_clicked_emails": stats.ratio_to_percent(
+            stats.get_ratio(
+                cycle_stats["stats_all"]["clicked"]["count"],
+                cycle_stats["stats_all"]["sent"]["count"],
+            )
         ),
         # Opened
         "number_of_opened_emails": cycle_stats["stats_all"]["opened"]["count"],
@@ -149,11 +151,13 @@ def get_cycle_metrics(cycle, cycle_stats, region_stats):
         # Reports
         "avg_time_to_first_report": cycle_stats["stats_all"]["reported"]["average"],
         "number_of_reports_to_helpdesk": cycle_stats["stats_all"]["reported"]["count"],
-        "percent_report_rate": stats.get_percent_rate(
-            cycle_stats["stats_all"]["reported"]["count"],
-            cycle_stats["stats_all"]["sent"]["count"],
+        "percent_report_rate": stats.ratio_to_percent(
+            stats.get_ratio(
+                cycle_stats["stats_all"]["reported"]["count"],
+                cycle_stats["stats_all"]["sent"]["count"],
+            )
         ),
-        "reports_to_clicks_ratio": stats.get_percent_rate(
+        "reports_to_clicks_ratio": stats.get_ratio(
             cycle_stats["stats_all"]["reported"]["count"],
             cycle_stats["stats_all"]["clicked"]["count"],
         ),
