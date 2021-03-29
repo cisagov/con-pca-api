@@ -112,33 +112,39 @@ def get_monthly_metrics(cycle, monthly_stats):
         "number_of_emails_sent_overall": monthly_stats["stats_all"]["sent"]["count"],
         # Clicked
         "number_of_clicked_emails": monthly_stats["stats_all"]["clicked"]["count"],
-        "percent_of_clicked_emails": stats.get_percent_rate(
-            monthly_stats["stats_all"]["clicked"]["count"],
-            monthly_stats["stats_all"]["sent"]["count"],
+        "percent_of_clicked_emails": stats.ratio_to_percent(
+            stats.get_ratio(
+                monthly_stats["stats_all"]["clicked"]["count"],
+                monthly_stats["stats_all"]["sent"]["count"],
+            )
         ),
         "avg_time_to_first_click": monthly_stats["stats_all"]["clicked"]["average"],
         # Opened
         "number_of_opened_emails": monthly_stats["stats_all"]["opened"]["count"],
         # Phished Users
         "number_of_phished_users_overall": cycle["total_targets"],
-        "percent_of_phished_users_overall": stats.get_percent_rate(
-            monthly_stats["stats_all"]["clicked"]["count"],
-            cycle["total_targets"],
+        "percent_of_phished_users_overall": stats.ratio_to_percent(
+            stats.get_ratio(
+                monthly_stats["stats_all"]["clicked"]["count"],
+                cycle["total_targets"],
+            )
         ),
         # Reports
         "number_of_reports_to_helpdesk": monthly_stats["stats_all"]["reported"][
             "count"
         ],
-        "percent_report_rate": stats.get_percent_rate(
-            monthly_stats["stats_all"]["reported"]["count"],
-            monthly_stats["stats_all"]["sent"]["count"],
+        "percent_report_rate": stats.ratio_to_percent(
+            stats.get_ratio(
+                monthly_stats["stats_all"]["reported"]["count"],
+                monthly_stats["stats_all"]["sent"]["count"],
+            )
         ),
-        "reports_to_clicks_ratio": stats.get_percent_rate(
+        "reports_to_clicks_ratio": stats.get_ratio(
             monthly_stats["stats_all"]["reported"]["count"],
             monthly_stats["stats_all"]["clicked"]["count"],
         ),
         "avg_time_to_first_report": monthly_stats["stats_all"]["reported"]["average"],
-        "ratio_reports_to_clicks": stats.get_percent_rate(
+        "ratio_reports_to_clicks": stats.get_ratio(
             monthly_stats["stats_all"]["reported"]["count"],
             monthly_stats["stats_all"]["clicked"]["count"],
         ),

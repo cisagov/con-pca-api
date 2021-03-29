@@ -113,7 +113,7 @@ def get_yearly_stats(subscription, cycle):
     yearly_cycles = stats.get_yearly_cycles(
         yearly_start, yearly_end, subscription["cycles"]
     )
-    stats.set_cycle_quarters(yearly_cycles)
+    stats.set_cycle_year_increments(yearly_cycles)
     total_targets = 0
 
     campaign_stats = []

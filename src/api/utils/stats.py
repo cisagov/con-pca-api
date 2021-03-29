@@ -5,7 +5,7 @@ import statistics
 
 # cisagov Libraries
 from api.services import CampaignService, CustomerService, SubscriptionService
-from api.utils.generic import batch, format_timedelta, get_date_quarter, parse_time
+from api.utils.generic import batch, format_timedelta, parse_time
 
 customer_service = CustomerService()
 subscription_service = SubscriptionService()
@@ -178,14 +178,14 @@ def clean_stats(stats: dict):
             stats[stat_key][event_key].pop("diffs", None)
 
 
-def get_percent_rate(numerator, denominator):
-    """Get percentage from numerator and denominator."""
+def get_ratio(numerator, denominator):
+    """Get ratio from numerator and denominator."""
     return (
         0 if not denominator else round(float(numerator or 0) / float(denominator), 2)
     )
 
 
-def ratio_to_percent(ratio, round_val=2):
+def ratio_to_percent(ratio, round_val=0):
     """Convert a ratio to a percentage."""
     if ratio:
         return "{:.{prec}f}".format(ratio * 100, prec=round_val)
@@ -360,7 +360,7 @@ def click_time_vs_report_time(campaigns):
     return_val = []
     for campaign in campaigns:
         first_click = campaign["clicked"]["minimum"]
-        first_report = campaign["clicked"]["minimum"]
+        first_report = campaign["reported"]["minimum"]
         difference = "N/A"
         if first_click > timedelta() and first_report > timedelta():
             difference = format_timedelta(first_click - first_report)
@@ -500,6 +500,7 @@ def process_campaign(campaign: dict, template=None, nonhuman=False):
             "relevancy": template["relevancy"],
             "sender": template["sender"],
         }
+        return_val["deception_score"] = template["deception_score"]
     grouped_timeline = group_campaign_timeline_by_email(campaign_timeline)
     override_total_reported = campaign.get("override_total_reported", -1)
     if override_total_reported > -1:
@@ -589,7 +590,7 @@ def clean_nonhuman_events(email_timeline: list):
 
 def is_nonhuman_event(asn_org):
     """Determine if nonhuman event."""
-    if asn_org in ["GOOGLE", "AMAZON-02"]:
+    if asn_org in ["GOOGLE", "AMAZON-02", "MICROSOFT-CORP-MSN-AS-BLOCK"]:
         return True
     return False
 
@@ -616,6 +617,11 @@ def generate_cycle_phish_results(subscription, cycle):
             lambda x: x["cycle_uuid"] == cycle["cycle_uuid"], subscription["campaigns"]
         )
     )
+
+    if cycle.get("override_total_reported", -1) > -1:
+        split_override_reports(
+            cycle["override_total_reported"], campaigns, cycle["total_targets"]
+        )
 
     for campaign in campaigns:
         stats = process_campaign(campaign)
@@ -731,13 +737,26 @@ def detail_deception_to_simple(decep_stats, level_name, level_num):
     }
 
 
-def set_cycle_quarters(cycles):
+def set_cycle_year_increments(cycles):
     """Set Cycle Quarters."""
     cycles = sorted(cycles, key=lambda cycle: cycle["start_date"])
-    for num, cycle in enumerate(cycles, 0):
-        quarter = get_date_quarter(cycle["start_date"])
-        cycle["quarter"] = f"{cycle['start_date'].year} - {quarter}"
-        cycle["increment"] = num
+    year = 0
+    cycle_quarter = 1
+    cycle_increment = 1
+    for cycle in cycles:
+        cycle["year"] = cycle["start_date"].year
+        if cycle["year"] != year:
+            year = cycle["year"]
+            cycle_quarter = 1
+        cycle["quarter"] = f"{year} - {cycle_quarter}"
+        cycle["increment"] = cycle_increment
+        cycle_quarter += 1
+        cycle_increment += 1
+
+    # for num, cycle in enumerate(cycles, 0):
+    #     quarter = get_date_quarter(cycle["start_date"])
+    #     cycle["quarter"] = f"{cycle['start_date'].year} - {quarter}"
+    #     cycle["increment"] = num
 
 
 def get_yearly_cycles(yearly_start, yearly_end, cycles):

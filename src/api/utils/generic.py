@@ -87,15 +87,7 @@ def format_json(o):
 
 def batch(input_list, n):
     """Divide list evenly through n batches."""
-    batches = []
-    avg = len(input_list) / float(n)
-    last = 0.0
-    while last < len(input_list):
-        batches.append(input_list[int(last) : int(last + avg)])
-        last += avg
-    return batches
-
-
-def get_date_quarter(d: datetime):
-    """Get the quarter for a given date."""
-    return (d.month - 1) // 3 + 1
+    groups = [[] for i in range(n)]
+    for i, val in enumerate(input_list):
+        groups[i % len(groups)].append(val)
+    return groups
