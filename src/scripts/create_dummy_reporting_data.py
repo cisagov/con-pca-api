@@ -183,13 +183,14 @@ def main():
                     target_on += 1
 
 
-def generate_webhooks_for_target(
-    target, campaign_id, start_date=-1, decpection_rate=-1
-):
+def generate_webhooks_for_target(target, campaign_id, start_date=-1, deception_rate=-1):
     """Generate Webhooks."""
-    if decpection_rate < 0:
+    # Everywhere nosec is defined it's ignoring bandit random error, not used for security/cryptography purposes.
+    # https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b311-random
+    if deception_rate < 0:
+
         random.seed()  # nosec
-        decpection_rate = random.random()  # nosec
+        deception_rate = random.random()  # nosec
     webhooks = []
     if start_date == -1:
         last_event_time = datetime.utcnow()
@@ -198,14 +199,14 @@ def generate_webhooks_for_target(
     webhooks.append(
         build_webhook(campaign_id, target["email"], last_event_time, "Email Sent")
     )
-    if decpection_rate > 0.3 and decpection_rate < 0.95:
+    if deception_rate > 0.3 and deception_rate < 0.95:
         last_event_time = get_date_in_range(
             last_event_time, end_date, random.random(), 0.5  # nosec
         )
         webhooks.append(
             build_webhook(campaign_id, target["email"], last_event_time, "Email Opened")
         )
-        if decpection_rate > 0.6 and decpection_rate < 0.9:
+        if deception_rate > 0.6 and deception_rate < 0.9:
             last_event_time = get_date_in_range(
                 last_event_time, end_date, random.random()  # nosec
             )
@@ -214,7 +215,7 @@ def generate_webhooks_for_target(
                     campaign_id, target["email"], last_event_time, "Clicked Link"
                 )
             )
-        if decpection_rate > 0.75 and decpection_rate < 0.85:
+        if deception_rate > 0.75 and deception_rate < 0.85:
             last_event_time = get_date_in_range(
                 last_event_time, end_date, random.random()  # nosec
             )
@@ -223,7 +224,7 @@ def generate_webhooks_for_target(
                     campaign_id, target["email"], last_event_time, "Submitted Data"
                 )
             )
-    if decpection_rate > 0.85:
+    if deception_rate > 0.85:
         last_event_time = get_date_in_range(
             last_event_time, end_date, random.random()  # nosec
         )
