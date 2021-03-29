@@ -14,6 +14,11 @@ from rest_framework import exceptions
 # cisagov Libraries
 from src.authentication import backend
 
+# Throughout the tests, there are "nosec" defined on multiple assertions
+# This is because bandit throws B105: hardcoded_password_string error
+# https://bandit.readthedocs.io/en/latest/plugins/b105_hardcoded_password_string.html
+# As these are tests and these tokens are not actually hardcoded, it is fine.
+
 
 def test_gophish_authenticate():
     """Test Gophish Auth."""
