@@ -15,9 +15,10 @@ ENV PYTHONUNBUFFERED 1
 ENV PYTHONPATH "${PYTHONPATH}:/app"
 
 # Install dependencies
+ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
 RUN pip install --upgrade pip
 COPY requirements.txt /app/requirements.txt
-RUN pip install -r requirements.txt --no-deps
+RUN pip install -r requirements.txt
 
 # Copy project
 ADD ./src /app
