@@ -9,13 +9,14 @@ RUN mkdir /app/
 WORKDIR /app
 
 # Set environment variables
+# CRYPTOGRAPHY_DONT_BUILD_RUST required for building linux/s390x,linux/ppc64le,linux/armv7,linux/armv6
+ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
 ENV DJANGO_SETTINGS_MODULE "config.settings"
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONPATH "${PYTHONPATH}:/app"
 
 # Install dependencies
-ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
 RUN pip install --upgrade pip
 COPY requirements.txt /app/requirements.txt
 RUN pip install -r requirements.txt
