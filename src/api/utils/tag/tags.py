@@ -27,27 +27,67 @@ def get_faker_tags(with_values: bool = False):
     """Get Faker Tags."""
     fake = Faker()
     tags = []
-    for func in dir(fake):
-        try:
-            if (
-                callable(getattr(fake, func))
-                and not func.startswith("_")
-                and not func.startswith("add_")
-                and not func.startswith("get_")
-                and not func.startswith("seed_")
-                and not func.startswith("set_")
-                and func not in ["format", "parse", "provider", "binary", "tar", "zip"]
-            ):
-                tag = {
-                    "data_source": f"faker_{func}".lower(),
-                    "description": f"Faker generated {func}",
-                    "tag": f"<%FAKER_{func.upper()}%>",
-                    "tag_type": "con-pca-eval",
-                }
-                if with_values:
-                    tag["value"] = str(getattr(fake, func)())
 
-                tags.append(tag)
-        except Exception:
-            pass
+    funcs = [
+        "address",
+        "am_pm",
+        "building_number",
+        "city",
+        "color_name",
+        "company",
+        "company_email",
+        "country",
+        "credit_card_number",
+        "credit_card_provider",
+        "credit_card_security_code",
+        "day_of_month",
+        "day_of_week",
+        "domain_name",
+        "email",
+        "first_name",
+        "first_name_female",
+        "first_name_male",
+        "hostname",
+        "invalid_ssn",
+        "job",
+        "last_name",
+        "last_name_female",
+        "last_name_male",
+        "license_plate",
+        "month",
+        "month_name",
+        "name",
+        "name_female",
+        "name_male",
+        "password",
+        "phone_number",
+        "postalcode",
+        "random_digit",
+        "random_int",
+        "random_letter",
+        "random_lowercase_letter",
+        "random_number",
+        "random_uppercase_letter",
+        "state",
+        "state_abbr",
+        "street_address",
+        "street_name",
+        "street_suffix",
+        "user_name",
+        "year",
+        "zip",
+        "zipcode",
+    ]
+
+    for func in funcs:
+        tag = {
+            "data_source": f"faker_{func}".lower(),
+            "description": f"Faker generated {func}",
+            "tag": f"<%FAKER_{func.upper()}%>",
+            "tag_type": "con-pca-eval",
+        }
+        if with_values:
+            tag["value"] = str(getattr(fake, func)())
+
+        tags.append(tag)
     return tags
