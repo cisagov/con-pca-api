@@ -1,4 +1,4 @@
-FROM python:3.9.1
+FROM python:3.9.4
 
 # Nginx
 RUN apt-get update
