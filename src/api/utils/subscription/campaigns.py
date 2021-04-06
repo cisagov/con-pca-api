@@ -128,7 +128,8 @@ def stop_campaign(campaign, cleanup=False):
     # Delete Campaign
     try:
         campaign_manager.delete_campaign(campaign_id=campaign["campaign_id"])
-    except Exception:
+    except Exception as e:
+        logging.exception(e)
         pass
 
     # Delete Templates
@@ -136,20 +137,23 @@ def stop_campaign(campaign, cleanup=False):
         campaign_manager.delete_email_template(
             template_id=campaign["email_template_id"]
         )
-    except Exception:
+    except Exception as e:
+        logging.exception(e)
         pass
 
     # Delete Sending Profile
     try:
         campaign_manager.delete_sending_profile(smtp_id=campaign["smtp"]["id"])
-    except Exception:
+    except Exception as e:
+        logging.exception(e)
         pass
 
     # Delete User Groups
     for group in campaign["groups"]:
         try:
             campaign_manager.delete_user_group(group_id=group["id"])
-        except Exception:
+        except Exception as e:
+            logging.exception(e)
             pass
 
     if not cleanup:

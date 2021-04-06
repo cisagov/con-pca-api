@@ -1,6 +1,7 @@
 """App Init Script."""
 # Standard Python Libraries
 import json
+import logging
 import os
 import time
 
@@ -221,7 +222,8 @@ def get_faker_tags(with_values: bool = False):
                     tag["value"] = str(getattr(fake, func)())
 
                 tags.append(tag)
-        except Exception:
+        except Exception as e:
+            logging.exception(e)
             pass
     return tags
 

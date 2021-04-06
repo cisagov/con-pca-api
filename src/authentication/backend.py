@@ -32,14 +32,12 @@ class JSONWebTokenAuthentication(BaseAuthentication):
             ).hexdigest()
             if digest == gp_sign:
                 user = {"username": "gophish", "groups": {"develop"}}
-                token = "Empty token"
-                return (user, token)
+                return (user, "Empty token")
 
         # Development Authentication
         if os.environ.get("COGNITO_DEPLOYMENT_MODE") == "Development":
             user = {"username": "developer user", "groups": {"develop"}}
-            token = "Empty token"
-            return (user, token)
+            return (user, "Empty token")
 
         # Local Authentication
         if (
@@ -47,8 +45,7 @@ class JSONWebTokenAuthentication(BaseAuthentication):
             and get_authorization_header(request).decode() == settings.LOCAL_API_KEY
         ):
             user = {"username": "api", "groups": {"develop"}}
-            token = "Empty token"
-            return (user, token)
+            return (user, "Empty token")
 
         # Reports authentication with bearer
         if (
@@ -57,8 +54,7 @@ class JSONWebTokenAuthentication(BaseAuthentication):
             == settings.LOCAL_API_KEY
         ):
             user = {"usuername": "reports", "groups": {"develop"}}
-            token = "Empty token"
-            return (user, token)
+            return (user, "Empty token")
 
         jwt_token = self.get_jwt_token(request)
         if jwt_token is None:

@@ -21,3 +21,4 @@ node_modules
 
 *.mmdb
 .geoipupdate.lock
+Dockerfile-x
