@@ -1,15 +1,16 @@
 """App Init Script."""
 # Standard Python Libraries
 import json
-import logging
 import os
 import time
 
 # Third-Party Libraries
-from faker import Faker
 from gophish import Gophish
 from gophish.models import SMTP, Page, Webhook
 import requests
+
+# cisagov Libraries
+from api.utils.tag.tags import get_faker_tags
 
 API_KEY = None
 URL = None
@@ -195,37 +196,6 @@ def create_tags():
             print(f"Tag with uuid {tag['tag_definition_uuid']} has been deleted.")
 
     print("Tags initialized.")
-
-
-def get_faker_tags(with_values: bool = False):
-    """Init Faker Tags."""
-    fake = Faker()
-    tags = []
-    for func in dir(fake):
-        try:
-            if (
-                callable(getattr(fake, func))
-                and not func.startswith("_")
-                and not func.startswith("add_")
-                and not func.startswith("get_")
-                and not func.startswith("seed_")
-                and not func.startswith("set_")
-                and func not in ["format", "parse", "provider", "binary", "tar", "zip"]
-            ):
-                tag = {
-                    "data_source": f"faker_{func}".lower(),
-                    "description": f"Faker generated {func}",
-                    "tag": f"<%FAKER_{func.upper()}%>",
-                    "tag_type": "con-pca-eval",
-                }
-                if with_values:
-                    tag["value"] = str(getattr(fake, func)())
-
-                tags.append(tag)
-        except Exception as e:
-            logging.exception(e)
-            pass
-    return tags
 
 
 def get_headers():
