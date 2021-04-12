@@ -7,8 +7,8 @@ from unittest import mock
 from faker import Faker
 
 # cisagov Libraries
+from config.settings import DELAY_MINUTES
 from src.api.utils.subscription import subscriptions
-from src.api.utils.subscription.static import CYCLE_MINUTES, DELAY_MINUTES
 
 fake = Faker()
 
@@ -124,22 +124,20 @@ def test_calculate_subscription_start_end_date():
     """Test Start End Date."""
     # less than current date
     start_date = datetime.now() - timedelta(days=3)
-    start, end = subscriptions.calculate_subscription_start_end_date(start_date)
+    start, end = subscriptions.calculate_subscription_start_end_date(start_date, 60)
     assert start > (start_date + timedelta(days=3))
-    assert end > (start_date + timedelta(days=3) + timedelta(minutes=CYCLE_MINUTES))
+    assert end > (start_date + timedelta(days=3) + timedelta(minutes=60))
 
     # greater than today's date
     start_date = datetime.now() + timedelta(days=3)
-    start, end = subscriptions.calculate_subscription_start_end_date(start_date)
+    start, end = subscriptions.calculate_subscription_start_end_date(start_date, 60)
     assert start == start_date + timedelta(minutes=DELAY_MINUTES)
-    assert end == start_date + timedelta(minutes=DELAY_MINUTES) + timedelta(
-        minutes=CYCLE_MINUTES
-    )
+    assert end == start_date + timedelta(minutes=DELAY_MINUTES) + timedelta(minutes=60)
 
     # passing string to function
     start_date = datetime.now() + timedelta(hours=1)
     start, end = subscriptions.calculate_subscription_start_end_date(
-        start_date.isoformat()
+        start_date.isoformat(), 60
     )
     assert start <= start_date + timedelta(minutes=DELAY_MINUTES)
     assert start > start_date - timedelta(minutes=(DELAY_MINUTES + 3))
@@ -183,11 +181,11 @@ def test_get_subscription_cycles():
 def test_init_subscription_tasks():
     """Test init subscription tasks."""
     start = datetime.now()
-    result = subscriptions.init_subscription_tasks(start, True)
+    result = subscriptions.init_subscription_tasks(start, True, 60)
     assert len(result) == 5
     assert result[-1]["message_type"] == "start_new_cycle"
 
-    result = subscriptions.init_subscription_tasks(start, False)
+    result = subscriptions.init_subscription_tasks(start, False, 60)
     assert len(result) == 5
     assert result[-1]["message_type"] == "stop_subscription"
 

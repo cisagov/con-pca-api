@@ -14,7 +14,6 @@ from api.manager import CampaignManager
 from api.services import DHSContactService, SubscriptionService, TemplateService
 from api.utils.aws_utils import SES
 from api.utils.reports.pdf import download_pdf
-from api.utils.subscription.static import DEFAULT_X_GOPHISH_CONTACT
 from config import settings
 
 dhs_contact_service = DHSContactService()
@@ -199,7 +198,7 @@ class EmailSender:
             "email_count": email_count,
             "dhs_contact": dhs_contact,
             "phishing_domain": phishing_email.split("@")[-1].replace(">", ""),
-            "x_gophish_contact": DEFAULT_X_GOPHISH_CONTACT,
+            "x_gophish_contact": settings.DEFAULT_X_GOPHISH_CONTACT,
         }
 
     def _set_to(self):

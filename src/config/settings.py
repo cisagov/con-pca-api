@@ -194,6 +194,13 @@ REST_FRAMEWORK = {
 REPORTS_ENDPOINT = os.environ.get("REPORTS_ENDPOINT", "pca-web:4200")
 BROWSERLESS_ENDPOINT = os.environ.get("BROWSERLESS_ENDPOINT", "pca-browserless:3000")
 
+# Subscription
+# The amount of minutes to delay the subscription start by.
+DELAY_MINUTES = int(os.environ.get("DELAY_MINUTES", 3))
+
+# The default contact to use for the DEFAULT_X_GOPHISH_CONTACT email header.
+DEFAULT_X_GOPHISH_CONTACT = os.environ.get("DEFAULT_X_GOPHISH_CONTACT")
+
 # GoPhish
 GP_URL = os.environ.get("GP_URL", "")
 GP_API_KEY = os.environ.get("GP_API_KEY", "")

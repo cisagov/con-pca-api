@@ -46,7 +46,9 @@ def create_subscription(subscription):
             "executed": False,
         }
     ]
-    _, end_date = calculate_subscription_start_end_date(subscription.get("start_date"))
+    _, end_date = calculate_subscription_start_end_date(
+        subscription.get("start_date"), subscription.get("cycle_length_minutes", 129600)
+    )
 
     subscription["status"] = "Queued"
     response = subscription_service.save(subscription)
@@ -69,7 +71,9 @@ def restart_subscription(subscription_uuid):
         ],
     }
 
-    _, end_date = calculate_subscription_start_end_date(subscription.get("start_date"))
+    _, end_date = calculate_subscription_start_end_date(
+        subscription.get("start_date"), subscription.get("cycle_length_minutes", 129600)
+    )
 
     return subscription_service.update(subscription_uuid, data)
 
@@ -83,7 +87,7 @@ def start_subscription(subscription_uuid, new_cycle=False):
 
     # calculate start and end date to subscription
     start_date, end_date = calculate_subscription_start_end_date(
-        subscription.get("start_date")
+        subscription.get("start_date"), subscription.get("cycle_length_minutes", 129600)
     )
 
     # Get details for the customer that is attached to the subscription
@@ -175,7 +179,9 @@ def start_subscription(subscription_uuid, new_cycle=False):
     if len(subscription["tasks"]) <= 1:
         subscription["tasks"].extend(
             init_subscription_tasks(
-                start_date, subscription.get("continuous_subscription")
+                start_date,
+                subscription.get("continuous_subscription"),
+                subscription.get("cycle_length_minutes", 129600),
             )
         )
 
