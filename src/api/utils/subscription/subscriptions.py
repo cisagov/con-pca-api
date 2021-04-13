@@ -9,12 +9,7 @@ import dateutil.parser
 # cisagov Libraries
 from api.notifications import EmailSender
 from api.services import SubscriptionService
-from api.utils.subscription.static import (
-    CYCLE_MINUTES,
-    DELAY_MINUTES,
-    MONTHLY_MINUTES,
-    YEARLY_MINUTES,
-)
+from config import settings
 
 subscription_service = SubscriptionService()
 
@@ -32,7 +27,7 @@ def create_subscription_name(customer: dict):
         return f"{customer['identifier']}_{max(ids) + 1}"
 
 
-def calculate_subscription_start_end_date(start_date):
+def calculate_subscription_start_end_date(start_date, cycle_length_minutes):
     """Calculate Subscription Start and End Date."""
     now = datetime.now()
 
@@ -47,8 +42,8 @@ def calculate_subscription_start_end_date(start_date):
     if start_date < now:
         start_date = now
 
-    start_date = start_date + timedelta(minutes=DELAY_MINUTES)
-    end_date = start_date + timedelta(minutes=CYCLE_MINUTES)
+    start_date = start_date + timedelta(minutes=settings.DELAY_MINUTES)
+    end_date = start_date + timedelta(minutes=cycle_length_minutes)
 
     return start_date, end_date
 
@@ -83,20 +78,24 @@ def send_stop_notification(subscription):
     sender.send()
 
 
-def init_subscription_tasks(start_date, continuous_subscription):
+def init_subscription_tasks(start_date, continuous_subscription, cycle_length_minutes):
     """Create Initial Subscription Tasks."""
     message_types = {
         "start_subscription_email": start_date - timedelta(minutes=5),
-        "monthly_report": start_date + timedelta(minutes=MONTHLY_MINUTES),
-        "cycle_report": start_date + timedelta(minutes=CYCLE_MINUTES),
-        "yearly_report": start_date + timedelta(minutes=YEARLY_MINUTES),
+        "monthly_report": start_date
+        + timedelta(minutes=get_monthly_minutes(cycle_length_minutes)),
+        "cycle_report": start_date + timedelta(minutes=cycle_length_minutes),
+        "yearly_report": start_date
+        + timedelta(minutes=get_yearly_minutes(cycle_length_minutes)),
     }
 
     if continuous_subscription:
-        message_types["start_new_cycle"] = start_date + timedelta(minutes=CYCLE_MINUTES)
+        message_types["start_new_cycle"] = start_date + timedelta(
+            minutes=cycle_length_minutes
+        )
     else:
         message_types["stop_subscription"] = start_date + timedelta(
-            minutes=CYCLE_MINUTES
+            minutes=cycle_length_minutes
         )
 
     tasks = []
@@ -172,3 +171,35 @@ def add_remove_continuous_subscription_task(
                 data=new_cycle_task,
                 params={"tasks.task_uuid": new_cycle_task["task_uuid"]},
             )
+
+
+def get_monthly_minutes(cycle_minutes: int) -> int:
+    """
+    Get minutes for how often to send status reports.
+
+    This is asking for cycle minutes, as there may be additional
+    logic put in later that requires shorter intervals to send
+    status reports based on cycle length.
+    """
+    return 43200  # month in minutes
+
+
+def get_yearly_minutes(cycle_minutes: int) -> int:
+    """
+    Get minutes for how often to send yearly reports.
+
+    This is asking for cycle minutes, as there may be additional
+    logic put in later that requires shorter intervals to send
+    yearly reports based on cycle length.
+    """
+    return 525600  # year in minutes
+
+
+def get_campaign_minutes(cycle_minutes: int) -> int:
+    """
+    Get minutes for a gophish campaign.
+
+    A campaign should run 2/3 of the length of the cycle
+    for reporting purposes and giving targets time to click links.
+    """
+    return int(cycle_minutes * 2 / 3)

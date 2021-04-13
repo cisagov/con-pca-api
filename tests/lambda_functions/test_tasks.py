@@ -24,10 +24,10 @@ def test_update_task(mock_update):
 def test_add_new_task(mock_push):
     """Test Add New Task."""
     now = datetime.now()
-    handler.add_new_task(fake.uuid4(), now, "monthly_report")
+    handler.add_new_task(fake.uuid4(), now, "monthly_report", 60)
     assert mock_push.call_count == 1
 
-    handler.add_new_task(fake.uuid4(), now, "nomessage")
+    handler.add_new_task(fake.uuid4(), now, "nomessage", 60)
     assert mock_push.call_count == 1
 
 
