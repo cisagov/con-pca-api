@@ -1,6 +1,7 @@
 """Subscription Utils."""
 # Standard Python Libraries
 from datetime import datetime, timedelta
+import math
 from uuid import uuid4
 
 # Third-Party Libraries
@@ -195,11 +196,19 @@ def get_yearly_minutes(cycle_minutes: int) -> int:
     return 525600  # year in minutes
 
 
-def get_campaign_minutes(cycle_minutes: int) -> int:
+def get_campaign_minutes(cycle_minutes: int, reverse: bool = False) -> int:
     """
     Get minutes for a gophish campaign.
 
     A campaign should run 2/3 of the length of the cycle
     for reporting purposes and giving targets time to click links.
+
+    If reverse is provided, you call function with campaign_minutes,
+    and cycle minutes are instead returned.
+
+    cycle_minutes * (2/3) = campaign_minutes
+    campaign_minutes / (2/3) = cycle_minutes
     """
+    if reverse:
+        return math.ceil(cycle_minutes / (2 / 3))
     return int(cycle_minutes * 2 / 3)
