@@ -66,6 +66,11 @@ urlpatterns = [
         subscription_views.SubscriptionTargetCacheView.as_view(),
         name="subscription_update_target_cache_api",
     ),
+    path(
+        "v1/subscription/valid/",
+        subscription_views.SubscriptionValidView.as_view(),
+        name="subscription_valid_api",
+    ),
     # API Reports
     path(
         "v1/reports/<subscription_uuid>/monthly/<cycle_uuid>/",
