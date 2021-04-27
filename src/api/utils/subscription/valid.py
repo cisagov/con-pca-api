@@ -26,26 +26,22 @@ def is_subscription_valid(target_count, cycle_minutes):
             needed_targets, needed_minutes = get_needed_hourly_rate(
                 campaign_minutes, target_count, needed_hourly_rate=100
             )
-            return (
-                False,
-                f"""
-                There cannot be more than 100 emails per hour.
-                You will need to reduce targets to {needed_targets},
-                or increase minutes to {needed_minutes}.
-                """,
+            message = (
+                "There cannot be more than 100 emails per hour."
+                f"You will need to reduce targets to {needed_targets}, "
+                f"or increase minutes to {needed_minutes}."
             )
+            return False, message
         if daily_rate > 1000:
             needed_targets, needed_minutes = get_needed_daily_rate(
                 campaign_minutes, target_count, needed_daily_rate=1000
             )
-            return (
-                False,
-                f"""
-                There cannot be more than 1000 emails per day.
-                You will need to reduce targets to {needed_targets},
-                or reduce minutes to {needed_minutes}.
-                """,
+            message = (
+                "There cannot be more than 1000 emails per day. "
+                f"You will need to reduce targets to {needed_targets}, "
+                f"or increase minutes to {needed_minutes}."
             )
+            return False, message
     else:
         percent_increase = get_daily_percent_increase(current_daily_rate, daily_rate)
         new_daily_rate = current_daily_rate + daily_rate
@@ -58,14 +54,12 @@ def is_subscription_valid(target_count, cycle_minutes):
                 current_daily_rate,
                 needed_percent_increase=20,
             )
-            return (
-                False,
-                f"""
-                There cannot be more than a 20% increase in a 24 hour window.
-                You will need to reduce targets to {needed_targets},
-                or reduce minutes to {needed_minutes}.
-                """,
+            message = (
+                "There cannot be more than a 20% increase in a 24 hour window. "
+                f"You will need to reduce targets to {needed_targets}, "
+                f"or increase minutes to {needed_minutes}."
             )
+            return False, message
 
     return True, ""
 
@@ -114,7 +108,7 @@ def get_needed_daily_rate(
     needed_campaign_minutes = needed_campaign_days * 60 * 24
     needed_cycle_minutes = get_campaign_minutes(needed_campaign_minutes, reverse=True)
 
-    return needed_target_count, needed_cycle_minutes
+    return int(needed_target_count), needed_cycle_minutes
 
 
 def get_needed_percent_increase(
