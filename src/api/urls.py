@@ -37,6 +37,11 @@ urlpatterns = [
         name="subscriptions_list_api",
     ),
     path(
+        "v1/subscriptions/valid/",
+        subscription_views.SubscriptionValidView.as_view(),
+        name="subscription_valid_api",
+    ),
+    path(
         "v1/subscription/<subscription_uuid>/",
         subscription_views.SubscriptionView.as_view(),
         name="subscriptions_get_api",

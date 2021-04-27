@@ -184,7 +184,7 @@ class SubscriptionService(DBService):
             {self.uuid_field: str(uuid)}, self.convert_fields(fields)
         )
 
-        if not fields or "campaigns" in fields:
+        if subscription and (not fields or "campaigns" in fields):
             subscription["campaigns"] = self.campaign_service.get_list(
                 {"subscription_uuid": str(uuid)}
             )

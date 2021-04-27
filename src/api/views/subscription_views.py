@@ -17,6 +17,7 @@ from api.utils.subscription.actions import (
     stop_subscription,
 )
 from api.utils.subscription.subscriptions import add_remove_continuous_subscription_task
+from api.utils.subscription.valid import is_subscription_valid
 
 campaign_manager = CampaignManager()
 
@@ -177,3 +178,18 @@ class SubscriptionTargetCacheView(APIView):
         )
 
         return Response(resp, status=status.HTTP_202_ACCEPTED)
+
+
+class SubscriptionValidView(APIView):
+    """SubscriptionValidView."""
+
+    def post(self, request):
+        """Post."""
+        data = request.data.copy()
+        is_valid, message = is_subscription_valid(
+            data["target_count"], data["cycle_minutes"]
+        )
+        if is_valid:
+            return Response("Subscription is valid", status=status.HTTP_200_OK)
+        else:
+            return Response(message, status=status.HTTP_400_BAD_REQUEST)
