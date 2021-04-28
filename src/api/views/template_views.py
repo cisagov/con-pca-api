@@ -24,6 +24,7 @@ from api.services import (
 from api.utils.subscription.actions import stop_subscription
 from api.utils.subscription.campaigns import get_campaign_from_address
 from api.utils.template.personalize import personalize_template
+from api.utils.template.selector import select_templates
 from api.utils.template.templates import validate_template
 
 campaign_manager = CampaignManager()
@@ -209,3 +210,12 @@ class TemplateEmailImportView(APIView):
                 convert_link=post_data["convert_link"],
             )
         )
+
+
+class TemplateSelectView(APIView):
+    """TemplateSelectView."""
+
+    def get(self, request):
+        """Get."""
+        templates = template_service.get_list({"retired": False})
+        return Response(select_templates(templates))
