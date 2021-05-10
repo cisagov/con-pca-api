@@ -57,6 +57,14 @@ class SubscriptionTasksSerializer(serializers.Serializer):
     error = serializers.CharField(required=False, allow_null=True, allow_blank=True)
 
 
+class SubscriptionTemplatesSelectedSerializer(serializers.Serializer):
+    """SubscriptionTemplatesSelectedSerializer."""
+
+    low = serializers.ListField()
+    moderate = serializers.ListField()
+    high = serializers.ListField()
+
+
 class SubscriptionSerializer(serializers.Serializer):
     """SubscriptionSerializer."""
 
@@ -129,6 +137,7 @@ class SubscriptionPostSerializer(serializers.Serializer):
         required=True, many=True
     )
     tasks = SubscriptionTasksSerializer(many=True, required=True)
+    templates_selected = SubscriptionTemplatesSelectedSerializer(required=True)
     sending_profile_name = serializers.CharField()
     active = serializers.BooleanField()
     stagger_emails = serializers.BooleanField(default=True)
@@ -160,6 +169,7 @@ class SubscriptionPatchSerializer(serializers.Serializer):
         required=False, many=True
     )
     tasks = SubscriptionTasksSerializer(many=True, required=False)
+    templates_selected = SubscriptionTemplatesSelectedSerializer(required=False)
     templates_selected_uuid_list = serializers.ListField(
         child=serializers.UUIDField(), required=False
     )
@@ -193,6 +203,7 @@ class SubscriptionQuerySerializer(serializers.Serializer):
     start_date = serializers.DateTimeField(required=False)
     end_date = serializers.DateTimeField(required=False)
     status = serializers.CharField(required=False)
+    templates_selected = SubscriptionTemplatesSelectedSerializer(required=False)
     templates_selected_uuid_list = serializers.ListField(required=False)
     dhs_contact_uuid = serializers.CharField(required=False)
     sending_profile_name = serializers.CharField(required=False)
