@@ -8,7 +8,7 @@ def test_group_template():
     result = selector.group_template({"deception_score": 1})
     assert result == "low"
     result = selector.group_template({"deception_score": 4})
-    assert result == "medium"
+    assert result == "moderate"
     result = selector.group_template({"deception_score": 6})
     assert result == "high"
 
@@ -19,7 +19,7 @@ def test_select_templates():
     # Append low templates
     for i in range(0, 3):
         templates.append({"deception_score": 1})
-    # Append medium templates
+    # Append moderate templates
     for i in range(0, 7):
         templates.append({"deception_score": 4})
     # Append high templates
@@ -28,5 +28,5 @@ def test_select_templates():
 
     result = selector.select_templates(templates)
     assert len(result["low"]) == 3
-    assert len(result["medium"]) == 5
+    assert len(result["moderate"]) == 5
     assert len(result["high"]) == 5

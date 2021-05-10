@@ -815,8 +815,8 @@ def cycle_stats_to_click_rate_vs_report_rate(cycles):
     """Convert to click rate vs report rate."""
     low_click_rate = []
     low_report_rate = []
-    medium_click_rate = []
-    medium_report_rate = []
+    moderate_click_rate = []
+    moderate_report_rate = []
     high_click_rate = []
     high_report_rate = []
 
@@ -839,7 +839,7 @@ def cycle_stats_to_click_rate_vs_report_rate(cycles):
                 ],
             },
         )
-        medium_click_rate.insert(
+        moderate_click_rate.insert(
             0,
             {
                 "name": cycle["start_date"],
@@ -848,7 +848,7 @@ def cycle_stats_to_click_rate_vs_report_rate(cycles):
                 ],
             },
         )
-        medium_report_rate.insert(
+        moderate_report_rate.insert(
             0,
             {
                 "name": cycle["start_date"],
@@ -879,8 +879,8 @@ def cycle_stats_to_click_rate_vs_report_rate(cycles):
     ret_val = [
         {"name": "L-CR", "series": low_click_rate},
         {"name": "L-RR", "series": low_report_rate},
-        {"name": "M-CR", "series": medium_click_rate},
-        {"name": "M-RR", "series": medium_report_rate},
+        {"name": "M-CR", "series": moderate_click_rate},
+        {"name": "M-RR", "series": moderate_report_rate},
         {"name": "H-CR", "series": high_click_rate},
         {"name": "H-RR", "series": high_report_rate},
     ]

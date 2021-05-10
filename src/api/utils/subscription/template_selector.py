@@ -18,13 +18,13 @@ def get_num_templates_per_batch(diversity_level="moderate"):
 
 def group_templates(templates):
     """Group Templates by score."""
-    template_score_to_level = {"high": 5, "medium": 3, "low": 0}
-    template_groups = {"low": [], "medium": [], "high": []}
+    template_score_to_level = {"high": 5, "moderate": 3, "low": 0}
+    template_groups = {"low": [], "moderate": [], "high": []}
     for template in templates:
-        if template["deception_score"] < template_score_to_level["medium"]:
+        if template["deception_score"] < template_score_to_level["moderate"]:
             template_groups["low"].append(template)
         elif template["deception_score"] < template_score_to_level["high"]:
-            template_groups["medium"].append(template)
+            template_groups["moderate"].append(template)
         else:
             template_groups["high"].append(template)
 
@@ -46,9 +46,9 @@ def get_relevant_templates(templates, subscription, template_count: int):
         t.get("template_uuid"): t.get("descriptive_words")
         for t in template_groups["low"]
     }
-    template_data_medium = {
+    template_data_moderate = {
         t.get("template_uuid"): t.get("descriptive_words")
-        for t in template_groups["medium"]
+        for t in template_groups["moderate"]
     }
     template_data_high = {
         t.get("template_uuid"): t.get("descriptive_words")
@@ -57,11 +57,11 @@ def get_relevant_templates(templates, subscription, template_count: int):
 
     # gets order of templates ranked from best to worst
     relevant_templates_low = randomize_templates(template_data_low)
-    relevant_templates_medium = randomize_templates(template_data_medium)
+    relevant_templates_moderate = randomize_templates(template_data_moderate)
     relevant_templates_high = randomize_templates(template_data_high)
     relevant_templates = {
         "low": relevant_templates_low,
-        "medium": relevant_templates_medium,
+        "moderate": relevant_templates_moderate,
         "high": relevant_templates_high,
     }
 
@@ -71,7 +71,7 @@ def get_relevant_templates(templates, subscription, template_count: int):
 def batch_templates(templates, num_per_batch, sub_levels: dict):
     """Batch_templates."""
     sub_levels["high"]["template_uuids"] = templates["high"][:num_per_batch]
-    sub_levels["moderate"]["template_uuids"] = templates["medium"][:num_per_batch]
+    sub_levels["moderate"]["template_uuids"] = templates["moderate"][:num_per_batch]
     sub_levels["low"]["template_uuids"] = templates["low"][:num_per_batch]
 
     return sub_levels

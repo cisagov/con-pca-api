@@ -16,11 +16,11 @@ def select_templates(templates: list, count: int = 5) -> dict:
 
 def group_template(template: dict) -> str:
     """Return group for a template."""
-    levels = {"high": 5, "medium": 3, "low": 0}
+    levels = {"high": 5, "moderate": 3, "low": 0}
     score = template["deception_score"]
-    if score < levels["medium"]:
+    if score < levels["moderate"]:
         return "low"
     elif score < levels["high"]:
-        return "medium"
+        return "moderate"
     else:
         return "high"

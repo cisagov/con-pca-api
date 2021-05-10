@@ -53,7 +53,7 @@ def test_group_templates():
     templates = create_templates()
     result = template_selector.group_templates(templates)
     assert len(result["low"]) == 15
-    assert len(result["medium"]) == 15
+    assert len(result["moderate"]) == 15
     assert len(result["high"]) == 15
 
 
@@ -61,7 +61,7 @@ def test_batch_templates():
     """Test Batch Templates."""
     templates = {
         "high": list(range(1, 15)),
-        "medium": list(range(1, 15)),
+        "moderate": list(range(1, 15)),
         "low": list(range(1, 15)),
     }
 
