@@ -11,6 +11,7 @@ from api.services import (
     CustomerService,
     LandingPageService,
     SubscriptionService,
+    TemplateService,
 )
 from api.utils.subscription.campaigns import generate_campaigns, stop_campaigns
 from api.utils.subscription.subscriptions import (
@@ -22,7 +23,7 @@ from api.utils.subscription.subscriptions import (
     send_stop_notification,
 )
 from api.utils.subscription.targets import batch_targets
-from api.utils.subscription.template_selector import personalize_template_batch
+from api.utils.template.personalize import personalize_templates
 from api.utils.template.templates import deception_level
 
 # GoPhish Campaign Manager
@@ -31,6 +32,7 @@ customer_service = CustomerService()
 subscription_service = SubscriptionService()
 landing_page_service = LandingPageService()
 campaign_service = CampaignService()
+template_service = TemplateService()
 
 
 def create_subscription(subscription):
@@ -81,7 +83,7 @@ def restart_subscription(subscription_uuid):
 def start_subscription(subscription_uuid, new_cycle=False):
     """Start Subscription."""
     subscription = subscription_service.get(subscription_uuid)
-
+    templates = template_service.get_list({"retired": False})
     if new_cycle:
         stop_campaigns(subscription["campaigns"])
 
@@ -106,33 +108,33 @@ def start_subscription(subscription_uuid, new_cycle=False):
             "start_date": date_list[0],
             "end_date": end_date,
             "template_targets": {},
-            "template_uuids": [],
+            "template_uuids": subscription["templates_selected"]["high"],
             "personalized_templates": [],
             "targets": [],
-            "deception_level": deception_level.get("high"),
+            "deception_level": deception_level["high"],
         },
         "moderate": {
             "start_date": date_list[1],
             "end_date": end_date,
             "template_targets": {},
-            "template_uuids": [],
+            "template_uuids": subscription["templates_selected"]["moderate"],
             "personalized_templates": [],
             "targets": [],
-            "deception_level": deception_level.get("moderate"),
+            "deception_level": deception_level["moderate"],
         },
         "low": {
             "start_date": date_list[2],
             "end_date": end_date,
             "template_targets": {},
-            "template_uuids": [],
+            "template_uuids": subscription["templates_selected"]["low"],
             "personalized_templates": [],
             "targets": [],
-            "deception_level": deception_level.get("low"),
+            "deception_level": deception_level["low"],
         },
     }
 
     # get personalized and selected template_uuids
-    sub_levels = personalize_template_batch(customer, subscription, sub_levels)
+    sub_levels = personalize_templates(customer, subscription, templates, sub_levels)
 
     # get targets assigned to each group
     batch_targets(subscription, sub_levels)

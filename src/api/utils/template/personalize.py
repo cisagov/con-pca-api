@@ -7,11 +7,42 @@ import logging
 from simpleeval import simple_eval
 
 # cisagov Libraries
+from api.services import TagService
 from api.utils.customer import get_full_customer_address
 from api.utils.generic import current_season
 from api.utils.tag.tags import get_faker_tags
 
 logger = logging.getLogger(__name__)
+
+tag_service = TagService()
+
+
+def personalize_templates(customer, subscription, templates, sub_levels: dict):
+    """Personalize_templates."""
+    # Gets list of tags for personalizing
+    tags = tag_service.get_list()
+
+    for k in sub_levels.keys():
+        # Get actual list of template data
+        personalize_list = list(
+            filter(
+                lambda x: x["template_uuid"] in sub_levels[k]["template_uuids"],
+                templates,
+            )
+        )
+
+        # Send to manager function for personalizing
+        personalized_data = personalize_template(
+            customer_info=customer,
+            template_data=personalize_list,
+            sub_data=subscription,
+            tag_list=tags,
+        )
+
+        # Assign
+        sub_levels[k]["personalized_templates"] = personalized_data
+
+    return sub_levels
 
 
 def personalize_template(customer_info, template_data, sub_data, tag_list):
