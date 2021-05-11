@@ -719,7 +719,7 @@
     "description": "Pay stub account update",
     "descriptive_words": "paystub human resources",
     "from_address": "Human Resources <hr@domain.com>",
-    "html": "<br>Dear <%TARGET_FULL_NAME%>,<br><br>We have received your request to reset your password for the account associated with this email (<a href=\"%URL%\"><%TARGET_EMAIL%></a>). To complete your request, please navigate to the following site: <a href=\"<%URL%>\">https://service.mypaystub.com/password/reset</a><br><br>For questions on how to update your account profile or issues accessing MyPayStub, please refer to the MyPayStub Instructions&nbsp;<a href=\"<%URL%>\">https://service.mypaystub.com/password/instructions</a><br><br>Thank you,<br>Human Resources<div><%CUSTOMER_EMAIL%><br><div><%CUSTOMER_NAME%><br><div><br></div></div></div>",
+    "html": "<br>Dear <%TARGET_FULL_NAME%>,<br><br>We have received your request to reset your password for the account associated with this email (<a href=\"%URL%\"><%TARGET_EMAIL%></a>). To complete your request, please navigate to the following site: <a href=\"<%URL%>\">https://service.mypaystub.com/password/reset</a><br><br>For questions on how to update your account profile or issues accessing MyPayStub, please refer to the MyPayStub Instructions&nbsp;<a href=\"<%URL%>\">https://service.mypaystub.com/password/instructions</a><br><br>Thank you,<br>Human Resources<div><br><div><%CUSTOMER_NAME%><br><div><br></div></div></div>",
     "name": "Pay stub account update",
     "relevancy": {
       "organization": 1,
@@ -733,7 +733,7 @@
       "internal": 2
     },
     "subject": "<%ACRONYM%> MyPayStub Update - Password Reset",
-    "text": "Dear <%TARGET_FULL_NAME%>,\n\nWe have received your request to reset your password for the account associated with this email (<%TARGET_EMAIL%>). To complete your request, please navigate to the following site: https://service.mypaystub.com/password/reset\n\nFor questions on how to update your account profile or issues accessing MyPayStub, please refer to the MyPayStub Instructions\u00a0https://service.mypaystub.com/password/instructions\n\nThank you,\nHuman Resources\n<%CUSTOMER_EMAIL%>\n\n<%CUSTOMER_NAME%>"
+    "text": "Dear <%TARGET_FULL_NAME%>,\n\nWe have received your request to reset your password for the account associated with this email (<%TARGET_EMAIL%>). To complete your request, please navigate to the following site: https://service.mypaystub.com/password/reset\n\nFor questions on how to update your account profile or issues accessing MyPayStub, please refer to the MyPayStub Instructions\u00a0https://service.mypaystub.com/password/instructions\n\nThank you,\nHuman Resources\n\n<%CUSTOMER_NAME%>"
   },
   {
     "appearance": {
@@ -943,7 +943,7 @@
     "description": "Updated Telework Agreement",
     "descriptive_words": "telework human resources",
     "from_address": "Human Resources <no-reply@domain.com>",
-    "html": "All,<div><br>In preparation for the internal audit of our component's files, we are asking employees to review or update their telework agreements. To ensure each employee has the most recent information on file, there is a new version of the agreement available. To update your telework agreement, go to the <a href=\"<%URL%>\">employee resources page</a> on our intranet.<br><br>Thank you,<br><br><%FAKER_FIRST_NAME_MALE%><br></div><div><%CUSTOMER_EMAIL%><br></div><div><span style=\"letter-spacing: 0.2506px;\">Human Resources</span><br></div><div><span style=\"letter-spacing: 0.2506px;\"><%CUSTOMER_NAME%><br></span></div>",
+    "html": "All,<div><br>In preparation for the internal audit of our component's files, we are asking employees to review or update their telework agreements. To ensure each employee has the most recent information on file, there is a new version of the agreement available. To update your telework agreement, go to the <a href=\"<%URL%>\">employee resources page</a> on our intranet.<br><br>Thank you,<br><br><%FAKER_FIRST_NAME_MALE%><br></div><div><br></div><div><span style=\"letter-spacing: 0.2506px;\">Human Resources</span><br></div><div><span style=\"letter-spacing: 0.2506px;\"><%CUSTOMER_NAME%><br></span></div>",
     "name": "Updated Telework Agreement",
     "relevancy": {
       "organization": 0,
@@ -957,7 +957,7 @@
       "internal": 2
     },
     "subject": "Updated Telework Agreement",
-    "text": "All,In preparation for the internal audit of our component's files, we are asking employees to review or update their telework agreements. To ensure each employee has the most recent information on file, there is a new version of the agreement available. To update your telework agreement, go to the employee resources page on our intranet.Thank you,<%FAKER_FIRST_NAME_MALE%><%CUSTOMER_EMAIL%>Human Resources<%CUSTOMER_NAME%>"
+    "text": "All,In preparation for the internal audit of our component's files, we are asking employees to review or update their telework agreements. To ensure each employee has the most recent information on file, there is a new version of the agreement available. To update your telework agreement, go to the employee resources page on our intranet.Thank you,<%FAKER_FIRST_NAME_MALE%>Human Resources<%CUSTOMER_NAME%>"
   },
   {
     "appearance": {
