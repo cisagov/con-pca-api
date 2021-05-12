@@ -48,7 +48,7 @@ def get_related_customer_stats(customer):
         if c["industry"] == customer["industry"]:
             industry_customer_uuids.append(c["customer_uuid"])
 
-    subscriptions = subscription_service.get_list(parameters={"active": True})
+    subscriptions = subscription_service.get_list()
     sector_subscriptions = list(
         filter(lambda x: x["customer_uuid"] in sector_customer_uuids, subscriptions)
     )
@@ -58,6 +58,7 @@ def get_related_customer_stats(customer):
     customer_subscriptions = list(
         filter(lambda x: x["customer_uuid"] == customer["customer_uuid"], subscriptions)
     )
+    
 
     return {
         "national": get_simple_stats_from_subscriptions(subscriptions),
