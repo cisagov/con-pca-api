@@ -48,12 +48,6 @@
     "tag_type": "con-pca-eval"
   },
   {
-    "data_source": "customer_spoof_email(customer_info)",
-    "description": "A spoofed internal email address that appears to come from the customer organization.",
-    "tag": "<%CUSTOMER_EMAIL%>",
-    "tag_type": "con-pca-eval"
-  },
-  {
     "data_source": "get_full_customer_address(customer_info)",
     "description": "The customer organization's full address including the building number, street name, suite/building, city, state, and zip code.",
     "tag": "<%CUSTOMER_ADDRESS_FULL%>",
