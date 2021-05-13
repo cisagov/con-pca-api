@@ -60,9 +60,9 @@ class SubscriptionTasksSerializer(serializers.Serializer):
 class SubscriptionTemplatesSelectedSerializer(serializers.Serializer):
     """SubscriptionTemplatesSelectedSerializer."""
 
-    low = serializers.ListField(required=True)
-    moderate = serializers.ListField(required=True)
-    high = serializers.ListField(required=True)
+    low = serializers.ListField(child=serializers.CharField(), required=True)
+    moderate = serializers.ListField(child=serializers.CharField(), required=True)
+    high = serializers.ListField(child=serializers.CharField(), required=True)
 
 
 class SubscriptionSerializer(serializers.Serializer):
