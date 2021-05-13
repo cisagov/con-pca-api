@@ -45,6 +45,12 @@ class TemplatesListView(APIView):
         parameters = serializer.data
         if not parameters:
             parameters = request.data.copy()
+
+        # Allow querying a list of templates
+        templates = request.GET.get("templates")
+        if templates:
+            parameters["template_uuid"] = {"$in": templates.split(",")}
+
         template_list = template_service.get_list(parameters)
         return Response(template_list, status=status.HTTP_200_OK)
 
