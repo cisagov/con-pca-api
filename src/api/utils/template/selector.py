@@ -19,7 +19,7 @@ def group_templates(templates):
         group = group_template(template)
         if not groups.get(group):
             groups[group] = []
-        groups[group].append(template)
+        groups[group].append(template["template_uuid"])
     return groups
 
 
