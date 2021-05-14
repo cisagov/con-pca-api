@@ -131,7 +131,6 @@ def subscription():
             }
         ],
         "campaigns": [],
-        "url": "https://inl.gov",
         "created_by": "dev user",
         "cb_timestamp": "2020-09-08T19:37:56.881Z",
         "last_updated_by": "dev user",

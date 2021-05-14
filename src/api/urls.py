@@ -149,6 +149,11 @@ urlpatterns = [
         name="template_import_api",
     ),
     path(
+        "v1/templates/select/",
+        template_views.TemplateSelectView.as_view(),
+        name="template_select_api",
+    ),
+    path(
         "v1/template/<template_uuid>/",
         template_views.TemplateView.as_view(),
         name="template_get_api",

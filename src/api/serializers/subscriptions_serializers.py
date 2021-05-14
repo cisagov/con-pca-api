@@ -57,6 +57,14 @@ class SubscriptionTasksSerializer(serializers.Serializer):
     error = serializers.CharField(required=False, allow_null=True, allow_blank=True)
 
 
+class SubscriptionTemplatesSelectedSerializer(serializers.Serializer):
+    """SubscriptionTemplatesSelectedSerializer."""
+
+    low = serializers.ListField(child=serializers.CharField(), required=True)
+    moderate = serializers.ListField(child=serializers.CharField(), required=True)
+    high = serializers.ListField(child=serializers.CharField(), required=True)
+
+
 class SubscriptionSerializer(serializers.Serializer):
     """SubscriptionSerializer."""
 
@@ -65,19 +73,7 @@ class SubscriptionSerializer(serializers.Serializer):
     # values being passed in.
     customer_uuid = serializers.CharField(required=False)
     name = serializers.CharField(required=False, max_length=100)
-    url = serializers.CharField(
-        required=False,
-        max_length=100,
-        allow_blank=True,
-        allow_null=True,
-    )
     target_domain = serializers.CharField(required=False)
-    keywords = serializers.CharField(
-        max_length=100,
-        required=False,
-        allow_blank=True,
-        allow_null=True,
-    )
     start_date = serializers.DateTimeField(required=False)
     end_date = serializers.DateTimeField(required=False, allow_null=True)
     campaigns = GoPhishCampaignsSerializer(many=True, required=False)
@@ -114,12 +110,6 @@ class SubscriptionPostSerializer(serializers.Serializer):
     customer_uuid = serializers.CharField()
     name = serializers.CharField(max_length=100)
     target_domain = serializers.CharField(required=False)
-    url = serializers.CharField(
-        required=False, max_length=100, allow_null=True, allow_blank=True
-    )
-    keywords = serializers.CharField(
-        max_length=100, required=False, allow_blank=True, allow_null=True
-    )
     start_date = serializers.DateTimeField()
     primary_contact = CustomerContactSerializer()
     dhs_contact_uuid = serializers.CharField()
@@ -129,6 +119,7 @@ class SubscriptionPostSerializer(serializers.Serializer):
         required=True, many=True
     )
     tasks = SubscriptionTasksSerializer(many=True, required=True)
+    templates_selected = SubscriptionTemplatesSelectedSerializer(required=True)
     sending_profile_name = serializers.CharField()
     active = serializers.BooleanField()
     stagger_emails = serializers.BooleanField(default=True)
@@ -144,12 +135,6 @@ class SubscriptionPatchSerializer(serializers.Serializer):
     customer_uuid = serializers.CharField(required=False)
     name = serializers.CharField(required=False, max_length=100)
     target_domain = serializers.CharField(required=False)
-    url = serializers.CharField(
-        required=False, max_length=100, allow_null=True, allow_blank=True
-    )
-    keywords = serializers.CharField(
-        required=False, max_length=100, allow_blank=True, allow_null=True
-    )
     start_date = serializers.DateTimeField(required=False)
     end_date = serializers.DateTimeField(required=False)
     primary_contact = CustomerContactSerializer(required=False)
@@ -160,6 +145,7 @@ class SubscriptionPatchSerializer(serializers.Serializer):
         required=False, many=True
     )
     tasks = SubscriptionTasksSerializer(many=True, required=False)
+    templates_selected = SubscriptionTemplatesSelectedSerializer(required=False)
     templates_selected_uuid_list = serializers.ListField(
         child=serializers.UUIDField(), required=False
     )
@@ -187,12 +173,11 @@ class SubscriptionQuerySerializer(serializers.Serializer):
 
     customer_uuid = serializers.CharField(required=False)
     name = serializers.CharField(required=False)
-    url = serializers.CharField(required=False)
     target_domain = serializers.CharField(required=False)
-    keywords = serializers.CharField(required=False)
     start_date = serializers.DateTimeField(required=False)
     end_date = serializers.DateTimeField(required=False)
     status = serializers.CharField(required=False)
+    templates_selected = SubscriptionTemplatesSelectedSerializer(required=False)
     templates_selected_uuid_list = serializers.ListField(required=False)
     dhs_contact_uuid = serializers.CharField(required=False)
     sending_profile_name = serializers.CharField(required=False)
