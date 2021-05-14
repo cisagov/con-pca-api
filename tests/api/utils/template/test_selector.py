@@ -18,13 +18,13 @@ def test_select_templates():
     templates = []
     # Append low templates
     for i in range(0, 3):
-        templates.append({"deception_score": 1})
+        templates.append({"deception_score": 1, "template_uuid": f"low_{i}"})
     # Append moderate templates
     for i in range(0, 7):
-        templates.append({"deception_score": 4})
+        templates.append({"deception_score": 4, "template_uuid": f"moderate_{i}"})
     # Append high templates
     for i in range(0, 20):
-        templates.append({"deception_score": 7})
+        templates.append({"deception_score": 7, "template_uuid": f"high_{i}"})
 
     result = selector.select_templates(templates)
     assert len(result["low"]) == 3
