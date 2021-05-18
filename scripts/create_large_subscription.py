@@ -82,7 +82,6 @@
 #     "manually_stopped": True,
 #     "cycles": [],
 #     "email_report_history": [],
-#     "stagger_emails": False,
 # }
 
 # subscription_uuid = str(subscription_service.save(subscription)["subscription_uuid"])

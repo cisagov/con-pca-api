@@ -94,7 +94,6 @@ class SubscriptionSerializer(serializers.Serializer):
     tasks = SubscriptionTasksSerializer(many=True, required=False)
     cycles = CycleSerializer(required=False, many=True, allow_null=True)
     email_report_history = SubscriptionEmailHistorySerializer(required=False, many=True)
-    stagger_emails = serializers.BooleanField(required=False)
     continuous_subscription = serializers.BooleanField(default=True)
     cycle_length_minutes = serializers.IntegerField(required=False)
     # db data tracking added below
@@ -122,7 +121,6 @@ class SubscriptionPostSerializer(serializers.Serializer):
     templates_selected = SubscriptionTemplatesSelectedSerializer(required=True)
     sending_profile_name = serializers.CharField()
     active = serializers.BooleanField()
-    stagger_emails = serializers.BooleanField(default=True)
     continuous_subscription = serializers.BooleanField(default=True)
     cycle_length_minutes = serializers.IntegerField(
         default=129600, max_value=518400, min_value=15
@@ -155,7 +153,6 @@ class SubscriptionPatchSerializer(serializers.Serializer):
     manually_stopped = serializers.BooleanField(required=False, default=False)
     cycles = CycleSerializer(required=False, many=True)
     email_report_history = SubscriptionEmailHistorySerializer(required=False, many=True)
-    stagger_emails = serializers.BooleanField(required=False)
     continuous_subscription = serializers.BooleanField(required=False)
     cycle_length_minutes = serializers.IntegerField(
         required=False, max_value=518400, min_value=15
@@ -184,4 +181,3 @@ class SubscriptionQuerySerializer(serializers.Serializer):
     active = serializers.BooleanField(required=False)
     archived = serializers.BooleanField(default=False, required=False)
     manually_stopped = serializers.BooleanField(required=False)
-    stagger_emails = serializers.BooleanField(required=False)

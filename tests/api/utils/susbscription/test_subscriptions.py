@@ -190,16 +190,6 @@ def test_init_subscription_tasks():
     assert result[-1]["message_type"] == "stop_subscription"
 
 
-def test_get_staggered_dates_in_range():
-    """Test Stagger Dates."""
-    start = datetime.now()
-    result = subscriptions.get_staggered_dates_in_range(start, 3)
-    assert len(result) == 3
-    assert result[0] == start
-    assert result[1] == start + timedelta(hours=1)
-    assert result[2] == start + timedelta(hours=2)
-
-
 @mock.patch("api.services.SubscriptionService.update_nested")
 def test_add_remove_continuous_subscription_task(mock_update):
     """Test continuous subscription tasks."""

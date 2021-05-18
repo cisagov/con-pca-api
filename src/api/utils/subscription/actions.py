@@ -1,7 +1,6 @@
 """Subscription Actions."""
 # Standard Python Libraries
 import logging
-import random
 import uuid
 
 # cisagov Libraries
@@ -17,7 +16,6 @@ from api.utils.subscription.campaigns import generate_campaigns, stop_campaigns
 from api.utils.subscription.subscriptions import (
     calculate_subscription_start_end_date,
     create_subscription_name,
-    get_staggered_dates_in_range,
     get_subscription_cycles,
     init_subscription_tasks,
     send_stop_notification,
@@ -95,17 +93,10 @@ def start_subscription(subscription_uuid, new_cycle=False):
     # Get details for the customer that is attached to the subscription
     customer = customer_service.get(subscription["customer_uuid"])
 
-    # Divide stagger each start date and randomize:
-    if subscription["stagger_emails"]:
-        date_list = get_staggered_dates_in_range(start_date, 3)
-        date_list = random.sample(date_list, len(date_list))
-    else:
-        date_list = [start_date, start_date, start_date]
-
     # Create the needed subscription levels to fill.
     sub_levels = {
         "high": {
-            "start_date": date_list[0],
+            "start_date": start_date,
             "end_date": end_date,
             "template_targets": {},
             "template_uuids": subscription["templates_selected"]["high"],
@@ -114,7 +105,7 @@ def start_subscription(subscription_uuid, new_cycle=False):
             "deception_level": deception_level["high"],
         },
         "moderate": {
-            "start_date": date_list[1],
+            "start_date": start_date,
             "end_date": end_date,
             "template_targets": {},
             "template_uuids": subscription["templates_selected"]["moderate"],
@@ -123,7 +114,7 @@ def start_subscription(subscription_uuid, new_cycle=False):
             "deception_level": deception_level["moderate"],
         },
         "low": {
-            "start_date": date_list[2],
+            "start_date": start_date,
             "end_date": end_date,
             "template_targets": {},
             "template_uuids": subscription["templates_selected"]["low"],

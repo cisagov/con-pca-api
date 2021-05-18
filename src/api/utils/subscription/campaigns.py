@@ -12,10 +12,7 @@ from api.manager import CampaignManager
 from api.serializers import campaign_serializers
 from api.services import CampaignService, LandingPageService
 from api.utils.generic import format_ztime
-from api.utils.subscription.subscriptions import (
-    get_campaign_minutes,
-    get_staggered_dates_in_range,
-)
+from api.utils.subscription.subscriptions import get_campaign_minutes
 from api.utils.subscription.targets import assign_targets
 from config.settings import DEFAULT_X_GOPHISH_CONTACT, GP_LANDING_SUBDOMAIN
 
@@ -67,15 +64,6 @@ def create_campaigns_for_level(subscription, sub_level, landing_page, cycle_uuid
         list(dict): gophish_campaigns
     """
     gophish_campaigns = []
-    if subscription["stagger_emails"]:
-        date_list = get_staggered_dates_in_range(
-            sub_level["start_date"],
-            len(sub_level["template_targets"]),
-        )
-    else:
-        date_list = []
-        for _ in range(len(sub_level["template_targets"])):
-            date_list.append(sub_level["start_date"])
 
     for index, k in enumerate(sub_level["template_targets"].keys()):
         template = list(
@@ -96,7 +84,7 @@ def create_campaigns_for_level(subscription, sub_level, landing_page, cycle_uuid
                 landing_page=landing_page_name,
                 template=template,
                 targets=sub_level["template_targets"][k],
-                start_date=date_list[index],
+                start_date=sub_level["start_date"],
                 deception_level=sub_level["deception_level"],
                 index=index,
                 cycle_uuid=cycle_uuid,
