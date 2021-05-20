@@ -11,6 +11,7 @@ import boto3
 
 # cisagov Libraries
 from config import settings
+from config.settings import COGNITO_CLIENT, COGNITO_USER_POOL
 
 
 class AWS:
@@ -138,4 +139,62 @@ class STS(AWS):
             aws_access_key_id=resp["Credentials"]["AccessKeyId"],
             aws_secret_access_key=resp["Credentials"]["SecretAccessKey"],
             aws_session_token=resp["Credentials"]["SessionToken"],
+        )
+
+
+class Cognito(AWS):
+    """Cognito."""
+
+    def __init__(self):
+        """Create cognito client."""
+        self.client = self.get_client("cognito-idp")
+
+    def list_users(self):
+        """List users."""
+        return self.client.list_users(UserPoolId=COGNITO_USER_POOL)["Users"]
+
+    def delete_user(self, username):
+        """Delete user."""
+        return self.client.admin_delete_user(
+            UserPoolId=COGNITO_USER_POOL, Username=username
+        )
+
+    def confirm_user(self, username):
+        """Confirm user."""
+        return self.client.admin_confirm_sign_up(
+            UserPoolId=COGNITO_USER_POOL, Username=username
+        )
+
+    def sign_up(self, username, password, email):
+        """Sign up user."""
+        return self.client.sign_up(
+            ClientId=COGNITO_CLIENT,
+            Username=username,
+            Password=password,
+            UserAttributes=[{"Name": "email", "Value": email}],
+        )
+
+    def authenticate(self, username, password):
+        """Authenticate user."""
+        return self.client.admin_initiate_auth(
+            UserPoolId=COGNITO_USER_POOL,
+            ClientId=COGNITO_CLIENT,
+            AuthFlow="ADMIN_NO_SRP_AUTH",
+            AuthParameters={
+                "USERNAME": username,
+                "PASSWORD": password,
+            },
+            ClientMetadata={
+                "username": username,
+                "password": password,
+            },
+        )
+
+    def refresh(self, token):
+        """Refresh auth token."""
+        return self.client.admin_initiate_auth(
+            UserPoolId=COGNITO_USER_POOL,
+            ClientId=COGNITO_CLIENT,
+            AuthFlow="REFRESH_TOKEN_AUTH",
+            AuthParameters={"REFRESH_TOKEN": token},
         )
