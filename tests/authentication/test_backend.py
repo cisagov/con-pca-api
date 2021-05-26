@@ -17,6 +17,7 @@ from src.auth import backend
 # As these are tests and these tokens are not actually hardcoded, it is fine.
 
 
+@mock.patch("config.settings.COGNITO_ENABLED", True)
 def test_gophish_authenticate():
     """Test Gophish Auth."""
     request = HttpRequest()
