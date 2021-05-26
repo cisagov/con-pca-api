@@ -56,7 +56,7 @@ DB_CONFIG = {
 DB = get_db()
 
 # Cognito
-COGNITO_ENABLED = bool(int(os.environ.get("AWS_COGNITO_ENABLED", 0)))
+COGNITO_ENABLED = bool(int(os.environ.get("AWS_COGNITO_ENABLED", "0")))
 COGNITO_CLIENT_ID = os.getenv("AWS_COGNITO_USER_POOL_CLIENT_ID")
 COGNITO_USER_POOL_ID = os.getenv("AWS_COGNITO_USER_POOL_ID")
 COGNITO_REGION = os.getenv("AWS_COGNITO_REGION")

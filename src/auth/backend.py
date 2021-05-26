@@ -34,7 +34,7 @@ class JSONWebTokenAuthentication(BaseAuthentication):
                 return (user, "Empty token")
 
         # Development Authentication
-        if settings.COGNITO_ENABLED:
+        if not settings.COGNITO_ENABLED:
             user = {"username": "developer user", "groups": {"develop"}}
             return (user, "Empty token")
 
@@ -67,6 +67,7 @@ class JSONWebTokenAuthentication(BaseAuthentication):
             raise exceptions.AuthenticationFailed()
 
         # Ensure jwt is not expired
+        print(jwt_payload)
         if (jwt_payload["exp"] - int(time.time())) < 0:
             msg = "Token has expired, please log back in"
             raise exceptions.AuthenticationFailed(msg)

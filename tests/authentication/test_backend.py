@@ -34,7 +34,7 @@ def test_gophish_authenticate():
     assert token == "Empty token"  # nosec
 
 
-@mock.patch.dict(os.environ, {"COGNITO_ENABLED": "0"})
+@mock.patch("config.settings.COGNITO_ENABLED", False)
 def test_develop_auth():
     """Test Dev Auth."""
     request = HttpRequest()
@@ -45,7 +45,7 @@ def test_develop_auth():
     assert token == "Empty token"  # nosec
 
 
-@mock.patch.dict(os.environ, {"COGNITO_ENABLED": "1"})
+@mock.patch("config.settings.COGNITO_ENABLED", True)
 def test_local_auth():
     """Test Local Auth."""
     request = HttpRequest()
@@ -56,7 +56,7 @@ def test_local_auth():
     assert token == "Empty token"  # nosec
 
 
-@mock.patch.dict(os.environ, {"COGNITO_ENABLED": "1"})
+@mock.patch("config.settings.COGNITO_ENABLED", True)
 def test_reports_auth():
     """Test Reports Auth."""
     request = HttpRequest()
@@ -67,7 +67,7 @@ def test_reports_auth():
     assert token == "Empty token"  # nosec
 
 
-@mock.patch.dict(os.environ, {"COGNITO_ENABLED": "1"})
+@mock.patch("config.settings.COGNITO_ENABLED", True)
 @mock.patch(
     "auth.validator.TokenValidator.validate",
     return_value={"exp": int(time.time()) - 1},
@@ -83,7 +83,8 @@ def test_expired_token(mock_validate):
     assert str(e.value) == "Token has expired, please log back in"
 
 
-@mock.patch.dict(os.environ, {"COGNITO_ENABLED": "1", "COGNITO_CLIENT_ID": "good"})
+@mock.patch("config.settings.COGNITO_ENABLED", True)
+@mock.patch("config.settings.COGNITO_CLIENT_ID", "good")
 def test_invalid_client_auth():
     """Test Invalid Client."""
     request = HttpRequest()
@@ -102,7 +103,8 @@ def test_invalid_client_auth():
     )
 
 
-@mock.patch.dict(os.environ, {"COGNITO_ENABLED": "1", "COGNITO_CLIENT_ID": "good"})
+@mock.patch("config.settings.COGNITO_ENABLED", True)
+@mock.patch("config.settings.COGNITO_CLIENT_ID", "good")
 def test_cognito_group_auth():
     """Test Group Auth."""
     request = HttpRequest()
@@ -111,7 +113,7 @@ def test_cognito_group_auth():
     with mock.patch(
         "auth.validator.TokenValidator.validate",
         return_value={
-            "exp": int(time.time()) + 10,
+            "exp": int(time.time()) + 1000,
             "client_id": "good",
             "cognito:groups": "group",
             "username": "user",
@@ -122,10 +124,10 @@ def test_cognito_group_auth():
         assert user == {"username": "user", "groups": "group"}
 
 
+@mock.patch("config.settings.COGNITO_ENABLED", True)
+@mock.patch("config.settings.COGNITO_CLIENT_ID", "good")
 def test_cognito_auth():
     """Test Cognito Auth."""
-    os.environ["COGNITO_ENABLED"] = "1"
-    os.environ["COGNITO_CLIENT_ID"] = "good"
     request = HttpRequest()
     request.META["HTTP_AUTHORIZATION"] = "bearer fakejwt"
 
@@ -138,5 +140,5 @@ def test_cognito_auth():
         },
     ):
         auth = backend.JSONWebTokenAuthentication()
-        user, token = auth.authenticate(request)
+        user, _ = auth.authenticate(request)
         assert user == {"username": "user", "groups": "None"}
