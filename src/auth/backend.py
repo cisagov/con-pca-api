@@ -3,17 +3,14 @@
 # Standard Python Libraries
 import hashlib
 import hmac
-import time
+import logging
 
 # Third-Party Libraries
-from django.apps import apps as django_apps
-from django.utils.encoding import smart_text
-from django.utils.translation import ugettext as _
+import cognitojwt
 from rest_framework import exceptions
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 
 # cisagov Libraries
-from auth.validator import TokenError, TokenValidator
 from config import settings
 
 
@@ -23,6 +20,41 @@ class JSONWebTokenAuthentication(BaseAuthentication):
     def authenticate(self, request):
         """Authenticate Request."""
         # Gophish Authentication
+        validate_resp = self.validate(request)
+        if not validate_resp:
+            raise exceptions.AuthenticationFailed()
+        return validate_resp
+
+    def validate(self, request):
+        """Validate auth."""
+        # Development Authentication
+        if not settings.COGNITO_ENABLED:
+            user = {"username": "developer user", "groups": {"develop"}}
+            return (user, "Empty token")
+
+        # Gophish Authentication
+        gophish_resp = self.check_gophish(request)
+        if gophish_resp:
+            return gophish_resp
+
+        # Local authentication
+        local_resp = self.check_local_api_key(request)
+        if local_resp:
+            return local_resp
+
+        # Reports Authentication
+        report_resp = self.check_reports_auth(request)
+        if report_resp:
+            return report_resp
+
+        jwt_resp = self.check_cognito_jwt(request)
+        if jwt_resp:
+            return jwt_resp
+
+        return None
+
+    def check_gophish(self, request):
+        """Check gophish auth."""
         gp_sign = request.headers.get("X-Gophish-Signature")
         if gp_sign:
             gp_sign = gp_sign.split("=")[-1]
@@ -33,12 +65,8 @@ class JSONWebTokenAuthentication(BaseAuthentication):
                 user = {"username": "gophish", "groups": {"develop"}}
                 return (user, "Empty token")
 
-        # Development Authentication
-        if not settings.COGNITO_ENABLED:
-            user = {"username": "developer user", "groups": {"develop"}}
-            return (user, "Empty token")
-
-        # Local Authentication
+    def check_local_api_key(self, request):
+        """Check local api key."""
         if (
             settings.LOCAL_API_KEY
             and get_authorization_header(request).decode() == settings.LOCAL_API_KEY
@@ -46,81 +74,45 @@ class JSONWebTokenAuthentication(BaseAuthentication):
             user = {"username": "api", "groups": {"develop"}}
             return (user, "Empty token")
 
+    def check_reports_auth(self, request):
+        """Check if report authentication."""
         # Reports authentication with bearer
         if (
             settings.LOCAL_API_KEY
             and get_authorization_header(request).decode().split(" ")[-1]
             == settings.LOCAL_API_KEY
         ):
-            user = {"usuername": "reports", "groups": {"develop"}}
+            user = {"username": "reports", "groups": {"develop"}}
             return (user, "Empty token")
 
-        jwt_token = self.get_jwt_token(request)
-        if jwt_token is None:
-            raise exceptions.AuthenticationFailed()
-
-        # Authenticate token
+    def check_cognito_jwt(self, request):
+        """Check cognito JWT."""
+        jwt = self.get_jwt_token(request)
+        if not jwt:
+            return None
         try:
-            token_validator = self.get_token_validator(request)
-            jwt_payload = token_validator.validate(jwt_token)
-        except TokenError:
-            raise exceptions.AuthenticationFailed()
-
-        # Ensure jwt is not expired
-        print(jwt_payload)
-        if (jwt_payload["exp"] - int(time.time())) < 0:
-            msg = "Token has expired, please log back in"
-            raise exceptions.AuthenticationFailed(msg)
-
-        if jwt_payload["client_id"] != settings.COGNITO_CLIENT_ID:
-            msg = _(
-                "Client_ID does not match the applications, please"
-                "ensure you are logged into the correct AWS account"
+            resp = cognitojwt.decode(
+                jwt,
+                settings.COGNITO_REGION,
+                settings.COGNITO_USER_POOL_ID,
+                app_client_id=settings.COGNITO_CLIENT_ID,
             )
-            raise exceptions.AuthenticationFailed(msg)
-
-        if "cognito:groups" in jwt_payload:
-            user = {
-                "username": jwt_payload["username"],
-                "groups": jwt_payload["cognito:groups"],
-            }
-        else:
-            user = {"username": jwt_payload["username"], "groups": "None"}
-        return (user, jwt_token)
-
-    def get_user_model(self):
-        """Get User Model."""
-        user_model = getattr(settings, "COGNITO_USER_MODEL", settings.AUTH_USER_MODEL)
-        return django_apps.get_model(user_model, require_ready=False)
-
-    def get_jwt_token(self, request):
-        """Get JWT Token from request."""
-        auth = get_authorization_header(request).split()
-        if not auth or smart_text(auth[0].lower()) != "bearer":
+            self.username = resp["cognito:username"]
+            self.groups = resp.get("cognito:groups", [])
+            return self.username, jwt
+        except Exception as e:
+            logging.exception(e)
             return None
 
-        if len(auth) == 1:
-            msg = _("Invalid Authorization header. No credentials provided.")
-            raise exceptions.AuthenticationFailed(msg)
-        elif len(auth) > 2:
-            msg = _(
-                "Invalid Authorization header. Credentials string "
-                "should not contain spaces."
-            )
-            raise exceptions.AuthenticationFailed(msg)
+    def get_authorization_header(self, request):
+        """Get auth header."""
+        return request.headers.get("Authorization", "")
 
+    def get_jwt_token(self, request):
+        """Get JWT from headers."""
+        auth = self.get_authorization_header(request).split()
+        if not auth or str(auth[0].lower()) != "bearer":
+            return None
+        if len(auth) != 2:
+            return None
         return auth[1]
-
-    def get_token_validator(self, request):
-        """Get Token Validator."""
-        return TokenValidator(
-            settings.COGNITO_REGION,
-            settings.COGNITO_USER_POOL_ID,
-            settings.COGNITO_CLIENT_ID,
-        )
-
-    def authenticate_header(self, request):
-        """Authenticate Header."""
-        # Method required by the DRF in order to return 401 responses for authentication failures, instead of 403.
-        # More details in https://www.django-rest-framework.org/api-guide/authentication/#custom-authentication.
-        return "Bearer: api"
