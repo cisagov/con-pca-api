@@ -12,7 +12,7 @@ import pytest
 from rest_framework import exceptions
 
 # cisagov Libraries
-from src.authentication import backend
+from src.auth import backend
 
 # Throughout the tests, there are "nosec" defined on multiple assertions
 # This is because bandit throws B105: hardcoded_password_string error
@@ -34,7 +34,7 @@ def test_gophish_authenticate():
     assert token == "Empty token"  # nosec
 
 
-@mock.patch.dict(os.environ, {"COGNITO_DEPLOYMENT_MODE": "Development"})
+@mock.patch.dict(os.environ, {"COGNITO_ENABLED": "0"})
 def test_develop_auth():
     """Test Dev Auth."""
     request = HttpRequest()
@@ -45,7 +45,7 @@ def test_develop_auth():
     assert token == "Empty token"  # nosec
 
 
-@mock.patch.dict(os.environ, {"COGNITO_DEPLOYMENT_MODE": "Production"})
+@mock.patch.dict(os.environ, {"COGNITO_ENABLED": "1"})
 def test_local_auth():
     """Test Local Auth."""
     request = HttpRequest()
@@ -56,7 +56,7 @@ def test_local_auth():
     assert token == "Empty token"  # nosec
 
 
-@mock.patch.dict(os.environ, {"COGNITO_DEPLOYMENT_MODE": "Production"})
+@mock.patch.dict(os.environ, {"COGNITO_ENABLED": "1"})
 def test_reports_auth():
     """Test Reports Auth."""
     request = HttpRequest()
@@ -67,9 +67,9 @@ def test_reports_auth():
     assert token == "Empty token"  # nosec
 
 
-@mock.patch.dict(os.environ, {"COGNITO_DEPLOYMENT_MODE": "Production"})
+@mock.patch.dict(os.environ, {"COGNITO_ENABLED": "1"})
 @mock.patch(
-    "authentication.validator.TokenValidator.validate",
+    "auth.validator.TokenValidator.validate",
     return_value={"exp": int(time.time()) - 1},
 )
 def test_expired_token(mock_validate):
@@ -83,9 +83,7 @@ def test_expired_token(mock_validate):
     assert str(e.value) == "Token has expired, please log back in"
 
 
-@mock.patch.dict(
-    os.environ, {"COGNITO_DEPLOYMENT_MODE": "Production", "COGNITO_AUDIENCE": "good"}
-)
+@mock.patch.dict(os.environ, {"COGNITO_ENABLED": "1", "COGNITO_CLIENT_ID": "good"})
 def test_invalid_client_auth():
     """Test Invalid Client."""
     request = HttpRequest()
@@ -94,7 +92,7 @@ def test_invalid_client_auth():
 
     with pytest.raises(exceptions.AuthenticationFailed) as e:
         with mock.patch(
-            "authentication.validator.TokenValidator.validate",
+            "auth.validator.TokenValidator.validate",
             return_value={"exp": int(time.time()) + 10, "client_id": "bad"},
         ):
             user, token = auth.authenticate(request)
@@ -104,16 +102,14 @@ def test_invalid_client_auth():
     )
 
 
-@mock.patch.dict(
-    os.environ, {"COGNITO_DEPLOYMENT_MODE": "Production", "COGNITO_AUDIENCE": "good"}
-)
+@mock.patch.dict(os.environ, {"COGNITO_ENABLED": "1", "COGNITO_CLIENT_ID": "good"})
 def test_cognito_group_auth():
     """Test Group Auth."""
     request = HttpRequest()
     request.META["HTTP_AUTHORIZATION"] = "bearer fakejwt"
 
     with mock.patch(
-        "authentication.validator.TokenValidator.validate",
+        "auth.validator.TokenValidator.validate",
         return_value={
             "exp": int(time.time()) + 10,
             "client_id": "good",
@@ -128,13 +124,13 @@ def test_cognito_group_auth():
 
 def test_cognito_auth():
     """Test Cognito Auth."""
-    os.environ["COGNITO_DEPLOYMENT_MODE"] = "Production"
-    os.environ["COGNITO_AUDIENCE"] = "good"
+    os.environ["COGNITO_ENABLED"] = "1"
+    os.environ["COGNITO_CLIENT_ID"] = "good"
     request = HttpRequest()
     request.META["HTTP_AUTHORIZATION"] = "bearer fakejwt"
 
     with mock.patch(
-        "authentication.validator.TokenValidator.validate",
+        "auth.validator.TokenValidator.validate",
         return_value={
             "exp": int(time.time()) + 10,
             "client_id": "good",

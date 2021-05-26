@@ -18,6 +18,8 @@ cognito = Cognito()
 class RegisterView(APIView):
     """RegisterView."""
 
+    authentication_classes: list = []
+
     def post(self, request):
         """Post."""
         try:
@@ -31,8 +33,10 @@ class RegisterView(APIView):
             )
 
 
-class SignInView(APIView):
-    """SignInView."""
+class LoginView(APIView):
+    """LoginView."""
+
+    authentication_classes: list = []
 
     def post(self, request):
         """Post."""
@@ -59,6 +63,8 @@ class SignInView(APIView):
 
 class RefreshTokenView(APIView):
     """RefreshTokenView."""
+
+    authentication_classes: list = []
 
     def post(self, request):
         """Post."""

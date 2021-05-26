@@ -3,7 +3,6 @@
 # Standard Python Libraries
 import hashlib
 import hmac
-import os
 import time
 
 # Third-Party Libraries
@@ -14,7 +13,7 @@ from rest_framework import exceptions
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 
 # cisagov Libraries
-from authentication.validator import TokenError, TokenValidator
+from auth.validator import TokenError, TokenValidator
 from config import settings
 
 
@@ -35,7 +34,7 @@ class JSONWebTokenAuthentication(BaseAuthentication):
                 return (user, "Empty token")
 
         # Development Authentication
-        if os.environ.get("COGNITO_DEPLOYMENT_MODE") == "Development":
+        if settings.COGNITO_ENABLED:
             user = {"username": "developer user", "groups": {"develop"}}
             return (user, "Empty token")
 
@@ -72,7 +71,7 @@ class JSONWebTokenAuthentication(BaseAuthentication):
             msg = "Token has expired, please log back in"
             raise exceptions.AuthenticationFailed(msg)
 
-        if jwt_payload["client_id"] != os.environ.get("COGNITO_AUDIENCE"):
+        if jwt_payload["client_id"] != settings.COGNITO_CLIENT_ID:
             msg = _(
                 "Client_ID does not match the applications, please"
                 "ensure you are logged into the correct AWS account"
@@ -114,9 +113,9 @@ class JSONWebTokenAuthentication(BaseAuthentication):
     def get_token_validator(self, request):
         """Get Token Validator."""
         return TokenValidator(
-            settings.COGNITO_AWS_REGION,
-            settings.COGNITO_USER_POOL,
-            os.environ.get("COGNITO_AUDIENCE"),
+            settings.COGNITO_REGION,
+            settings.COGNITO_USER_POOL_ID,
+            settings.COGNITO_CLIENT_ID,
         )
 
     def authenticate_header(self, request):
