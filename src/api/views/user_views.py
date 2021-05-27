@@ -12,7 +12,7 @@ cognito = Cognito()
 class UsersView(APIView):
     """UsersView."""
 
-    def get(self):
+    def get(self, request):
         """Get."""
         return Response(cognito.list_users())
 
@@ -20,7 +20,7 @@ class UsersView(APIView):
 class UserView(APIView):
     """UserView."""
 
-    def delete(self, username):
+    def delete(self, request, username):
         """Delete."""
         return Response(cognito.delete_user(username))
 
@@ -28,6 +28,6 @@ class UserView(APIView):
 class UserConfirmView(APIView):
     """UserConfirmView."""
 
-    def get(self, username):
+    def get(self, request, username):
         """Get."""
         return Response(cognito.confirm_user(username))
