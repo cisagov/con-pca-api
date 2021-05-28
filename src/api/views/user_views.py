@@ -1,13 +1,12 @@
 """User Views."""
 # Third-Party Libraries
-import boto3
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 # cisagov Libraries
-from config.settings import COGNITO_USER_POOL
+from api.utils.aws_utils import Cognito
 
-cognito = boto3.client("cognito-idp")
+cognito = Cognito()
 
 
 class UsersView(APIView):
@@ -15,7 +14,7 @@ class UsersView(APIView):
 
     def get(self, request):
         """Get."""
-        return Response(cognito.list_users(UserPoolId=COGNITO_USER_POOL)["Users"])
+        return Response(cognito.list_users())
 
 
 class UserView(APIView):
@@ -23,9 +22,7 @@ class UserView(APIView):
 
     def delete(self, request, username):
         """Delete."""
-        return Response(
-            cognito.admin_delete_user(UserPoolId=COGNITO_USER_POOL, Username=username)
-        )
+        return Response(cognito.delete_user(username))
 
 
 class UserConfirmView(APIView):
@@ -33,8 +30,4 @@ class UserConfirmView(APIView):
 
     def get(self, request, username):
         """Get."""
-        return Response(
-            cognito.admin_confirm_sign_up(
-                UserPoolId=COGNITO_USER_POOL, Username=username
-            )
-        )
+        return Response(cognito.confirm_user(username))

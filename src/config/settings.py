@@ -56,16 +56,13 @@ DB_CONFIG = {
 DB = get_db()
 
 # Cognito
-COGNITO_AWS_REGION = os.getenv("COGNITO_AWS_REGION")
-COGNITO_USER_POOL = os.getenv("COGNITO_USER_POOL")
-COGNITO_PUBLIC_KEYS_CACHING_ENABLED = True
-COGNITO_PUBLIC_KEYS_CACHING_TIMEOUT = 60 * 60  # One hour caching, default is 300s
+COGNITO_ENABLED = bool(int(os.environ.get("AWS_COGNITO_ENABLED", "0")))
+COGNITO_CLIENT_ID = os.getenv("AWS_COGNITO_USER_POOL_CLIENT_ID")
+COGNITO_USER_POOL_ID = os.getenv("AWS_COGNITO_USER_POOL_ID")
+COGNITO_REGION = os.getenv("AWS_COGNITO_REGION")
 
 # Application definition
-
 INSTALLED_APPS = [
-    "django.contrib.admin",
-    "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
@@ -76,7 +73,7 @@ INSTALLED_APPS = [
     # third party
     "rest_framework",
     # local
-    "authentication",
+    "auth",
     "api",
 ]
 
@@ -108,7 +105,6 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
@@ -124,7 +120,6 @@ TEMPLATES = [
             "context_processors": [
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
             ],
         },
@@ -132,17 +127,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "config.wsgi.application"
-
-# Password validation
-# https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
-]
 
 # Email
 # Email Settings for EMAIL_BACKEND
@@ -183,7 +167,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 # Django Rest Framework
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "authentication.backend.JSONWebTokenAuthentication",
+        "auth.backend.JSONWebTokenAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [],
     "UNAUTHENTICATED_USER": None,
