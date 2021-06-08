@@ -46,7 +46,7 @@ class LoginView(APIView):
             response = cognito.authenticate(data["username"], data["password"])
         except botocore.exceptions.ClientError as e:
             logging.exception(e)
-            return Response(e.response["Error"]["Message"], 400)
+            return Response(e.response["Error"], 400)
 
         expires = now + timedelta(seconds=response["AuthenticationResult"]["ExpiresIn"])
 
@@ -71,7 +71,7 @@ class RefreshTokenView(APIView):
         data = request.data.copy()
         now = datetime.utcnow()
         response = cognito.refresh(data["refreshToken"])
-        expires = now + timedelta(seconds=response["AuthenticationResult"])
+        expires = now + timedelta(seconds=response["AuthenticationResult"]["ExpiresIn"])
         return Response(
             {
                 "id_token": response["AuthenticationResult"]["IdToken"],

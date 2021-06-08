@@ -146,27 +146,58 @@ class Cognito(AWS):
     """Cognito."""
 
     def __init__(self):
-        """Create cognito client."""
+        """Init."""
         self.client = self.get_client("cognito-idp")
 
-    def list_users(self):
-        """List users."""
-        return self.client.list_users(UserPoolId=COGNITO_USER_POOL_ID)["Users"]
+    def get_user_groups(self, username: str):
+        """Get groups for user."""
+        return self.client.admin_list_groups_for_user(
+            Username=username, UserPoolId=COGNITO_USER_POOL_ID, Limit=50
+        )
+
+    def get_user(self, username, return_email: bool = False):
+        """Get user from cognito."""
+        user = self.client.admin_get_user(
+            UserPoolId=COGNITO_USER_POOL_ID, Username=username
+        )
+        if return_email:
+            return self.get_email_from_user(user)
+        return user
+
+    def list_users(self, return_emails: bool = False):
+        """List users in cognito."""
+        users = self.client.list_users(UserPoolId=COGNITO_USER_POOL_ID)["Users"]
+        if return_emails:
+            return self.get_emails_from_users(users)
+        return users
+
+    def disable_user(self, username):
+        """Disable user in cognito."""
+        return self.client.admin_disable_user(
+            UserPoolId=COGNITO_USER_POOL_ID, Username=username
+        )
 
     def delete_user(self, username):
-        """Delete user."""
+        """Delete user from cognito."""
+        self.disable_user(username)
         return self.client.admin_delete_user(
             UserPoolId=COGNITO_USER_POOL_ID, Username=username
         )
 
+    def enable_user(self, username):
+        """Enable user in cognito."""
+        return self.client.admin_enable_user(
+            UserPoolId=COGNITO_USER_POOL_ID, Username=username
+        )
+
     def confirm_user(self, username):
-        """Confirm user."""
+        """Confirm user in cognito."""
         return self.client.admin_confirm_sign_up(
             UserPoolId=COGNITO_USER_POOL_ID, Username=username
         )
 
     def sign_up(self, username, password, email):
-        """Sign up user."""
+        """Sign up user in domain manager."""
         return self.client.sign_up(
             ClientId=COGNITO_CLIENT_ID,
             Username=username,
@@ -198,3 +229,17 @@ class Cognito(AWS):
             AuthFlow="REFRESH_TOKEN_AUTH",
             AuthParameters={"REFRESH_TOKEN": token},
         )
+
+    def get_email_from_user(self, user):
+        """Get email address for user returned by cognito or database."""
+        key = "UserAttributes" if "UserAttributes" in user else "Attributes"
+        return next(filter(lambda x: x["Name"] == "email", user[key]), {}).get("Value")
+
+    def get_emails_from_users(self, users):
+        """Get emails from a list of users from cognito or database."""
+        emails = []
+        for user in users:
+            email = self.get_email_from_user(user)
+            if email:
+                emails.append(email)
+        return emails
