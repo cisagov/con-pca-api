@@ -200,14 +200,18 @@ def create_tags():
 
 def create_customer():
     """Create an initial customer."""
-    customer = load_file("data/customer.json")
-    resp = requests.post(
-        f"{LOCAL_URL}/api/v1/customers/",
-        json=customer,
-        headers=get_headers(),
-    )
-    resp.raise_for_status()
-    print(f"Sample customer has been created")
+    customers = requests.get(f"{LOCAL_URL}/api/v1/customers/", headers=get_headers())
+    if not customers.json():
+        customer = load_file("data/customer.json")
+        resp = requests.post(
+            f"{LOCAL_URL}/api/v1/customers/",
+            json=customer,
+            headers=get_headers(),
+        )
+        resp.raise_for_status()
+        print("Sample customer has been created.")
+    else:
+        print("Customers alerady exist.")
 
 
 def get_headers():
