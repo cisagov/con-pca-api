@@ -198,6 +198,18 @@ def create_tags():
     print("Tags initialized.")
 
 
+def create_customer():
+    """Create an initial customer."""
+    customer = load_file("data/customer.json")
+    resp = requests.post(
+        f"{LOCAL_URL}/api/v1/customers/",
+        json=customer,
+        headers=get_headers(),
+    )
+    resp.raise_for_status()
+    print(f"Sample customer has been created")
+
+
 def get_headers():
     """Init Headers."""
     return {"Authorization": os.environ.get("LOCAL_API_KEY")}
@@ -233,17 +245,19 @@ def main():
     print("Waiting for api to initialize")
     wait_connection()
 
-    print("Step 1/5: Creating Sending Profiles")
+    print("Step 1/6: Creating Sending Profiles")
     if os.environ.get("GP_SMTP_HOST"):
         create_sending_profile(SENDING_PROFILES)
-    print("Step 2/5: Creating Landing Pages")
+    print("Step 2/6: Creating Landing Pages")
     create_default_landing_page()
-    print("Step 3/5: Create Webhooks")
+    print("Step 3/6: Create Webhooks")
     create_webhook(WEBHOOKS)
-    print("Step 4/5: Create Templates")
+    print("Step 4/6: Create Templates")
     create_templates()
-    print("Step 5/5: Create Tags")
+    print("Step 5/6: Create Tags")
     create_tags()
+    print("Step 6/6: Create a Customer")
+    create_customer()
     print("...Con-PCA Initialized...")
     return 0
 
