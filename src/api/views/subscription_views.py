@@ -13,7 +13,7 @@ from api.services import CampaignService, SubscriptionService
 from api.utils.stats import update_phish_results
 from api.utils.subscription.actions import (
     create_subscription,
-    restart_subscription,
+    launch_subscription,
     stop_subscription,
 )
 from api.utils.subscription.subscriptions import add_remove_continuous_subscription_task
@@ -162,7 +162,7 @@ class SubscriptionRestartView(APIView):
 
     def get(self, request, subscription_uuid):
         """Get."""
-        created_response = restart_subscription(subscription_uuid)
+        created_response = launch_subscription(subscription_uuid)
         return Response(created_response, status=status.HTTP_202_ACCEPTED)
 
 
