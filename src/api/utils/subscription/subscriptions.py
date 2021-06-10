@@ -6,6 +6,7 @@ from uuid import uuid4
 
 # Third-Party Libraries
 import dateutil.parser
+from django.core.handlers.base import logger
 
 # cisagov Libraries
 from api.notifications import EmailSender
@@ -79,13 +80,16 @@ def send_stop_notification(subscription):
     sender.send()
 
 
-def init_subscription_tasks(start_date, continuous_subscription, cycle_length_minutes):
+def init_subscription_tasks(start_date, continuous_subscription, cycle_length_minutes, report_length_minutes=0):
     """Create Initial Subscription Tasks."""
+    if report_length_minutes == 0:
+        report_length_minutes = cycle_length_minutes
+    
     message_types = {
         "start_subscription_email": start_date - timedelta(minutes=5),
         "monthly_report": start_date
         + timedelta(minutes=get_monthly_minutes(cycle_length_minutes)),
-        "cycle_report": start_date + timedelta(minutes=cycle_length_minutes),
+        "cycle_report": start_date + timedelta(minutes=report_length_minutes),
         "yearly_report": start_date
         + timedelta(minutes=get_yearly_minutes(cycle_length_minutes)),
     }
@@ -164,7 +168,6 @@ def get_monthly_minutes(cycle_minutes: int) -> int:
     status reports based on cycle length.
     """
     return 43200  # month in minutes
-
 
 def get_yearly_minutes(cycle_minutes: int) -> int:
     """

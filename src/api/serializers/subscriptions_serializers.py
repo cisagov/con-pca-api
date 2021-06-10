@@ -96,6 +96,7 @@ class SubscriptionSerializer(serializers.Serializer):
     email_report_history = SubscriptionEmailHistorySerializer(required=False, many=True)
     continuous_subscription = serializers.BooleanField(default=True)
     cycle_length_minutes = serializers.IntegerField(required=False)
+    report_length_minutes = serializers.IntegerField(required=False)
     # db data tracking added below
     created_by = serializers.CharField(required=False, max_length=100)
     cb_timestamp = serializers.DateTimeField(required=False)
@@ -123,6 +124,9 @@ class SubscriptionPostSerializer(serializers.Serializer):
     active = serializers.BooleanField()
     continuous_subscription = serializers.BooleanField(default=True)
     cycle_length_minutes = serializers.IntegerField(
+        default=129600, max_value=518400, min_value=15
+    )  # max of 360 days, min of 15 minutes
+    report_length_minutes = serializers.IntegerField(
         default=129600, max_value=518400, min_value=15
     )  # max of 360 days, min of 15 minutes
 
@@ -155,6 +159,9 @@ class SubscriptionPatchSerializer(serializers.Serializer):
     email_report_history = SubscriptionEmailHistorySerializer(required=False, many=True)
     continuous_subscription = serializers.BooleanField(required=False)
     cycle_length_minutes = serializers.IntegerField(
+        required=False, max_value=518400, min_value=15
+    )  # max of 360 days, min of 15 minutes
+    report_length_minutes = serializers.IntegerField(
         required=False, max_value=518400, min_value=15
     )  # max of 360 days, min of 15 minutes
 
