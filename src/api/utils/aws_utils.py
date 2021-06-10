@@ -197,7 +197,7 @@ class Cognito(AWS):
         )
 
     def sign_up(self, username, password, email):
-        """Sign up user """
+        """Sign up user."""
         return self.client.sign_up(
             ClientId=COGNITO_CLIENT_ID,
             Username=username,
