@@ -35,13 +35,12 @@ def get_target_available_templates(email, history, templates):
     if not history:
         return templates
 
+
     # Compile list of sent uuids
     sent_uuids = [x["template_uuid"] for x in history[0].get("history_list", [])]
 
-    # # Find available templates
-    available_templates = list(
-        filter(lambda x: (x["template_uuid"] not in sent_uuids), templates)
-    )
+    # Find available templates
+    available_templates = list(set(templates) - set(sent_uuids))
 
     # If no available templates, return all back
     if not available_templates:
