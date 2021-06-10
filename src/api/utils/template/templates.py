@@ -52,7 +52,17 @@ def update_target_history(template_uuid, email, time):
 
 def validate_template(template):
     """Validate template."""
-    customer = customer_service.random()[0]
+    customer = customer_service.random()
+    if customer:
+        customer = customer[0]
+    else:
+        customer = {
+            "name": fake.company(),
+            "address_1": fake.street_address(),
+            "state": fake.state(),
+            "city": fake.city(),
+            "zip_code": fake.zipcode(),
+        }
 
     personalized_data = personalize_template(
         customer_info=customer,

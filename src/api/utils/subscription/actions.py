@@ -34,30 +34,17 @@ template_service = TemplateService()
 
 
 def create_subscription(subscription):
-    """Create Subscription."""
+    """Create a subscription."""
     customer = customer_service.get(subscription["customer_uuid"])
-
     subscription["name"] = create_subscription_name(customer)
-    subscription["tasks"] = [
-        {
-            "task_uuid": str(uuid.uuid4()),
-            "message_type": "start_subscription",
-            "scheduled_date": subscription["start_date"],
-            "executed": False,
-        }
-    ]
-    _, end_date = calculate_subscription_start_end_date(
-        subscription.get("start_date"), subscription.get("cycle_length_minutes", 129600)
-    )
-
-    subscription["status"] = "Queued"
+    subscription["status"] = "created"
     response = subscription_service.save(subscription)
     response["name"] = subscription["name"]
     return response
 
 
-def restart_subscription(subscription_uuid):
-    """Restart Subscription."""
+def launch_subscription(subscription_uuid):
+    """Launch a created/stopped subscription."""
     subscription = subscription_service.get(subscription_uuid)
     data = {
         "status": "Queued",
@@ -71,15 +58,11 @@ def restart_subscription(subscription_uuid):
         ],
     }
 
-    _, end_date = calculate_subscription_start_end_date(
-        subscription.get("start_date"), subscription.get("cycle_length_minutes", 129600)
-    )
-
     return subscription_service.update(subscription_uuid, data)
 
 
 def start_subscription(subscription_uuid, new_cycle=False):
-    """Start Subscription."""
+    """Start a subscription."""
     subscription = subscription_service.get(subscription_uuid)
     templates = template_service.get_list({"retired": False})
     if new_cycle:
@@ -140,10 +123,7 @@ def start_subscription(subscription_uuid, new_cycle=False):
         if page["is_default_template"]:
             landing_page = page["name"]
 
-    cycle_uuid = str(uuid.uuid4())
-    new_gophish_campaigns = generate_campaigns(
-        subscription, landing_page, sub_levels, cycle_uuid
-    )
+    new_gophish_campaigns = generate_campaigns(subscription, landing_page, sub_levels)
 
     selected_templates = []
     for v in sub_levels.values():
@@ -156,6 +136,7 @@ def start_subscription(subscription_uuid, new_cycle=False):
         subscription["cycles"] = []
 
     total_targets_in_cycle = len(subscription["target_email_list"])
+    cycle_uuid = str(uuid.uuid4())
     subscription["cycles"].append(
         get_subscription_cycles(
             new_gophish_campaigns,
@@ -189,7 +170,7 @@ def start_subscription(subscription_uuid, new_cycle=False):
 
 
 def stop_subscription(subscription):
-    """Stop Subscription."""
+    """Stop a subscription."""
     # Stop Campaigns
     stop_campaigns(subscription["campaigns"])
 
