@@ -71,7 +71,7 @@ class RefreshTokenView(APIView):
         data = request.data.copy()
         now = datetime.utcnow()
         response = cognito.refresh(data["refreshToken"])
-        expires = now + timedelta(seconds=response["AuthenticationResult"])
+        expires = now + timedelta(seconds=response["AuthenticationResult"]["ExpiresIn"])
         return Response(
             {
                 "id_token": response["AuthenticationResult"]["IdToken"],
