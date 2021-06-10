@@ -123,10 +123,7 @@ def start_subscription(subscription_uuid, new_cycle=False):
         if page["is_default_template"]:
             landing_page = page["name"]
 
-    cycle_uuid = str(uuid.uuid4())
-    new_gophish_campaigns = generate_campaigns(
-        subscription, landing_page, sub_levels, cycle_uuid
-    )
+    new_gophish_campaigns = generate_campaigns(subscription, landing_page, sub_levels)
 
     selected_templates = []
     for v in sub_levels.values():
@@ -139,6 +136,7 @@ def start_subscription(subscription_uuid, new_cycle=False):
         subscription["cycles"] = []
 
     total_targets_in_cycle = len(subscription["target_email_list"])
+    cycle_uuid = str(uuid.uuid4())
     subscription["cycles"].append(
         get_subscription_cycles(
             new_gophish_campaigns,

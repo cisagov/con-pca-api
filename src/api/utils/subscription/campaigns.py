@@ -21,7 +21,7 @@ landing_page_service = LandingPageService()
 campaign_service = CampaignService()
 
 
-def generate_campaigns(subscription, landing_page, sub_levels, cycle_uuid):
+def generate_campaigns(subscription, landing_page, sub_levels):
     """
     Generate_campaigns.
 
@@ -39,9 +39,7 @@ def generate_campaigns(subscription, landing_page, sub_levels, cycle_uuid):
         try:
             assign_targets(sub_levels[k])
             gophish_campaigns.extend(
-                create_campaigns_for_level(
-                    subscription, sub_levels[k], landing_page, cycle_uuid
-                )
+                create_campaigns_for_level(subscription, sub_levels[k], landing_page)
             )
         except Exception as e:
             for campaign in gophish_campaigns:
@@ -51,7 +49,7 @@ def generate_campaigns(subscription, landing_page, sub_levels, cycle_uuid):
     return gophish_campaigns
 
 
-def create_campaigns_for_level(subscription, sub_level, landing_page, cycle_uuid):
+def create_campaigns_for_level(subscription, sub_level, landing_page):
     """
     Create campaign.
 
@@ -87,7 +85,6 @@ def create_campaigns_for_level(subscription, sub_level, landing_page, cycle_uuid
                 start_date=sub_level["start_date"],
                 deception_level=sub_level["deception_level"],
                 index=index,
-                cycle_uuid=cycle_uuid,
             )
             gophish_campaigns.append(campaign)
         except Exception as e:
@@ -158,7 +155,6 @@ def create_campaign(
     start_date,
     deception_level,
     index,
-    cycle_uuid,
 ):
     """Create a campaign."""
     return_data = {}
@@ -207,7 +203,7 @@ def create_campaign(
         sending_profile = __create_campaign_smtp(
             campaign_name,
             template["from_address"],
-            cycle_uuid,
+            subscription["subscription_uuid"],
             subscription["sending_profile_name"],
         )
         return_data.update(
@@ -271,7 +267,10 @@ def __get_campaign_url(sending_profile):
 
 
 def __create_campaign_smtp(
-    campaign_name, template_from_address, cycle_uuid, subscription_sending_profile_name
+    campaign_name,
+    template_from_address,
+    subscription_uuid,
+    subscription_sending_profile_name,
 ):
     sending_profiles = campaign_manager.get_sending_profile()
     sending_profile = next(
@@ -281,7 +280,7 @@ def __create_campaign_smtp(
         None,
     )
 
-    __set_smtp_headers(sending_profile, cycle_uuid)
+    __set_smtp_headers(sending_profile, subscription_uuid)
 
     from_address = get_campaign_from_address(sending_profile, template_from_address)
 
@@ -331,23 +330,23 @@ def get_campaign_from_address(sending_profile, template_from_address):
     return from_address
 
 
-def __set_smtp_headers(sending_profile, cycle_uuid):
+def __set_smtp_headers(sending_profile, subscription_uuid):
     if not sending_profile.headers:
         sending_profile.headers = []
 
     set_x_gophish_contact_header(sending_profile)
 
-    set_dhs_phish_header(sending_profile, cycle_uuid)
+    set_dhs_phish_header(sending_profile, subscription_uuid)
 
 
-def set_dhs_phish_header(sending_profile, cycle_uuid):
+def set_dhs_phish_header(sending_profile, subscription_uuid):
     """Set DHS Phish Header."""
     for header in sending_profile.headers:
         if header["key"] == "CISA-PHISH":
-            header["value"] = cycle_uuid
+            header["value"] = subscription_uuid
             return
 
-    new_header = {"key": "CISA-PHISH", "value": cycle_uuid}
+    new_header = {"key": "CISA-PHISH", "value": subscription_uuid}
     sending_profile.headers.append(new_header)
     return
 
