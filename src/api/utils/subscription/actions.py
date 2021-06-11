@@ -156,6 +156,7 @@ def start_subscription(subscription_uuid, new_cycle=False):
                 start_date,
                 subscription.get("continuous_subscription"),
                 subscription.get("cycle_length_minutes", 129600),
+                subscription.get("report_length_minutes", 43200),
             )
         )
 
