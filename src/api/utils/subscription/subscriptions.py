@@ -79,15 +79,15 @@ def send_stop_notification(subscription):
     sender.send()
 
 
-def init_subscription_tasks(start_date, continuous_subscription, cycle_length_minutes):
+def init_subscription_tasks(
+    start_date, continuous_subscription, cycle_length_minutes, report_frequency_minutes
+):
     """Create Initial Subscription Tasks."""
     message_types = {
         "start_subscription_email": start_date - timedelta(minutes=5),
-        "monthly_report": start_date
-        + timedelta(minutes=get_monthly_minutes(cycle_length_minutes)),
+        "monthly_report": start_date + timedelta(minutes=report_frequency_minutes),
         "cycle_report": start_date + timedelta(minutes=cycle_length_minutes),
-        "yearly_report": start_date
-        + timedelta(minutes=get_yearly_minutes(cycle_length_minutes)),
+        "yearly_report": start_date + timedelta(minutes=get_yearly_minutes()),
     }
 
     if continuous_subscription:
@@ -155,18 +155,7 @@ def add_remove_continuous_subscription_task(
             )
 
 
-def get_monthly_minutes(cycle_minutes: int) -> int:
-    """
-    Get minutes for how often to send status reports.
-
-    This is asking for cycle minutes, as there may be additional
-    logic put in later that requires shorter intervals to send
-    status reports based on cycle length.
-    """
-    return 43200  # month in minutes
-
-
-def get_yearly_minutes(cycle_minutes: int) -> int:
+def get_yearly_minutes() -> int:
     """
     Get minutes for how often to send yearly reports.
 

@@ -181,11 +181,11 @@ def test_get_subscription_cycles():
 def test_init_subscription_tasks():
     """Test init subscription tasks."""
     start = datetime.now()
-    result = subscriptions.init_subscription_tasks(start, True, 60)
+    result = subscriptions.init_subscription_tasks(start, True, 60, 15)
     assert len(result) == 5
     assert result[-1]["message_type"] == "start_new_cycle"
 
-    result = subscriptions.init_subscription_tasks(start, False, 60)
+    result = subscriptions.init_subscription_tasks(start, False, 60, 15)
     assert len(result) == 5
     assert result[-1]["message_type"] == "stop_subscription"
 
