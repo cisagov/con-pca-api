@@ -150,24 +150,17 @@ class Cognito(AWS):
         self.client = self.get_client("cognito-idp")
 
     def list_users(self):
-        """List users in cognito."""
+        """List users."""
         return self.client.list_users(UserPoolId=COGNITO_USER_POOL_ID)["Users"]
 
-    def disable_user(self, username):
-        """Disable user in cognito."""
-        return self.client.admin_disable_user(
-            UserPoolId=COGNITO_USER_POOL_ID, Username=username
-        )
-
     def delete_user(self, username):
-        """Delete user from cognito."""
-        self.disable_user(username)
+        """Delete user."""
         return self.client.admin_delete_user(
             UserPoolId=COGNITO_USER_POOL_ID, Username=username
         )
 
     def confirm_user(self, username):
-        """Confirm user in cognito."""
+        """Confirm user."""
         return self.client.admin_confirm_sign_up(
             UserPoolId=COGNITO_USER_POOL_ID, Username=username
         )
