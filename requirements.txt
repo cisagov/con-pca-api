@@ -51,5 +51,5 @@ tqdm>=4.54.1
 ua-parser>=0.10.0
 urllib3>=1.25.10
 user-agents>=2.2.0
-websockets>=8.1
+websockets==8.1
 yarl>=1.6.3
