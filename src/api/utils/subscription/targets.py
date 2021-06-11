@@ -35,7 +35,6 @@ def get_target_available_templates(email, history, templates):
     if not history:
         return templates
 
-
     # Compile list of sent uuids
     sent_uuids = [x["template_uuid"] for x in history[0].get("history_list", [])]
 
