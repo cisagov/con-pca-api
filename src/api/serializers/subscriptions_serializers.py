@@ -125,10 +125,10 @@ class SubscriptionPostSerializer(serializers.Serializer):
     continuous_subscription = serializers.BooleanField(default=True)
     cycle_length_minutes = serializers.IntegerField(
         default=129600, max_value=518400, min_value=15
-    )  # max of 360 days, min of 15 minutes
+    )  # max of 360 days, min of 15 minutes, default of 90 days
     report_length_minutes = serializers.IntegerField(
-        default=129600, max_value=518400, min_value=15
-    )  # max of 360 days, min of 15 minutes
+        default=43200, max_value=518400, min_value=15
+    )  # max of 360 days, min of 15 minutes, default of 30 days
 
 
 class SubscriptionPatchSerializer(serializers.Serializer):
