@@ -80,12 +80,12 @@ def send_stop_notification(subscription):
 
 
 def init_subscription_tasks(
-    start_date, continuous_subscription, cycle_length_minutes, report_length_minutes
+    start_date, continuous_subscription, cycle_length_minutes, report_frequency_minutes
 ):
     """Create Initial Subscription Tasks."""
     message_types = {
         "start_subscription_email": start_date - timedelta(minutes=5),
-        "monthly_report": start_date + timedelta(minutes=report_length_minutes),
+        "monthly_report": start_date + timedelta(minutes=report_frequency_minutes),
         "cycle_report": start_date + timedelta(minutes=cycle_length_minutes),
         "yearly_report": start_date + timedelta(minutes=get_yearly_minutes()),
     }
