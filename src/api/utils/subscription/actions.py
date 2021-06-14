@@ -176,7 +176,8 @@ def stop_subscription(subscription):
     stop_campaigns(subscription["campaigns"])
 
     try:
-        send_stop_notification(subscription)
+        if str(subscription.get("status", "")).lower() not in ["queued", "created"]:
+            send_stop_notification(subscription)
     except Exception as e:
         logging.exception(e)
 
