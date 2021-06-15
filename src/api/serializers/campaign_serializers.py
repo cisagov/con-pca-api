@@ -92,6 +92,7 @@ class GoPhishCampaignsSerializer(serializers.Serializer):
     cb_timestamp = serializers.DateTimeField()
     last_updated_by = serializers.CharField(max_length=200)
     lub_timestamp = serializers.DateTimeField()
+    sending_profile_id = serializers.IntegerField(required=False)
 
 
 class GoPhishCampaignsPostSerializer(serializers.Serializer):
@@ -118,6 +119,7 @@ class GoPhishCampaignsPostSerializer(serializers.Serializer):
     timeline = GoPhishTimelineSerializer(many=True)
     target_email_list = SubscriptionTargetSerializer(many=True, required=False)
     smtp = GoPhishSmtpSerializer(required=False)
+    sending_profile_id = serializers.IntegerField(required=False)
 
 
 class GoPhishCampaignsPatchSerializer(serializers.Serializer):
@@ -144,6 +146,7 @@ class GoPhishCampaignsPatchSerializer(serializers.Serializer):
     timeline = GoPhishTimelineSerializer(many=True, required=False)
     target_email_list = SubscriptionTargetSerializer(many=True, required=False)
     smtp = GoPhishSmtpSerializer(required=False)
+    sending_profile_id = serializers.IntegerField(required=False)
 
 
 class GoPhishCampaignsResponseSerializer(serializers.Serializer):
