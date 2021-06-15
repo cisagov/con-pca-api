@@ -295,6 +295,7 @@ def __create_campaign_smtp(
             ignore_cert_errors=sending_profile.ignore_cert_errors,
             headers=sending_profile.headers,
         )
+        resp.parent_sending_profile_id = sending_profile.id
     except Exception as e:
         logging.error(
             f"Error creating sending profile. Name={campaign_name}; From={from_address}; template_from={template_from_address}"
@@ -302,6 +303,16 @@ def __create_campaign_smtp(
         raise e
 
     return resp
+
+
+def get_campaigns_from_sending_profile(sending_profile):
+    """Get campaigns smtp from sending profile."""
+    campaigns = campaign_service.get_list()
+    return [
+        campaign
+        for campaign in campaigns
+        if campaign["smtp"]["parent_sending_profile_id"] == sending_profile.id
+    ]
 
 
 def get_campaign_from_address(sending_profile, template_from_address):
