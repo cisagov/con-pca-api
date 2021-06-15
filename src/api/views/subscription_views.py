@@ -69,7 +69,7 @@ class SubscriptionsListView(APIView):
 
     def post(self, request, format=None):
         """Post."""
-        resp = create_subscription(request.data.copy())
+        resp = create_subscription(request.data)
         return Response(resp, status=status.HTTP_201_CREATED)
 
 
