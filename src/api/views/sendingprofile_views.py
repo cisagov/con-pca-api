@@ -55,26 +55,21 @@ class SendingProfileView(APIView):
         """Patch."""
         # get the saved record and overlay with whatever was sent
         sp = campaign_manager.get_sending_profile(smtp_id=id)
-        patch_data = request.data.copy()
+        patch_data = request.data
 
-        sp.name = self.__setAttribute(sp.name, patch_data, "name")
-        sp.interface_type = self.__setAttribute(
-            sp.interface_type, patch_data, "interface_type"
-        )
-        sp.host = self.__setAttribute(sp.host, patch_data, "host")
-        sp.username = self.__setAttribute(sp.username, patch_data, "username")
-        sp.password = self.__setAttribute(sp.password, patch_data, "password")
-        sp.ignore_cert_errors = self.__setAttribute(
-            sp.ignore_cert_errors, patch_data, "ignore_cert_errors"
-        )
-        sp.from_address = self.__setAttribute(
-            sp.from_address, patch_data, "from_address"
-        )
-        sp.headers = self.__setAttribute(sp.headers, patch_data, "headers")
+        sp.name = patch_data["name"]
+        sp.interface_type = patch_data["interface_type"]
+        sp.host = patch_data["host"]
+        sp.username = patch_data["username"]
+        sp.password = patch_data["password"]
+        sp.ignore_cert_errors = patch_data["ignore_cert_errors"]
+        sp.from_address = patch_data["from_address"]
+        sp.headers = patch_data["headers"]
 
         campaign_manager.put_sending_profile(sp)
-
+        # TODO: query for campaigns with sending profile id, don't overwrite headers.. merge instead, regenerate 'from_address'
         # get the new version from gophish to make sure we return the latest
+        # campaign_service.update(loop through and update each campaign queried by sending profile id)
         sending_profile = campaign_manager.get_sending_profile(smtp_id=id)
         serializer = SendingProfileSerializer(sending_profile)
         return Response(serializer.data)
@@ -84,8 +79,3 @@ class SendingProfileView(APIView):
         delete_response = campaign_manager.delete_sending_profile(smtp_id=id)
         serializer = SendingProfileDeleteResponseSerializer(delete_response)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def __setAttribute(self, orig, d, attrName):
-        if attrName in d:
-            return d[attrName]
-        return orig
