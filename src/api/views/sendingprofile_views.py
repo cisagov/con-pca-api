@@ -10,12 +10,16 @@ from api.serializers.sendingprofile_serializers import (
     SendingProfileDeleteResponseSerializer,
     SendingProfileSerializer,
 )
-from api.services import CampaignService
-from api.utils.subscription.campaigns import get_campaigns_from_sending_profile
+from api.services import CampaignService, TemplateService
+from api.utils.subscription.campaigns import (
+    get_campaign_from_address,
+    get_campaigns_from_sending_profile,
+)
 
 # GoPhish API Manager
 campaign_manager = CampaignManager()
 campaign_service = CampaignService()
+template_service = TemplateService()
 
 
 class SendingProfilesListView(APIView):
@@ -77,6 +81,13 @@ class SendingProfileView(APIView):
         for campaign in campaigns:
             smtp = campaign["smtp"]
             smtp["from_address"] = sending_profile.from_address
+            sub_sp = campaign_manager.get_sending_profile(campaign["smtp"]["id"])
+            template = template_service.get(uuid=campaign["template_uuid"])
+            sub_sp.from_address = get_campaign_from_address(
+                sending_profile, template["from_address"]
+            )
+            sub_sp.headers += patch_data["headers"]
+            campaign_manager.put_sending_profile(sub_sp)
             campaign_service.update(campaign["campaign_uuid"], {"smtp": smtp})
 
         serializer = SendingProfileSerializer(sending_profile)
