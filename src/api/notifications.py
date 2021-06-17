@@ -144,6 +144,7 @@ class EmailSender:
         last_name = self.subscription.get("primary_contact").get("last_name").title()
         current_cycle = self.subscription.get("cycles")[-1]
         cycle_uuid = current_cycle.get("cycle_uuid")
+        subscription_uuid = self.subscription.get("subscription_uuid")
 
         dhs_contact = self.dhs_contact
 
@@ -193,6 +194,7 @@ class EmailSender:
             "start_date": start_date,
             "end_date": end_date,
             "cycle_uuid": cycle_uuid,
+            "subscription_uuid": subscription_uuid,
             "templates": templates,
             "phishing_email": phishing_email,
             "email_count": email_count,
