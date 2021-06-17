@@ -30,7 +30,7 @@ please use the following:
     All emails coming from the Con-PCA program will
     have a custom header:
 
-    CISA-PHISH:{{cycle_uuid}}}
+    CISA-PHISH:{{subscription_uuid}}}
 
     Please look for this header. The value for the
     header is unique to your subscription and changes
