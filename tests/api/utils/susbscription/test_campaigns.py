@@ -82,7 +82,7 @@ def test_set_smtp_headers():
     """Test Set SMTP Headers."""
     smtp = SMTP(name="Test SMTP")
     cycle_uuid = "test"
-    campaigns.__set_smtp_headers(smtp, cycle_uuid)
+    campaigns.set_campaign_headers(smtp, cycle_uuid)
 
     assert len(list(filter(lambda x: x["key"] == "CISA-PHISH", smtp.headers))) == 1
     assert (

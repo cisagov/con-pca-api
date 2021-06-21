@@ -279,30 +279,36 @@ def __create_campaign_smtp(
         ),
         None,
     )
-
-    __set_smtp_headers(sending_profile, subscription_uuid)
-
-    from_address = get_campaign_from_address(sending_profile, template_from_address)
+    smtp = get_campaign_smtp(sending_profile, subscription_uuid, template_from_address)
 
     try:
         resp = campaign_manager.create_sending_profile(
             name=campaign_name,
-            username=sending_profile.username,
-            password=sending_profile.password,
-            host=sending_profile.host,
-            interface_type=sending_profile.interface_type,
-            from_address=from_address,
-            ignore_cert_errors=sending_profile.ignore_cert_errors,
-            headers=sending_profile.headers,
+            username=smtp.username,
+            password=smtp.password,
+            host=smtp.host,
+            interface_type=smtp.interface_type,
+            from_address=smtp.from_address,
+            ignore_cert_errors=smtp.ignore_cert_errors,
+            headers=smtp.headers,
         )
-        resp.parent_sending_profile_id = sending_profile.id
+        resp.parent_sending_profile_id = smtp.id
     except Exception as e:
         logging.error(
-            f"Error creating sending profile. Name={campaign_name}; From={from_address}; template_from={template_from_address}"
+            f"Error creating sending profile. Name={campaign_name}; From={smtp.from_address}; template_from={template_from_address}"
         )
         raise e
 
     return resp
+
+
+def get_campaign_smtp(parent_sending_profile, subscription_uuid, template_from_address):
+    """Generate the SMTP profile for a campaign."""
+    set_campaign_headers(parent_sending_profile, subscription_uuid)
+    parent_sending_profile.from_address = get_campaign_from_address(
+        parent_sending_profile, template_from_address
+    )
+    return parent_sending_profile
 
 
 def get_campaign_from_address(sending_profile, template_from_address):
@@ -331,7 +337,8 @@ def get_campaign_from_address(sending_profile, template_from_address):
     return from_address
 
 
-def __set_smtp_headers(sending_profile, subscription_uuid):
+def set_campaign_headers(sending_profile, subscription_uuid):
+    """Set smtp headers for a campaign."""
     if not sending_profile.headers:
         sending_profile.headers = []
 

@@ -1,4 +1,7 @@
 """SendingProfile Views."""
+# Standard Python Libraries
+import copy
+
 # Third-Party Libraries
 from rest_framework import status
 from rest_framework.response import Response
@@ -6,17 +9,17 @@ from rest_framework.views import APIView
 
 # cisagov Libraries
 from api.manager import CampaignManager
+from api.serializers.campaign_serializers import GoPhishSmtpSerializer
 from api.serializers.sendingprofile_serializers import (
     SendingProfileDeleteResponseSerializer,
     SendingProfileSerializer,
 )
-from api.services import CampaignService, TemplateService
-from api.utils.subscription.campaigns import get_campaign_from_address
+from api.services import CampaignService
+from api.utils.subscription.campaigns import get_campaign_smtp
 
 # GoPhish API Manager
 campaign_manager = CampaignManager()
 campaign_service = CampaignService()
-template_service = TemplateService()
 
 
 class SendingProfilesListView(APIView):
@@ -73,24 +76,27 @@ class SendingProfileView(APIView):
         campaign_manager.put_sending_profile(sp)
 
         sending_profile = campaign_manager.get_sending_profile(smtp_id=id)
+
+        # Update any campaigns utilizing the sending profile
         campaigns = campaign_service.get_list(
             parameters={"smtp.parent_sending_profile_id": sending_profile.id}
         )
-
         for campaign in campaigns:
-            smtp = campaign["smtp"]
-            smtp["from_address"] = sending_profile.from_address
-            sub_sp = campaign_manager.get_sending_profile(campaign["smtp"]["id"])
-            template = template_service.get(uuid=campaign["template_uuid"])
-            sub_sp.from_address = get_campaign_from_address(
-                sending_profile, template["from_address"]
+            smtp = copy.copy(sending_profile)
+            smtp = get_campaign_smtp(
+                smtp,
+                campaign["subscription_uuid"],
+                campaign["smtp"]["from_address"],
             )
-            sub_sp.headers += patch_data["headers"]
-            campaign_manager.put_sending_profile(sub_sp)
-            campaign_service.update(campaign["campaign_uuid"], {"smtp": smtp})
+            smtp.id = campaign["smtp"]["id"]
+            smtp.name = campaign["smtp"]["name"]
+            smtp.parent_sending_profile_id = sending_profile.id
+            campaign_manager.put_sending_profile(smtp)
+            campaign_service.update(
+                campaign["campaign_uuid"], {"smtp": GoPhishSmtpSerializer(smtp).data}
+            )
 
-        serializer = SendingProfileSerializer(sending_profile)
-        return Response(serializer.data)
+        return Response(SendingProfileSerializer(sending_profile).data)
 
     def delete(self, request, id):
         """Delete."""
