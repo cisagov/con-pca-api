@@ -32,7 +32,7 @@ services:
     # DNS name or IP address and port 27017 (the left-hand side of the
     # colon).
     ports:
-      - "27017:27017"
+      - "27016:27017"
     command: --profile=1 --slowms=1
     volumes:
       - "mongodb:/data/db"

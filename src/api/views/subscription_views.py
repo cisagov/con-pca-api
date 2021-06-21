@@ -9,7 +9,12 @@ from rest_framework.views import APIView
 
 # cisagov Libraries
 from api.manager import CampaignManager
-from api.services import CampaignService, SubscriptionService
+from api.services import (
+    CampaignService,
+    CustomerService,
+    DHSContactService,
+    SubscriptionService,
+)
 from api.utils.stats import update_phish_results
 from api.utils.subscription.actions import (
     create_subscription,
@@ -21,8 +26,10 @@ from api.utils.subscription.valid import is_subscription_valid
 
 campaign_manager = CampaignManager()
 
-subscription_service = SubscriptionService()
+dhs_contact_service = DHSContactService()
 campaign_service = CampaignService()
+customer_service = CustomerService()
+subscription_service = SubscriptionService()
 
 
 class SubscriptionsListView(APIView):
@@ -193,3 +200,33 @@ class SubscriptionValidView(APIView):
             return Response("Subscription is valid", status=status.HTTP_200_OK)
         else:
             return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SubscriptionJSONDownloadView(APIView):
+    """SubscriptionsView."""
+
+    def get(self, request, subscription_uuid):
+        """Get."""
+        subscription = subscription_service.get(subscription_uuid)
+        if subscription is None:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        update_phish_results(subscription)
+        campaigns = campaign_service.get_list({"subscription_uuid": subscription_uuid})
+        subscription["campaigns"] = campaigns
+        customer = customer_service.get(subscription["customer_uuid"])
+        subscription["customer"] = customer
+        dhs_contact = dhs_contact_service.get(subscription["dhs_contact_uuid"])
+        subscription["dhs_contact"] = dhs_contact
+
+        fieldsToRemove = [
+            "customer_uuid",
+            "dhs_contact_uuid",
+            "subscription_uuid",
+            "target_email_list_cached_copy",
+            "templates_selected_uuid_list",
+        ]
+
+        for field in fieldsToRemove:
+            subscription.pop(field)
+
+        return Response(subscription)
