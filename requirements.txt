@@ -39,7 +39,7 @@ python-jose==3.3.0
 pytz==2021.1
 PyYAML==5.4.1
 regex==2021.4.4
-requests==2.24.0
+requests==2.25.1
 rsa==4.7.2
 s3transfer==0.4.2
 schematics==2.1.0
