@@ -225,3 +225,16 @@ class TemplateSelectView(APIView):
         """Get."""
         templates = template_service.get_list({"retired": False})
         return Response(select_templates(templates))
+
+
+class TemplateBulkDownload(APIView):
+    """TemplateBulkDownloadView."""
+
+    def get(self, request):
+        """Get all temlpates for json download."""
+        serializer = TemplateQuerySerializer(request.GET.dict())
+        parameters = serializer.data
+
+        templates = template_service.get_list({"retired": parameters["retired"]})
+
+        return Response(templates, status=status.HTTP_200_OK)

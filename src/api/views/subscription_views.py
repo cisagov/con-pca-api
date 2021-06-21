@@ -211,14 +211,14 @@ class SubscriptionJSONDownloadView(APIView):
         if subscription is None:
             return Response(status=status.HTTP_404_NOT_FOUND)
         update_phish_results(subscription)
-        campaigns = campaign_service.get_list({"subscription_uuid": subscription_uuid})
-        subscription["campaigns"] = campaigns
+        # campaigns = campaign_service.get_list({"subscription_uuid": subscription_uuid})
+        # subscription["campaigns"] = campaigns
         customer = customer_service.get(subscription["customer_uuid"])
         subscription["customer"] = customer
         dhs_contact = dhs_contact_service.get(subscription["dhs_contact_uuid"])
         subscription["dhs_contact"] = dhs_contact
 
-        fieldsToRemove = [
+        fields_to_remove = [
             "customer_uuid",
             "dhs_contact_uuid",
             "subscription_uuid",
@@ -226,7 +226,7 @@ class SubscriptionJSONDownloadView(APIView):
             "templates_selected_uuid_list",
         ]
 
-        for field in fieldsToRemove:
+        for field in fields_to_remove:
             subscription.pop(field)
 
         return Response(subscription)

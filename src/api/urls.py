@@ -168,6 +168,11 @@ urlpatterns = [
         template_views.TemplateStopView.as_view(),
         name="template_stop_api",
     ),
+    path(
+        "v1/templates/downloadjson/",
+        template_views.TemplateBulkDownload.as_view(),
+        name="template_bulk_download",
+    ),
     # Tags
     path(
         "v1/tags/",
