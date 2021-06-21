@@ -27,6 +27,7 @@ class GoPhishSmtpSerializer(serializers.Serializer):
     ignore_cert_errors = serializers.BooleanField()
     modified_date = serializers.DateTimeField()
     headers = SendingHeaderSerializer(many=True, required=False)
+    parent_sending_profile_id = serializers.IntegerField(required=False)
 
 
 class GoPhishTimelineSerializer(serializers.Serializer):
