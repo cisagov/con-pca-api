@@ -11,10 +11,7 @@ from api.serializers.sendingprofile_serializers import (
     SendingProfileSerializer,
 )
 from api.services import CampaignService, TemplateService
-from api.utils.subscription.campaigns import (
-    get_campaign_from_address,
-    get_campaigns_from_sending_profile,
-)
+from api.utils.subscription.campaigns import get_campaign_from_address
 
 # GoPhish API Manager
 campaign_manager = CampaignManager()
@@ -76,7 +73,9 @@ class SendingProfileView(APIView):
         campaign_manager.put_sending_profile(sp)
 
         sending_profile = campaign_manager.get_sending_profile(smtp_id=id)
-        campaigns = get_campaigns_from_sending_profile(sending_profile)
+        campaigns = campaign_service.get_list(
+            parameters={"smtp.parent_sending_profile_id": sending_profile.id}
+        )
 
         for campaign in campaigns:
             smtp = campaign["smtp"]

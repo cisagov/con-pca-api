@@ -305,16 +305,6 @@ def __create_campaign_smtp(
     return resp
 
 
-def get_campaigns_from_sending_profile(sending_profile):
-    """Get campaigns smtp from sending profile."""
-    campaigns = campaign_service.get_list()
-    return [
-        campaign
-        for campaign in campaigns
-        if campaign["smtp"]["parent_sending_profile_id"] == sending_profile.id
-    ]
-
-
 def get_campaign_from_address(sending_profile, template_from_address):
     """Get campaign from address."""
     # Get template display name
