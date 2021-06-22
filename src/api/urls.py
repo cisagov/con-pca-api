@@ -71,6 +71,11 @@ urlpatterns = [
         subscription_views.SubscriptionTargetCacheView.as_view(),
         name="subscription_update_target_cache_api",
     ),
+    path(
+        "v1/subscription/downloadjson/<subscription_uuid>/",
+        subscription_views.SubscriptionJSONDownloadView.as_view(),
+        name="subscription_download_json_data",
+    ),
     # API Reports
     path(
         "v1/reports/<subscription_uuid>/monthly/<cycle_uuid>/",
@@ -162,6 +167,11 @@ urlpatterns = [
         "v1/template/stop/<template_uuid>/",
         template_views.TemplateStopView.as_view(),
         name="template_stop_api",
+    ),
+    path(
+        "v1/templates/downloadjson/",
+        template_views.TemplateBulkDownload.as_view(),
+        name="template_bulk_download",
     ),
     # Tags
     path(
