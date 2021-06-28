@@ -119,7 +119,7 @@ class TemplateView(APIView):
         for sub in subscriptions:
             templates_selected = []
             [templates_selected.extend(v) for v in sub["templates_selected"].values()]
-            if templates_selected:
+            if template_uuid in templates_selected:
                 return Response(
                     {
                         "error": "This template cannot be deleted, it is assocated with subscriptions."

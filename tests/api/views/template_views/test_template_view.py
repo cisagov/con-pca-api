@@ -42,7 +42,15 @@ def test_templates_view_delete(client):
         "api.services.CampaignService.exists", return_value=False
     ), mock.patch(
         "api.services.SubscriptionService.get_list",
-        return_value=[],
+        return_value=[
+            {
+                "templates_selected": {
+                    "low": ["1", "2"],
+                    "moderate": ["3, 4"],
+                    "high": ["5", "6"],
+                }
+            }
+        ],
     ), mock.patch(
         "api.services.TemplateService.get", return_value={"retired": True}
     ):
