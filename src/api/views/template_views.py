@@ -118,7 +118,10 @@ class TemplateView(APIView):
         subscriptions = subscription_service.get_list(fields=["templates_selected"])
         for sub in subscriptions:
             templates_selected = []
-            [templates_selected.extend(v) for v in sub["templates_selected"].values()]
+            [
+                templates_selected.extend(v)
+                for v in sub.get("templates_selected", {}).values()
+            ]
             if template_uuid in templates_selected:
                 return Response(
                     {
