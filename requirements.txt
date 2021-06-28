@@ -51,7 +51,7 @@ text-unidecode==1.3
 tqdm==4.61.1
 typing-extensions==3.10.0.0
 ua-parser==0.10.0
-urllib3==1.25.10
+urllib3==1.26.6
 user-agents==2.2.0
 websockets==8.1
 yarl==1.6.3
