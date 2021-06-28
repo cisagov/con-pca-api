@@ -95,6 +95,38 @@ class TemplateView(APIView):
 
     def delete(self, request, template_uuid):
         """Delete method."""
+        # Get template
+        template = template_service.get(template_uuid)
+
+        # Check if retired
+        if not template["retired"]:
+            return Response(
+                {"error": "You must retire the template first"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Check if its used in any campaigns
+        if campaign_service.exists(parameters={"template_uuid": template_uuid}):
+            return Response(
+                {
+                    "error": "This template can not be deleted, it is associated with subscriptions.",
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # check if a subscription has this template in the list of selected templates
+        subscriptions = subscription_service.get_list(fields=["templates_selected"])
+        for sub in subscriptions:
+            templates_selected = []
+            [templates_selected.extend(v) for v in sub["templates_selected"].values()]
+            if template_uuid in templates_selected:
+                return Response(
+                    {
+                        "error": "This template cannot be deleted, it is assocated with subscriptions."
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
         delete_response = template_service.delete(template_uuid)
         return Response(delete_response, status=status.HTTP_200_OK)
 

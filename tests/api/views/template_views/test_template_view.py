@@ -34,10 +34,78 @@ def test_templates_view_get(client):
 
 def test_templates_view_delete(client):
     """Test Delete."""
+    # Test successful delete
     with mock.patch(
         "api.services.TemplateService.delete",
         return_value=template(),
-    ) as mock_delete:
+    ) as mock_delete, mock.patch(
+        "api.services.CampaignService.exists", return_value=False
+    ), mock.patch(
+        "api.services.SubscriptionService.get_list",
+        return_value=[
+            {
+                "templates_selected": {
+                    "low": ["1", "2"],
+                    "moderate": ["3, 4"],
+                    "high": ["5", "6"],
+                }
+            }
+        ],
+    ), mock.patch(
+        "api.services.TemplateService.get", return_value={"retired": True}
+    ):
         result = client.delete("/api/v1/template/1234/")
-        assert mock_delete.called
+        mock_delete.assert_called
         assert result.status_code == 200
+
+    # Test unretired template
+    with mock.patch(
+        "api.services.TemplateService.get", return_value={"retired": False}
+    ):
+        result = client.delete("/api/v1/template/1234/")
+        assert result.data == {"error": "You must retire the template first"}
+        mock_delete.assert_not_called
+        assert result.status_code == 400
+
+    # Test template used in campaign
+    with mock.patch(
+        "api.services.TemplateService.delete",
+        return_value=template(),
+    ) as mock_delete, mock.patch(
+        "api.services.TemplateService.get", return_value={"retired": True}
+    ), mock.patch(
+        "api.services.CampaignService.exists", return_value=True
+    ):
+        result = client.delete("/api/v1/template/1234/")
+        assert result.data == {
+            "error": "This template can not be deleted, it is associated with subscriptions."
+        }
+        mock_delete.assert_not_called
+        assert result.status_code == 400
+
+    # Test template in subscription
+    with mock.patch(
+        "api.services.TemplateService.delete",
+        return_value=template(),
+    ) as mock_delete, mock.patch(
+        "api.services.CampaignService.exists", return_value=False
+    ), mock.patch(
+        "api.services.SubscriptionService.get_list",
+        return_value=[
+            {
+                "templates_selected": {
+                    "low": ["1", "2"],
+                    "moderate": ["3, 4"],
+                    "high": ["1234"],
+                }
+            }
+        ],
+    ), mock.patch(
+        "api.services.TemplateService.get", return_value={"retired": True}
+    ):
+        result = client.delete("/api/v1/template/1234/")
+        assert result.data == {
+            "error": "This template cannot be deleted, it is assocated with subscriptions."
+        }
+        mock_delete.assert_not_called
+        assert result.status_code == 400
