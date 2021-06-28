@@ -106,28 +106,26 @@ class TemplateView(APIView):
             )
 
         # Check if its used in any campaigns
-        campaigns = campaign_service.get_list(
-            parameters={"template_uuid": template_uuid},
-            fields=["subscription_uuid"],
-        )
-        if len(campaigns) > 0:
+        if campaign_service.exists(parameters={"template_uuid": template_uuid}):
             return Response(
                 {
-                    "error": "This template can not be deleted, it is associated with campaigns",
-                    "campaigns": campaigns,
+                    "error": "This template can not be deleted, it is associated with subscriptions.",
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # check if a subscription has this tmeplate in the list of selected templates
-        subscriptions = subscription_service.get_list(
-            parameters={"archived": False},
-            fields=["templates_selected"],
-        )
-        templates_in_use = []
+        # check if a subscription has this template in the list of selected templates
+        subscriptions = subscription_service.get_list(fields=["templates_selected"])
         for sub in subscriptions:
-            for key in sub:
-                templates_in_use.append(sub[key])
+            templates_selected = []
+            [templates_selected.extend(v) for v in sub["templates_selected"].values()]
+            if templates_selected:
+                return Response(
+                    {
+                        "error": "This template cannot be deleted, it is assocated with subscriptions."
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
         delete_response = template_service.delete(template_uuid)
         return Response(delete_response, status=status.HTTP_200_OK)
