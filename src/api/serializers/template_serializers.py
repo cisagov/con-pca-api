@@ -44,6 +44,7 @@ class TemplateSerializer(serializers.Serializer):
     template_uuid = serializers.UUIDField()
     name = serializers.CharField()
     landing_page_uuid = serializers.CharField(default=None, allow_null=True)
+    sending_profile_id = serializers.IntegerField(default=None, allow_null=True)
     deception_score = serializers.IntegerField()
     descriptive_words = serializers.CharField(required=False, allow_null=True)
     description = serializers.CharField(allow_null=True)
@@ -72,6 +73,7 @@ class TemplatePostSerializer(serializers.Serializer):
 
     name = serializers.CharField()
     landing_page_uuid = serializers.CharField(required=False, allow_null=True)
+    sending_profile_id = serializers.IntegerField(required=False, allow_null=True)
     deception_score = serializers.IntegerField()
     descriptive_words = serializers.CharField(
         required=False, allow_null=True, allow_blank=True
@@ -99,6 +101,7 @@ class TemplatePatchSerializer(serializers.Serializer):
 
     name = serializers.CharField(required=False)
     landing_page_uuid = serializers.CharField(required=False, allow_null=True)
+    sending_profile_id = serializers.IntegerField(required=False, allow_null=True)
     deception_score = serializers.IntegerField(required=False)
     descriptive_words = serializers.CharField(required=False, allow_null=True)
     description = serializers.CharField(required=False, allow_null=True)
@@ -144,6 +147,7 @@ class TemplateQuerySerializer(serializers.Serializer):
     text = serializers.CharField(required=False)
     html = serializers.CharField(required=False)
     landing_page_uuid = serializers.CharField(required=False)
+    sending_profile_id = serializers.IntegerField(required=False)
     created_by = serializers.CharField(required=False)
     cb_timestamp = serializers.DateTimeField(required=False)
     last_updated_by = serializers.CharField(required=False)
