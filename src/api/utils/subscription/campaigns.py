@@ -200,8 +200,6 @@ def create_campaign(
         campaign_name = f"{base_name}.{template['name']}.{campaign_start.strftime('%Y-%m-%d')}.{campaign_end.strftime('%Y-%m-%d')}"
 
         # Create Sending Profile
-        print("Template")
-        print(template)
         sending_profile = __create_campaign_smtp(
             campaign_name,
             template["from_address"],
@@ -276,9 +274,6 @@ def __create_campaign_smtp(
     sending_profile_name,
     template_sending_profile_id=None,
 ):
-    print("Creating SMTP")
-    print(template_sending_profile_id)
-    print(sending_profile_name)
     if template_sending_profile_id:
         sending_profile = campaign_manager.get_sending_profile(
             template_sending_profile_id
