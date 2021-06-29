@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 # cisagov Libraries
 from api.services import SubscriptionService
 from api.utils.generic import format_timedelta
+from api.utils.reports import is_nonhuman_request
 from api.utils.stats import deception_stats_to_graph_format, get_subscription_cycle
 from api.views.reports.cycle_report_views import get_cycle_stats
 
@@ -23,7 +24,7 @@ class CycleStatusView(APIView):
         cycle = get_subscription_cycle(subscription, cycle_uuid)
 
         # Get statistics for the specified subscription during the specified cycle
-        stats = get_cycle_stats(subscription, cycle)
+        stats = get_cycle_stats(subscription, cycle, is_nonhuman_request(request))
         # get_template_details(subscription_stats["campaign_results"])
 
         context = {

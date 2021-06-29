@@ -17,7 +17,7 @@ from api.utils import stats
 from api.utils.contact import format_contact_name
 from api.utils.customer import format_customer_address_1, format_customer_address_2
 from api.utils.generic import display_date
-from api.utils.reports.pdf import download_pdf
+from api.utils.reports import download_pdf, is_nonhuman_request
 
 subscription_service = SubscriptionService()
 customer_service = CustomerService()
@@ -34,7 +34,9 @@ class ReportView(APIView):
         cycle = stats.get_subscription_cycle(subscription, cycle_uuid)
         customer = customer_service.get(subscription["customer_uuid"])
         cisa_contact = dhs_contact_service.get(subscription["dhs_contact_uuid"])
-        report_stats = get_monthly_stats(subscription, cycle)
+        report_stats = get_monthly_stats(
+            subscription, cycle, is_nonhuman_request(request)
+        )
         metrics = get_monthly_metrics(cycle, report_stats)
 
         context = {
@@ -66,7 +68,9 @@ class ReportView(APIView):
 def email_view(request, subscription_uuid, cycle_uuid):
     """Email monthly report."""
     subscription = subscription_service.get(subscription_uuid)
-    sender = EmailSender(subscription, "monthly_report", cycle_uuid)
+    sender = EmailSender(
+        subscription, "monthly_report", cycle_uuid, is_nonhuman_request(request)
+    )
     sender.send()
     return JsonResponse(
         {"subscription_uuid": subscription_uuid}, status=status.HTTP_202_ACCEPTED
@@ -76,13 +80,15 @@ def email_view(request, subscription_uuid, cycle_uuid):
 def pdf_view(request, subscription_uuid, cycle_uuid):
     """Download monthly report."""
     return FileResponse(
-        download_pdf("monthly", subscription_uuid, cycle_uuid),
+        download_pdf(
+            "monthly", subscription_uuid, cycle_uuid, is_nonhuman_request(request)
+        ),
         as_attachment=True,
         filename="monthly_subscription_report.pdf",
     )
 
 
-def get_monthly_stats(subscription, cycle):
+def get_monthly_stats(subscription, cycle, nonhuman=False):
     """Get statistics for monthly report."""
     campaigns = stats.get_cycle_campaigns(
         cycle["cycle_uuid"], subscription["campaigns"]
@@ -96,7 +102,7 @@ def get_monthly_stats(subscription, cycle):
     campaign_stats = []
     for campaign in campaigns:
         template = template_service.get(campaign["template_uuid"])
-        campaign_stats.append(stats.process_campaign(campaign, template))
+        campaign_stats.append(stats.process_campaign(campaign, template, nonhuman))
     overall_stats = stats.process_overall_stats(campaign_stats)
     stats.clean_stats(overall_stats)
     return overall_stats

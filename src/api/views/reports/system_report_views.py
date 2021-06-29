@@ -80,7 +80,7 @@ class SystemReportsView(APIView):
             "yearly_reports_sent": yearly_reports_sent,
         }
 
-    def get_campaign_stats(self, subscriptions):
+    def get_campaign_stats(self, subscriptions, nonhuman=False):
         """Get stats for all campaigns in a list of subscriptions."""
         campaign_stats = []
         for subscription in subscriptions:
@@ -88,7 +88,7 @@ class SystemReportsView(APIView):
                 {"subscription_uuid": subscription["subscription_uuid"]}
             )
             for campaign in campaigns:
-                campaign_stats.append(stats.process_campaign(campaign))
+                campaign_stats.append(stats.process_campaign(campaign, nonhuman))
         return campaign_stats
 
     def get_categorized_stats(self):

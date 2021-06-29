@@ -18,7 +18,7 @@ from api.services import (
 )
 from api.utils import stats
 from api.utils.customer import format_customer_address
-from api.utils.reports.pdf import download_pdf
+from api.utils.reports import download_pdf, is_nonhuman_request
 
 subscription_service = SubscriptionService()
 customer_service = CustomerService()
@@ -36,7 +36,10 @@ class ReportView(APIView):
 
         customer = customer_service.get(subscription["customer_uuid"])
         cisa_contact = dhs_contact_service.get(subscription["dhs_contact_uuid"])
-        report_stats = get_yearly_stats(subscription, cycle)
+
+        report_stats = get_yearly_stats(
+            subscription, cycle, is_nonhuman_request(request)
+        )
         region_stats = stats.get_related_customer_stats(customer)
 
         metrics = get_yearly_metrics(report_stats, region_stats)
@@ -86,7 +89,9 @@ class ReportView(APIView):
 def email_view(request, subscription_uuid, cycle_uuid):
     """Email yearly report."""
     subscription = subscription_service.get(subscription_uuid)
-    sender = EmailSender(subscription, "yearly_report", cycle_uuid)
+    sender = EmailSender(
+        subscription, "yearly_report", cycle_uuid, is_nonhuman_request(request)
+    )
     sender.send()
     return JsonResponse(
         {"subscription_uuid": subscription_uuid}, status=status.HTTP_202_ACCEPTED
@@ -97,16 +102,14 @@ def pdf_view(request, subscription_uuid, cycle_uuid):
     """Download yearly report."""
     return FileResponse(
         download_pdf(
-            "yearly",
-            subscription_uuid,
-            cycle_uuid,
+            "yearly", subscription_uuid, cycle_uuid, is_nonhuman_request(request)
         ),
         as_attachment=True,
         filename="yearly_subscription_report.pdf",
     )
 
 
-def get_yearly_stats(subscription, cycle):
+def get_yearly_stats(subscription, cycle, nonhuman=False):
     """Get statistics for yearly report."""
     yearly_start = cycle["start_date"] - timedelta(days=365)
     yearly_end = cycle["start_date"]
@@ -133,7 +136,7 @@ def get_yearly_stats(subscription, cycle):
         cycle_campaign_stats = []
         for campaign in campaigns:
             template = template_service.get(campaign["template_uuid"])
-            campaign_stat = stats.process_campaign(campaign, template)
+            campaign_stat = stats.process_campaign(campaign, template, nonhuman)
             cycle_campaign_stats.append(campaign_stat)
             campaign_stats.append(campaign_stat)
 
