@@ -200,11 +200,14 @@ def create_campaign(
         campaign_name = f"{base_name}.{template['name']}.{campaign_start.strftime('%Y-%m-%d')}.{campaign_end.strftime('%Y-%m-%d')}"
 
         # Create Sending Profile
+        print("Template")
+        print(template)
         sending_profile = __create_campaign_smtp(
             campaign_name,
             template["from_address"],
             subscription["subscription_uuid"],
             subscription["sending_profile_name"],
+            template.get("sending_profile_id"),
         )
         return_data.update(
             {"smtp": campaign_serializers.GoPhishSmtpSerializer(sending_profile).data}
@@ -270,15 +273,22 @@ def __create_campaign_smtp(
     campaign_name,
     template_from_address,
     subscription_uuid,
-    subscription_sending_profile_name,
+    sending_profile_name,
+    template_sending_profile_id=None,
 ):
-    sending_profiles = campaign_manager.get_sending_profile()
-    sending_profile = next(
-        iter(
-            [p for p in sending_profiles if p.name == subscription_sending_profile_name]
-        ),
-        None,
-    )
+    print("Creating SMTP")
+    print(template_sending_profile_id)
+    print(sending_profile_name)
+    if template_sending_profile_id:
+        sending_profile = campaign_manager.get_sending_profile(
+            template_sending_profile_id
+        )
+    else:
+        sending_profiles = campaign_manager.get_sending_profile()
+        sending_profile = next(
+            iter([p for p in sending_profiles if p.name == sending_profile_name]),
+            None,
+        )
     smtp = get_campaign_smtp(sending_profile, subscription_uuid, template_from_address)
 
     try:
