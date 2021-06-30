@@ -220,7 +220,7 @@ def create_campaign(
             email_template=created_template,
             launch_date=start_date.strftime("%Y-%m-%dT%H:%M:%S+00:00"),
             send_by_date=(campaign_end).strftime("%Y-%m-%dT%H:%M:%S+00:00"),
-            url=__get_campaign_url(sending_profile),
+            url=get_campaign_url(sending_profile),
         )
         return_data.update(
             {
@@ -260,10 +260,14 @@ def create_campaign(
     return return_data
 
 
-def __get_campaign_url(sending_profile):
-    sp_domain = (
-        sending_profile.from_address.split("<")[-1].split("@")[1].replace(">", "")
-    )
+def get_campaign_url(sending_profile):
+    """Get the landing page url for a campaign."""
+    if type(sending_profile) == dict:
+        from_address = sending_profile["from_address"]
+    else:
+        from_address = sending_profile.from_address
+
+    sp_domain = from_address.split("<")[-1].split("@")[1].replace(">", "")
     return f"http://{GP_LANDING_SUBDOMAIN}.{sp_domain}"
 
 
