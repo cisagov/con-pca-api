@@ -14,13 +14,14 @@ from api.serializers.sendingprofile_serializers import (
     SendingProfileDeleteResponseSerializer,
     SendingProfileSerializer,
 )
-from api.services import CampaignService, TemplateService
+from api.services import CampaignService, SubscriptionService, TemplateService
 from api.utils.subscription.campaigns import get_campaign_smtp
 
 # GoPhish API Manager
 campaign_manager = CampaignManager()
 campaign_service = CampaignService()
 template_service = TemplateService()
+subscription_service = SubscriptionService()
 
 
 class SendingProfilesListView(APIView):
@@ -101,11 +102,24 @@ class SendingProfileView(APIView):
 
     def delete(self, request, id):
         """Delete."""
-        if template_service.exists(parameters={"sending_profile_id": id}):
+        sending_profile = campaign_manager.get_sending_profile(id)
+
+        if template_service.exists(parameters={"sending_profile_id": int(id)}):
             return Response(
                 {"error": "Templates are currently utilizing this sending profile."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+        if subscription_service.exists(
+            parameters={"sending_profile_name": sending_profile.name}
+        ):
+            return Response(
+                {
+                    "error": "Subscriptions are currently utilizing this sending profile."
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         delete_response = campaign_manager.delete_sending_profile(smtp_id=id)
         serializer = SendingProfileDeleteResponseSerializer(delete_response)
         return Response(serializer.data, status=status.HTTP_200_OK)
