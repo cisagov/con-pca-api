@@ -22,7 +22,7 @@ from api.services import (
     TemplateService,
 )
 from api.utils.subscription.actions import stop_subscription
-from api.utils.subscription.campaigns import get_campaign_from_address
+from api.utils.subscription.campaigns import get_campaign_from_address, get_campaign_url
 from api.utils.template.personalize import personalize_template
 from api.utils.template.selector import select_templates
 from api.utils.template.templates import validate_template
@@ -226,7 +226,7 @@ class SendingTestEmailsView(APIView):
             "last_name": sp.get("last_name"),
             "email": sp.get("email"),
             "position": sp.get("position"),
-            "url": "https://www.google.com",
+            "url": get_campaign_url(smtp),
             "smtp": {
                 "from_address": get_campaign_from_address(smtp, from_address),
                 "host": smtp.get("host"),
