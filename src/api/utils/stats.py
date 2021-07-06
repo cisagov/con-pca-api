@@ -482,8 +482,8 @@ def rank_indicators(stats):
 
 
 def process_campaign(campaign: dict, template=None, nonhuman=False):
-    """Generate stats from a campagin."""
-    campaign_timeline = campaign["timeline"]
+    """Generate stats from a campaign."""
+    campaign_timeline = list(campaign["timeline"])
     return_val = {
         "timeline": [],
         "sent": {"count": 0},
