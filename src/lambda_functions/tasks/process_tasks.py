@@ -11,7 +11,7 @@ from django.core.wsgi import get_wsgi_application
 
 # cisagov Libraries
 from api.notifications import EmailSender
-from api.services import CampaignService, SubscriptionService
+from api.services import SubscriptionService
 from api.utils.subscription import actions
 from api.utils.subscription.cycles import get_last_run_cycle
 from api.utils.subscription.subscriptions import get_yearly_minutes
@@ -22,7 +22,6 @@ logger.setLevel(logging.INFO)
 application = get_wsgi_application()
 
 subscription_service = SubscriptionService()
-campaign_service = CampaignService()
 
 
 def lambda_handler(event, context):
