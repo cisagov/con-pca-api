@@ -141,14 +141,10 @@ def stop_campaign(campaign, cleanup=False):
             logging.exception(e)
             pass
 
+    update_data = {"status": "stopped", "completed_date": datetime.now()}
+    campaign.update(update_data)
     if not cleanup:
-        campaign_service.update(
-            campaign["campaign_uuid"],
-            {
-                "status": "stopped",
-                "completed_date": datetime.now(),
-            },
-        )
+        campaign_service.update(campaign["campaign_uuid"], update_data)
 
 
 def create_campaign(
