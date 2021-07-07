@@ -184,7 +184,6 @@ def stop_subscription(subscription):
     resp = subscription_service.update(
         subscription["subscription_uuid"],
         {
-            "campaigns": subscription["campaigns"],
             "tasks": [],
             "templates_selected_uuid_list": [],
             "active": False,
