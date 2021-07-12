@@ -911,7 +911,14 @@ def get_asn_org_stats(timeline):
     sorted_timeline = sorted(timeline, key=lambda x: x.get("asn_org", "UNKNOWN"))
     response = []
     for org, events in groupby(sorted_timeline, lambda x: x.get("asn_org", "UNKNOWN")):
-        val = {"asn_org": org, "ips": set(), "cities": set(), "opens": 0, "clicks": 0}
+        val = {
+            "asn_org": org,
+            "is_non_human": is_nonhuman_event(org),
+            "ips": set(),
+            "cities": set(),
+            "opens": 0,
+            "clicks": 0,
+        }
         for event in events:
             if event.get("ip_address"):
                 val["ips"].add(event["ip_address"])
