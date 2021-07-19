@@ -1,6 +1,7 @@
 """Statistic Utils."""
 # Standard Python Libraries
 from datetime import timedelta
+from itertools import groupby
 import statistics
 
 # cisagov Libraries
@@ -482,8 +483,8 @@ def rank_indicators(stats):
 
 
 def process_campaign(campaign: dict, template=None, nonhuman=False):
-    """Generate stats from a campagin."""
-    campaign_timeline = campaign["timeline"]
+    """Generate stats from a campaign."""
+    campaign_timeline = list(campaign["timeline"])
     return_val = {
         "timeline": [],
         "sent": {"count": 0},
@@ -903,3 +904,29 @@ def determine_trend(cycles):
             else:
                 trend = "improving"
     return trend
+
+
+def get_asn_org_stats(timeline):
+    """Get simple stats grouped by ASN Org."""
+    sorted_timeline = sorted(timeline, key=lambda x: x.get("asn_org", "UNKNOWN"))
+    response = []
+    for org, events in groupby(sorted_timeline, lambda x: x.get("asn_org", "UNKNOWN")):
+        val = {
+            "asn_org": org,
+            "is_non_human": is_nonhuman_event(org),
+            "ips": set(),
+            "cities": set(),
+            "opens": 0,
+            "clicks": 0,
+        }
+        for event in events:
+            if event.get("ip_address"):
+                val["ips"].add(event["ip_address"])
+            if event.get("city"):
+                val["cities"].add(event["city"])
+            if event["message"] == "Email Opened":
+                val["opens"] += 1
+            elif event["message"] == "Clicked Link":
+                val["clicks"] += 1
+        response.append(val)
+    return response

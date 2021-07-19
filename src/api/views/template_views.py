@@ -59,7 +59,7 @@ class TemplatesListView(APIView):
         post_data = request.data.copy()
         if template_service.exists({"name": post_data["name"]}):
             return Response(
-                {"error": "Template with name already exists"},
+                {"error": "Template with that name already exists"},
                 status=status.HTTP_409_CONFLICT,
             )
 

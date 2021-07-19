@@ -106,45 +106,56 @@ def stop_campaign(campaign, cleanup=False):
     """Stop Campaign."""
     # Complete Campaign
     try:
+        logging.info(f"completing campaign - {campaign['campaign_id']}")
         campaign_manager.complete_campaign(campaign_id=campaign["campaign_id"])
     except Exception as e:
-        logging.exception(e)
-    campaign["status"] = "stopped"
-    campaign["completed_date"] = datetime.now()
+        if not cleanup:
+            logging.exception(e)
+        pass
 
     # Delete Campaign
     try:
+        logging.info(f"deleting campaign - {campaign['campaign_id']}")
         campaign_manager.delete_campaign(campaign_id=campaign["campaign_id"])
     except Exception as e:
-        logging.exception(e)
+        if not cleanup:
+            logging.exception(e)
         pass
 
     # Delete Templates
     try:
+        logging.info(f"Deleting email template - {campaign['email_template_id']}")
         campaign_manager.delete_email_template(
             template_id=campaign["email_template_id"]
         )
     except Exception as e:
-        logging.exception(e)
+        if not cleanup:
+            logging.exception(e)
         pass
 
     # Delete Sending Profile
     try:
+        logging.info(f"Deleting sending profile - {campaign['smtp']['id']}")
         campaign_manager.delete_sending_profile(smtp_id=campaign["smtp"]["id"])
     except Exception as e:
-        logging.exception(e)
+        if not cleanup:
+            logging.exception(e)
         pass
 
     # Delete User Groups
-    for group in campaign["groups"]:
+    for group in campaign.get("groups", []):
         try:
+            logging.info(f"Deleting user group - {group['id']}")
             campaign_manager.delete_user_group(group_id=group["id"])
         except Exception as e:
-            logging.exception(e)
+            if not cleanup:
+                logging.exception(e)
             pass
 
+    update_data = {"status": "stopped", "completed_date": datetime.now()}
+    campaign.update(update_data)
     if not cleanup:
-        campaign_service.update(campaign["campaign_uuid"], campaign)
+        campaign_service.update(campaign["campaign_uuid"], update_data)
 
 
 def create_campaign(
