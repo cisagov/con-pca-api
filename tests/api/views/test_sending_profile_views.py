@@ -3,6 +3,7 @@
 from unittest import mock
 
 # Third-Party Libraries
+from gophish.models import SMTP
 import pytest
 
 # cisagov Libraries
@@ -37,12 +38,45 @@ def test_sending_profile_patch(client):
 @pytest.mark.django_db
 def test_sending_profile_delete(client):
     """Test Delete."""
+    # Test all good
     with mock.patch(
         "api.manager.CampaignManager.delete_sending_profile", return_value={"id": 1234}
-    ) as mock_delete_single:
+    ) as mock_delete_single, mock.patch(
+        "api.services.TemplateService.exists", return_value=False
+    ), mock.patch(
+        "api.services.SubscriptionService.exists", return_value=False
+    ), mock.patch(
+        "api.manager.CampaignManager.get_sending_profile", return_value=SMTP()
+    ):
         result = client.delete("/api/v1/sendingprofile/1234/")
         assert mock_delete_single.called
         assert result.status_code == 200
+    # Test template using sending profile
+    with mock.patch(
+        "api.manager.CampaignManager.delete_sending_profile", return_value={"id": 1234}
+    ) as mock_delete_single, mock.patch(
+        "api.services.TemplateService.exists", return_value=True
+    ), mock.patch(
+        "api.services.SubscriptionService.exists", return_value=False
+    ), mock.patch(
+        "api.manager.CampaignManager.get_sending_profile", return_value=SMTP()
+    ):
+        result = client.delete("/api/v1/sendingprofile/1234/")
+        mock_delete_single.assert_not_called
+        assert result.status_code == 400
+    # Test subscription using sending profile
+    with mock.patch(
+        "api.manager.CampaignManager.delete_sending_profile", return_value={"id": 1234}
+    ) as mock_delete_single, mock.patch(
+        "api.services.TemplateService.exists", return_value=False
+    ), mock.patch(
+        "api.services.SubscriptionService.exists", return_value=True
+    ), mock.patch(
+        "api.manager.CampaignManager.get_sending_profile", return_value=SMTP()
+    ):
+        result = client.delete("/api/v1/sendingprofile/1234/")
+        mock_delete_single.assert_not_called
+        assert result.status_code == 400
 
 
 @pytest.mark.django_db

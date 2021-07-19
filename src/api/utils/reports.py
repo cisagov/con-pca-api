@@ -4,20 +4,35 @@ import asyncio
 from io import BytesIO
 
 # Third-Party Libraries
+from django.core.handlers.wsgi import WSGIRequest
 import pyppeteer
+from rest_framework.request import Request
 
 # cisagov Libraries
 from config import settings
 
 
-def download_pdf(report_type, uuid, cycle_uuid):
+def is_nonhuman_request(request):
+    """Check if a request wants non-human interactions included in reports/stats."""
+    if type(request) == Request:
+        if str(request.query_params.get("nonhuman")) == "true":
+            return True
+    elif type(request) == WSGIRequest:
+        if str(request.GET.get("nonhuman")) == "true":
+            return True
+    return False
+
+
+def download_pdf(report_type, uuid, cycle_uuid, nonhuman=False):
     """Download PDF Report."""
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     auth_header = settings.LOCAL_API_KEY if settings.LOCAL_API_KEY else None
 
     response = loop.run_until_complete(
-        _download_pdf(report_type, uuid, cycle_uuid, auth_header=auth_header)
+        _download_pdf(
+            report_type, uuid, cycle_uuid, auth_header=auth_header, nonhuman=nonhuman
+        )
     )
 
     if response == "500":
@@ -29,14 +44,17 @@ def download_pdf(report_type, uuid, cycle_uuid):
     return buffer
 
 
-async def _download_pdf(report_type, uuid, cycle_uuid, auth_header=None):
+async def _download_pdf(
+    report_type, uuid, cycle_uuid, auth_header=None, nonhuman=False
+):
     browser = await pyppeteer.connect(
         browserWSEndpoint=f"ws://{settings.BROWSERLESS_ENDPOINT}",
         ignoreHTTPSErrors=True,
     )
     page = await browser.newPage()
 
-    url = f"{settings.REPORTS_ENDPOINT}/reports/{report_type}/{uuid}/{cycle_uuid}/true"
+    nonhuman = "true" if nonhuman else "false"
+    url = f"{settings.REPORTS_ENDPOINT}/reports/{report_type}/{uuid}/{cycle_uuid}/true/{nonhuman}"
     if auth_header:
         url += f"?reportToken={auth_header}"
 

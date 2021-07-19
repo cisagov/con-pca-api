@@ -211,8 +211,6 @@ class SubscriptionJSONDownloadView(APIView):
         if subscription is None:
             return Response(status=status.HTTP_404_NOT_FOUND)
         update_phish_results(subscription)
-        # campaigns = campaign_service.get_list({"subscription_uuid": subscription_uuid})
-        # subscription["campaigns"] = campaigns
         customer = customer_service.get(subscription["customer_uuid"])
         subscription["customer"] = customer
         dhs_contact = dhs_contact_service.get(subscription["dhs_contact_uuid"])

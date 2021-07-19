@@ -48,9 +48,8 @@ class CampaignManager:
             send_by_date=send_by_date,
         )
 
-        campaign = self.gp_api.campaigns.post(campaign)
-
-        return campaign
+        logging.info(f"Creating campaign with name {campaign_name}")
+        return self.gp_api.campaigns.post(campaign)
 
     def create_sending_profile(
         self,
@@ -75,6 +74,7 @@ class CampaignManager:
             headers=headers,
         )
 
+        logging.info(f"Creating sending profile with name {name}")
         return self.gp_api.smtp.post(smtp=smtp)
 
     def put_sending_profile(self, sp):
@@ -88,6 +88,7 @@ class CampaignManager:
         if text is not None:
             email_template.text = text
 
+        logging.info(f"Creating email template with name {name}")
         return self.gp_api.templates.post(email_template)
 
     def create_landing_page(self, name: str, template: str):
@@ -124,6 +125,7 @@ class CampaignManager:
 
         target_group = Group(name=group_name, targets=users)
 
+        logging.info(f"Creating user group with name {group_name}")
         return self.gp_api.groups.post(target_group)
 
     # Get methods

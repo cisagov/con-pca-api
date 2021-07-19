@@ -21,4 +21,5 @@ node_modules
 
 *.mmdb
 .geoipupdate.lock
+config.ini
 Dockerfile-x

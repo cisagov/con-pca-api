@@ -23,5 +23,6 @@ def get_db():
         db_host=os.environ.get("DB_HOST"),
         db_port=os.environ.get("DB_PORT"),
     )
-    client = MongoClient(conn_str)
+    client = MongoClient(conn_str, tz_aware=True)
+
     return client.pca_data_dev

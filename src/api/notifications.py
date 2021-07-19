@@ -13,7 +13,7 @@ from django.template.loader import render_to_string
 from api.manager import CampaignManager
 from api.services import DHSContactService, SubscriptionService, TemplateService
 from api.utils.aws_utils import SES
-from api.utils.reports.pdf import download_pdf
+from api.utils.reports import download_pdf
 from config import settings
 
 dhs_contact_service = DHSContactService()
@@ -27,16 +27,15 @@ STATIC_DIR = os.path.abspath(f"{BASE_DIR}/static")
 class EmailSender:
     """Class for sending email notifications."""
 
-    def __init__(self, subscription, message_type, cycle_uuid):
+    def __init__(self, subscription, message_type, cycle_uuid, nonhuman=False):
         """Init Email Sender."""
         self.subscription = subscription
         self.cycle_uuid = cycle_uuid
         self.notification = self._set_notification(message_type)
-        self.attachment = self._get_attachment()
+        self.attachment = self._get_attachment(nonhuman)
         self.dhs_contact = dhs_contact_service.get(
             self.subscription.get("dhs_contact_uuid")
         )
-
         self.context = self._set_context()
 
         self.text_content = render_to_string(
@@ -62,12 +61,13 @@ class EmailSender:
             logging.exception(e)
             raise e
 
-    def _get_attachment(self):
+    def _get_attachment(self, nonhuman=False):
         if "report" in self.notification["path"]:
             return download_pdf(
                 report_type=self.notification["link"],
                 uuid=self.subscription["subscription_uuid"],
                 cycle_uuid=self.cycle_uuid,
+                nonhuman=nonhuman,
             )
         return None
 

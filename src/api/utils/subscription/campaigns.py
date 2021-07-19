@@ -106,45 +106,56 @@ def stop_campaign(campaign, cleanup=False):
     """Stop Campaign."""
     # Complete Campaign
     try:
+        logging.info(f"completing campaign - {campaign['campaign_id']}")
         campaign_manager.complete_campaign(campaign_id=campaign["campaign_id"])
     except Exception as e:
-        logging.exception(e)
-    campaign["status"] = "stopped"
-    campaign["completed_date"] = datetime.now()
+        if not cleanup:
+            logging.exception(e)
+        pass
 
     # Delete Campaign
     try:
+        logging.info(f"deleting campaign - {campaign['campaign_id']}")
         campaign_manager.delete_campaign(campaign_id=campaign["campaign_id"])
     except Exception as e:
-        logging.exception(e)
+        if not cleanup:
+            logging.exception(e)
         pass
 
     # Delete Templates
     try:
+        logging.info(f"Deleting email template - {campaign['email_template_id']}")
         campaign_manager.delete_email_template(
             template_id=campaign["email_template_id"]
         )
     except Exception as e:
-        logging.exception(e)
+        if not cleanup:
+            logging.exception(e)
         pass
 
     # Delete Sending Profile
     try:
+        logging.info(f"Deleting sending profile - {campaign['smtp']['id']}")
         campaign_manager.delete_sending_profile(smtp_id=campaign["smtp"]["id"])
     except Exception as e:
-        logging.exception(e)
+        if not cleanup:
+            logging.exception(e)
         pass
 
     # Delete User Groups
-    for group in campaign["groups"]:
+    for group in campaign.get("groups", []):
         try:
+            logging.info(f"Deleting user group - {group['id']}")
             campaign_manager.delete_user_group(group_id=group["id"])
         except Exception as e:
-            logging.exception(e)
+            if not cleanup:
+                logging.exception(e)
             pass
 
+    update_data = {"status": "stopped", "completed_date": datetime.now()}
+    campaign.update(update_data)
     if not cleanup:
-        campaign_service.update(campaign["campaign_uuid"], campaign)
+        campaign_service.update(campaign["campaign_uuid"], update_data)
 
 
 def create_campaign(
@@ -205,6 +216,7 @@ def create_campaign(
             template["from_address"],
             subscription["subscription_uuid"],
             subscription["sending_profile_name"],
+            template.get("sending_profile_id"),
         )
         return_data.update(
             {"smtp": campaign_serializers.GoPhishSmtpSerializer(sending_profile).data}
@@ -219,7 +231,7 @@ def create_campaign(
             email_template=created_template,
             launch_date=start_date.strftime("%Y-%m-%dT%H:%M:%S+00:00"),
             send_by_date=(campaign_end).strftime("%Y-%m-%dT%H:%M:%S+00:00"),
-            url=__get_campaign_url(sending_profile),
+            url=get_campaign_url(sending_profile),
         )
         return_data.update(
             {
@@ -259,10 +271,14 @@ def create_campaign(
     return return_data
 
 
-def __get_campaign_url(sending_profile):
-    sp_domain = (
-        sending_profile.from_address.split("<")[-1].split("@")[1].replace(">", "")
-    )
+def get_campaign_url(sending_profile):
+    """Get the landing page url for a campaign."""
+    if type(sending_profile) == dict:
+        from_address = sending_profile["from_address"]
+    else:
+        from_address = sending_profile.from_address
+
+    sp_domain = from_address.split("<")[-1].split("@")[1].replace(">", "")
     return f"http://{GP_LANDING_SUBDOMAIN}.{sp_domain}"
 
 
@@ -270,15 +286,19 @@ def __create_campaign_smtp(
     campaign_name,
     template_from_address,
     subscription_uuid,
-    subscription_sending_profile_name,
+    sending_profile_name,
+    template_sending_profile_id=None,
 ):
-    sending_profiles = campaign_manager.get_sending_profile()
-    sending_profile = next(
-        iter(
-            [p for p in sending_profiles if p.name == subscription_sending_profile_name]
-        ),
-        None,
-    )
+    if template_sending_profile_id:
+        sending_profile = campaign_manager.get_sending_profile(
+            template_sending_profile_id
+        )
+    else:
+        sending_profiles = campaign_manager.get_sending_profile()
+        sending_profile = next(
+            iter([p for p in sending_profiles if p.name == sending_profile_name]),
+            None,
+        )
     smtp = get_campaign_smtp(sending_profile, subscription_uuid, template_from_address)
 
     try:

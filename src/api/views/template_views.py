@@ -22,7 +22,7 @@ from api.services import (
     TemplateService,
 )
 from api.utils.subscription.actions import stop_subscription
-from api.utils.subscription.campaigns import get_campaign_from_address
+from api.utils.subscription.campaigns import get_campaign_from_address, get_campaign_url
 from api.utils.template.personalize import personalize_template
 from api.utils.template.selector import select_templates
 from api.utils.template.templates import validate_template
@@ -59,7 +59,7 @@ class TemplatesListView(APIView):
         post_data = request.data.copy()
         if template_service.exists({"name": post_data["name"]}):
             return Response(
-                {"error": "Template with name already exists"},
+                {"error": "Template with that name already exists"},
                 status=status.HTTP_409_CONFLICT,
             )
 
@@ -95,6 +95,41 @@ class TemplateView(APIView):
 
     def delete(self, request, template_uuid):
         """Delete method."""
+        # Get template
+        template = template_service.get(template_uuid)
+
+        # Check if retired
+        if not template["retired"]:
+            return Response(
+                {"error": "You must retire the template first"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Check if its used in any campaigns
+        if campaign_service.exists(parameters={"template_uuid": template_uuid}):
+            return Response(
+                {
+                    "error": "This template can not be deleted, it is associated with subscriptions.",
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # check if a subscription has this template in the list of selected templates
+        subscriptions = subscription_service.get_list(fields=["templates_selected"])
+        for sub in subscriptions:
+            templates_selected = []
+            [
+                templates_selected.extend(v)
+                for v in sub.get("templates_selected", {}).values()
+            ]
+            if template_uuid in templates_selected:
+                return Response(
+                    {
+                        "error": "This template cannot be deleted, it is assocated with subscriptions."
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
         delete_response = template_service.delete(template_uuid)
         return Response(delete_response, status=status.HTTP_200_OK)
 
@@ -191,7 +226,7 @@ class SendingTestEmailsView(APIView):
             "last_name": sp.get("last_name"),
             "email": sp.get("email"),
             "position": sp.get("position"),
-            "url": "https://www.google.com",
+            "url": get_campaign_url(smtp),
             "smtp": {
                 "from_address": get_campaign_from_address(smtp, from_address),
                 "host": smtp.get("host"),
