@@ -124,23 +124,37 @@ def test_calculate_subscription_start_end_date():
     """Test Start End Date."""
     # less than current date
     start_date = datetime.now() - timedelta(days=3)
-    start, end = subscriptions.calculate_subscription_start_end_date(start_date, 60)
+    start, send_by_date, end = subscriptions.calculate_subscription_start_end_date(
+        start_date, 60, 30
+    )
     assert start > (start_date + timedelta(days=3))
-    assert end > (start_date + timedelta(days=3) + timedelta(minutes=60))
+    assert send_by_date < end
+    assert send_by_date > (start_date + timedelta(days=3) + timedelta(minutes=60))
+    assert end == send_by_date + timedelta(minutes=30)
 
     # greater than today's date
     start_date = datetime.now() + timedelta(days=3)
-    start, end = subscriptions.calculate_subscription_start_end_date(start_date, 60)
+    start, send_by_date, end = subscriptions.calculate_subscription_start_end_date(
+        start_date, 60, 30
+    )
     assert start == start_date + timedelta(minutes=DELAY_MINUTES)
-    assert end == start_date + timedelta(minutes=DELAY_MINUTES) + timedelta(minutes=60)
+    assert send_by_date < end
+    assert send_by_date == start_date + timedelta(minutes=DELAY_MINUTES) + timedelta(
+        minutes=60
+    )
+    assert end == send_by_date + timedelta(minutes=30)
 
     # passing string to function
     start_date = datetime.now() + timedelta(hours=1)
-    start, end = subscriptions.calculate_subscription_start_end_date(
-        start_date.isoformat(), 60
+    start, send_by_date, end = subscriptions.calculate_subscription_start_end_date(
+        start_date.isoformat(), 60, 30
     )
-    assert start <= start_date + timedelta(minutes=DELAY_MINUTES)
-    assert start > start_date - timedelta(minutes=(DELAY_MINUTES + 3))
+    assert start == start_date + timedelta(minutes=DELAY_MINUTES)
+    assert send_by_date < end
+    assert send_by_date == start_date + timedelta(minutes=DELAY_MINUTES) + timedelta(
+        minutes=60
+    )
+    assert end == send_by_date + timedelta(minutes=30)
 
 
 def test_get_subscription_cycles():
@@ -151,41 +165,41 @@ def test_get_subscription_cycles():
         {"campaign_id": 3},
     ]
     start_date = datetime.now()
+    send_by_date = datetime.now() + timedelta(days=1)
     end_date = datetime.now() + timedelta(days=2)
     new_uuid = fake.uuid4()
     total_targets = 5
 
-    result = subscriptions.get_subscription_cycles(
-        campaigns, start_date, end_date, new_uuid, total_targets
+    result = subscriptions.get_subscription_cycle(
+        campaigns, start_date, end_date, send_by_date, new_uuid, total_targets
     )
 
-    assert result == [
-        {
-            "cycle_uuid": new_uuid,
-            "start_date": start_date,
-            "end_date": end_date,
-            "active": True,
-            "campaigns_in_cycle": [c["campaign_id"] for c in campaigns],
-            "total_targets": 5,
-            "phish_results": {
-                "sent": 0,
-                "opened": 0,
-                "clicked": 0,
-                "submitted": 0,
-                "reported": 0,
-            },
-        }
-    ]
+    assert result == {
+        "cycle_uuid": new_uuid,
+        "start_date": start_date,
+        "end_date": end_date,
+        "send_by_date": send_by_date,
+        "active": True,
+        "campaigns_in_cycle": [c["campaign_id"] for c in campaigns],
+        "total_targets": 5,
+        "phish_results": {
+            "sent": 0,
+            "opened": 0,
+            "clicked": 0,
+            "submitted": 0,
+            "reported": 0,
+        },
+    }
 
 
 def test_init_subscription_tasks():
     """Test init subscription tasks."""
     start = datetime.now()
-    result = subscriptions.init_subscription_tasks(start, True, 60, 15)
+    result = subscriptions.init_subscription_tasks(start, True, 60, 15, 15)
     assert len(result) == 5
     assert result[-1]["message_type"] == "start_new_cycle"
 
-    result = subscriptions.init_subscription_tasks(start, False, 60, 15)
+    result = subscriptions.init_subscription_tasks(start, False, 60, 15, 15)
     assert len(result) == 5
     assert result[-1]["message_type"] == "stop_subscription"
 

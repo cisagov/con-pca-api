@@ -37,6 +37,7 @@ class CycleSerializer(serializers.Serializer):
     cycle_uuid = serializers.CharField()
     start_date = serializers.DateTimeField()
     end_date = serializers.DateTimeField()
+    send_by_date = serializers.DateTimeField(required=False)
     active = serializers.BooleanField()
     campaigns_in_cycle = serializers.ListField()
     phish_results = PhishingResultsSerializer()
@@ -96,6 +97,7 @@ class SubscriptionSerializer(serializers.Serializer):
     email_report_history = SubscriptionEmailHistorySerializer(required=False, many=True)
     continuous_subscription = serializers.BooleanField(default=True)
     cycle_length_minutes = serializers.IntegerField(required=False)
+    cooldown_minutes = serializers.IntegerField(required=False)
     report_frequency_minutes = serializers.IntegerField(required=False)
     # db data tracking added below
     created_by = serializers.CharField(required=False, max_length=100)
@@ -126,6 +128,9 @@ class SubscriptionPostSerializer(serializers.Serializer):
     cycle_length_minutes = serializers.IntegerField(
         default=129600, max_value=518400, min_value=15
     )  # max of 360 days, min of 15 minutes, default of 90 days
+    cooldown_minutes = serializers.IntegerField(
+        default=2880, max_value=518400, min_value=15
+    )  # max of 360 days, min of 15 minutes, default of 2 days
     report_frequency_minutes = serializers.IntegerField(
         default=43200, max_value=518400, min_value=15
     )  # max of 360 days, min of 15 minutes, default of 30 days
@@ -161,6 +166,9 @@ class SubscriptionPatchSerializer(serializers.Serializer):
     cycle_length_minutes = serializers.IntegerField(
         required=False, max_value=518400, min_value=15
     )  # max of 360 days, min of 15 minutes
+    cooldown_minutes = serializers.IntegerField(
+        required=False, max_value=518400, min_value=15
+    )  # max of 360 days, min of 15 minutes, default of 2 days
     report_frequency_minutes = serializers.IntegerField(
         required=False, max_value=518400, min_value=15
     )  # max of 360 days, min of 15 minutes

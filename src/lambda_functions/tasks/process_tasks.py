@@ -49,6 +49,7 @@ def lambda_handler(event, context):
                     scheduled_date,
                     task["message_type"],
                     subscription.get("cycle_length_minutes", 129600),
+                    subscription.get("cooldown_minutes", 2880),
                     subscription.get("report_frequency_minutes", 43200),
                 )
             logger.info(f"Successfully executed task {task}")
@@ -75,6 +76,7 @@ def add_new_task(
     scheduled_date,
     message_type,
     cycle_length_minutes,
+    cooldown_minutes,
     report_frequency_minutes,
 ):
     """Add new task."""
@@ -82,9 +84,11 @@ def add_new_task(
 
     new_date = {
         "monthly_report": scheduled_date + timedelta(minutes=report_frequency_minutes),
-        "cycle_report": scheduled_date + timedelta(minutes=cycle_length_minutes),
+        "cycle_report": scheduled_date
+        + timedelta(minutes=(cycle_length_minutes + cooldown_minutes)),
         "yearly_report": scheduled_date + timedelta(minutes=get_yearly_minutes()),
-        "start_new_cycle": scheduled_date + timedelta(minutes=cycle_length_minutes),
+        "start_new_cycle": scheduled_date
+        + timedelta(minutes=(cycle_length_minutes + cooldown_minutes)),
     }.get(message_type)
 
     if new_date:

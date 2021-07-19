@@ -194,7 +194,8 @@ class SubscriptionValidView(APIView):
         """Post."""
         data = request.data.copy()
         is_valid, message = is_subscription_valid(
-            data["target_count"], data["cycle_minutes"]
+            data["target_count"],
+            data["cycle_minutes"],
         )
         if is_valid:
             return Response("Subscription is valid", status=status.HTTP_200_OK)

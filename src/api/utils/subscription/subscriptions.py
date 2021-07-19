@@ -1,7 +1,6 @@
 """Subscription Utils."""
 # Standard Python Libraries
 from datetime import datetime, timedelta
-import math
 from uuid import uuid4
 
 # Third-Party Libraries
@@ -28,7 +27,9 @@ def create_subscription_name(customer: dict):
         return f"{customer['identifier']}_{max(ids) + 1}"
 
 
-def calculate_subscription_start_end_date(start_date, cycle_length_minutes):
+def calculate_subscription_start_end_date(
+    start_date, cycle_length_minutes, cooldown_minutes
+):
     """Calculate Subscription Start and End Date."""
     now = datetime.now()
 
@@ -44,33 +45,33 @@ def calculate_subscription_start_end_date(start_date, cycle_length_minutes):
         start_date = now
 
     start_date = start_date + timedelta(minutes=settings.DELAY_MINUTES)
-    end_date = start_date + timedelta(minutes=cycle_length_minutes)
+    send_by_date = start_date + timedelta(minutes=cycle_length_minutes)
+    end_date = send_by_date + timedelta(minutes=cooldown_minutes)
 
-    return start_date, end_date
+    return start_date, send_by_date, end_date
 
 
-def get_subscription_cycles(
-    campaigns, start_date, end_date, new_uuid, total_targets_in_cycle
+def get_subscription_cycle(
+    campaigns, start_date, end_date, send_by_date, new_uuid, total_targets_in_cycle
 ):
     """Get Initial Subscription Cycles."""
     campaigns_in_cycle = [c["campaign_id"] for c in campaigns]
-    return [
-        {
-            "cycle_uuid": new_uuid,
-            "start_date": start_date,
-            "end_date": end_date,
-            "active": True,
-            "campaigns_in_cycle": campaigns_in_cycle,
-            "total_targets": total_targets_in_cycle,
-            "phish_results": {
-                "sent": 0,
-                "opened": 0,
-                "clicked": 0,
-                "submitted": 0,
-                "reported": 0,
-            },
-        }
-    ]
+    return {
+        "cycle_uuid": new_uuid,
+        "start_date": start_date,
+        "end_date": end_date,
+        "send_by_date": send_by_date,
+        "active": True,
+        "campaigns_in_cycle": campaigns_in_cycle,
+        "total_targets": total_targets_in_cycle,
+        "phish_results": {
+            "sent": 0,
+            "opened": 0,
+            "clicked": 0,
+            "submitted": 0,
+            "reported": 0,
+        },
+    }
 
 
 def send_stop_notification(subscription):
@@ -80,23 +81,28 @@ def send_stop_notification(subscription):
 
 
 def init_subscription_tasks(
-    start_date, continuous_subscription, cycle_length_minutes, report_frequency_minutes
+    start_date,
+    continuous_subscription,
+    cycle_length_minutes,
+    cooldown_minutes,
+    report_frequency_minutes,
 ):
     """Create Initial Subscription Tasks."""
     message_types = {
         "start_subscription_email": start_date - timedelta(minutes=5),
         "monthly_report": start_date + timedelta(minutes=report_frequency_minutes),
-        "cycle_report": start_date + timedelta(minutes=cycle_length_minutes),
+        "cycle_report": start_date
+        + timedelta(minutes=(cycle_length_minutes + cooldown_minutes)),
         "yearly_report": start_date + timedelta(minutes=get_yearly_minutes()),
     }
 
     if continuous_subscription:
         message_types["start_new_cycle"] = start_date + timedelta(
-            minutes=cycle_length_minutes
+            minutes=(cycle_length_minutes + cooldown_minutes)
         )
     else:
         message_types["stop_subscription"] = start_date + timedelta(
-            minutes=cycle_length_minutes
+            minutes=(cycle_length_minutes + cooldown_minutes)
         )
 
     tasks = []
@@ -164,21 +170,3 @@ def get_yearly_minutes() -> int:
     yearly reports based on cycle length.
     """
     return 525600  # year in minutes
-
-
-def get_campaign_minutes(cycle_minutes: int, reverse: bool = False) -> int:
-    """
-    Get minutes for a gophish campaign.
-
-    A campaign should run 2/3 of the length of the cycle
-    for reporting purposes and giving targets time to click links.
-
-    If reverse is provided, you call function with campaign_minutes,
-    and cycle minutes are instead returned.
-
-    cycle_minutes * (2/3) = campaign_minutes
-    campaign_minutes / (2/3) = cycle_minutes
-    """
-    if reverse:
-        return math.ceil(cycle_minutes / (2 / 3))
-    return int(cycle_minutes * 2 / 3)

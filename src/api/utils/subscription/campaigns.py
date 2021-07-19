@@ -12,7 +12,6 @@ from api.manager import CampaignManager
 from api.serializers import campaign_serializers
 from api.services import CampaignService, LandingPageService
 from api.utils.generic import format_ztime
-from api.utils.subscription.subscriptions import get_campaign_minutes
 from api.utils.subscription.targets import assign_targets
 from config.settings import DEFAULT_X_GOPHISH_CONTACT, GP_LANDING_SUBDOMAIN
 
@@ -202,9 +201,7 @@ def create_campaign(
         # Calculate Campaign Start and End Date
         campaign_start = start_date
         campaign_end = start_date + timedelta(
-            minutes=get_campaign_minutes(
-                subscription.get("cycle_length_minutes", 129600)
-            )
+            minutes=subscription.get("cycle_length_minutes", 129600)
         )
 
         # Generate Campaign Name
