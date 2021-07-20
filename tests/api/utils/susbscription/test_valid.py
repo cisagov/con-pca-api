@@ -4,21 +4,17 @@ from datetime import datetime, timedelta
 
 # cisagov Libraries
 from api.utils.subscription import valid
-from api.utils.subscription.subscriptions import get_campaign_minutes
 
 
 def test_is_subscription_valid(mocker):
     """Test is_subscription_valid function."""
     # Test too great of an hourly rate
-    mocker.patch(
-        "api.utils.subscription.valid.get_campaign_minutes", return_value=60 * 24
-    )
     mocker.patch("api.utils.subscription.valid.get_daily_rate", return_value=1000)
     mocker.patch("api.utils.subscription.valid.get_hourly_rate", return_value=120)
     mocker.patch("api.utils.subscription.valid.get_all_daily_rates", return_value=0)
 
     is_valid, message = valid.is_subscription_valid(
-        target_count=2880, cycle_minutes=get_campaign_minutes(60 * 24, reverse=True)
+        target_count=2880, campaign_minutes=60 * 24
     )
     assert not is_valid
     assert "There cannot be more than 100 emails per hour" in message
@@ -28,7 +24,7 @@ def test_is_subscription_valid(mocker):
     mocker.patch("api.utils.subscription.valid.get_daily_rate", return_value=1100)
     mocker.patch("api.utils.subscription.valid.get_hourly_rate", return_value=100)
     is_valid, message = valid.is_subscription_valid(
-        target_count=2880, cycle_minutes=get_campaign_minutes(60 * 24, reverse=True)
+        target_count=2880, campaign_minutes=60 * 24
     )
     assert not is_valid
     assert "There cannot be more than 1000 emails per day." in message
@@ -41,7 +37,7 @@ def test_is_subscription_valid(mocker):
     )
     mocker.patch("api.utils.subscription.valid.get_daily_rate", return_value=70)
     is_valid, message = valid.is_subscription_valid(
-        target_count=70, cycle_minutes=get_campaign_minutes(60 * 24, reverse=True)
+        target_count=70, campaign_minutes=60 * 24
     )
     assert is_valid
     assert not message
@@ -53,7 +49,7 @@ def test_is_subscription_valid(mocker):
     )
     mocker.patch("api.utils.subscription.valid.get_daily_rate", return_value=300)
     is_valid, message = valid.is_subscription_valid(
-        target_count=300, cycle_minutes=get_campaign_minutes(60 * 24, reverse=True)
+        target_count=300, campaign_minutes=60 * 24
     )
     assert not is_valid
     assert "There cannot be more than a 20% increase in a 24 hour window" in message
@@ -66,7 +62,7 @@ def test_is_subscription_valid(mocker):
     )
     mocker.patch("api.utils.subscription.valid.get_daily_rate", return_value=190)
     is_valid, message = valid.is_subscription_valid(
-        target_count=190, cycle_minutes=get_campaign_minutes(60 * 24, reverse=True)
+        target_count=190, campaign_minutes=60 * 24
     )
     assert is_valid
     assert not message
@@ -78,7 +74,7 @@ def test_get_needed_hourly_rate():
         campaign_minutes=60, target_count=120, needed_hourly_rate=100
     )
     assert targets == 100
-    assert minutes > get_campaign_minutes(60, reverse=True)
+    assert minutes > 60
 
 
 def test_get_needed_daily_rate():
@@ -90,7 +86,7 @@ def test_get_needed_daily_rate():
         needed_daily_rate=1000,
     )
     assert targets == 1000
-    assert minutes > get_campaign_minutes(60 * 24, reverse=True)
+    assert minutes > 60 * 24
 
 
 def test_get_needed_percent_increase():
@@ -102,7 +98,7 @@ def test_get_needed_percent_increase():
         needed_percent_increase=20,
     )
     assert targets == 200
-    assert minutes > get_campaign_minutes(60 * 24, reverse=True)
+    assert minutes > 60 * 24
 
 
 def test_get_hourly_rate():
@@ -133,7 +129,8 @@ def test_get_all_daily_rates(mocker):
                 "cycles": [
                     {
                         "start_date": now,
-                        "end_date": now + timedelta(days=1),
+                        "send_by_date": now + timedelta(days=1),
+                        "end_date": now + timedelta(days=2),
                         "total_targets": 50,
                     },
                 ]
@@ -142,18 +139,16 @@ def test_get_all_daily_rates(mocker):
                 "cycles": [
                     {
                         "start_date": now,
-                        "end_date": now + timedelta(days=1),
+                        "send_by_date": now + timedelta(days=1),
+                        "end_date": now + timedelta(days=2),
                         "total_targets": 50,
                     },
                 ]
             },
         ],
     )
-    mocker.patch(
-        "api.utils.subscription.subscriptions.get_campaign_minutes", return_value=1440
-    )
     result = valid.get_all_daily_rates()
-    assert result == get_campaign_minutes(100, reverse=True)
+    assert result == 100
 
 
 def test_get_daily_percent_increase():

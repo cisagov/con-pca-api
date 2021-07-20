@@ -1,12 +1,11 @@
 """Validate subscription utils."""
 # cisagov Libraries
 from api.services import SubscriptionService
-from api.utils.subscription.subscriptions import get_campaign_minutes
 
 subscription_service = SubscriptionService()
 
 
-def is_subscription_valid(target_count, cycle_minutes):
+def is_subscription_valid(target_count, campaign_minutes):
     """
     Check to see if subscription is valid and will remain within required rates for warmup.
 
@@ -16,7 +15,6 @@ def is_subscription_valid(target_count, cycle_minutes):
 
     For more details, check this documentation https://www.mailgun.com/blog/domain-warmup-reputation-stretch-before-you-send/.
     """
-    campaign_minutes = get_campaign_minutes(cycle_minutes)
     daily_rate = get_daily_rate(target_count, campaign_minutes)
     hourly_rate = get_hourly_rate(target_count, campaign_minutes)
     current_daily_rate = get_all_daily_rates()
@@ -82,9 +80,7 @@ def get_needed_hourly_rate(campaign_minutes, target_count, needed_hourly_rate=10
     # Expected: needed_campaign_hours = target_count / needed_hourly_rate
     needed_campaign_hours = target_count / needed_hourly_rate
     needed_campaign_minutes = needed_campaign_hours * 60
-    print(needed_campaign_minutes)
-    needed_cycle_minutes = get_campaign_minutes(needed_campaign_minutes, reverse=True)
-    return int(needed_target_count), needed_cycle_minutes
+    return int(needed_target_count), needed_campaign_minutes
 
 
 def get_needed_daily_rate(
@@ -106,9 +102,8 @@ def get_needed_daily_rate(
 
     needed_campaign_days = target_count / needed_daily_rate
     needed_campaign_minutes = needed_campaign_days * 60 * 24
-    needed_cycle_minutes = get_campaign_minutes(needed_campaign_minutes, reverse=True)
 
-    return int(needed_target_count), needed_cycle_minutes
+    return int(needed_target_count), needed_campaign_minutes
 
 
 def get_needed_percent_increase(
@@ -152,8 +147,11 @@ def get_all_daily_rates():
     for subscription in subscriptions:
         if subscription.get("cycles"):
             current_cycle = subscription["cycles"][-1]
-            delta = current_cycle["end_date"] - current_cycle["start_date"]
-            minutes = get_campaign_minutes(int(delta.total_seconds() / 60))
+            delta = (
+                current_cycle.get("send_by_date", current_cycle["end_date"])
+                - current_cycle["start_date"]
+            )
+            minutes = int(delta.total_seconds() / 60)
             daily_rate += get_daily_rate(current_cycle["total_targets"], minutes)
     return daily_rate
 

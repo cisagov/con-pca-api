@@ -16,7 +16,7 @@ from api.utils.subscription.campaigns import generate_campaigns, stop_campaigns
 from api.utils.subscription.subscriptions import (
     calculate_subscription_start_end_date,
     create_subscription_name,
-    get_subscription_cycles,
+    get_subscription_cycle,
     init_subscription_tasks,
     send_stop_notification,
 )
@@ -69,8 +69,10 @@ def start_subscription(subscription_uuid, new_cycle=False):
         stop_campaigns(subscription["campaigns"])
 
     # calculate start and end date to subscription
-    start_date, end_date = calculate_subscription_start_end_date(
-        subscription.get("start_date"), subscription.get("cycle_length_minutes", 129600)
+    start_date, send_by_date, end_date = calculate_subscription_start_end_date(
+        subscription.get("start_date"),
+        subscription.get("cycle_length_minutes", 129600),
+        subscription.get("cooldown_minutes", 2880),
     )
 
     # Get details for the customer that is attached to the subscription
@@ -138,13 +140,14 @@ def start_subscription(subscription_uuid, new_cycle=False):
     total_targets_in_cycle = len(subscription["target_email_list"])
     cycle_uuid = str(uuid.uuid4())
     subscription["cycles"].append(
-        get_subscription_cycles(
+        get_subscription_cycle(
             new_gophish_campaigns,
             start_date,
             end_date,
+            send_by_date,
             cycle_uuid,
             total_targets_in_cycle,
-        )[0]
+        )
     )
 
     if not subscription.get("tasks"):
@@ -156,6 +159,7 @@ def start_subscription(subscription_uuid, new_cycle=False):
                 start_date,
                 subscription.get("continuous_subscription"),
                 subscription.get("cycle_length_minutes", 129600),
+                subscription.get("cooldown_minutes", 2880),
                 subscription.get("report_frequency_minutes", 43200),
             )
         )
