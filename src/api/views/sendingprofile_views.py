@@ -110,12 +110,15 @@ class SendingProfileView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        if subscription_service.exists(
-            parameters={"sending_profile_name": sending_profile.name}
-        ):
+        subs_using = subscription_service.get_list(
+            parameters={"sending_profile_name": sending_profile.name},
+            fields=["name"],
+        )
+        if subs_using:
             return Response(
                 {
-                    "error": "Subscriptions are currently utilizing this sending profile."
+                    "error": "Subscriptions are currently utilizing this sending profile.",
+                    "fields": subs_using,
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
