@@ -72,6 +72,12 @@ def test_sending_profile_delete(client):
     ), mock.patch(
         "api.services.SubscriptionService.exists", return_value=True
     ), mock.patch(
+        "api.services.SubscriptionService.get_list",
+        return_value=[],
+    )as mock_get_list, mock.patch(
+        "api.services.CampaignService.get_list",
+        return_value=[],
+    ), mock.patch(
         "api.manager.CampaignManager.get_sending_profile", return_value=SMTP()
     ):
         result = client.delete("/api/v1/sendingprofile/1234/")
