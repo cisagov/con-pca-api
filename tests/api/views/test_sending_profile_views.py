@@ -44,7 +44,7 @@ def test_sending_profile_delete(client):
     ) as mock_delete_single, mock.patch(
         "api.services.TemplateService.exists", return_value=False
     ), mock.patch(
-        "api.services.SubscriptionService.exists", return_value=False
+        "api.services.SubscriptionService.get_list", return_value=[]
     ), mock.patch(
         "api.manager.CampaignManager.get_sending_profile", return_value=SMTP()
     ):
@@ -57,7 +57,7 @@ def test_sending_profile_delete(client):
     ) as mock_delete_single, mock.patch(
         "api.services.TemplateService.exists", return_value=True
     ), mock.patch(
-        "api.services.SubscriptionService.exists", return_value=False
+        "api.services.SubscriptionService.get_list", return_value=[]
     ), mock.patch(
         "api.manager.CampaignManager.get_sending_profile", return_value=SMTP()
     ):
@@ -70,13 +70,7 @@ def test_sending_profile_delete(client):
     ) as mock_delete_single, mock.patch(
         "api.services.TemplateService.exists", return_value=False
     ), mock.patch(
-        "api.services.SubscriptionService.exists", return_value=True
-    ), mock.patch(
-        "api.services.SubscriptionService.get_list",
-        return_value=[],
-    )as mock_get_list, mock.patch(
-        "api.services.CampaignService.get_list",
-        return_value=[],
+        "api.services.SubscriptionService.get_list", return_value=["test"]
     ), mock.patch(
         "api.manager.CampaignManager.get_sending_profile", return_value=SMTP()
     ):
