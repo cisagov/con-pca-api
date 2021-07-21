@@ -26,10 +26,7 @@ def test_image_view_post(client):
             size=size,
             charset=charset,
         )
-
+        b64uf = base64.b64encode(uf.read())
         resp = client.post("/api/v1/imageupload/", data={"file": uf})
     assert resp.status_code == 201
-    assert (
-        f"data:image/jpeg;base64,{base64.b64encode(base64.b64decode(uf))}"
-        == resp.json()["imageUrl"]
-    )
+    assert f"data:image/jpeg;base64,{b64uf.decode()}" == resp.json()["imageUrl"]
