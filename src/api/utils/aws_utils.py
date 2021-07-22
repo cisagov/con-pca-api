@@ -4,7 +4,6 @@ from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import os
-import uuid
 
 # Third-Party Libraries
 import boto3
@@ -20,24 +19,6 @@ class AWS:
     def get_client(self, service):
         """Get Client."""
         return boto3.client(service_name=service)
-
-
-class S3(AWS):
-    """S3."""
-
-    def __init__(self):
-        """Create S3 Client."""
-        self.client = self.get_client("s3")
-        self.image_bucket = os.environ.get("AWS_S3_IMAGE_BUCKET")
-
-    def upload_fileobj_image(self, data):
-        """Upload fileobject to s3."""
-        key = f"{uuid.uuid4().hex}.png"
-        self.client.upload_fileobj(data, self.image_bucket, key)
-        host = "https://s3.amazonaws.com"
-        url = f"{host}/{self.image_bucket}/{key}"
-
-        return key, self.image_bucket, url
 
 
 class SES(AWS):
