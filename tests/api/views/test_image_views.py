@@ -1,6 +1,5 @@
 """Image View Tests."""
 # Standard Python Libraries
-import base64
 from mimetypes import guess_type
 
 # Third-Party Libraries
@@ -26,7 +25,6 @@ def test_image_view_post(client):
             size=size,
             charset=charset,
         )
-        b64uf = base64.b64encode(f.read())
         resp = client.post("/api/v1/imageupload/", data={"file": uf})
     assert resp.status_code == 201
-    assert f"data:image/jpeg;base64,{b64uf.decode()}" == resp.json()["imageUrl"]
+    assert resp.json()["imageUrl"].startswith("data:image/jpeg;base64")
