@@ -47,6 +47,10 @@ redeploy: down build up
 shell:
 	docker exec -it pca-api python manage.py shell
 
+# target: build_emails: build mjml emails
+build_emails:
+	mjml src/templates/emails/mjml/* -o src/templates/emails/
+
 # target: dummy - initializes init_dummy_data for cpa
 dummy:
 	docker exec -it pca-api python scripts/create_dummy_data.py
