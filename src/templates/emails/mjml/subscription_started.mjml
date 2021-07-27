@@ -1,4 +1,4 @@
-{% load tz %}
+<mj-raw> {% load tz %} </mj-raw>
 <mjml>
   <mj-head>
     <mj-style> ul li { background: #cce5ff; margin: 10px; } </mj-style>

@@ -1,4 +1,4 @@
-{% load tz %}
+<mj-raw> {% load tz %} </mj-raw>
 <mjml>
   <mj-body>
     <mj-section>
