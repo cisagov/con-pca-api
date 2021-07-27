@@ -47,7 +47,7 @@ redeploy: down build up
 shell:
 	docker exec -it pca-api python manage.py shell
 
-# target: build_emails: build mjml emails
+# target: build_emails: build mjml emails - requires: npm install -g mjml
 build_emails:
 	mjml src/templates/emails/mjml/* -o src/templates/emails/
 
