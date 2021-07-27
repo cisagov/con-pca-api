@@ -11,8 +11,8 @@
         </mj-text>
         <mj-text font-size="20px" color="#1B2352" font-family="helvetica">
           Thank you for participating in the CISA Phishing This email is to
-          inform you that your campaign has begun starting {% localtime on %}{{
-          start_date }}{% endlocaltime %} UTC and will run until {{ end_date }}
+          inform you that your campaign has begun starting
+          {{start_date|localtime}} UTC and will run until {{end_date|localtime}}
           UTC.
         </mj-text>
         <mj-text font-size="20px" color="#1B2352" font-family="helvetica">

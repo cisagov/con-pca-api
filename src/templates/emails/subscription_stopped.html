@@ -1,4 +1,3 @@
-{% load tz %}
 <!DOCTYPE html>
 <html
   xmlns="http://www.w3.org/1999/xhtml"
@@ -164,8 +163,7 @@
                           >
                             Thank you for participating in the CISA Phishing.
                             This email is to inform you that your campaign has
-                            been stopped on {% localtime on %}{{ end_date }}{%
-                            endlocaltime %} UTC.
+                            been stopped on {{end_date|localtime}} UTC.
                           </div>
                         </td>
                       </tr>
