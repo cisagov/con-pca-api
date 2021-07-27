@@ -30,7 +30,6 @@ def test_ses(mock_client):
         bcc=[fake.email()],
         text=fake.paragraph(),
         html=fake.paragraph(),
-        attachments=["src/static/img/cisa_logo.png"],
         binary_attachments=[{"filename": "test", "data": fake.binary()}],
     )
 

@@ -1,7 +1,6 @@
 """Notifications."""
 # Standard Python Libraries
 from datetime import datetime
-from email.mime.image import MIMEImage
 import logging
 import os
 
@@ -80,13 +79,13 @@ class EmailSender:
             bcc=self.bcc,
         )
 
-        image_files = ["cisa_logo.png"]
-        for image_file in image_files:
-            fp = open(os.path.abspath(f"{STATIC_DIR}/img/{image_file}"), "rb")
-            msgImage = MIMEImage(fp.read(), _subtype="png")
-            fp.close()
-            msgImage.add_header("Content-ID", f"<{image_file}>")
-            message.attach(msgImage)
+        # image_files = []
+        # for image_file in image_files:
+        #     fp = open(os.path.abspath(f"{STATIC_DIR}/img/{image_file}"), "rb")
+        #     msgImage = MIMEImage(fp.read(), _subtype="png")
+        #     fp.close()
+        #     msgImage.add_header("Content-ID", f"<{image_file}>")
+        #     message.attach(msgImage)
 
         message.attach_alternative(self.html_content, "text/html")
 
@@ -114,7 +113,6 @@ class EmailSender:
             bcc=self.bcc,
             text=self.text_content,
             html=self.html_content,
-            attachments=[os.path.abspath(f"{STATIC_DIR}/img/cisa_logo.png")],
             binary_attachments=binary_attachments,
         )
 
