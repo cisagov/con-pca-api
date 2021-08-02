@@ -2,7 +2,7 @@ FROM python:3.9.6
 
 # Nginx
 RUN apt-get update
-RUN apt-get install nginx -y
+RUN apt-get install cron nginx -y
 
 # Set work directory
 RUN mkdir /app/

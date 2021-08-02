@@ -13,6 +13,17 @@ python scripts/init.py &
 echo "start nginx service"
 service nginx start
 
+echo "Adding jobs to crontab"
+# Add cronjobs to crontab
+python manage.py crontab add
+
+# Copy environment variables into environment
+# so that cron jobs can access
+echo "$(env ; crontab -l)" | crontab -
+
+# Start cron service
+service cron start
+
 echo "Starting Con-PCA API"
 if [[ $DEBUG -eq 1 ]]
 then

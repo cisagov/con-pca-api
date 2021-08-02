@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_crontab",
     "django_extensions",
     "django_smtp_ssl",
     "corsheaders",
@@ -192,3 +193,8 @@ GP_LANDING_SUBDOMAIN = os.environ.get("GP_LANDING_SUBDOMAIN", "gp")
 
 # API Key for running local scripts
 LOCAL_API_KEY = os.environ.get("LOCAL_API_KEY")
+
+CRON_MINUTES = os.environ.get("CRON_MINUTES", 5)
+CRONJOBS = [
+    (f"*/{CRON_MINUTES} * * * *", "tasks.main", ">> /proc/1/fd/1 2> /proc/1/fd/1"),
+]

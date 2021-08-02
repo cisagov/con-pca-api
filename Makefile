@@ -68,18 +68,6 @@ coverage:
 cc:
 	radon cc ./src/ -e "*.venv*" -s -o SCORE
 
-# target: debug_ptvsd - run debugger with ptvsd
-debug_ptvsd:
-	docker exec -it pca-api python -m ptvsd --host 0.0.0.0 --port 5679 scripts/create_dummy_data.py
-
-# target: tasks - run lambda tasks
-tasks:
-	docker exec -it pca-api python lambda_functions/tasks/
-
-# target: lambda_export - export lambda
-lambda_export:
-	docker exec -it pca-api python lambda_functions/export.py
-
 # target: lint = lint all files
 lint:
 	pre-commit autoupdate
