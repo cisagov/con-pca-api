@@ -1,67 +1,111 @@
-"""Process Tasks Lambda Function."""
+"""Scripts for running tasks."""
 # Standard Python Libraries
 from datetime import datetime, timedelta
-import json
 import logging
 from uuid import uuid4
 
 # Third-Party Libraries
 import dateutil.parser
-from django.core.wsgi import get_wsgi_application
 
 # cisagov Libraries
 from api.notifications import EmailSender
-from api.services import SubscriptionService
+from api.services import CampaignService, SubscriptionService
 from api.utils.subscription import actions
 from api.utils.subscription.cycles import get_last_run_cycle
 from api.utils.subscription.subscriptions import get_yearly_minutes
 
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-
-application = get_wsgi_application()
-
 subscription_service = SubscriptionService()
+campaign_service = CampaignService()
 
 
-def lambda_handler(event, context):
-    """Handle SQS Event."""
-    for record in event["Records"]:
-        payload = json.loads(record["body"])
-        subscription_uuid = payload["subscription_uuid"]
-        task = payload["task"]
+def main():
+    """Start."""
+    subscription_found = True
+    while subscription_found:
+        subscription = get_tasks()
+        if subscription:
+            logging.info(f"Processing subscription {subscription['subscription_uuid']}")
+            process_tasks(subscription)
+            subscription_service.update(
+                subscription["subscription_uuid"],
+                {"tasks_processing": False},
+            )
+        else:
+            logging.info("No more subscriptions found to process.")
+            subscription_found = False
 
-        logger.info(f"Executing task {task}")
-        subscription = subscription_service.get(subscription_uuid)
 
-        scheduled_date = dateutil.parser.parse(task["scheduled_date"])
-
+def process_tasks(subscription):
+    """Process all tasks that need executed on a subscription."""
+    stopping = bool(
+        list(
+            filter(
+                lambda x: x["message_type"] == "stop_subscription",
+                subscription["tasks"],
+            )
+        )
+    )
+    for task in subscription["tasks"]:
+        logging.info(f"Processing task - {task}")
         try:
             execute_task(subscription, task["message_type"])
             task["executed"] = True
             task["error"] = ""
             task["executed_date"] = datetime.now()
-            # If the subscription is not stopping, update and add a new task
-            if not payload.get("stopping_subscription"):
-                update_task(subscription_uuid, task)
+            if not stopping:
+                update_task(subscription["subscription_uuid"], task)
                 add_new_task(
-                    subscription_uuid,
-                    scheduled_date,
+                    subscription["subscription_uuid"],
+                    task["scheduled_date"],
                     task["message_type"],
                     subscription.get("cycle_length_minutes", 129600),
                     subscription.get("cooldown_minutes", 2880),
                     subscription.get("report_frequency_minutes", 43200),
                 )
-            logger.info(f"Successfully executed task {task}")
-        except BaseException as e:
-            logger.exception(e)
+            logging.info(f"Successfully executed task {task}")
+        except Exception as e:
+            logging.exception(e)
             task["executed"] = False
-            task["queued"] = False
             task["error"] = str(e)
-            update_task(subscription_uuid, task)
+            task["scheduled_date"] = datetime.now() + timedelta(minutes=10)
+            update_task(subscription["subscription_uuid"], task)
+
+
+def get_tasks():
+    """Return a subscription with just the tasks that need processing."""
+    subscription = subscription_service.find_one_and_update(
+        parameters={
+            "tasks": {
+                "$elemMatch": {
+                    "scheduled_date": {"$lt": datetime.utcnow()},
+                    "executed": {"$in": [False, None]},
+                }
+            },
+            "tasks_processing": {"$in": [False, None]},
+        },
+        data={"tasks_processing": True},
+    )
+    if not subscription:
+        return None
+    tasks = []
+    for task in subscription.get("tasks", []):
+        scheduled_date = task.get("scheduled_date")
+        if type(scheduled_date) is str:
+            scheduled_date = dateutil.parser.parse(scheduled_date)
+        executed = task.get("executed")
+        if scheduled_date.replace(tzinfo=None) < datetime.utcnow() and not executed:
+            tasks.append(task)
+    if not tasks:
+        return None
+    subscription["tasks"] = tasks
+    subscription["campaigns"] = campaign_service.get_list(
+        parameters={"subscription_uuid": subscription["subscription_uuid"]}
+    )
+    return subscription
 
 
 def update_task(subscription_uuid, task):
+    """Update task in database."""
     """Update Subscription Task."""
     return subscription_service.update_nested(
         uuid=subscription_uuid,
@@ -80,7 +124,7 @@ def add_new_task(
     report_frequency_minutes,
 ):
     """Add new task."""
-    logger.info("checking for new task to add")
+    logging.info("checking for new task to add")
 
     new_date = {
         "monthly_report": scheduled_date + timedelta(minutes=report_frequency_minutes),
@@ -100,7 +144,7 @@ def add_new_task(
             "queued": False,
         }
 
-        logger.info(f"Adding new task {task}")
+        logging.info(f"Adding new task {task}")
 
         return subscription_service.push_nested(
             uuid=subscription_uuid, field="tasks", data=task

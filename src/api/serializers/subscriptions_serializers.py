@@ -52,7 +52,6 @@ class SubscriptionTasksSerializer(serializers.Serializer):
     task_uuid = serializers.CharField()
     message_type = serializers.CharField()
     scheduled_date = serializers.DateTimeField()
-    queued = serializers.BooleanField(default=False, allow_null=True)
     executed = serializers.BooleanField(default=False)
     executed_date = serializers.DateTimeField(required=False, allow_null=True)
     error = serializers.CharField(required=False, allow_null=True, allow_blank=True)
@@ -99,6 +98,7 @@ class SubscriptionSerializer(serializers.Serializer):
     cycle_length_minutes = serializers.IntegerField(required=False)
     cooldown_minutes = serializers.IntegerField(required=False)
     report_frequency_minutes = serializers.IntegerField(required=False)
+    tasks_processing = serializers.BooleanField(required=False, allow_null=True)
     # db data tracking added below
     created_by = serializers.CharField(required=False, max_length=100)
     cb_timestamp = serializers.DateTimeField(required=False)
@@ -172,6 +172,7 @@ class SubscriptionPatchSerializer(serializers.Serializer):
     report_frequency_minutes = serializers.IntegerField(
         required=False, max_value=518400, min_value=15
     )  # max of 360 days, min of 15 minutes
+    tasks_processing = serializers.BooleanField(required=False, default=False)
 
 
 class SubscriptionResponseSerializer(serializers.Serializer):
