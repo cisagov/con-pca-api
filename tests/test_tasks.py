@@ -8,7 +8,7 @@ from faker import Faker
 import pytest
 
 # cisagov Libraries
-from src.lambda_functions.tasks import process_tasks as handler
+from src import tasks as handler
 
 fake = Faker()
 
