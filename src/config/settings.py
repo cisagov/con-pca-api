@@ -198,3 +198,4 @@ CRON_MINUTES = os.environ.get("CRON_MINUTES", 5)
 CRONJOBS = [
     (f"*/{CRON_MINUTES} * * * *", "tasks.main", ">> /proc/1/fd/1 2> /proc/1/fd/1"),
 ]
+CRONTAB_COMMAND_PREFIX = "cd /app;"
