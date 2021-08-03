@@ -12,6 +12,7 @@ from api.utils.stats import (
     deception_stats_to_graph_format,
     get_asn_org_stats,
     get_subscription_cycle,
+    get_template_details,
 )
 from api.views.reports.cycle_report_views import get_cycle_stats
 
@@ -35,7 +36,7 @@ class CycleStatusView(APIView):
 
         # Get statistics for the specified subscription during the specified cycle
         stats = get_cycle_stats(subscription, cycle, is_nonhuman_request(request))
-        # get_template_details(subscription_stats["campaign_results"])
+        get_template_details(stats)
         timeline = []
         for campaign in subscription["campaigns"]:
             timeline.extend(campaign["timeline"])
@@ -52,6 +53,7 @@ class CycleStatusView(APIView):
             "target_count": cycle["total_targets"],
             "campaign_details": stats["campaign_results"],
             "aggregate_stats": stats["stats_all"],
+            "template_breakdown": stats["template_breakdown"],
             # "stats": subscription_stats,
             "levels": deception_stats_to_graph_format(stats),
             "asn_stats": asn_stats,

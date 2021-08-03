@@ -333,6 +333,33 @@ def get_template_clicked_indicators(campaign_stats):
     return key_vals
 
 
+def get_template_details(campaigns):
+    """Get the breakdown by template."""
+    vals_to_check = ["clicked", "opened", "reported"]
+    campaigns["template_breakdown"] = []
+    for val in vals_to_check:
+        campaigns["campaign_results"].sort(reverse=True, key=lambda x: x[val]["count"])
+        item = {"type": val, "list": []}
+
+        # Set last val to -1 because the ratio should never be -1, causing the count to immediatly count to 1
+        count = 0
+        last_val = -1
+        ratio = f"{val}_ratio"
+        for cycle in campaigns["campaign_results"]:
+            if last_val != cycle["ratios"][ratio]:
+                count += 1
+            last_val = cycle["ratios"][ratio]
+            item["list"].append(
+                {
+                    "order": count,
+                    "ratios": cycle["ratios"],
+                    "template": cycle["template"],
+                }
+            )
+
+        campaigns["template_breakdown"].append(item)
+
+
 def campaign_templates_to_string(campaigns):
     """Convert templates to string."""
     ret_string = ""
