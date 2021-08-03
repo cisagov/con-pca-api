@@ -15,13 +15,10 @@ service nginx start
 
 echo "Adding jobs to crontab"
 # Add cronjobs to crontab
+declare -p | grep -Ev '^declare -[[:alpha:]]*r' > /container.env
+(crontab -l ; echo "SHELL=/bin/bash") | crontab -
+(crontab -l ; echo "BASH_ENV=/container.env") | crontab -
 python manage.py crontab add
-
-# Copy environment variables into environment
-# so that cron jobs can access
-echo "$(env ; crontab -l)" | crontab -
-
-# Start cron service
 service cron start
 
 echo "Starting Con-PCA API"
