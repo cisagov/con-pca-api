@@ -1,4 +1,4 @@
-{% load tz %}
+<mj-raw> {% load tz %} </mj-raw>
 <mjml>
   <mj-head>
     <mj-style> ul li { background: #cce5ff; margin: 10px; } </mj-style>
@@ -6,15 +6,13 @@
   <mj-body>
     <mj-section>
       <mj-column>
-        <mj-image width="100px" src="cid:cisa_logo.png"></mj-image>
-        <mj-divider border-color="#1B2352"></mj-divider>
         <mj-text font-size="20px" color="#1B2352" font-family="helvetica">
           Dear {{ first_name }} {{ last_name }},
         </mj-text>
         <mj-text font-size="20px" color="#1B2352" font-family="helvetica">
           Thank you for participating in the CISA Phishing This email is to
-          inform you that your campaign has begun starting {% localtime on %}{{
-          start_date }}{% endlocaltime %} UTC and will run until {{ end_date }}
+          inform you that your campaign has begun starting
+          {{start_date|localtime}} UTC and will run until {{end_date|localtime}}
           UTC.
         </mj-text>
         <mj-text font-size="20px" color="#1B2352" font-family="helvetica">

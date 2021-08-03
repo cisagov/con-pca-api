@@ -5,6 +5,7 @@ import logging
 from uuid import uuid4
 
 # Third-Party Libraries
+from pymongo import ReturnDocument
 from rest_framework import serializers
 
 # cisagov Libraries
@@ -107,6 +108,22 @@ class DBService:
         # Update Data
         self.db.update_one({self.uuid_field: str(uuid)}, {"$set": data})
         return {self.uuid_field: uuid}
+
+    def find_one_and_update(self, parameters, data):
+        """Find and modify."""
+        serializer = self.update_serializer(data=data)
+        data = self.validate_serializer(serializer)
+
+        # Update updated fields
+        data["last_update_by"] = "dev user"
+        data["lub_timestamp"] = datetime.utcnow()
+
+        # Find and update
+        return self.db.find_one_and_update(
+            parameters,
+            {"$set": data},
+            return_document=ReturnDocument.AFTER,
+        )
 
     def update_nested(self, uuid, field, data, params=None):
         """Update Nested."""
