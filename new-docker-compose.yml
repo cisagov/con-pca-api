@@ -1,0 +1,49 @@
+---
+version: "3.5"
+services:
+  api:
+    build:
+      context: .
+      dockerfile: new.Dockerfile
+    stdin_open: true
+    tty: true
+    container_name: pca-api
+    hostname: pca-api
+    restart: unless-stopped
+    links:
+      - mongodb
+    volumes:
+      - ./src:/app
+    env_file:
+      - .env
+    networks:
+      - backend
+    ports:
+      - 5000:5000
+      - 8000:8000
+
+  mongodb:
+    container_name: pca-mongodb
+    hostname: mongodb
+    image: "mongo:3.6"
+    # These ports are exposed on the host; 'hostport:containerport'.
+    # You could connect to this server from outside with the *host's*
+    # DNS name or IP address and port 27017 (the left-hand side of the
+    # colon).
+    ports:
+      - "27017:27017"
+    command: --profile=1 --slowms=1
+    volumes:
+      - "mongodb:/data/db"
+    env_file:
+      - .env
+    networks:
+      - backend
+
+# Host volumes used to store code.
+volumes:
+  mongodb:
+
+networks:
+  backend:
+    name: pca_backend
