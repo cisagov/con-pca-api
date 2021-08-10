@@ -23,4 +23,4 @@ def get_db():
         os.environ.get("DB_HOST"),
         os.environ.get("DB_PORT"),
     )
-    return MongoClient(conn_str).domain_management
+    return MongoClient(conn_str).pca
