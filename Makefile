@@ -22,6 +22,8 @@ attach:
 
 # target: build = build all containers
 build:
+	docker-compose -f new-docker-compose.yml build
+build_old:
 	docker-compose build
 
 # target: app logs - Runs django logs in the terminal
@@ -30,14 +32,20 @@ logs:
 
 # target: up - Run local web server.
 up:
-	 docker-compose up -d
+	docker-compose -f new-docker-compose.yml up -d
+up_old:
+	docker-compose up -d
 
 # target: stop - Stop all docker containers
 stop:
+	docker-compose -f new-docker-compose.yml stop
+stop_old:
 	docker-compose stop
 
 # target: down - Remove all docker containers
 down:
+	docker-compose -f new-docker-compose.yml down
+down_old:
 	docker-compose down
 
 # target: redeploy = bring down, rebuild and redeploy all containers
