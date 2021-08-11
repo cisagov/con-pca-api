@@ -13,7 +13,7 @@ services:
     links:
       - mongodb
     volumes:
-      - ./src:/app
+      - ./new:/app
     env_file:
       - .env
     networks:
