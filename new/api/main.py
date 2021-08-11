@@ -11,6 +11,7 @@ from utils.decorators.auth import auth_required
 # cisagov Libraries
 from api.config import logger
 from api.views.auth_views import LoginView, RefreshTokenView, RegisterView
+from api.views.customer_views import CustomersView, CustomerView, SectorIndustryView
 from api.views.user_views import UserConfirmView, UsersView, UserView
 
 app = Flask(__name__, template_folder="templates")
@@ -21,6 +22,9 @@ CORS(app)
 url_prefix = "/api"
 
 rules = [
+    ("/customers/", CustomersView),
+    ("/customer/<customer_uuid>/", CustomerView),
+    ("/sectorindustry/", SectorIndustryView),
     ("/users/", UsersView),
     ("/user/<username>/", UserView),
     ("/user/<username>/confirm/", UserConfirmView),

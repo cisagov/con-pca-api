@@ -1,6 +1,6 @@
 """BaseSchema."""
 # Third-Party Libraries
-from marshmallow import Schema, fields
+from marshmallow import EXCLUDE, Schema, fields
 
 # cisagov Libraries
 from api.schemas.fields import DateTimeField
@@ -12,6 +12,11 @@ class BaseSchema(Schema):
 
     The base schema for all collections.
     """
+
+    class Meta:
+        """Meta attributes for class."""
+
+        unknown = EXCLUDE
 
     _id = fields.Str()
     created = DateTimeField(allow_none=True)
