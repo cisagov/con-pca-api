@@ -10,6 +10,7 @@ import pymongo
 # cisagov Libraries
 from api.config import DB
 from api.schemas.customer_schema import CustomerSchema
+from api.schemas.landing_page_schema import LandingPageSchema
 from api.schemas.sending_profile_schema import SendingProfileSchema
 from api.schemas.template_schema import TemplateSchema
 
@@ -63,10 +64,10 @@ class Manager:
             return schema.load(schema.dump(data))
         return data
 
-    def load_data(self, data, many=False):
+    def load_data(self, data, many=False, partial=False):
         """Load data into database."""
         schema = self.schema(many=many)
-        return schema.load(data)
+        return schema.load(data, partial=partial)
 
     def create_indexes(self):
         """Create indexes for collection."""
@@ -153,19 +154,8 @@ class Manager:
         data = self.add_updated(data)
         return self.db.update_one(
             {self.uuid_field: str(uuid)},
-            {"$set": self.load_data(data)},
+            {"$set": self.load_data(data, partial=True)},
         ).raw_result
-
-    def upsert(self, query, data):
-        """Upsert document into database."""
-        data = self.clean_data(data)
-        data = self.add_created(data)
-        data = self.add_updated(data)
-        return self.db.update_one(
-            query,
-            {"$set": self.load_data(data)},
-            upsert=True,
-        )
 
     def save(self, data):
         """Save new item to collection."""
@@ -236,3 +226,23 @@ class TemplateManager(Manager):
             collection="template",
             schema=TemplateSchema,
         )
+
+
+class LandingPageManager(Manager):
+    """LandingPageManager."""
+
+    def __init__(self):
+        """Super."""
+        return super().__init__(
+            collection="landing_page",
+            schema=LandingPageSchema,
+        )
+
+    def clear_and_set_default(self, uuid):
+        """Set Default Landing Page."""
+        sub_query = {}
+        newvalues = {"$set": {"is_default_template": False}}
+        self.db.update_many(sub_query, newvalues)
+        sub_query = {"landing_page_uuid": str(uuid)}
+        newvalues = {"$set": {"is_default_template": True}}
+        self.db.update_one(sub_query, newvalues)
