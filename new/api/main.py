@@ -12,6 +12,7 @@ from utils.decorators.auth import auth_required
 from api.config import logger
 from api.views.auth_views import LoginView, RefreshTokenView, RegisterView
 from api.views.customer_views import CustomersView, CustomerView, SectorIndustryView
+from api.views.sending_profile_views import SendingProfilesView, SendingProfileView
 from api.views.template_views import TemplatesView, TemplateView
 from api.views.user_views import UserConfirmView, UsersView, UserView
 
@@ -26,6 +27,8 @@ rules = [
     ("/customers/", CustomersView),
     ("/customer/<customer_uuid>/", CustomerView),
     ("/sectorindustry/", SectorIndustryView),
+    ("/sendingprofiles/", SendingProfilesView),
+    ("/sendingprofile/<sending_profile_uuid>/", SendingProfileView),
     ("/templates/", TemplatesView),
     ("/template/<template_uuid>/", TemplateView),
     ("/users/", UsersView),

@@ -10,6 +10,7 @@ import pymongo
 # cisagov Libraries
 from api.config import DB
 from api.schemas.customer_schema import CustomerSchema
+from api.schemas.sending_profile_schema import SendingProfileSchema
 from api.schemas.template_schema import TemplateSchema
 
 
@@ -212,6 +213,17 @@ class CustomerManager(Manager):
         return super().__init__(
             collection="customer",
             schema=CustomerSchema,
+        )
+
+
+class SendingProfileManager(Manager):
+    """SendingProfileManager."""
+
+    def __init__(self):
+        """Super."""
+        return super().__init__(
+            collection="sending_profile",
+            schema=SendingProfileSchema,
         )
 
 
