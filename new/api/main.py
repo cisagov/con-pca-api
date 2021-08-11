@@ -1,6 +1,7 @@
 """Domain manager."""
 # Standard Python Libraries
 from datetime import date
+from types import FunctionType, MethodType
 
 # Third-Party Libraries
 from flask import Flask, render_template
@@ -14,6 +15,7 @@ from api.views.auth_views import LoginView, RefreshTokenView, RegisterView
 from api.views.customer_views import CustomersView, CustomerView, SectorIndustryView
 from api.views.landing_page_views import LandingPagesView, LandingPageView
 from api.views.sending_profile_views import SendingProfilesView, SendingProfileView
+from api.views.tag_views import TagsView
 from api.views.template_views import TemplatesView, TemplateView
 from api.views.user_views import UserConfirmView, UsersView, UserView
 
@@ -32,6 +34,7 @@ rules = [
     ("/sectorindustry/", SectorIndustryView),
     ("/sendingprofiles/", SendingProfilesView),
     ("/sendingprofile/<sending_profile_uuid>/", SendingProfileView),
+    ("/tags/", TagsView),
     ("/templates/", TemplatesView),
     ("/template/<template_uuid>/", TemplateView),
     ("/users/", UsersView),
@@ -65,6 +68,10 @@ class CustomJSONEncoder(JSONEncoder):
         try:
             if isinstance(obj, date):
                 return obj.isoformat()
+            elif isinstance(obj, FunctionType):
+                return obj.__name__
+            elif isinstance(obj, MethodType):
+                return obj.__name__
             iterable = iter(obj)
         except TypeError:
             pass
