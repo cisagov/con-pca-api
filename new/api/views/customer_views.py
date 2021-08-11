@@ -15,7 +15,9 @@ class CustomersView(MethodView):
 
     def get(self):
         """Get."""
-        return jsonify(customer_manager.all(params=dict(request.args)))
+        return jsonify(
+            customer_manager.all(params=customer_manager.get_query(request.args))
+        )
 
     def post(self):
         """Post."""

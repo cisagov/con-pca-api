@@ -53,7 +53,7 @@ redeploy: down build up
 
 # target: shell - django shell within container
 shell:
-	docker exec -it pca-api python manage.py shell
+	docker exec -it pca-api python3
 
 # target: build_emails: build mjml emails - requires: npm install -g mjml
 build_emails:

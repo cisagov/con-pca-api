@@ -10,6 +10,7 @@ import pymongo
 # cisagov Libraries
 from api.config import DB
 from api.schemas.customer_schema import CustomerSchema
+from api.schemas.template_schema import TemplateSchema
 
 
 class Manager:
@@ -23,7 +24,11 @@ class Manager:
         self.other_indexes = other_indexes
         self.uuid_field = f"{collection}_uuid"
         self.db = getattr(DB, collection)
-        return
+
+    def get_query(self, data):
+        """Get query parameters from schema."""
+        schema = self.schema()
+        return schema.load(dict(data), partial=True)
 
     def convert_fields(self, fields):
         """Convert list of fields into mongo syntax."""
@@ -207,4 +212,15 @@ class CustomerManager(Manager):
         return super().__init__(
             collection="customer",
             schema=CustomerSchema,
+        )
+
+
+class TemplateManager(Manager):
+    """Template Manager."""
+
+    def __init__(self):
+        """Super."""
+        return super().__init__(
+            collection="template",
+            schema=TemplateSchema,
         )
