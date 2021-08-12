@@ -12,6 +12,7 @@ from api.config import DB
 from api.schemas.customer_schema import CustomerSchema
 from api.schemas.landing_page_schema import LandingPageSchema
 from api.schemas.sending_profile_schema import SendingProfileSchema
+from api.schemas.subscription_schema import SubscriptionSchema
 from api.schemas.template_schema import TemplateSchema
 
 
@@ -206,28 +207,6 @@ class CustomerManager(Manager):
         )
 
 
-class SendingProfileManager(Manager):
-    """SendingProfileManager."""
-
-    def __init__(self):
-        """Super."""
-        return super().__init__(
-            collection="sending_profile",
-            schema=SendingProfileSchema,
-        )
-
-
-class TemplateManager(Manager):
-    """Template Manager."""
-
-    def __init__(self):
-        """Super."""
-        return super().__init__(
-            collection="template",
-            schema=TemplateSchema,
-        )
-
-
 class LandingPageManager(Manager):
     """LandingPageManager."""
 
@@ -246,3 +225,36 @@ class LandingPageManager(Manager):
         sub_query = {"landing_page_uuid": str(uuid)}
         newvalues = {"$set": {"is_default_template": True}}
         self.db.update_one(sub_query, newvalues)
+
+
+class SendingProfileManager(Manager):
+    """SendingProfileManager."""
+
+    def __init__(self):
+        """Super."""
+        return super().__init__(
+            collection="sending_profile",
+            schema=SendingProfileSchema,
+        )
+
+
+class SubscriptionManager(Manager):
+    """SubscriptionManager."""
+
+    def __init__(self):
+        """Super."""
+        return super().__init__(
+            collection="subscription",
+            schema=SubscriptionSchema,
+        )
+
+
+class TemplateManager(Manager):
+    """Template Manager."""
+
+    def __init__(self):
+        """Super."""
+        return super().__init__(
+            collection="template",
+            schema=TemplateSchema,
+        )

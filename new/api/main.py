@@ -15,8 +15,9 @@ from api.views.auth_views import LoginView, RefreshTokenView, RegisterView
 from api.views.customer_views import CustomersView, CustomerView, SectorIndustryView
 from api.views.landing_page_views import LandingPagesView, LandingPageView
 from api.views.sending_profile_views import SendingProfilesView, SendingProfileView
+from api.views.subscription_views import SubscriptionsView, SubscriptionView
 from api.views.tag_views import TagsView
-from api.views.template_views import TemplatesView, TemplateView
+from api.views.template_views import TemplatesSelectView, TemplatesView, TemplateView
 from api.views.user_views import UserConfirmView, UsersView, UserView
 
 app = Flask(__name__, template_folder="templates")
@@ -27,21 +28,33 @@ CORS(app)
 url_prefix = "/api"
 
 rules = [
+    # Customer Views
     ("/customers/", CustomersView),
     ("/customer/<customer_uuid>/", CustomerView),
+    # Landing Page Views
     ("/landingpages/", LandingPagesView),
     ("/landingpage/<landing_page_uuid>/", LandingPageView),
+    # Sector/Industry View
     ("/sectorindustry/", SectorIndustryView),
+    # Sending Profile Views
     ("/sendingprofiles/", SendingProfilesView),
     ("/sendingprofile/<sending_profile_uuid>/", SendingProfileView),
+    # Subscription Views
+    ("/subscriptions/", SubscriptionsView),
+    ("/subscription/<subscription_uuid>/", SubscriptionView),
+    # Tag Views
     ("/tags/", TagsView),
+    # Template Views
     ("/templates/", TemplatesView),
+    ("/templates/select/", TemplatesSelectView),
     ("/template/<template_uuid>/", TemplateView),
+    # User Views
     ("/users/", UsersView),
     ("/user/<username>/", UserView),
     ("/user/<username>/confirm/", UserConfirmView),
 ]
 
+# Auth Views
 login_rules = [
     ("/auth/register/", RegisterView),
     ("/auth/login/", LoginView),

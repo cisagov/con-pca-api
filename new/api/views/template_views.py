@@ -2,6 +2,7 @@
 # Third-Party Libraries
 from flask import jsonify, request
 from flask.views import MethodView
+from utils.templates import select_templates
 
 # cisagov Libraries
 from api.manager import TemplateManager
@@ -15,7 +16,6 @@ class TemplatesView(MethodView):
     def get(self):
         """Get."""
         # Allow querying a list of templates
-        print(request.args)
         parameters = template_manager.get_query(request.args)
         templates = request.args.get("templates")
         if templates:
@@ -30,7 +30,7 @@ class TemplatesView(MethodView):
             return jsonify({"error": "Template with that name already exists."}), 400
 
         # TODO: Validate Template
-        return jsonify({template_manager.save(data)})
+        return jsonify(template_manager.save(data))
 
 
 class TemplateView(MethodView):
@@ -68,4 +68,10 @@ class TemplateView(MethodView):
 # TODO: TemplateStopView
 # TODO: Send Test Email View
 # TODO: Import Email View
-# TODO: TemplateSelectView
+class TemplatesSelectView(MethodView):
+    """TemplateSelectView."""
+
+    def get(self):
+        """Get."""
+        templates = template_manager.all({"retired": False})
+        return jsonify(select_templates(templates))

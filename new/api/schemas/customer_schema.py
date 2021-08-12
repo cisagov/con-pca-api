@@ -16,7 +16,7 @@ class CustomerContactSchema(BaseSchema):
     mobile_phone = fields.Str(required=False, allow_none=True)
     email = fields.Email(required=True)
     notes = fields.Str(required=False, allow_none=True)
-    active = fields.Bool(default=True)
+    active = fields.Bool(missing=True)
 
 
 class CustomerSchema(BaseSchema):

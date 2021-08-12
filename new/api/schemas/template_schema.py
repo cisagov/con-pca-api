@@ -9,33 +9,33 @@ from api.schemas.base_schema import BaseSchema
 class TemplateAppearanceSchema(Schema):
     """TemplateAppearanceSchema."""
 
-    grammar = fields.Number()
-    link_domain = fields.Number()
-    logo_graphics = fields.Number()
+    grammar = fields.Integer()
+    link_domain = fields.Integer()
+    logo_graphics = fields.Integer()
 
 
 class TemplateSenderSchema(Schema):
     """TemplateSenderSchema."""
 
-    external = fields.Number()
-    internal = fields.Number()
-    authoritative = fields.Number()
+    external = fields.Integer()
+    internal = fields.Integer()
+    authoritative = fields.Integer()
 
 
 class TemplateRelevancySchema(Schema):
     """TemplateRelevancySchema."""
 
-    organization = fields.Number()
-    public_news = fields.Number()
+    organization = fields.Integer()
+    public_news = fields.Integer()
 
 
 class TemplateBehaviorSchema(Schema):
     """TemplateBehaviorSchema."""
 
-    fear = fields.Number()
-    duty_obligation = fields.Number()
-    curiosity = fields.Number()
-    greed = fields.Number()
+    fear = fields.Integer()
+    duty_obligation = fields.Integer()
+    curiosity = fields.Integer()
+    greed = fields.Integer()
 
 
 class TemplateSchema(BaseSchema):
@@ -45,9 +45,9 @@ class TemplateSchema(BaseSchema):
     name = fields.Str(required=True)
     landing_page_uuid = fields.Str(required=False, allow_none=True)
     sending_profile_uuid = fields.Str(required=False, allow_none=True)
-    deception_score = fields.Number()
+    deception_score = fields.Integer()
     from_address = fields.Str(required=True)
-    retired = fields.Bool(default=False)
+    retired = fields.Bool(missing=False)
     retired_description = fields.Str(default="", allow_none=True)
     subject = fields.Str()
     text = fields.Str()

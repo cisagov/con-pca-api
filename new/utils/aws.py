@@ -25,7 +25,26 @@ class Cognito(AWS):
 
     def list_users(self):
         """List users."""
-        return self.client.list_users(UserPoolId=COGNITO_USER_POOL_ID)["Users"]
+        resp = self.client.list_users(UserPoolId=COGNITO_USER_POOL_ID)["Users"]
+        users = []
+        for user in resp:
+            email = next(
+                filter(
+                    lambda x: x["Name"] == "email",
+                    user["Attributes"],
+                )
+            )["Value"]
+            users.append(
+                {
+                    "username": user["Username"],
+                    "email": email,
+                    "status": user["UserStatus"],
+                    "enabled": user["Enabled"],
+                    "created": user["UserCreateDate"],
+                    "modified": user["UserLastModifiedDate"],
+                }
+            )
+        return users
 
     def delete_user(self, username):
         """Delete user."""

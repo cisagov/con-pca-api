@@ -11,5 +11,5 @@ class LandingPageSchema(BaseSchema):
 
     landing_page_uuid = fields.Str(required=True)
     name = fields.Str(required=True)
-    is_default_template = fields.Bool(default=False)
+    is_default_template = fields.Bool(missing=False)
     html = fields.Str()
