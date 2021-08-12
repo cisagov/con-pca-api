@@ -19,6 +19,7 @@ from api.views.subscription_views import SubscriptionsView, SubscriptionView
 from api.views.tag_views import TagsView
 from api.views.template_views import TemplatesSelectView, TemplatesView, TemplateView
 from api.views.user_views import UserConfirmView, UsersView, UserView
+from api.views.utility_views import TestEmailView
 
 app = Flask(__name__, template_folder="templates")
 app.url_map.strict_slashes = False
@@ -52,6 +53,8 @@ rules = [
     ("/users/", UsersView),
     ("/user/<username>/", UserView),
     ("/user/<username>/confirm/", UserConfirmView),
+    # Utility Views
+    ("/util/send_test_email/", TestEmailView),
 ]
 
 # Auth Views
