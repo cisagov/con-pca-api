@@ -2,7 +2,11 @@
 # Third-Party Libraries
 from flask import jsonify, request
 from flask.views import MethodView
-from utils.subscriptions import create_subscription_name
+from utils.subscriptions import (
+    create_subscription_name,
+    start_subscription,
+    stop_subscription,
+)
 
 # cisagov Libraries
 from api.manager import CustomerManager, SubscriptionManager
@@ -68,3 +72,23 @@ class SubscriptionView(MethodView):
     def delete(self, subscription_uuid):
         """Delete."""
         return jsonify(subscription_manager.delete(uuid=subscription_uuid))
+
+
+class SubscriptionLaunchView(MethodView):
+    """SubscriptionLaunchView."""
+
+    def get(self, subscription_uuid):
+        """Launch a subscription."""
+        return jsonify(start_subscription(subscription_uuid))
+
+    def delete(self, subscription_uuid):
+        """Stop a subscription."""
+        return jsonify(stop_subscription(subscription_uuid))
+
+
+class SubscriptionValidView(MethodView):
+    """SubscriptionValidView."""
+
+    def post(self):
+        """Post."""
+        return

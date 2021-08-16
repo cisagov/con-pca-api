@@ -1,5 +1,7 @@
 """Domain manager."""
 # Standard Python Libraries
+# from apscheduler.schedulers.background import BackgroundScheduler
+# Standard Python Libraries
 from datetime import date
 from types import FunctionType, MethodType
 
@@ -15,7 +17,11 @@ from api.views.auth_views import LoginView, RefreshTokenView, RegisterView
 from api.views.customer_views import CustomersView, CustomerView, SectorIndustryView
 from api.views.landing_page_views import LandingPagesView, LandingPageView
 from api.views.sending_profile_views import SendingProfilesView, SendingProfileView
-from api.views.subscription_views import SubscriptionsView, SubscriptionView
+from api.views.subscription_views import (
+    SubscriptionLaunchView,
+    SubscriptionsView,
+    SubscriptionView,
+)
 from api.views.tag_views import TagsView
 from api.views.template_views import TemplatesSelectView, TemplatesView, TemplateView
 from api.views.user_views import UserConfirmView, UsersView, UserView
@@ -43,6 +49,7 @@ rules = [
     # Subscription Views
     ("/subscriptions/", SubscriptionsView),
     ("/subscription/<subscription_uuid>/", SubscriptionView),
+    ("/subscription/<subscription_uuid>/launch/", SubscriptionLaunchView),
     # Tag Views
     ("/tags/", TagsView),
     # Template Views
@@ -74,6 +81,10 @@ for rule in rules:
 for rule in login_rules:
     url = f"{url_prefix}{rule[0]}"
     app.add_url_rule(url, view_func=rule[1].as_view(url))
+
+# sched = BackgroundScheduler()
+# sched.add_job(task, "interval", minutes=1)
+# sched.start()
 
 
 class CustomJSONEncoder(JSONEncoder):

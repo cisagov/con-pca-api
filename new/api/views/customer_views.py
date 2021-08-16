@@ -35,9 +35,7 @@ class CustomerView(MethodView):
 
     def get(self, customer_uuid):
         """Get."""
-        print(customer_uuid)
         customer = customer_manager.get(uuid=customer_uuid)
-        print(customer)
         return jsonify(customer)
 
     def put(self, customer_uuid):

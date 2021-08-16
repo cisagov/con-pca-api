@@ -28,6 +28,10 @@ COGNITO_ADMIN_GROUP = os.environ.get("AWS_COGNITO_ADMIN_GROUP_NAME")
 COGNITO_CLIENT_ID = os.environ.get("AWS_COGNITO_USER_POOL_CLIENT_ID")
 COGNITO_USER_POOL_ID = os.environ.get("AWS_COGNITO_USER_POOL_ID")
 
+# application config settings
+DELAY_MINUTES = int(os.environ.get("DELAY_MINUTES", 3))
+TASK_MINUTES = int(os.environ.get("TASK_MINUTES", 5))
+
 if os.environ.get("PYTESTING"):
     DB = mongomock.MongoClient().db
 else:

@@ -20,7 +20,6 @@ class TemplatesView(MethodView):
         templates = request.args.get("templates")
         if templates:
             parameters["template_uuid"] = {"$in": templates.split(",")}
-        print(parameters)
         return jsonify(template_manager.all(params=parameters))
 
     def post(self):

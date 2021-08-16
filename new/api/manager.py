@@ -10,6 +10,7 @@ import pymongo
 # cisagov Libraries
 from api.config import DB
 from api.schemas.customer_schema import CustomerSchema
+from api.schemas.cycle_schema import CycleSchema
 from api.schemas.landing_page_schema import LandingPageSchema
 from api.schemas.sending_profile_schema import SendingProfileSchema
 from api.schemas.subscription_schema import SubscriptionSchema
@@ -204,6 +205,17 @@ class CustomerManager(Manager):
         return super().__init__(
             collection="customer",
             schema=CustomerSchema,
+        )
+
+
+class CycleManager(Manager):
+    """CycleManager."""
+
+    def __init__(self):
+        """Super."""
+        return super().__init__(
+            collection="cycle",
+            schema=CycleSchema,
         )
 
 

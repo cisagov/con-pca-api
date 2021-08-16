@@ -5,6 +5,7 @@ from marshmallow import Schema, fields, validate
 # cisagov Libraries
 from api.schemas.base_schema import BaseSchema
 from api.schemas.customer_schema import CustomerContactSchema
+from api.schemas.fields import DateTimeField
 
 
 class SubscriptionTargetSchema(Schema):
@@ -24,6 +25,27 @@ class SubscriptionTemplatesSelectedSchema(Schema):
     high = fields.List(fields.Str())
 
 
+class SubscriptionTasksSchema(Schema):
+    """SubscriptionTasksSchema."""
+
+    task_type = fields.Str(
+        validate=validate.OneOf(
+            [
+                "start_subscription_email",
+                "monthly_report",
+                "cycle_report",
+                "yearly_report",
+                "start_new_cycle",
+                "stop_subscription",
+            ]
+        )
+    )
+    scheduled_date = DateTimeField()
+    executed = fields.Bool(missing=False)
+    executed_date = DateTimeField(required=False)
+    error = fields.Str(required=False, allow_none=True)
+
+
 class SubscriptionSchema(BaseSchema):
     """SubscripionSchema."""
 
@@ -31,18 +53,17 @@ class SubscriptionSchema(BaseSchema):
     name = fields.Str()
     customer_uuid = fields.Str()
     target_domain = fields.Str()
-    start_date = fields.DateTime()
+    start_date = DateTimeField()
     primary_contact = fields.Nested(CustomerContactSchema)
     admin_email = fields.Str()
     status = fields.Str(
         validate=validate.OneOf(["created", "queued", "running", "stopped"])
     )
     target_email_list = fields.List(fields.Nested(SubscriptionTargetSchema))
-    target_email_list_cached_copy = fields.List(fields.Nested(SubscriptionTargetSchema))
     templates_selected = fields.Nested(SubscriptionTemplatesSelectedSchema)
     sending_profile_uuid = fields.Str()
-    active = fields.Bool()
     continuous_subscription = fields.Bool()
     cycle_length_minutes = fields.Integer()
     cooldown_minutes = fields.Integer()
     report_frequency_minutes = fields.Integer()
+    tasks = fields.List(fields.Nested(SubscriptionTasksSchema))
