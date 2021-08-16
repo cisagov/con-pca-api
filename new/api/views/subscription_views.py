@@ -9,10 +9,11 @@ from utils.subscriptions import (
 )
 
 # cisagov Libraries
-from api.manager import CustomerManager, SubscriptionManager
+from api.manager import CustomerManager, CycleManager, SubscriptionManager
 
 subscription_manager = SubscriptionManager()
 customer_manager = CustomerManager()
+cycle_manager = CycleManager()
 
 
 class SubscriptionsView(MethodView):
@@ -71,7 +72,9 @@ class SubscriptionView(MethodView):
 
     def delete(self, subscription_uuid):
         """Delete."""
-        return jsonify(subscription_manager.delete(uuid=subscription_uuid))
+        subscription_manager.delete(uuid=subscription_uuid)
+        cycle_manager.delete(params={"subscription_uuid": subscription_uuid})
+        return jsonify({"success": True})
 
 
 class SubscriptionLaunchView(MethodView):
