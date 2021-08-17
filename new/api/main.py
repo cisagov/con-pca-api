@@ -1,18 +1,18 @@
 """Domain manager."""
 # Standard Python Libraries
-# from apscheduler.schedulers.background import BackgroundScheduler
-# Standard Python Libraries
 from datetime import date
 from types import FunctionType, MethodType
 
 # Third-Party Libraries
-from flask import Flask, render_template
+from apscheduler.schedulers.background import BackgroundScheduler
+from flask import render_template
 from flask.json import JSONEncoder
-from flask_cors import CORS
 from utils.decorators.auth import auth_required
 
 # cisagov Libraries
+from api.app import app
 from api.config import logger
+from api.phish import emails_job
 from api.views.auth_views import LoginView, RefreshTokenView, RegisterView
 from api.views.customer_views import CustomersView, CustomerView, SectorIndustryView
 from api.views.landing_page_views import LandingPagesView, LandingPageView
@@ -26,10 +26,6 @@ from api.views.tag_views import TagsView
 from api.views.template_views import TemplatesSelectView, TemplatesView, TemplateView
 from api.views.user_views import UserConfirmView, UsersView, UserView
 from api.views.utility_views import TestEmailView
-
-app = Flask(__name__, template_folder="templates")
-app.url_map.strict_slashes = False
-CORS(app)
 
 # register apps
 url_prefix = "/api"
@@ -82,9 +78,9 @@ for rule in login_rules:
     url = f"{url_prefix}{rule[0]}"
     app.add_url_rule(url, view_func=rule[1].as_view(url))
 
-# sched = BackgroundScheduler()
-# sched.add_job(task, "interval", minutes=1)
-# sched.start()
+sched = BackgroundScheduler()
+sched.add_job(emails_job, "interval", minutes=1)
+sched.start()
 
 
 class CustomJSONEncoder(JSONEncoder):

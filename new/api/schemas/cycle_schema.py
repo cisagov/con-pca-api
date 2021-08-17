@@ -19,7 +19,7 @@ class CycleTargetTimeline(Schema):
 class CycleTargetSchema(SubscriptionTargetSchema):
     """CycleTargetSchema."""
 
-    target_id = fields.Str()
+    target_uuid = fields.Str()
     template_uuid = fields.Str()
     deception_level = fields.Str(validate=validate.OneOf(["low", "moderate", "high"]))
     send_date = DateTimeField()
@@ -39,3 +39,4 @@ class CycleSchema(BaseSchema):
     send_by_date = DateTimeField()
     active = fields.Bool()
     targets = fields.List(fields.Nested(CycleTargetSchema))
+    processing = fields.Bool()

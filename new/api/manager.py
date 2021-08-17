@@ -196,6 +196,16 @@ class Manager:
         result = list(self.db.find(parameters, fields))
         return bool(result)
 
+    def find_one_and_update(self, params, data):
+        """Find an object and update it."""
+        data = self.clean_data(data)
+        data = self.add_updated(data)
+        return self.db.find_one_and_update(
+            params,
+            {"$set": self.load_data(data, partial=True)},
+            return_document=pymongo.ReturnDocument.AFTER,
+        )
+
 
 class CustomerManager(Manager):
     """Customer Manager."""

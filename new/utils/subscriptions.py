@@ -26,13 +26,13 @@ def start_subscription(subscription_uuid):
     total_targets = len(subscription["target_email_list"])
     deception_mods = get_deception_mods()
     for index, target in enumerate(subscription["target_email_list"]):
-        target["target_id"] = str(uuid4())
+        target["target_uuid"] = str(uuid4())
         # Assign send date to target
         target["send_date"] = get_target_send_date(
             index, total_targets, cycle["start_date"], cycle["send_by_date"]
         )
         # Assign deception level to target
-        target["deception_level"] = deception_mods[total_targets % (index + 1)]
+        target["deception_level"] = deception_mods[index % 3]
         # Assign template to target
         # https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b311-random
         target["template_uuid"] = random.choice(  # nosec

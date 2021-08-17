@@ -2,26 +2,43 @@
 # Standard Python Libraries
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+import logging
 from smtplib import SMTP
 
 # Third-Party Libraries
 from faker import Faker
 from utils import time
 
+SERVER = None
 
-def send_email(to_email, from_email, subject, body, sending_profile):
-    """Send email."""
-    message = MIMEMultipart()
-    message["Subject"] = subject
-    message["From"] = from_email
-    message["To"] = to_email
-    message.attach(MIMEText(body, "html"))
-    message_body = message.as_string()
-    server = SMTP(sending_profile["host"])
-    server.starttls()
-    server.login(sending_profile["username"], sending_profile["password"])
-    server.sendmail(from_email, to_email, message_body)
-    server.quit()
+
+class Email:
+    """Email."""
+
+    def __init__(self, sending_profile):
+        """Email."""
+        self.sending_profile = sending_profile
+        self.server = SMTP(sending_profile["host"])
+        self.server.starttls()
+        self.server.login(
+            self.sending_profile["username"],
+            self.sending_profile["password"],
+        )
+
+    def send(self, to_email, from_email, subject, body):
+        """Send email."""
+        message = MIMEMultipart()
+        message["Subject"] = subject
+        message["From"] = from_email
+        message["To"] = to_email
+        message.attach(MIMEText(body, "html"))
+        message_body = message.as_string()
+        self.server.sendmail(from_email, to_email, message_body)
+        logging.info(f"Sent email to {to_email} from {from_email}.")
+
+    def __del__(self):
+        """On deconstruct, quit server."""
+        self.server.quit()
 
 
 def get_email_context(customer=None, target=None):

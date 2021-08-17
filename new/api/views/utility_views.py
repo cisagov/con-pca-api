@@ -2,7 +2,7 @@
 # Third-Party Libraries
 from flask import jsonify, render_template, render_template_string, request
 from flask.views import MethodView
-from utils.emails import get_email_context, get_from_address, send_email
+from utils.emails import Email, get_email_context, get_from_address
 
 # cisagov Libraries
 from api.manager import CustomerManager
@@ -17,6 +17,7 @@ class TestEmailView(MethodView):
         """Post."""
         data = request.json
 
+        email = Email(data["smtp"])
         if data.get("template"):
             customer = customer_manager.get(uuid=data["customer_uuid"])
             target = {
@@ -29,17 +30,16 @@ class TestEmailView(MethodView):
             context = get_email_context(customer=customer, target=target)
             email_body = render_template_string(template["html"], **context)
             from_address = get_from_address(data["smtp"], template["from_address"])
-            send_email(
+            email.send(
                 to_email=data["email"],
                 from_email=from_address,
                 subject=template["subject"],
                 body=email_body,
-                sending_profile=data["smtp"],
             )
         else:
             context = get_email_context()
             email_body = render_template("emails/test.html", **context)
-            send_email(
+            email.send(
                 to_email=data["email"],
                 from_email=data["smtp"]["from_address"],
                 subject="test",
