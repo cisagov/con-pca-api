@@ -40,7 +40,8 @@ class CustomerView(MethodView):
 
     def put(self, customer_uuid):
         """Put."""
-        return jsonify(customer_manager.update(uuid=customer_uuid, data=request.json))
+        customer_manager.update(uuid=customer_uuid, data=request.json)
+        return jsonify({"success": True})
 
     def delete(self, customer_uuid):
         """Delete."""

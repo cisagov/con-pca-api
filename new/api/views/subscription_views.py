@@ -66,10 +66,8 @@ class SubscriptionView(MethodView):
 
     def put(self, subscription_uuid):
         """Put."""
-        print(request.json)
-        resp = subscription_manager.update(uuid=subscription_uuid, data=request.json)
-        print(resp)
-        return jsonify(resp)
+        subscription_manager.update(uuid=subscription_uuid, data=request.json)
+        return jsonify({"success": True})
 
     def delete(self, subscription_uuid):
         """Delete."""

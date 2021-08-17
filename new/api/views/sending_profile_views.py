@@ -32,9 +32,8 @@ class SendingProfileView(MethodView):
 
     def put(self, sending_profile_uuid):
         """Put."""
-        return jsonify(
-            sending_profile_manager.update(uuid=sending_profile_uuid, data=request.json)
-        )
+        sending_profile_manager.update(uuid=sending_profile_uuid, data=request.json)
+        return jsonify({"success": True})
 
     def delete(self, sending_profile_uuid):
         """Delete."""

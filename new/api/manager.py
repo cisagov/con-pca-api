@@ -143,9 +143,11 @@ class Manager:
     def delete(self, uuid=None, params=None):
         """Delete item by object id."""
         if uuid:
-            return self.db.delete_one({self.uuid_field: str(uuid)}).raw_result
+            self.db.delete_one({self.uuid_field: str(uuid)})
+            return {self.uuid_field: str(uuid)}
         if params:
-            return self.db.delete_many(params).raw_result
+            self.db.delete_many(params)
+            return {self.uuid_field: str(uuid)}
         raise Exception(
             "Either a document id or params must be supplied when deleting."
         )
@@ -154,10 +156,11 @@ class Manager:
         """Update item by id."""
         data = self.clean_data(data)
         data = self.add_updated(data)
-        return self.db.update_one(
+        self.db.update_one(
             {self.uuid_field: str(uuid)},
             {"$set": self.load_data(data, partial=True)},
-        ).raw_result
+        )
+        return {self.uuid_field: str(uuid)}
 
     def save(self, data):
         """Save new item to collection."""
@@ -170,21 +173,20 @@ class Manager:
 
     def add_to_list(self, uuid, field, data):
         """Add item to list in document."""
-        return self.db.update_one(
-            {self.uuid_field: str(uuid)}, {"$push": {field: data}}
-        ).raw_result
+        self.db.update_one({self.uuid_field: str(uuid)}, {"$push": {field: data}})
+        return {self.uuid_field: str(uuid)}
 
     def delete_from_list(self, uuid, field, data):
         """Delete item from list in document."""
-        return self.db.update_one(
-            {self.uuid_field: str(uuid)}, {"$pull": {field: data}}
-        ).raw_result
+        self.db.update_one({self.uuid_field: str(uuid)}, {"$pull": {field: data}})
+        return {self.uuid_field: str(uuid)}
 
     def update_in_list(self, uuid, field, data, params):
         """Update item in list from document."""
-        return self.db.update_one(
+        self.db.update_one(
             {self.uuid_field: str(uuid), **params}, {"$set": {field: data}}
-        ).raw_result
+        )
+        return {self.uuid_field: str(uuid)}
 
     def random(self, count=1):
         """Select a random record from collection."""

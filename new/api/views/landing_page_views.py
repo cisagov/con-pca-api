@@ -59,9 +59,8 @@ class LandingPageView(MethodView):
         if landing_page["is_default_template"]:
             landing_page_manager.clear_and_set_default(landing_page_uuid)
 
-        return jsonify(
-            landing_page_manager.update(uuid=landing_page_uuid, data=landing_page)
-        )
+        landing_page_manager.update(uuid=landing_page_uuid, data=landing_page)
+        return jsonify({"success": True})
 
     def delete(self, landing_page_uuid):
         """Delete."""

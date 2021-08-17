@@ -48,7 +48,8 @@ class TemplateView(MethodView):
         template.update(data)
 
         # TODO: Validate Template
-        return jsonify(template_manager.update(uuid=template_uuid, data=template))
+        template_manager.update(uuid=template_uuid, data=template)
+        return jsonify({"success": True})
 
     def delete(self, template_uuid):
         """Delete."""
