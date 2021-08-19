@@ -116,7 +116,3 @@ def api_map():
         if endpoint.rule not in ["/static/<path:filename>", "/"]
     }
     return render_template("index.html", endpoints=endpoints)
-
-
-if __name__ == "__main__":
-    app.run()

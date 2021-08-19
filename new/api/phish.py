@@ -1,5 +1,6 @@
 """Phishing tasks."""
 # Standard Python Libraries
+import base64
 from datetime import datetime
 from itertools import groupby
 import logging
@@ -10,6 +11,7 @@ from utils.emails import Email, get_email_context, get_from_address
 
 # cisagov Libraries
 from api.app import app
+from api.config import LANDING_SUBDOMAIN
 from api.manager import (
     CustomerManager,
     CycleManager,
@@ -69,8 +71,20 @@ def process_cycle(cycle):
         )
         email = Email(sending_profile=sp)
         for target in targets:
-            context = get_email_context(customer=customer, target=target)
-            email_body = render_template_string(template["html"], **context)
+            tracking_info = get_tracking_info(
+                sp,
+                cycle["cycle_uuid"],
+                target["target_uuid"],
+            )
+            context = get_email_context(
+                customer=customer,
+                target=target,
+                url=tracking_info["click"],
+            )
+
+            html = template["html"] + tracking_info["open"]
+
+            email_body = render_template_string(html, **context)
             from_address = get_from_address(sp, template["from_address"])
             email.send(
                 to_email=target["email"],
@@ -104,3 +118,37 @@ def get_cycle():
         },
         data={"processing": True},
     )
+
+
+def get_landing_url(sending_profile):
+    """Get url for landing page."""
+    sp_domain = (
+        sending_profile["from_address"].split("<")[-1].split("@")[1].replace(">", "")
+    )
+    return f"http://{LANDING_SUBDOMAIN}.{sp_domain}"
+
+
+def get_tracking_info(sending_profile, cycle_uuid, target_uuid):
+    """Get tracking html for opens and link for clicks."""
+    tracking_id = get_tracking_id(cycle_uuid, target_uuid)
+    url = get_landing_url(sending_profile)
+    return {
+        "open": f'<img width="1px" heigh="1px" alt="" src="{url}/o/{tracking_id}/"/>',
+        "click": f"{url}/c/{tracking_id}/",
+    }
+
+
+def get_tracking_id(cycle_uuid, target_uuid):
+    """
+    Get url to embed into template.
+
+    Base64 encodes cycle uuid with the target uuid.
+    """
+    data = f"{cycle_uuid}_{target_uuid}"
+    urlsafe_bytes = base64.urlsafe_b64encode(data.encode("utf-8"))
+    return str(urlsafe_bytes, "utf-8")
+
+
+def decode_tracking_id(s):
+    """Decode base64 url into cycle uuid and target uuid."""
+    return str(base64.urlsafe_b64decode(s), "utf-8").split("_")

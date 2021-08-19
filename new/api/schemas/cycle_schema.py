@@ -8,6 +8,14 @@ from api.schemas.fields import DateTimeField
 from api.schemas.subscription_schema import SubscriptionTargetSchema
 
 
+class TimelineDetails(Schema):
+    """TimelineDetails."""
+
+    user_agent = fields.Str(required=False, allow_none=True)
+    ip = fields.Str(required=False, allow_none=True)
+    asn_org = fields.Str(required=False, allow_none=True)
+
+
 class CycleTargetTimeline(Schema):
     """CycleTargetTimeline."""
 

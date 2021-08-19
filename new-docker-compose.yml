@@ -16,16 +16,16 @@ services:
       - ./new:/var/www
     env_file:
       - .env
-    networks:
-      - backend
     ports:
       - 5000:5000
       - 8000:8000
+      - 80:8000
 
   mongodb:
     container_name: pca-mongodb
     hostname: mongodb
     image: "mongo:3.6"
+    restart: unless-stopped
     # These ports are exposed on the host; 'hostport:containerport'.
     # You could connect to this server from outside with the *host's*
     # DNS name or IP address and port 27017 (the left-hand side of the
@@ -37,13 +37,7 @@ services:
       - "mongodb:/data/db"
     env_file:
       - .env
-    networks:
-      - backend
 
 # Host volumes used to store code.
 volumes:
   mongodb:
-
-networks:
-  backend:
-    name: pca_backend

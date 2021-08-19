@@ -63,7 +63,7 @@ class Manager:
         """Read data from database."""
         if data:
             schema = self.schema(many=many)
-            return schema.load(schema.dump(data))
+            return schema.dump(data)
         return data
 
     def load_data(self, data, many=False, partial=False):
@@ -229,6 +229,14 @@ class CycleManager(Manager):
             collection="cycle",
             schema=CycleSchema,
         )
+
+    def add_timeline_item(self, cycle_uuid, target_uuid, data):
+        """Add an item to the cycle, target's timeline."""
+        self.db.update_one(
+            {self.uuid_field: str(cycle_uuid), "targets.target_uuid": target_uuid},
+            {"$push": {"targets.$.timeline": data}},
+        )
+        return {self.uuid_field: cycle_uuid}
 
 
 class LandingPageManager(Manager):

@@ -41,13 +41,14 @@ class Email:
         self.server.quit()
 
 
-def get_email_context(customer=None, target=None):
+def get_email_context(customer=None, target=None, url=None):
     """Get context for email template."""
     return {
         "target": target,
         "customer": customer,
         "time": time,
         "fake": Faker(),
+        "url": url,
     }
 
 
