@@ -63,7 +63,7 @@ class Manager:
         """Read data from database."""
         if data:
             schema = self.schema(many=many)
-            return schema.dump(data)
+            return schema.load(schema.dump(data), partial=True)
         return data
 
     def load_data(self, data, many=False, partial=False):
