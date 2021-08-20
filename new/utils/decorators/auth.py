@@ -2,7 +2,6 @@
 # Standard Python Libraries
 from functools import wraps
 from http import HTTPStatus
-import logging
 
 # Third-Party Libraries
 import cognitojwt
@@ -29,8 +28,11 @@ class RequestAuth:
         """Validate request."""
         if not COGNTIO_ENABLED:
             return True
-        if self.check_cognito_jwt(request):
-            return True
+        try:
+            if self.check_cognito_jwt(request):
+                return True
+        except cognitojwt.exceptions.CognitoJWTException:
+            return False
 
         return False
 
@@ -62,8 +64,9 @@ class RequestAuth:
             self.username = resp["cognito:username"]
             self.groups = resp.get("cognito:groups", [])
             return self.username, jwt
-        except Exception as e:
-            logging.exception(e)
+        except cognitojwt.exceptions.CognitoJWTException:
+            return None
+        except Exception:
             return None
 
 

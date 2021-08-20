@@ -15,6 +15,7 @@ from api.config import logger
 from api.phish import emails_job
 from api.views.auth_views import LoginView, RefreshTokenView, RegisterView
 from api.views.customer_views import CustomersView, CustomerView, SectorIndustryView
+from api.views.cycle_views import CycleStatsView, CyclesView, CycleView
 from api.views.landing_page_views import LandingPagesView, LandingPageView
 from api.views.sending_profile_views import SendingProfilesView, SendingProfileView
 from api.views.subscription_views import (
@@ -34,6 +35,10 @@ rules = [
     # Customer Views
     ("/customers/", CustomersView),
     ("/customer/<customer_uuid>/", CustomerView),
+    # Cycle Views
+    ("/cycles/", CyclesView),
+    ("/cycle/<cycle_uuid>/", CycleView),
+    ("/cycle/<cycle_uuid>/stats/", CycleStatsView),
     # Landing Page Views
     ("/landingpages/", LandingPagesView),
     ("/landingpage/<landing_page_uuid>/", LandingPageView),

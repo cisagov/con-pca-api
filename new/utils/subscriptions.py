@@ -24,6 +24,8 @@ def start_subscription(subscription_uuid):
     cycle["active"] = True
     cycle["targets"] = []
     total_targets = len(subscription["target_email_list"])
+    cycle["target_count"] = total_targets
+    cycle["template_uuids"] = set()
     deception_mods = get_deception_mods()
     for index, target in enumerate(subscription["target_email_list"]):
         target["target_uuid"] = str(uuid4())
@@ -39,6 +41,7 @@ def start_subscription(subscription_uuid):
             subscription["templates_selected"][target["deception_level"]]
         )
         cycle["targets"].append(target)
+        cycle["template_uuids"].add(target["template_uuid"])
 
     # TODO: Create tasks
     subscription_manager.update(uuid=subscription_uuid, data={"status": "running"})
