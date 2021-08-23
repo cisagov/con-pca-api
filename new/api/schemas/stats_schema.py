@@ -2,6 +2,9 @@
 # Third-Party Libraries
 from marshmallow import Schema, fields
 
+# cisagov Libraries
+from api.schemas.template_schema import TemplateSchema
+
 
 class CycleStatsEventMetrics(Schema):
     """CycleStatsEventMetrics."""
@@ -11,6 +14,8 @@ class CycleStatsEventMetrics(Schema):
     minimum = fields.Integer()
     maximum = fields.Integer()
     median = fields.Integer()
+    ratio = fields.Float()
+    rank = fields.Integer()
 
 
 class CycleStatsEvents(Schema):
@@ -21,10 +26,25 @@ class CycleStatsEvents(Schema):
     clicked = fields.Nested(CycleStatsEventMetrics)
 
 
-class CycleStats(Schema):
-    """CycleStats."""
+class CycleStatsLevel(Schema):
+    """CycleStatsLevel."""
 
     high = fields.Nested(CycleStatsEvents)
     moderate = fields.Nested(CycleStatsEvents)
     low = fields.Nested(CycleStatsEvents)
     all = fields.Nested(CycleStatsEvents)
+
+
+class TemplateStats(CycleStatsEvents):
+    """TemplateStats."""
+
+    template_uuid = fields.Str()
+    template = fields.Nested(TemplateSchema)
+    deception_level = fields.Str()
+
+
+class CycleStats(Schema):
+    """CycleStats."""
+
+    stats = fields.Nested(CycleStatsLevel)
+    template_stats = fields.List(fields.Nested(TemplateStats))

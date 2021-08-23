@@ -48,4 +48,4 @@ class CycleStatsView(MethodView):
         """Get."""
         cycle = cycle_manager.get(uuid=cycle_uuid)
         stats = get_cycle_stats(cycle)
-        return jsonify({"stats": stats})
+        return jsonify(stats)
