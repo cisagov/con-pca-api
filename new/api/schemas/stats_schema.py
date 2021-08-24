@@ -43,8 +43,20 @@ class TemplateStats(CycleStatsEvents):
     deception_level = fields.Str()
 
 
+class MaxmindStats(Schema):
+    """MaxmindStats."""
+
+    asn_org = fields.Str()
+    is_nonhuman = fields.Bool()
+    ips = fields.List(fields.Str())
+    cities = fields.List(fields.Str())
+    opens = fields.Integer()
+    clicks = fields.Integer()
+
+
 class CycleStats(Schema):
     """CycleStats."""
 
     stats = fields.Nested(CycleStatsLevel)
     template_stats = fields.List(fields.Nested(TemplateStats))
+    maxmind_stats = fields.List(fields.Nested(MaxmindStats))

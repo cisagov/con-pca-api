@@ -1,6 +1,7 @@
 """Stat utils."""
 # Standard Python Libraries
 from datetime import timedelta
+from itertools import groupby
 import statistics
 
 # cisagov Libraries
@@ -81,10 +82,12 @@ def get_cycle_stats(cycle):
     process_ratios(stats)
     process_ratios(template_stats)
     rank_templates(template_stats)
+    maxmind_stats = get_maxmind_stats(cycle)
     return CycleStats().dump(
         {
             "stats": stats,
             "template_stats": template_stats.values(),
+            "maxmind_stats": maxmind_stats,
         }
     )
 
@@ -156,3 +159,33 @@ def is_nonhuman_event(asn_org):
     if asn_org in ["GOOGLE", "AMAZON-02", "MICROSOFT-CORP-MSN-AS-BLOCK"]:
         return True
     return False
+
+
+def get_maxmind_stats(cycle):
+    """Get stats from maxmind details."""
+    timeline = []
+    response = []
+    for target in cycle["targets"]:
+        timeline.extend(target.get("timeline", []))
+    sorted_timeline = sorted(timeline, key=lambda x: x.get("asn_org", "UNKOWN"))
+    for org, events in groupby(sorted_timeline, lambda x: x.get("asn_org", "UNKOWN")):
+        val = {
+            "asn_org": org,
+            "is_nonhuman": is_nonhuman_event(org),
+            "ips": set(),
+            "cities": set(),
+            "opens": 0,
+            "clicks": 0,
+        }
+        for event in events:
+            details = event.get("details", {})
+            if details.get("ip"):
+                val["ips"].add(details["ip"])
+            if details.get("city"):
+                val["cities"].add(details["city"])
+            if event["message"] == "opened":
+                val["opens"] += 1
+            elif event["message"] == "clicked":
+                val["clicks"] += 1
+        response.append(val)
+    return response
