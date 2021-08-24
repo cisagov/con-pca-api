@@ -1,0 +1,246 @@
+<div style="width: 8.5in" class="p-0">
+  <article>
+    <!-- Top blue banner -->
+    <header>
+      <div class="topBanner">
+        <div class="container-fluid">
+          <div class="topBannerRow">
+            <div class="col-12">
+              <div id="bluePhishLogo">
+                <img
+                  src="/assets/Con-PCA_logo.svg"
+                  alt="Continuous Phishing Campaign Assessment Logo"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main>
+      <div class="container-fluid">
+        <div class="row">
+          <!-- Left side bar -->
+          <aside>
+            <div id="reportDate">
+              <h3>
+                {{ detail?.metrics?.start_date | date }} - {{
+                detail?.metrics?.end_date | date }}
+              </h3>
+            </div>
+            <div id="gonePhishingImage">
+              <img src="/assets/gone_phishing.jpg" alt="Gone Phishing" />
+            </div>
+            <div id="primaryContact">
+              <span>Primary Contact Information</span><br />
+              <h2>{{ detail?.primary_contact_name }}</h2>
+              {{ detail?.customer_address }}<br />
+              {{ detail?.customer_address_2 }}<br />
+              {{ detail?.primary_contact_email }}<br />
+              <br />
+              CISA Contact Information:<br />
+              {{ detail?.admin_email }}<br />
+            </div>
+            <div id="numbersTitle">
+              <h2>Overall Campaign Numbers</h2>
+            </div>
+            <div id="campaignNumbers">
+              Total Emails Sent: {{
+              detail?.metrics?.number_of_emails_sent_overall }}<br />
+              Email Click Rate: {{ detail?.metrics?.number_of_clicked_emails }}
+              ({{ detail?.metrics?.percent_of_clicked_emails }}%)<br />
+              Reported Emails: {{ detail?.metrics?.number_of_reports_to_helpdesk
+              }} ({{ detail?.metrics?.percent_report_rate }}%)<br />
+            </div>
+            <div id="preparedFor">
+              Prepared for<br />
+              <span>{{ detail?.customer_name }}</span>
+            </div>
+          </aside>
+
+          <!-- Right 2/3 of the screen -->
+          <div class="main-content">
+            <div id="reportTitle">
+              <img src="/assets/title.svg" alt="Monthly Subscription Report" />
+            </div>
+            <div class="data-report">
+              <!-- Averages -->
+              <div class="row">
+                <div class="col-5">
+                  <div id="averageClickTitle">
+                    <h3>
+                      Average Time<br />
+                      to First Click
+                    </h3>
+                  </div>
+                  <div
+                    *ngIf="this.avgTTFC?.day > 0"
+                    style="padding-top: 70px; display: block"
+                    id="averageClickTime"
+                  >
+                    <span style="display: block"
+                      >{{ this.avgTTFC?.day }} Days</span
+                    >
+                    <br />
+                    <span style="display: block"
+                      >{{ this.avgTTFC?.hour | number: "2.0-0" }}:{{
+                      this.avgTTFC?.minute | number: "2.0-0" }}:{{
+                      this.avgTTFC?.seconds | number: "2.0-0" }}
+                    </span>
+                  </div>
+                  <div *ngIf="this.avgTTFC?.day == 0" id="averageClickTime">
+                    <span style="display: block"
+                      >{{ this.avgTTFC?.hour | number: "2.0-0" }}:{{
+                      this.avgTTFC?.minute | number: "2.0-0" }}:{{
+                      this.avgTTFC?.seconds | number: "2.0-0" }}
+                    </span>
+                  </div>
+                </div>
+                <div class="col-5">
+                  <div id="averageReportTitle">
+                    <h3>
+                      Average Time<br />
+                      to Report
+                    </h3>
+                  </div>
+                  <div
+                    *ngIf="this.avgTTFR?.day > 0"
+                    style="padding-top: 70px; display: block"
+                    id="averageReportTime"
+                  >
+                    <span style="display: block"
+                      >{{ this.avgTTFR?.day }} Days</span
+                    >
+                    <br />
+                    <span style="display: block"
+                      >{{ this.avgTTFR?.hour | number: "2.0-0" }}:{{
+                      this.avgTTFR?.minute | number: "2.0-0" }}:{{
+                      this.avgTTFR?.seconds | number: "2.0-0" }}
+                    </span>
+                  </div>
+                  <div *ngIf="this.avgTTFR?.day == 0" id="averageClickTime">
+                    <span style="display: block"
+                      >{{ this.avgTTFR?.hour | number: "2.0-0" }}:{{
+                      this.avgTTFR?.minute | number: "2.0-0" }}:{{
+                      this.avgTTFR?.seconds | number: "2.0-0" }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <!-- Yellow Circles -->
+              <div class="row" class="yellow-circle-container">
+                <div class="col-5">
+                  <div class="circles">
+                    <img
+                      src="/assets/dotted_circle.svg"
+                      alt="Yellow dotted circle outline"
+                    />
+                  </div>
+                </div>
+                <div class="col-5">
+                  <div class="circles">
+                    <img
+                      src="/assets/dotted_circle.svg"
+                      alt="Yellow dotted circle outline"
+                    />
+                  </div>
+                </div>
+              </div>
+              <!-- Campaign Progress -->
+              <div class="row">
+                <div class="col-10">
+                  <div id="campaignProgressText">
+                    <ul>
+                      <li>
+                        This Report has been generated in Q1 of your phishing
+                        subscription
+                      </li>
+                      <li>
+                        Of the total {{ detail?.metrics?.total_users_targeted }}
+                        targets in this cycle, {{
+                        detail?.metrics?.number_of_email_sent_overall }} targets
+                        have had emails sent.
+                      </li>
+                      <li *ngIf="detail?.sanatized_indicators.length > 0">
+                        The most clicked template indicators for this cycle so
+                        far have been:
+                        <ul
+                          *ngFor="let indicator of detail?.sanatized_indicators"
+                        >
+                          {{ indicator.percent | percent: "1.1" }} {{
+                          indicator.name }} ({{ indicator.level }}) : {{
+                          indicator.value }} clicks
+                          <!-- {{indicator.rank}} -->
+                        </ul>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <!-- Donut Charts -->
+              <div class="row">
+                <div class="col-12">
+                  <div id="donut-charts">
+                    <div class="col-3">
+                      <div
+                        [innerHTML]="
+                              sanitizer.bypassSecurityTrustHtml(sentCircleSvg)
+                            "
+                      ></div>
+                      <p class="donut-caption">Emails Sent of Total Targets</p>
+                    </div>
+                    <div class="col-3">
+                      <div
+                        [innerHTML]="
+                              sanitizer.bypassSecurityTrustHtml(openedCircleSvg)
+                            "
+                      ></div>
+                      <p class="donut-caption">Emails Opened of Sent</p>
+                    </div>
+                    <div class="col-3">
+                      <div
+                        [innerHTML]="
+                              sanitizer.bypassSecurityTrustHtml(clickedCircleSvg)
+                            "
+                      ></div>
+                      <p class="donut-caption">Emails Clicked of Total</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Bar Chart -->
+              <div class="row">
+                <div class="col-10 container-fluid">
+                  <div class="bar-chart m-2">
+                    <h2>STATISTICS BY LEVEL</h2>
+                    <div class="d-flex report-chart" style="height: 15rem">
+                      <ngx-charts-bar-vertical-2d
+                        *ngIf="chart.chartResults"
+                        [results]="chart.chartResults"
+                        [scheme]="chart.colorScheme"
+                        [barPadding]="5"
+                        [groupPadding]="8"
+                        [gradient]="chart.gradient"
+                        [xAxis]="chart.showXAxis"
+                        [showXAxisLabel]="chart.showXAxisLabel"
+                        [xAxisLabel]="chart.xAxisLabel"
+                        [yAxis]="chart.showYAxis"
+                        [showYAxisLabel]="chart.showYAxisLabel"
+                        [yAxisLabel]="chart.yAxisLabel"
+                        [legend]="chart.showLegend"
+                        [legendPosition]="chart.legendPosition"
+                        [legendTitle]="''"
+                        [roundEdges]="false"
+                      >
+                      </ngx-charts-bar-vertical-2d>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </article>
+</div>

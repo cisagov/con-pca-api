@@ -1,0 +1,118 @@
+{% extends "bootstrap/base.html" %} {% block title %}Status Report{% endblock %}
+{% block styles %} {{super()}}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/status_report.css') }}"
+/>
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/styles.css') }}"
+/>
+<link
+  rel="shortcut icon"
+  href="{{ url_for('static', filename='image/favicon.ico') }}"
+/>
+{% endblock%} {% block content %}
+<div style="width: 8.5in" class="p-0">
+  <article>
+    <!-- Top blue banner -->
+    <header>
+      <div class="topBanner">
+        <div class="container-fluid">
+          <div class="topBannerRow">
+            <div class="col-12">
+              <div id="bluePhishLogo">
+                <img
+                  src="{{ url_for('static', filename='image/Con-PCA_logo.svg') }}"
+                  alt="Continuous Phishing Campaign Assessment Logo"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main>
+      <div class="container-fluid">
+        <div class="row">
+          <!-- Left side bar -->
+          <aside>
+            <div id="reportDate">
+              <h3>
+                {{ cycle.start_date.strftime('%b %d, %Y') }} - {{
+                cycle.end_date.strftime('%b %d, %Y') }}
+              </h3>
+            </div>
+            <div id="gonePhishingImage">
+              <img
+                src="{{ url_for('static', filename='image/gone_phishing.jpg') }}"
+                alt="Gone Phishing"
+              />
+            </div>
+            <div id="primaryContact">
+              <span>Primary Contact Information</span><br />
+              <h2>
+                {{ subscription.primary_contact.first_name }} {{
+                subscription.primary_contact.last_name }}
+              </h2>
+              {{ customer.address_1 }} <br />
+              {{ customer.city }}, {{ customer.state }} {{ customer.zip_code }}
+              USA <br />
+              Admin Contact Information: <br />
+              {{ subscription.admin_email }} <br />
+            </div>
+            <div id="numbersTitle">
+              <h2>Overall Campaign Numbers</h2>
+            </div>
+            <div id="campaignNumbers">
+              Total Emails Sent: {{ stats.stats.all.sent.count }} <br />
+              Email Click Rate: {{ stats.stats.all.clicked.ratio * 100 }}%
+              <br />
+            </div>
+            <div id="preparedFor">
+              Prepared for <br />
+              <span>{{ customer.name }}</span>
+            </div>
+          </aside>
+
+          <!-- Right 2/3 of the screen -->
+          <div class="main-content">
+            <div id="reportTitle">
+              <img
+                src="{{ url_for('static', filename='image/title.svg') }}"
+                alt="Monthly Subscription Report"
+              />
+            </div>
+            <div class="data-report">
+              <!-- Averages -->
+              <div class="row">
+                <div class="col-5">
+                  <div id="averageClickTitle">
+                    <h3>
+                      Average Time <br />
+                      to First Click
+                    </h3>
+                  </div>
+                  <div id="averageClickTime">
+                    <span style="display: block">00:00:00</span>
+                  </div>
+                </div>
+              </div>
+              <div class="row" class="yellow-circle-container">
+                <div class="col-5">
+                  <div class="circles">
+                    <img
+                      src="{{ url_for('static', filename='image/dotted_circle.svg') }}"
+                      alt="Yellow dotted circle outline"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </article>
+</div>
+{% endblock %}

@@ -17,6 +17,7 @@ from api.views.auth_views import LoginView, RefreshTokenView, RegisterView
 from api.views.customer_views import CustomersView, CustomerView, SectorIndustryView
 from api.views.cycle_views import CycleStatsView, CyclesView, CycleView
 from api.views.landing_page_views import LandingPagesView, LandingPageView
+from api.views.report_views import StatusReportView
 from api.views.sending_profile_views import SendingProfilesView, SendingProfileView
 from api.views.subscription_views import (
     SubscriptionLaunchView,
@@ -39,6 +40,7 @@ rules = [
     ("/cycles/", CyclesView),
     ("/cycle/<cycle_uuid>/", CycleView),
     ("/cycle/<cycle_uuid>/stats/", CycleStatsView),
+    ("/cycle/<cycle_uuid>/reports/monthly/", StatusReportView),
     # Landing Page Views
     ("/landingpages/", LandingPagesView),
     ("/landingpage/<landing_page_uuid>/", LandingPageView),
