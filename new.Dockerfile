@@ -16,6 +16,13 @@ ADD ./new/ /var/www/
 
 ENV PYTHONPATH "${PYTHONPATH}:/var/www"
 
+# Install GeoIPUpdate
+WORKDIR /tmp
+RUN wget https://github.com/maxmind/geoipupdate/releases/download/v4.6.0/geoipupdate_4.6.0_linux_amd64.tar.gz
+RUN tar -xzf geoipupdate_4.6.0_linux_amd64.tar.gz
+RUN cp geoipupdate_4.6.0_linux_amd64/geoipupdate /usr/local/bin
+COPY etc/new-GeoIP.conf /usr/local/etc/GeoIP.conf
+
 # Entrypoint
 COPY ./etc/new-entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod a+x /usr/local/bin/entrypoint.sh
@@ -23,5 +30,7 @@ RUN chmod a+x /usr/local/bin/entrypoint.sh
 EXPOSE 5000
 EXPOSE 80
 EXPOSE 443
+
+WORKDIR /var/www
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

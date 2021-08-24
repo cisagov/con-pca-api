@@ -1,4 +1,10 @@
 #!/bin/bash
+
+echo "Updating geoip database"
+echo "AccountID $MAXMIND_USER_ID" >> /usr/local/etc/GeoIP.conf
+echo "LicenseKey $MAXMIND_LICENSE_KEY" >> /usr/local/etc/GeoIP.conf
+geoipupdate
+
 echo "Starting Con-PCA API"
 # run flask
 if [[ $DEBUG -eq 1 ]]
