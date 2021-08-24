@@ -1,7 +1,6 @@
 """Landing application views."""
 # Standard Python Libraries
 from datetime import datetime
-from pprint import pprint
 
 # Third-Party Libraries
 from flask import request, send_file
@@ -24,9 +23,6 @@ class ClickView(MethodView):
 
     def get(self, tracking_id):
         """Get."""
-        pprint(dir(request))
-        pprint(request.headers)
-        pprint(request.remote_addr)
         cycle_uuid, target_uuid = decode_tracking_id(tracking_id)
         cycle = cycle_manager.get(uuid=cycle_uuid)
         target = next(
@@ -47,6 +43,10 @@ class ClickView(MethodView):
         ip = get_request_ip()
         city, country = get_city_country(ip)
         asn_org = get_asn_org(ip)
+        print(ip)
+        print(city)
+        print(country)
+        print(asn_org)
 
         # TODO: Check for open event, if not add one.
         cycle_manager.add_timeline_item(
