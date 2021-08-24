@@ -15,6 +15,7 @@ class TimelineDetails(Schema):
     ip = fields.Str(required=False, allow_none=True)
     asn_org = fields.Str(required=False, allow_none=True)
     city = fields.Str(required=False, allow_none=True)
+    country = fields.Str(required=False, allow_none=True)
 
 
 class CycleTargetTimeline(Schema):
