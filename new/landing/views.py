@@ -43,12 +43,7 @@ class ClickView(MethodView):
         ip = get_request_ip()
         city, country = get_city_country(ip)
         asn_org = get_asn_org(ip)
-        print(ip)
-        print(city)
-        print(country)
-        print(asn_org)
 
-        # TODO: Check for open event, if not add one.
         cycle_manager.add_timeline_item(
             cycle_uuid=cycle["cycle_uuid"],
             target_uuid=target["target_uuid"],

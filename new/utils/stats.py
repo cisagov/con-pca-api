@@ -167,8 +167,12 @@ def get_maxmind_stats(cycle):
     response = []
     for target in cycle["targets"]:
         timeline.extend(target.get("timeline", []))
-    sorted_timeline = sorted(timeline, key=lambda x: x.get("asn_org", "UNKOWN"))
-    for org, events in groupby(sorted_timeline, lambda x: x.get("asn_org", "UNKOWN")):
+    sorted_timeline = sorted(
+        timeline, key=lambda x: x.get("details", {}).get("asn_org", "UNKOWN")
+    )
+    for org, events in groupby(
+        sorted_timeline, lambda x: x.get("details", {}).get("asn_org", "UNKOWN")
+    ):
         val = {
             "asn_org": org,
             "is_nonhuman": is_nonhuman_event(org),
