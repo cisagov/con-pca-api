@@ -8,6 +8,7 @@ from flask import request, send_file
 from flask.templating import render_template_string
 from flask.views import MethodView
 from utils.maxmind import get_asn_org, get_city_country
+from utils.request import get_request_ip
 
 # cisagov Libraries
 from api.manager import CycleManager, LandingPageManager, TemplateManager
@@ -43,9 +44,9 @@ class ClickView(MethodView):
         if not landing_page:
             landing_page = landing_page_manager.get(filter_data={})
 
-        ip_address = request.remote_addr
-        city, country = get_city_country(ip_address)
-        asn_org = get_asn_org(ip_address)
+        ip = get_request_ip()
+        city, country = get_city_country(ip)
+        asn_org = get_asn_org(ip)
 
         # TODO: Check for open event, if not add one.
         cycle_manager.add_timeline_item(
@@ -56,7 +57,7 @@ class ClickView(MethodView):
                 "message": "clicked",
                 "details": {
                     "user_agent": request.user_agent.string,
-                    "ip": request.remote_addr,
+                    "ip": ip,
                     "asn_org": asn_org,
                     "city": city,
                     "country": country,
