@@ -1,6 +1,7 @@
 """Landing application views."""
 # Standard Python Libraries
 from datetime import datetime
+from pprint import pprint
 
 # Third-Party Libraries
 from flask import request, send_file
@@ -22,6 +23,9 @@ class ClickView(MethodView):
 
     def get(self, tracking_id):
         """Get."""
+        pprint(dir(request))
+        pprint(request.headers)
+        pprint(request.remote_addr)
         cycle_uuid, target_uuid = decode_tracking_id(tracking_id)
         cycle = cycle_manager.get(uuid=cycle_uuid)
         target = next(
