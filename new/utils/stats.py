@@ -161,18 +161,23 @@ def is_nonhuman_event(asn_org):
     return False
 
 
+def event_asn_org(event):
+    """Get asn org from event."""
+    asn_org = event.get("details", {}).get("asn_org")
+    if not asn_org:
+        return "UNKOWN"
+    return asn_org
+
+
 def get_maxmind_stats(cycle):
     """Get stats from maxmind details."""
     timeline = []
     response = []
     for target in cycle["targets"]:
         timeline.extend(target.get("timeline", []))
-    sorted_timeline = sorted(
-        timeline, key=lambda x: x.get("details", {}).get("asn_org", "UNKOWN")
-    )
-    for org, events in groupby(
-        sorted_timeline, lambda x: x.get("details", {}).get("asn_org", "UNKOWN")
-    ):
+
+    sorted_timeline = sorted(timeline, key=lambda x: event_asn_org(x))
+    for org, events in groupby(sorted_timeline, lambda x: event_asn_org(x)):
         val = {
             "asn_org": org,
             "is_nonhuman": is_nonhuman_event(org),
