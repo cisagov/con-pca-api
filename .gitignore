@@ -14,6 +14,7 @@ htmlcov
 .profile-data
 
 .env
+old.env
 src/staticfiles
 created_dummy_data_*.json
 node_modules

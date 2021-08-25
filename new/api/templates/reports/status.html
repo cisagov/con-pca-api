@@ -108,6 +108,48 @@
                   </div>
                 </div>
               </div>
+              <!-- Campaign Progress -->
+              <div class="row">
+                <div class="col-10">
+                  <div id="campaignProgressText">
+                    <ul>
+                      <li>
+                        This Report has been generated in Q1 of your phishing
+                        subscription
+                      </li>
+                      <li>
+                        Of the total {{ cycle.target_count }} targets in this
+                        cycle, {{ stats.stats.all.sent.count }} targets have had
+                        emails sent.
+                      </li>
+                      <li>
+                        The most clicked template indicators for this cycle so
+                        far have been:
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <!-- Donut Charts -->
+              <div class="row">
+                <div class="col-12">
+                  <div id="donut-charts">
+                    <div class="col-3"></div>
+                  </div>
+                </div>
+              </div>
+              <!-- Bar Chart -->
+              <div class="row">
+                <div class="col-10 container-fluid">
+                  <div class="bar-chart m-2">
+                    <h2>STATISTICS BY LEVEL</h2>
+                    <div
+                      class="d-flex report-chart"
+                      style="height: 15rem"
+                    ></div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
