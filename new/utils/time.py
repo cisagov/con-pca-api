@@ -56,3 +56,8 @@ def current_year_short():
 def current_day():
     """Get current day."""
     return datetime.today().strftime("%d")
+
+
+def get_yearly_minutes():
+    """Get yearly minutes."""
+    return 525600

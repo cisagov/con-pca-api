@@ -28,6 +28,7 @@ class SubscriptionTemplatesSelectedSchema(Schema):
 class SubscriptionTasksSchema(Schema):
     """SubscriptionTasksSchema."""
 
+    task_uuid = fields.Str()
     task_type = fields.Str(
         validate=validate.OneOf(
             [
@@ -35,8 +36,7 @@ class SubscriptionTasksSchema(Schema):
                 "monthly_report",
                 "cycle_report",
                 "yearly_report",
-                "start_new_cycle",
-                "stop_subscription",
+                "end_cycle",
             ]
         )
     )
@@ -67,3 +67,4 @@ class SubscriptionSchema(BaseSchema):
     cooldown_minutes = fields.Integer()
     report_frequency_minutes = fields.Integer()
     tasks = fields.List(fields.Nested(SubscriptionTasksSchema))
+    processing = fields.Bool()

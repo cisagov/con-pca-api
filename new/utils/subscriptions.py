@@ -6,6 +6,7 @@ from uuid import uuid4
 
 # Third-Party Libraries
 import dateutil.parser
+from utils.time import get_yearly_minutes
 
 # cisagov Libraries
 from api import config
@@ -43,8 +44,14 @@ def start_subscription(subscription_uuid):
         cycle["targets"].append(target)
         cycle["template_uuids"].add(target["template_uuid"])
 
-    # TODO: Create tasks
-    subscription_manager.update(uuid=subscription_uuid, data={"status": "running"})
+    tasks = get_initial_tasks(subscription, cycle)
+    subscription_manager.update(
+        uuid=subscription_uuid,
+        data={
+            "status": "running",
+            "tasks": tasks,
+        },
+    )
     return cycle_manager.save(cycle)
 
 
@@ -52,7 +59,9 @@ def stop_subscription(subscription_uuid):
     """Stop a subscription."""
     cycle = cycle_manager.get(filter_data={"active": True}, fields=["cycle_uuid"])
     cycle_manager.update(cycle["cycle_uuid"], {"active": False})
-    subscription_manager.update(uuid=subscription_uuid, data={"status": "stopped"})
+    subscription_manager.update(
+        uuid=subscription_uuid, data={"status": "stopped", "tasks": []}
+    )
     return {"success": True}
 
 
@@ -107,3 +116,32 @@ def get_deception_mods():
     mods = [0, 1, 2]
     random.shuffle(mods)
     return {mods[0]: "low", mods[1]: "moderate", mods[2]: "high"}
+
+
+def get_initial_tasks(subscription, cycle):
+    """Get initial tasks for a subscription."""
+    start_date = cycle["start_date"]
+    report_minutes = subscription["report_frequency_minutes"]
+    cycle_minutes = (
+        subscription["cycle_length_minutes"] + subscription["cooldown_minutes"]
+    )
+    yearly_minutes = get_yearly_minutes()
+    task_types = {
+        "start_subscription_email": start_date
+        + timedelta(minutes=config.DELAY_MINUTES),
+        "monthly_report": start_date + timedelta(minutes=report_minutes),
+        "cycle_report": start_date + timedelta(minutes=cycle_minutes),
+        "yearly_report": start_date + timedelta(minutes=yearly_minutes),
+        "end_cycle": start_date + timedelta(minutes=cycle_minutes),
+    }
+    tasks = []
+    for task_type, scheduled_date in task_types.items():
+        tasks.append(
+            {
+                "task_uuid": str(uuid4()),
+                "task_type": task_type,
+                "scheduled_date": scheduled_date,
+                "executed": False,
+            }
+        )
+    return tasks

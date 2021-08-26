@@ -1,15 +1,17 @@
 """Aws clients."""
+# Standard Python Libraries
+import logging
+
 # Third-Party Libraries
 import boto3
+from botocore.exceptions import ClientError
 
 # cisagov Libraries
-from api.config import COGNITO_CLIENT_ID, COGNITO_USER_POOL_ID
+from api.config import COGNITO_CLIENT_ID, COGNITO_USER_POOL_ID, SES_ASSUME_ROLE_ARN
 
 
 class AWS:
     """Base AWS Class."""
-
-    client = None
 
     def __init__(self, service):
         """Initialize client."""
@@ -91,3 +93,57 @@ class Cognito(AWS):
             AuthFlow="REFRESH_TOKEN_AUTH",
             AuthParameters={"REFRESH_TOKEN": token},
         )
+
+
+class STS(AWS):
+    """STS."""
+
+    def __init__(self):
+        """Create STS client."""
+        super().__init__("sts")
+
+    def assume_role_client(self, service, role_arn):
+        """Assume Role via STS."""
+        resp = self.client.assume_role(
+            RoleArn=role_arn, RoleSessionName=f"{service}_session"
+        )
+
+        return boto3.client(
+            service,
+            aws_access_key_id=resp["Credentials"]["AccessKeyId"],
+            aws_secret_access_key=resp["Credentials"]["SecretAccessKey"],
+            aws_session_token=resp["Credentials"]["SessionToken"],
+        )
+
+
+class SES(AWS):
+    """SES."""
+
+    def __init__(self):
+        """Init."""
+        if SES_ASSUME_ROLE_ARN:
+            sts = STS()
+            self.client = sts.assume_role_client("ses", SES_ASSUME_ROLE_ARN)
+        else:
+            super().__init__("ses")
+
+    def send_email(self, source: str, to: list, subject: str, text: str, html: str):
+        """Send email via SES."""
+        try:
+            # TODO: Send with attachments
+            return self.client.send_email(
+                Source=source,
+                Destination={
+                    "BccAddresses": to,
+                },
+                Message={
+                    "Subject": {"Data": subject, "Charset": "UTF-8"},
+                    "Body": {
+                        "Text": {"Data": text, "Charset": "UTF-8"},
+                        "Html": {"Data": html, "Charset": "UTF-8"},
+                    },
+                },
+            )
+        except ClientError as e:
+            logging.exception(e)
+            return e.response["Error"]

@@ -115,6 +115,7 @@ def get_cycle():
                 }
             },
             "processing": {"$in": [False, None]},
+            "active": True,
         },
         data={"processing": True},
     )

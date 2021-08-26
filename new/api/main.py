@@ -11,8 +11,9 @@ from utils.decorators.auth import auth_required
 
 # cisagov Libraries
 from api.app import app
-from api.config import logger
+from api.config import EMAIL_MINUTES, TASK_MINUTES, logger
 from api.phish import emails_job
+from api.tasks import tasks_job
 from api.views.auth_views import LoginView, RefreshTokenView, RegisterView
 from api.views.customer_views import CustomersView, CustomerView, SectorIndustryView
 from api.views.cycle_views import CycleStatsView, CyclesView, CycleView
@@ -86,7 +87,8 @@ for rule in login_rules:
     app.add_url_rule(url, view_func=rule[1].as_view(url))
 
 sched = BackgroundScheduler()
-sched.add_job(emails_job, "interval", minutes=1)
+sched.add_job(emails_job, "interval", minutes=EMAIL_MINUTES)
+sched.add_job(tasks_job, "interval", minutes=TASK_MINUTES)
 sched.start()
 
 

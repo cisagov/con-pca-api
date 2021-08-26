@@ -30,6 +30,7 @@ COGNITO_USER_POOL_ID = os.environ.get("AWS_COGNITO_USER_POOL_ID")
 
 # application config settings
 DELAY_MINUTES = int(os.environ.get("DELAY_MINUTES", 3))
+EMAIL_MINUTES = int(os.environ.get("EMAIL_MINUTES", 1))
 TASK_MINUTES = int(os.environ.get("TASK_MINUTES", 5))
 LANDING_SUBDOMAIN = os.environ.get("LANDING_SUBDOMAIN", "gp")
 

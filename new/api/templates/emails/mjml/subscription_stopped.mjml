@@ -1,0 +1,27 @@
+<mj-raw> {% load tz %} </mj-raw>
+<mjml>
+  <mj-body>
+    <mj-section>
+      <mj-column>
+        <mj-text font-size="20px" color="#1B2352" font-family="helvetica">
+          Dear {{ first_name }} {{ last_name }},
+        </mj-text>
+
+        <mj-text font-size="20px" color="#1B2352" font-family="helvetica">
+          Thank you for participating in the CISA Phishing. This email is to
+          inform you that your campaign has been stopped on {{end_date}} UTC.
+        </mj-text>
+        <mj-text font-size="20px" color="#1B2352" font-family="helvetica">
+          In the interests of security and efficiency, please respond to your
+          DHS contact directly with any questions or concerns you may have
+        </mj-text>
+        <mj-text font-size="20px" color="#1B2352" font-family="helvetica">
+          Respectfully,
+        </mj-text>
+        <mj-text font-size="20px" color="#1B2352" font-family="helvetica">
+          CISA Continuous Phishing Program Adminstrator
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
