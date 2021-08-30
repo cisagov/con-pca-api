@@ -1,15 +1,58 @@
 """Email utils."""
 # Standard Python Libraries
+from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import logging
 from smtplib import SMTP
 
 # Third-Party Libraries
+from bs4 import BeautifulSoup
 from faker import Faker
 from utils import time
 
-SERVER = None
+
+def build_message(
+    subject,
+    from_email,
+    html,
+    to_recipients=[],
+    bcc_recipients=[],
+    attachments=[],
+):
+    """Build raw email for sending."""
+    message = MIMEMultipart()
+    message["Subject"] = subject
+    message["From"] = from_email
+
+    if to_recipients:
+        message["To"] = ",".join(to_recipients)
+    if bcc_recipients:
+        message["Bcc"] = ",".join(bcc_recipients)
+
+    message.attach(MIMEText(html, "html"))
+    text = get_text_from_html(html)
+    message.attach(MIMEText(text, "plain"))
+
+    for filename in attachments:
+        with open(filename, "rb") as attachment:
+            part = MIMEApplication(attachment.read())
+            part.add_header("Content-Disposition", "attachment", filename=filename)
+        message.attach(part)
+
+    return message.as_string()
+
+
+def get_text_from_html(html):
+    """Convert html to text for email."""
+    soup = BeautifulSoup(html, "html.parser")
+    for script in soup(["script", "style"]):
+        script.extract()
+    text = soup.get_text()
+    lines = (line.strip() for line in text.splitlines())
+    chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
+    text = "\n".join(chunk for chunk in chunks if chunk)
+    return text
 
 
 class Email:
@@ -27,13 +70,13 @@ class Email:
 
     def send(self, to_email, from_email, subject, body):
         """Send email."""
-        message = MIMEMultipart()
-        message["Subject"] = subject
-        message["From"] = from_email
-        message["To"] = to_email
-        message.attach(MIMEText(body, "html"))
-        message_body = message.as_string()
-        self.server.sendmail(from_email, to_email, message_body)
+        message = build_message(
+            subject=subject,
+            from_email=from_email,
+            html=body,
+            to_recipients=[to_email],
+        )
+        self.server.sendmail(from_email, to_email, message)
         logging.info(f"Sent email to {to_email} from {from_email}.")
 
     def __del__(self):

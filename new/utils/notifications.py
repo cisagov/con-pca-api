@@ -2,11 +2,12 @@
 # Standard Python Libraries
 from datetime import datetime
 import logging
+import os
 
 # Third-Party Libraries
-from bs4 import BeautifulSoup
 from flask import render_template
 from utils.aws import SES
+from utils.reports import get_report_pdf
 
 # cisagov Libraries
 from api.config import SMTP_FROM
@@ -18,7 +19,7 @@ template_manager = TemplateManager()
 class Notification:
     """Manage sending email notifications."""
 
-    def __init__(self, message_type: str, subscription: str, cycle: str):
+    def __init__(self, message_type: str, subscription: dict, cycle: dict):
         """Initialize."""
         self.message_type = message_type
         self.subscription = subscription
@@ -66,19 +67,7 @@ class Notification:
             },
         }.get(message_type, {})
         report["html"] = render_template(f"emails/{message_type}.html", **context)
-        report["text"] = self.get_text_from_html(html=report["html"])
         return report
-
-    def get_text_from_html(self, html):
-        """Convert html to text for email."""
-        soup = BeautifulSoup(html, "html.parser")
-        for script in soup(["script", "style"]):
-            script.extract()
-        text = soup.get_text()
-        lines = (line.strip() for line in text.splitlines())
-        chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
-        text = "\n".join(chunk for chunk in chunks if chunk)
-        return text
 
     def get_to_addresses(self):
         """Get email addresses to send to."""
@@ -93,13 +82,31 @@ class Notification:
         # Set Context
         context = self.set_context()
         report = self.get_report(self.message_type, context)
+
+        attachments = []
+        if self.message_type in ["monthly_report"]:
+            filename = get_report_pdf(
+                self.cycle["cycle_uuid"],
+                self.message_type.split("_")[0],
+            )
+            logging.info(f"Attaching {filename} to notification.")
+            attachments.append(filename)
+
         addresses = self.get_to_addresses()
 
         logging.info(f"Sending template {self.message_type} to {addresses}")
-        return ses.send_email(
-            source=SMTP_FROM,
-            to=addresses,
-            subject=report["subject"],
-            text=report["text"],
-            html=report["html"],
-        )
+        try:
+            ses.send_email(
+                source=SMTP_FROM,
+                to=addresses,
+                subject=report["subject"],
+                html=report["html"],
+                attachments=attachments,
+            )
+        except Exception as e:
+            raise e
+        finally:
+            if attachments:
+                for attachment in attachments:
+                    logging.info(f"Deleting attachment {attachment}")
+                    os.remove(attachment)

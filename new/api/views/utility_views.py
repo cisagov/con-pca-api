@@ -44,6 +44,5 @@ class TestEmailView(MethodView):
                 from_email=data["smtp"]["from_address"],
                 subject="test",
                 body=email_body,
-                sending_profile=data["smtp"],
             )
         return jsonify({"success": True}), 200

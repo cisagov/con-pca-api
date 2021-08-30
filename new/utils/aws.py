@@ -5,6 +5,7 @@ import logging
 # Third-Party Libraries
 import boto3
 from botocore.exceptions import ClientError
+from utils.emails import build_message
 
 # cisagov Libraries
 from api.config import COGNITO_CLIENT_ID, COGNITO_USER_POOL_ID, SES_ASSUME_ROLE_ARN
@@ -127,22 +128,21 @@ class SES(AWS):
         else:
             super().__init__("ses")
 
-    def send_email(self, source: str, to: list, subject: str, text: str, html: str):
+    def send_email(
+        self, source: str, to: list, subject: str, html: str, attachments=[]
+    ):
         """Send email via SES."""
         try:
-            # TODO: Send with attachments
-            return self.client.send_email(
-                Source=source,
-                Destination={
-                    "BccAddresses": to,
-                },
-                Message={
-                    "Subject": {"Data": subject, "Charset": "UTF-8"},
-                    "Body": {
-                        "Text": {"Data": text, "Charset": "UTF-8"},
-                        "Html": {"Data": html, "Charset": "UTF-8"},
-                    },
-                },
+            message = build_message(
+                subject=subject,
+                from_email=source,
+                bcc_recipients=to,
+                html=html,
+                attachments=attachments,
+            )
+
+            return self.client.send_raw_email(
+                RawMessage={"Data": message},
             )
         except ClientError as e:
             logging.exception(e)

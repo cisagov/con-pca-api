@@ -4,8 +4,9 @@ import logging
 import os
 
 # Third-Party Libraries
-from flask import send_file
+from flask import jsonify, send_file
 from flask.views import MethodView
+from utils.notifications import Notification
 from utils.reports import get_report, get_report_pdf
 
 # cisagov Libraries
@@ -45,6 +46,9 @@ class ReportPdfView(MethodView):
 class ReportEmailView(MethodView):
     """ReportEmailView."""
 
-    def get(self, cycle_uuid):
+    def get(self, cycle_uuid, report_type):
         """Get."""
-        return
+        cycle = cycle_manager.get(uuid=cycle_uuid)
+        subscription = subscription_manager.get(uuid=cycle["subscription_uuid"])
+        Notification("monthly_report", subscription, cycle).send()
+        return jsonify({"success": True}), 200
