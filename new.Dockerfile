@@ -6,7 +6,13 @@ ENV PYTHONUNBUFFERED 1
 RUN apt-get update -y && \
     apt-get install -y python3-pip python-dev
 
+RUN apt-get install -y nodejs npm chromium
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+
 WORKDIR /var/www/
+
+COPY ./new/package*.json ./
+RUN npm install
 
 ADD ./new/requirements.txt /var/www/requirements.txt
 RUN pip install --upgrade pip \

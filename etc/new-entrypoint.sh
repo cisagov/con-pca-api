@@ -5,6 +5,10 @@ echo "AccountID $MAXMIND_USER_ID" >> /usr/local/etc/GeoIP.conf
 echo "LicenseKey $MAXMIND_LICENSE_KEY" >> /usr/local/etc/GeoIP.conf
 geoipupdate
 
+
+echo "Installing chromium"
+pyppeteer-install
+
 echo "Starting Con-PCA API"
 # run flask
 if [[ $DEBUG -eq 1 ]]

@@ -28,6 +28,9 @@ class RequestAuth:
         """Validate request."""
         if not COGNTIO_ENABLED:
             return True
+        # This is for reporting purposes so the node puppetteer can generate pdf reports
+        if request.remote_addr == "127.0.0.1":
+            return True
         try:
             if self.check_cognito_jwt(request):
                 return True
