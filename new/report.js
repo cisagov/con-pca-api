@@ -11,16 +11,12 @@ async function getReport(cycleUuid, reportType) {
     `http://localhost:5000/api/cycle/${cycleUuid}/reports/${reportType}/`,
     { waitUntil: "networkidle2" }
   );
+  await page.emulateMediaType("screen");
   const filename = `${cycleUuid}_${reportType}.pdf`;
-  pdfContent = await page.pdf({
-    format: "letter",
-    printBackground: true,
-    path: filename,
-  });
+  pdfContent = await page.pdf({ format: "letter", path: filename });
   console.log(filename);
   await page.close();
   await browser.close();
 }
 const args = process.argv.slice(2);
 getReport(args[0], args[1]);
-// getReport('699dd0de-32bb-4874-80d2-d6968c4a9312', 'monthly')
