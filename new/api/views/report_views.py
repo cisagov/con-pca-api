@@ -50,5 +50,5 @@ class ReportEmailView(MethodView):
         """Get."""
         cycle = cycle_manager.get(uuid=cycle_uuid)
         subscription = subscription_manager.get(uuid=cycle["subscription_uuid"])
-        Notification("monthly_report", subscription, cycle).send()
+        Notification(f"{report_type}_report", subscription, cycle).send()
         return jsonify({"success": True}), 200
