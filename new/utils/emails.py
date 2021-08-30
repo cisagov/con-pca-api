@@ -37,7 +37,7 @@ def build_message(
     for filename in attachments:
         with open(filename, "rb") as attachment:
             part = MIMEApplication(attachment.read())
-            part.add_header("Content-Disposition", "attachment", filename=filename)
+            part.add_header("Content-Disposition", "attachment", filename="report.pdf")
         message.attach(part)
 
     return message.as_string()
