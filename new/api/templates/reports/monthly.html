@@ -22,6 +22,8 @@
       rel="shortcut icon"
       href="{{ url_for('static', filename='image/favicon.ico') }}"
     />
+    <script src="{{ url_for('static', filename='js/Chart.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/reports.js') }}"></script>
   </head>
   <body class="mat-typography">
     <div style="width: 8.5in" class="p-0">
@@ -47,7 +49,7 @@
           <div class="container-fluid">
             <div class="row">
               <!-- Left side bar -->
-              <aside>
+              <aside style="min-height: 1225px">
                 <div id="reportDate">
                   <h3>
                     {{ cycle.start_date.strftime('%b %d, %Y') }} - {{
@@ -69,6 +71,8 @@
                   {{ customer.address_1 }} <br />
                   {{ customer.city }}, {{ customer.state }} {{ customer.zip_code
                   }} USA <br />
+                  {{ subscription.primary_contact.email }} <br />
+                  <br />
                   Admin Contact Information: <br />
                   {{ subscription.admin_email }} <br />
                 </div>
@@ -108,8 +112,27 @@
                         <span style="display: block">00:00:00</span>
                       </div>
                     </div>
+                    <div class="col-5">
+                      <div id="averageClickTitle">
+                        <h3>
+                          Average Time <br />
+                          to First Report
+                        </h3>
+                      </div>
+                      <div id="averageClickTime">
+                        <span style="display: block">00:00:00</span>
+                      </div>
+                    </div>
                   </div>
                   <div class="row yellow-circle-container">
+                    <div class="col-5">
+                      <div class="circles">
+                        <img
+                          src="{{ url_for('static', filename='image/dotted_circle.svg') }}"
+                          alt="Yellow dotted circle outline"
+                        />
+                      </div>
+                    </div>
                     <div class="col-5">
                       <div class="circles">
                         <img
@@ -137,6 +160,21 @@
                             The most clicked template indicators for this cycle
                             so far have been:
                           </li>
+                          <ul>
+                            100.0% Greed (No) : 1 clicks
+                          </ul>
+                          <ul>
+                            100.0% Greed (No) : 1 clicks
+                          </ul>
+                          <ul>
+                            100.0% Greed (No) : 1 clicks
+                          </ul>
+                          <ul>
+                            100.0% Greed (No) : 1 clicks
+                          </ul>
+                          <ul>
+                            100.0% Greed (No) : 1 clicks
+                          </ul>
                         </ul>
                       </div>
                     </div>
@@ -145,7 +183,45 @@
                   <div class="row">
                     <div class="col-12">
                       <div id="donut-charts">
-                        <div class="col-3"></div>
+                        <div class="col-3">
+                          <canvas id="doughnut-sent">
+                            <script>
+                              createDoughnut(
+                                "doughnut-sent",
+                                "{{ stats.stats.all.sent.count }}",
+                                "{{ cycle.target_count }}"
+                              );
+                            </script>
+                          </canvas>
+                          <p class="donut-caption">
+                            Emails Sent of Total Targets
+                          </p>
+                        </div>
+                        <div class="col-3">
+                          <canvas id="doughnut-opened">
+                            <script>
+                              createDoughnut(
+                                "doughnut-opened",
+                                "{{ stats.stats.all.opened.count }}",
+                                "{{ stats.stats.all.sent.count }}"
+                              );
+                            </script>
+                          </canvas>
+                          <p class="donut-caption">Emails Opened of Sent</p>
+                        </div>
+
+                        <div class="col-3">
+                          <canvas id="doughnut-clicked">
+                            <script>
+                              createDoughnut(
+                                "doughnut-clicked",
+                                "{{ stats.stats.all.clicked.count }}",
+                                "{{ cycle.target_count }}"
+                              );
+                            </script>
+                          </canvas>
+                          <p class="donut-caption">Emails Clicked of Total</p>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -154,10 +230,26 @@
                     <div class="col-10 container-fluid">
                       <div class="bar-chart m-2">
                         <h2>STATISTICS BY LEVEL</h2>
-                        <div
+                        <canvas
+                          id="bar-stats-by-level"
                           class="d-flex report-chart"
                           style="height: 15rem"
-                        ></div>
+                        >
+                          <script>
+                            createStatsByLevelChart(
+                              "bar-stats-by-level",
+                              "{{ stats.stats.low.sent.count }}",
+                              "{{ stats.stats.low.opened.count }}",
+                              "{{ stats.stats.low.clicked.count }}",
+                              "{{ stats.stats.moderate.sent.count }}",
+                              "{{ stats.stats.moderate.opened.count }}",
+                              "{{ stats.stats.moderate.clicked.count }}",
+                              "{{ stats.stats.high.sent.count }}",
+                              "{{ stats.stats.high.opened.count }}",
+                              "{{ stats.stats.high.clicked.count }}"
+                            );
+                          </script>
+                        </canvas>
                       </div>
                     </div>
                   </div>

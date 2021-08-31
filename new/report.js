@@ -13,7 +13,11 @@ async function getReport(cycleUuid, reportType) {
   );
   await page.emulateMediaType("screen");
   const filename = `${cycleUuid}_${reportType}.pdf`;
-  pdfContent = await page.pdf({ format: "letter", path: filename });
+  pdfContent = await page.pdf({
+    format: "letter",
+    path: filename,
+    pageRanges: "1",
+  });
   console.log(filename);
   await page.close();
   await browser.close();
