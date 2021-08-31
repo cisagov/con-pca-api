@@ -1,6 +1,5 @@
 """Report utils."""
 # Standard Python Libraries
-from pprint import pprint
 from subprocess import check_output  # nosec
 
 # Third-Party Libraries
@@ -40,7 +39,6 @@ def get_report(cycle_uuid, report_type):
         "customer": customer,
         "time": time,
     }
-    pprint(context)
     return render_template(f"reports/{report_type}.html", **context)
 
 

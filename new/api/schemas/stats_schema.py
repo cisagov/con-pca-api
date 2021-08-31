@@ -54,9 +54,22 @@ class MaxmindStats(Schema):
     clicks = fields.Integer()
 
 
+class IndicatorStats(Schema):
+    """IndicatorStats."""
+
+    indicator = fields.Str()
+    subindicator = fields.Str()
+    score = fields.Str()
+    clicks = fields.Integer()
+    percentage = fields.Decimal()
+    name = fields.Str()
+    label = fields.Str()
+
+
 class CycleStats(Schema):
     """CycleStats."""
 
     stats = fields.Nested(CycleStatsLevel)
     template_stats = fields.List(fields.Nested(TemplateStats))
     maxmind_stats = fields.List(fields.Nested(MaxmindStats))
+    indicator_stats = fields.List(fields.Nested(IndicatorStats))

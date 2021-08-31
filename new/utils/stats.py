@@ -4,6 +4,9 @@ from datetime import timedelta
 from itertools import groupby
 import statistics
 
+# Third-Party Libraries
+from utils.templates import TEMPLATE_INDICATORS
+
 # cisagov Libraries
 from api.manager import TemplateManager
 from api.schemas.stats_schema import CycleStats
@@ -45,7 +48,7 @@ def get_cycle_stats(cycle):
                 "template_uuid": target["template_uuid"],
                 "template": template_manager.get(
                     uuid=target["template_uuid"],
-                    fields=["template_uuid", "name", "subject"],
+                    fields=["template_uuid", "name", "subject", "indicators"],
                 ),
                 "deception_level": target["deception_level"],
             }
@@ -83,11 +86,16 @@ def get_cycle_stats(cycle):
     process_ratios(template_stats)
     rank_templates(template_stats)
     maxmind_stats = get_maxmind_stats(cycle)
+    template_stats = template_stats.values()
+    indicator_stats = get_indicator_stats(
+        template_stats, stats["all"]["clicked"]["count"]
+    )
     return CycleStats().dump(
         {
             "stats": stats,
-            "template_stats": template_stats.values(),
+            "template_stats": template_stats,
             "maxmind_stats": maxmind_stats,
+            "indicator_stats": indicator_stats,
         }
     )
 
@@ -200,81 +208,38 @@ def get_maxmind_stats(cycle):
     return response
 
 
-def rank_indicators(stats):
+def get_indicator_stats(template_stats, all_clicks):
     """Rank which indicators performed the highest."""
-    key_vals = {
-        "grammar": {
-            "name": "Apperance & Grammar",
-            "0": "Poor",
-            "1": "Decent",
-            "2": "Proper",
-        },
-        "link_domain": {
-            "name": "Link Domain",
-            "0": "Fake",
-            "1": "Spoofed / Hidden",
-        },
-        "logo_graphics": {
-            "name": "Logo / Graphics",
-            "0": "Fake / None",
-            "1": "Sppofed / HTML",
-        },
-        "external": {"name": "Sender External", "0": "Fake / NA", "1": "Spoofed"},
-        "internal": {
-            "name": "Internal",
-            "0": "Fake / NA",
-            "1": "Unknown Spoofed",
-            "2": "Known Spoofed",
-        },
-        "authoritative": {
-            "name": "Authoritative",
-            "0": "None",
-            "1": "Corprate / Local",
-            "2": "Federal / State",
-        },
-        "organization": {"name": "Relevancy Orginization", "0": "No", "1": "Yes"},
-        "public_news": {"name": "Public News", "0": "No", "1": "Yes"},
-        "curiosity": {"name": "Curiosity", "0": "Yes", "1": "No"},
-        "duty_obligation": {"name": "Duty or Obligation", "0": "Yes", "1": "No"},
-        "fear": {"name": "Fear", "0": "Yes", "1": "No"},
-        "greed": {"name": "Greed", "0": "Yes", "1": "No"},
-    }
-    # Flatten out indicators
-    flat_indicators = {}
-    for indicator in stats["indicator_breakdown"]:
-        for level in stats["indicator_breakdown"][indicator]:
-            level_val = stats["indicator_breakdown"][indicator][level]
-            flat_indicators[indicator + "-" + level] = level_val
-    # Sort indicators
-    sorted_flat_indicators = sorted(flat_indicators.items(), key=lambda kv: kv[1])
-    # Get proper name and format output
-    indicator_formatted = []
-    rank = 0
-    previous_val = None
-    for indicator in sorted_flat_indicators:
-        key_and_level = indicator[0].split("-")
-        key = key_and_level[0]
-        level = key_and_level[1]
-        formated_val = indicator[1]
-        formated_name = key_vals[key]["name"]
-        formated_level = key_vals[key][level]
-        if previous_val is None:
-            previous_val = formated_val
-        else:
-            if previous_val != formated_val:
-                rank += 1
-            previous_val = formated_val
-        percent = 0
-        if stats["stats_all"]["clicked"]["count"] > 0:
-            percent = formated_val / stats["stats_all"]["clicked"]["count"]
-        indicator_formatted.insert(
-            0,
-            {
-                "name": formated_name,
-                "level": formated_level,
-                "value": formated_val,
-                "percent": percent,
-                "rank": rank,
-            },
-        )
-    return indicator_formatted
+    breakdowns = []
+    for stat in template_stats:
+        clicks = stat["clicked"]["count"]
+        indicators = stat["template"]["indicators"]
+        print(indicators)
+        for indicator, subindicators in indicators.items():
+            for subindicator, score in subindicators.items():
+                item = next(
+                    filter(
+                        lambda x: x["indicator"] == indicator
+                        and x["subindicator"] == subindicator
+                        and x["score"] == score,
+                        breakdowns,
+                    ),
+                    None,
+                )
+                if not item:
+                    item = {
+                        "indicator": indicator,
+                        "subindicator": subindicator,
+                        "score": score,
+                        "clicks": 0,
+                        "percentage": 0,
+                        "name": TEMPLATE_INDICATORS[indicator][subindicator]["name"],
+                        "label": TEMPLATE_INDICATORS[indicator][subindicator][
+                            str(score)
+                        ],
+                    }
+                    breakdowns.append(item)
+                item["clicks"] += clicks
+                item["percentage"] = item["clicks"] / all_clicks
+    breakdowns = sorted(breakdowns, key=lambda x: x["percentage"], reverse=True)
+    return breakdowns[:5]

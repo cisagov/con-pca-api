@@ -11,6 +11,53 @@ class LEVELS:
     low = 0
 
 
+TEMPLATE_INDICATORS = {
+    "appearance": {
+        "grammar": {
+            "name": "Apperance & Grammar",
+            "0": "Poor",
+            "1": "Decent",
+            "2": "Proper",
+        },
+        "link_domain": {
+            "name": "Link Domain",
+            "0": "Fake",
+            "1": "Spoofed / Hidden",
+        },
+        "logo_graphics": {
+            "name": "Logo / Graphics",
+            "0": "Fake / None",
+            "1": "Sppofed / HTML",
+        },
+    },
+    "sender": {
+        "external": {"name": "Sender External", "0": "Fake / NA", "1": "Spoofed"},
+        "internal": {
+            "name": "Internal",
+            "0": "Fake / NA",
+            "1": "Unknown Spoofed",
+            "2": "Known Spoofed",
+        },
+        "authoritative": {
+            "name": "Authoritative",
+            "0": "None",
+            "1": "Corprate / Local",
+            "2": "Federal / State",
+        },
+    },
+    "relevancy": {
+        "organization": {"name": "Relevancy Orginization", "0": "No", "1": "Yes"},
+        "public_news": {"name": "Public News", "0": "No", "1": "Yes"},
+    },
+    "behavior": {
+        "fear": {"name": "Fear", "0": "Yes", "1": "No"},
+        "duty_obligation": {"name": "Duty or Obligation", "0": "Yes", "1": "No"},
+        "curiosity": {"name": "Curiosity", "0": "Yes", "1": "No"},
+        "greed": {"name": "Greed", "0": "Yes", "1": "No"},
+    },
+}
+
+
 def select_templates(templates: list, count: int = 5) -> dict:
     """Group Templates by score."""
     grouped_templates = group_templates(templates)

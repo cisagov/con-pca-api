@@ -164,21 +164,13 @@
                             The most clicked template indicators for this cycle
                             so far have been:
                           </li>
+                          {% for i in stats.indicator_stats %}
                           <ul>
-                            100.0% Greed (No) : 1 clicks
+                            {{ "%.1f" % (i.percentage * 100) }}% {{
+                            i.subindicator }} ({{ i.label }}) : {{ i.clicks }}
+                            clicks
                           </ul>
-                          <ul>
-                            100.0% Greed (No) : 1 clicks
-                          </ul>
-                          <ul>
-                            100.0% Greed (No) : 1 clicks
-                          </ul>
-                          <ul>
-                            100.0% Greed (No) : 1 clicks
-                          </ul>
-                          <ul>
-                            100.0% Greed (No) : 1 clicks
-                          </ul>
+                          {% endfor %}
                         </ul>
                       </div>
                     </div>
