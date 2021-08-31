@@ -166,9 +166,8 @@
                           </li>
                           {% for i in stats.indicator_stats %}
                           <ul>
-                            {{ "%.1f" % (i.percentage * 100) }}% {{
-                            i.subindicator }} ({{ i.label }}) : {{ i.clicks }}
-                            clicks
+                            {{ "%.1f" % (i.percentage * 100) }}% {{ i.name }}
+                            ({{ i.label }}) : {{ i.clicks }} clicks
                           </ul>
                           {% endfor %}
                         </ul>
