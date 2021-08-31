@@ -38,6 +38,15 @@ class TemplateBehaviorSchema(Schema):
     greed = fields.Integer()
 
 
+class TemplateIndicatorSchema(Schema):
+    """TemplateIndicatorSchema."""
+
+    appearance = fields.Nested(TemplateAppearanceSchema)
+    sender = fields.Nested(TemplateSenderSchema)
+    relevancy = fields.Nested(TemplateRelevancySchema)
+    behavior = fields.Nested(TemplateBehaviorSchema)
+
+
 class TemplateSchema(BaseSchema):
     """TemplateSchema."""
 
@@ -52,9 +61,4 @@ class TemplateSchema(BaseSchema):
     subject = fields.Str()
     text = fields.Str()
     html = fields.Str()
-
-    # Score data
-    appearance = fields.Nested(TemplateAppearanceSchema)
-    sender = fields.Nested(TemplateSenderSchema)
-    relevancy = fields.Nested(TemplateRelevancySchema)
-    behavior = fields.Nested(TemplateBehaviorSchema)
+    indicators = fields.Nested(TemplateIndicatorSchema)

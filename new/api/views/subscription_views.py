@@ -23,11 +23,12 @@ class SubscriptionsView(MethodView):
         """Get."""
         parameters = dict(request.args)
 
+        # TODO: Allow querying by template
+        parameters = subscription_manager.get_query(parameters)
+
         parameters["archived"] = {"$in": [False, None]}
         if request.args.get("archived", "").lower() == "true":
             parameters["archived"] = True
-        # TODO: Allow querying by template
-        parameters = subscription_manager.get_query(parameters)
 
         return jsonify(
             subscription_manager.all(

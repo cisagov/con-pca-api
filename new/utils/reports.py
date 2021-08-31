@@ -1,9 +1,11 @@
 """Report utils."""
 # Standard Python Libraries
+from pprint import pprint
 from subprocess import check_output  # nosec
 
 # Third-Party Libraries
 from flask import render_template
+from utils import time
 from utils.stats import get_cycle_stats
 
 # cisagov Libraries
@@ -36,7 +38,9 @@ def get_report(cycle_uuid, report_type):
         "cycle": cycle,
         "subscription": subscription,
         "customer": customer,
+        "time": time,
     }
+    pprint(context)
     return render_template(f"reports/{report_type}.html", **context)
 
 

@@ -68,3 +68,4 @@ class SubscriptionSchema(BaseSchema):
     report_frequency_minutes = fields.Integer()
     tasks = fields.List(fields.Nested(SubscriptionTasksSchema))
     processing = fields.Bool()
+    archived = fields.Bool()

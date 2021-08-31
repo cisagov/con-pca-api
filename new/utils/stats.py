@@ -198,3 +198,83 @@ def get_maxmind_stats(cycle):
                 val["clicks"] += 1
         response.append(val)
     return response
+
+
+def rank_indicators(stats):
+    """Rank which indicators performed the highest."""
+    key_vals = {
+        "grammar": {
+            "name": "Apperance & Grammar",
+            "0": "Poor",
+            "1": "Decent",
+            "2": "Proper",
+        },
+        "link_domain": {
+            "name": "Link Domain",
+            "0": "Fake",
+            "1": "Spoofed / Hidden",
+        },
+        "logo_graphics": {
+            "name": "Logo / Graphics",
+            "0": "Fake / None",
+            "1": "Sppofed / HTML",
+        },
+        "external": {"name": "Sender External", "0": "Fake / NA", "1": "Spoofed"},
+        "internal": {
+            "name": "Internal",
+            "0": "Fake / NA",
+            "1": "Unknown Spoofed",
+            "2": "Known Spoofed",
+        },
+        "authoritative": {
+            "name": "Authoritative",
+            "0": "None",
+            "1": "Corprate / Local",
+            "2": "Federal / State",
+        },
+        "organization": {"name": "Relevancy Orginization", "0": "No", "1": "Yes"},
+        "public_news": {"name": "Public News", "0": "No", "1": "Yes"},
+        "curiosity": {"name": "Curiosity", "0": "Yes", "1": "No"},
+        "duty_obligation": {"name": "Duty or Obligation", "0": "Yes", "1": "No"},
+        "fear": {"name": "Fear", "0": "Yes", "1": "No"},
+        "greed": {"name": "Greed", "0": "Yes", "1": "No"},
+    }
+    # Flatten out indicators
+    flat_indicators = {}
+    for indicator in stats["indicator_breakdown"]:
+        for level in stats["indicator_breakdown"][indicator]:
+            level_val = stats["indicator_breakdown"][indicator][level]
+            flat_indicators[indicator + "-" + level] = level_val
+    # Sort indicators
+    sorted_flat_indicators = sorted(flat_indicators.items(), key=lambda kv: kv[1])
+    # Get proper name and format output
+    indicator_formatted = []
+    rank = 0
+    previous_val = None
+    for indicator in sorted_flat_indicators:
+        key_and_level = indicator[0].split("-")
+        key = key_and_level[0]
+        level = key_and_level[1]
+        formated_val = indicator[1]
+        formated_name = key_vals[key]["name"]
+        formated_level = key_vals[key][level]
+        if previous_val is None:
+            previous_val = formated_val
+        else:
+            if previous_val != formated_val:
+                rank += 1
+            previous_val = formated_val
+        percent = 0
+        if stats["stats_all"]["clicked"]["count"] > 0:
+            percent = formated_val / stats["stats_all"]["clicked"]["count"]
+        indicator_formatted.insert(
+            0,
+            {
+                "name": formated_name,
+                "level": formated_level,
+                "value": formated_val,
+                "percent": percent,
+                "rank": rank,
+            },
+        )
+    return indicator_formatted

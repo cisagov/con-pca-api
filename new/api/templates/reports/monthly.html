@@ -109,7 +109,11 @@
                         </h3>
                       </div>
                       <div id="averageClickTime">
-                        <span style="display: block">00:00:00</span>
+                        <span style="display: block"
+                          >{{
+                          time.convert_seconds(stats.stats.all.clicked.average)
+                          }}</span
+                        >
                       </div>
                     </div>
                     <div class="col-5">

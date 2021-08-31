@@ -61,3 +61,13 @@ def current_day():
 def get_yearly_minutes():
     """Get yearly minutes."""
     return 525600
+
+
+def convert_seconds(seconds):
+    """Convert seconds to hours, minutes and seconds."""
+    seconds = seconds % (24 * 3600)
+    hour = seconds // 3600
+    seconds %= 3600
+    minutes = seconds // 60
+    seconds %= 60
+    return "%02d:%02d:%02d" % (hour, minutes, seconds)
