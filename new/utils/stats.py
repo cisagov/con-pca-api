@@ -14,7 +14,7 @@ from api.schemas.stats_schema import CycleStats
 template_manager = TemplateManager()
 
 
-def get_cycle_stats(cycle):
+def get_cycle_stats(cycle, nonhuman=False):
     """Get stats for cycle."""
     stats = {
         "high": {
@@ -53,7 +53,8 @@ def get_cycle_stats(cycle):
                 "deception_level": target["deception_level"],
             }
         timeline = target.get("timeline", [])
-        timeline = filter_nonhuman_events(timeline)
+        if not nonhuman:
+            timeline = filter_nonhuman_events(timeline)
         sent = target.get("sent")
         sent_time = target.get("send_date")
         opened = get_event(timeline, "opened")

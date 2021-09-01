@@ -1,16 +1,17 @@
 const puppeteer = require("puppeteer");
 
-async function getReport(cycleUuid, reportType) {
+async function getReport(cycleUuid, reportType, nonhuman) {
   const browser = await puppeteer.launch({
     headless: true,
     executablePath: "/usr/bin/chromium",
     args: ["--no-sandbox"],
   });
   const page = await browser.newPage();
-  await page.goto(
-    `http://localhost:5000/api/cycle/${cycleUuid}/reports/${reportType}/`,
-    { waitUntil: "networkidle2" }
-  );
+  let url = `http://localhost:5000/api/cycle/${cycleUuid}/reports/${reportType}/`;
+  if (nonhuman === "True") {
+    url += "?nonhuman=true";
+  }
+  await page.goto(url, { waitUntil: "networkidle2" });
   await page.emulateMediaType("screen");
   const filename = `${cycleUuid}_${reportType}.pdf`;
   pdfContent = await page.pdf({
@@ -23,4 +24,4 @@ async function getReport(cycleUuid, reportType) {
   await browser.close();
 }
 const args = process.argv.slice(2);
-getReport(args[0], args[1]);
+getReport(args[0], args[1], args[2]);

@@ -15,7 +15,7 @@ cycle_manager = CycleManager()
 subscription_manager = SubscriptionManager()
 
 
-def get_report(cycle_uuid, report_type):
+def get_report(cycle_uuid, report_type, nonhuman=False):
     """Get report by type and cycle."""
     cycle = cycle_manager.get(uuid=cycle_uuid)
     subscription = subscription_manager.get(
@@ -33,7 +33,7 @@ def get_report(cycle_uuid, report_type):
     )
     customer = customer_manager.get(uuid=subscription["customer_uuid"])
     context = {
-        "stats": get_cycle_stats(cycle),
+        "stats": get_cycle_stats(cycle, nonhuman),
         "cycle": cycle,
         "subscription": subscription,
         "customer": customer,
@@ -42,8 +42,8 @@ def get_report(cycle_uuid, report_type):
     return render_template(f"reports/{report_type}.html", **context)
 
 
-def get_report_pdf(cycle_uuid, report_type):
+def get_report_pdf(cycle_uuid, report_type, nonhuman=False):
     """Get report pdf."""
-    args = ["node", "report.js", cycle_uuid, report_type]
+    args = ["node", "report.js", cycle_uuid, report_type, str(nonhuman)]
     filename = str(check_output(args).decode("utf-8")).strip()  # nosec
     return f"/var/www/{filename}"

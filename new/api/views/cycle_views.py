@@ -46,6 +46,9 @@ class CycleStatsView(MethodView):
 
     def get(self, cycle_uuid):
         """Get."""
+        nonhuman = False
+        if request.args.get("nonhuman", "") == "true":
+            nonhuman = True
         cycle = cycle_manager.get(uuid=cycle_uuid)
-        stats = get_cycle_stats(cycle)
+        stats = get_cycle_stats(cycle, nonhuman)
         return jsonify(stats)

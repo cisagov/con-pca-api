@@ -61,7 +61,7 @@ class IndicatorStats(Schema):
     subindicator = fields.Str()
     score = fields.Str()
     clicks = fields.Integer()
-    percentage = fields.Decimal()
+    percentage = fields.Float()
     name = fields.Str()
     label = fields.Str()
 

@@ -76,7 +76,7 @@ class Notification:
             self.subscription["admin_email"],
         ]
 
-    def send(self):
+    def send(self, nonhuman=False):
         """Send Email."""
         ses = SES()
         # Set Context
@@ -88,6 +88,7 @@ class Notification:
             filename = get_report_pdf(
                 self.cycle["cycle_uuid"],
                 self.message_type.split("_")[0],
+                nonhuman,
             )
             logging.info(f"Attaching {filename} to notification.")
             attachments.append(filename)

@@ -4,7 +4,7 @@ import logging
 import os
 
 # Third-Party Libraries
-from flask import jsonify, send_file
+from flask import jsonify, request, send_file
 from flask.views import MethodView
 from utils.notifications import Notification
 from utils.reports import get_report, get_report_pdf
@@ -22,7 +22,10 @@ class ReportHtmlView(MethodView):
 
     def get(self, cycle_uuid, report_type):
         """Get."""
-        return get_report(cycle_uuid, report_type), 200
+        nonhuman = False
+        if request.args.get("nonhuman", "") == "true":
+            nonhuman = True
+        return get_report(cycle_uuid, report_type, nonhuman), 200
 
 
 class ReportPdfView(MethodView):
@@ -30,7 +33,10 @@ class ReportPdfView(MethodView):
 
     def get(self, cycle_uuid, report_type):
         """Get."""
-        filepath = get_report_pdf(cycle_uuid, report_type)
+        nonhuman = False
+        if request.args.get("nonhuman", "") == "true":
+            nonhuman = True
+        filepath = get_report_pdf(cycle_uuid, report_type, nonhuman)
         try:
             logging.info(f"Sending file {filepath}")
             return send_file(
@@ -48,7 +54,10 @@ class ReportEmailView(MethodView):
 
     def get(self, cycle_uuid, report_type):
         """Get."""
+        nonhuman = False
+        if request.args.get("nonhuman", "") == "true":
+            nonhuman = True
         cycle = cycle_manager.get(uuid=cycle_uuid)
         subscription = subscription_manager.get(uuid=cycle["subscription_uuid"])
-        Notification(f"{report_type}_report", subscription, cycle).send()
+        Notification(f"{report_type}_report", subscription, cycle).send(nonhuman)
         return jsonify({"success": True}), 200
