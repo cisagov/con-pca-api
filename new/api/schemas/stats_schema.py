@@ -6,7 +6,7 @@ from marshmallow import Schema, fields
 from api.schemas.template_schema import TemplateSchema
 
 
-class CycleStatsEventMetrics(Schema):
+class CycleStatsEventMetricsSchema(Schema):
     """CycleStatsEventMetrics."""
 
     count = fields.Integer()
@@ -18,24 +18,24 @@ class CycleStatsEventMetrics(Schema):
     rank = fields.Integer()
 
 
-class CycleStatsEvents(Schema):
+class CycleStatsEventsSchema(Schema):
     """CycleStatsEvents."""
 
-    sent = fields.Nested(CycleStatsEventMetrics)
-    opened = fields.Nested(CycleStatsEventMetrics)
-    clicked = fields.Nested(CycleStatsEventMetrics)
+    sent = fields.Nested(CycleStatsEventMetricsSchema)
+    opened = fields.Nested(CycleStatsEventMetricsSchema)
+    clicked = fields.Nested(CycleStatsEventMetricsSchema)
 
 
-class CycleStatsLevel(Schema):
+class CycleStatsLevelSchema(Schema):
     """CycleStatsLevel."""
 
-    high = fields.Nested(CycleStatsEvents)
-    moderate = fields.Nested(CycleStatsEvents)
-    low = fields.Nested(CycleStatsEvents)
-    all = fields.Nested(CycleStatsEvents)
+    high = fields.Nested(CycleStatsEventsSchema)
+    moderate = fields.Nested(CycleStatsEventsSchema)
+    low = fields.Nested(CycleStatsEventsSchema)
+    all = fields.Nested(CycleStatsEventsSchema)
 
 
-class TemplateStats(CycleStatsEvents):
+class TemplateStatsSchema(CycleStatsEventsSchema):
     """TemplateStats."""
 
     template_uuid = fields.Str()
@@ -43,7 +43,7 @@ class TemplateStats(CycleStatsEvents):
     deception_level = fields.Str()
 
 
-class MaxmindStats(Schema):
+class MaxmindStatsSchema(Schema):
     """MaxmindStats."""
 
     asn_org = fields.Str()
@@ -54,7 +54,7 @@ class MaxmindStats(Schema):
     clicks = fields.Integer()
 
 
-class IndicatorStats(Schema):
+class IndicatorStatsSchema(Schema):
     """IndicatorStats."""
 
     indicator = fields.Str()
@@ -66,10 +66,10 @@ class IndicatorStats(Schema):
     label = fields.Str()
 
 
-class CycleStats(Schema):
+class CycleStatsSchema(Schema):
     """CycleStats."""
 
-    stats = fields.Nested(CycleStatsLevel)
-    template_stats = fields.List(fields.Nested(TemplateStats))
-    maxmind_stats = fields.List(fields.Nested(MaxmindStats))
-    indicator_stats = fields.List(fields.Nested(IndicatorStats))
+    stats = fields.Nested(CycleStatsLevelSchema)
+    template_stats = fields.List(fields.Nested(TemplateStatsSchema))
+    maxmind_stats = fields.List(fields.Nested(MaxmindStatsSchema))
+    indicator_stats = fields.List(fields.Nested(IndicatorStatsSchema))

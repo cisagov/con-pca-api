@@ -50,5 +50,5 @@ class CycleStatsView(MethodView):
         if request.args.get("nonhuman", "") == "true":
             nonhuman = True
         cycle = cycle_manager.get(uuid=cycle_uuid)
-        stats = get_cycle_stats(cycle, nonhuman)
-        return jsonify(stats)
+        get_cycle_stats(cycle)
+        return jsonify(cycle["nonhuman_stats"] if nonhuman else cycle["stats"])

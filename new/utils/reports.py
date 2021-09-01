@@ -32,8 +32,10 @@ def get_report(cycle_uuid, report_type, nonhuman=False):
         ],
     )
     customer = customer_manager.get(uuid=subscription["customer_uuid"])
+    get_cycle_stats(cycle)
+
     context = {
-        "stats": get_cycle_stats(cycle, nonhuman),
+        "stats": cycle["nonhuman_stats"] if nonhuman else cycle["stats"],
         "cycle": cycle,
         "subscription": subscription,
         "customer": customer,

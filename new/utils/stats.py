@@ -8,13 +8,29 @@ import statistics
 from utils.templates import TEMPLATE_INDICATORS
 
 # cisagov Libraries
-from api.manager import TemplateManager
-from api.schemas.stats_schema import CycleStats
+from api.manager import CycleManager, TemplateManager
+from api.schemas.stats_schema import CycleStatsSchema
 
 template_manager = TemplateManager()
+cycle_manager = CycleManager()
 
 
-def get_cycle_stats(cycle, nonhuman=False):
+def get_cycle_stats(cycle):
+    """Get stats for cycle."""
+    if cycle.get("dirty_stats"):
+        data = {
+            "stats": generate_cycle_stats(cycle, nonhuman=False),
+            "nonhuman_stats": generate_cycle_stats(cycle, nonhuman=True),
+            "dirty_stats": False,
+        }
+        cycle.update(data)
+        cycle_manager.update(
+            uuid=cycle["cycle_uuid"],
+            data=data,
+        )
+
+
+def generate_cycle_stats(cycle, nonhuman=False):
     """Get stats for cycle."""
     stats = {
         "high": {
@@ -91,7 +107,7 @@ def get_cycle_stats(cycle, nonhuman=False):
     indicator_stats = get_indicator_stats(
         template_stats, stats["all"]["clicked"]["count"]
     )
-    return CycleStats().dump(
+    return CycleStatsSchema().dump(
         {
             "stats": stats,
             "template_stats": template_stats,
@@ -215,7 +231,6 @@ def get_indicator_stats(template_stats, all_clicks):
     for stat in template_stats:
         clicks = stat["clicked"]["count"]
         indicators = stat["template"]["indicators"]
-        print(indicators)
         for indicator, subindicators in indicators.items():
             for subindicator, score in subindicators.items():
                 item = next(

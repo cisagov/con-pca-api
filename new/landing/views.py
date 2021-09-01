@@ -59,6 +59,7 @@ class ClickView(MethodView):
                 },
             },
         )
+        cycle_manager.update(uuid=cycle["cycle_uuid"], data={"dirty_stats": True})
 
         return render_template_string(landing_page["html"])
 
@@ -86,4 +87,5 @@ class OpenView(MethodView):
                 },
             },
         )
+        cycle_manager.update(uuid=cycle["cycle_uuid"], data={"dirty_stats": True})
         return send_file("static/pixel.gif", mimetype="image/gif")

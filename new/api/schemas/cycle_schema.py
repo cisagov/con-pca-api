@@ -5,10 +5,11 @@ from marshmallow import Schema, fields, validate
 # cisagov Libraries
 from api.schemas.base_schema import BaseSchema
 from api.schemas.fields import DateTimeField
+from api.schemas.stats_schema import CycleStatsSchema
 from api.schemas.subscription_schema import SubscriptionTargetSchema
 
 
-class TimelineDetails(Schema):
+class TimelineDetailsSchema(Schema):
     """TimelineDetails."""
 
     user_agent = fields.Str(required=False, allow_none=True)
@@ -18,12 +19,12 @@ class TimelineDetails(Schema):
     country = fields.Str(required=False, allow_none=True)
 
 
-class CycleTargetTimeline(Schema):
+class CycleTargetTimelineSchema(Schema):
     """CycleTargetTimeline."""
 
     time = fields.DateTime()
     message = fields.Str(validate=validate.OneOf(["opened", "clicked"]))
-    details = fields.Nested(TimelineDetails)
+    details = fields.Nested(TimelineDetailsSchema)
 
 
 class CycleTargetSchema(SubscriptionTargetSchema):
@@ -36,7 +37,7 @@ class CycleTargetSchema(SubscriptionTargetSchema):
     sent = fields.Bool(missing=False)
     sent_date = DateTimeField()
     error = fields.Str(required=False, allow_none=True)
-    timeline = fields.List(fields.Nested(CycleTargetTimeline))
+    timeline = fields.List(fields.Nested(CycleTargetTimelineSchema))
 
 
 class CycleSchema(BaseSchema):
@@ -52,3 +53,6 @@ class CycleSchema(BaseSchema):
     target_count = fields.Integer()
     targets = fields.List(fields.Nested(CycleTargetSchema))
     processing = fields.Bool()
+    dirty_stats = fields.Bool()
+    stats = fields.Nested(CycleStatsSchema)
+    nonhuman_stats = fields.Nested(CycleStatsSchema)
