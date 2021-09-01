@@ -26,6 +26,14 @@ class SubscriptionsView(MethodView):
         # TODO: Allow querying by template
         parameters = subscription_manager.get_query(parameters)
 
+        if request.args.get("template"):
+            cycles = cycle_manager.all(
+                params={"template_uuids": request.args["template"]},
+                fields=["subscription_uuid"],
+            )
+            subscription_uuids = list({c["subscription_uuid"] for c in cycles})
+            parameters["subscription_uuid"] = {"$in": subscription_uuids}
+
         parameters["archived"] = {"$in": [False, None]}
         if request.args.get("archived", "").lower() == "true":
             parameters["archived"] = True

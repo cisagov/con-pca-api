@@ -17,7 +17,7 @@ cycle_manager = CycleManager()
 
 def get_cycle_stats(cycle):
     """Get stats for cycle."""
-    if cycle.get("dirty_stats"):
+    if cycle.get("dirty_stats", True):
         data = {
             "stats": generate_cycle_stats(cycle, nonhuman=False),
             "nonhuman_stats": generate_cycle_stats(cycle, nonhuman=True),
