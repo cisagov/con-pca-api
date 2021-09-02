@@ -6,9 +6,11 @@ from utils.emails import convert_html_links, get_text_from_html
 from utils.templates import select_templates
 
 # cisagov Libraries
-from api.manager import TemplateManager
+from api.manager import CycleManager, SubscriptionManager, TemplateManager
 
 template_manager = TemplateManager()
+subscription_manager = SubscriptionManager()
+cycle_manager = CycleManager()
 
 
 class TemplatesView(MethodView):
@@ -59,15 +61,53 @@ class TemplateView(MethodView):
         if not template.get("retired"):
             return jsonify({"error": "You must retire the template first."}), 400
 
-        # TODO: Check if used in any campaigns
+        cycles = cycle_manager.all(
+            params={"template_uuids": template_uuid}, fields=["subscription_uuid"]
+        )
+        if cycles:
+            cycle_subs = subscription_manager.all(
+                params={
+                    "subscription_uuid": {
+                        "$in": {c["subscription_uuid"] for c in cycles}
+                    }
+                },
+                fields=["subscription_uuid", "name"],
+            )
+            return (
+                jsonify(
+                    {
+                        "error": "Subscriptions are currently utilizing this template.",
+                        "subscriptions": cycle_subs,
+                    }
+                ),
+                400,
+            )
 
-        # TODO: Check if subscription has template in list of templates
+        subscriptions = subscription_manager.all(
+            params={
+                "$or": [
+                    {"templates_selected.low": template_uuid},
+                    {"templates_selected.moderate": template_uuid},
+                    {"templates_selected.high": template_uuid},
+                ]
+            },
+            fields=["subscription_uuid", "name"],
+        )
+        if subscriptions:
+            return (
+                jsonify(
+                    {
+                        "error": "Subscriptions are currently utilizing this template.",
+                        "subscriptions": subscriptions,
+                    }
+                ),
+                400,
+            )
 
         return jsonify(template_manager.delete(uuid=template_uuid))
 
 
 # TODO: TemplateStopView
-# TODO: Import Email View
 class TemplateImportView(MethodView):
     """TemplateImportView."""
 

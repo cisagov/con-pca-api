@@ -4,7 +4,11 @@ from flask import jsonify
 from flask.views import MethodView
 from utils.aws import Cognito
 
+# cisagov Libraries
+from api.manager import SubscriptionManager
+
 cognito = Cognito()
+subscription_manager = SubscriptionManager()
 
 
 class UsersView(MethodView):
@@ -20,6 +24,24 @@ class UserView(MethodView):
 
     def delete(self, username):
         """Delete."""
+        users = cognito.list_users()
+        user = next(filter(lambda x: x["username"] == username, users), None)
+        if not user:
+            return jsonify({"error": "User does not exist."}), 400
+
+        subscriptions = subscription_manager.all(
+            {"admin_email": user["email"]}, fields=["subscription_uuid", "name"]
+        )
+        if subscriptions:
+            return (
+                jsonify(
+                    {
+                        "error": "This user is assigned to active subscription.",
+                        "subscriptions": subscriptions,
+                    }
+                ),
+                400,
+            )
         return jsonify(cognito.delete_user(username))
 
 

@@ -4,10 +4,17 @@ from flask import jsonify, request
 from flask.views import MethodView
 
 # cisagov Libraries
-from api.manager import SendingProfileManager, TemplateManager
+from api.manager import (
+    CycleManager,
+    SendingProfileManager,
+    SubscriptionManager,
+    TemplateManager,
+)
 
 sending_profile_manager = SendingProfileManager()
 template_manager = TemplateManager()
+subscription_manager = SubscriptionManager()
+cycle_manager = CycleManager()
 
 
 class SendingProfilesView(MethodView):
@@ -37,12 +44,33 @@ class SendingProfileView(MethodView):
 
     def delete(self, sending_profile_uuid):
         """Delete."""
-        if template_manager.exists(
-            parameters={"sending_profile_uuid": sending_profile_uuid}
-        ):
-            return jsonify(
-                {"error": "Templates are utilizing this sending profile."}, 400
+        templates = template_manager.all(
+            params={"sending_profile_uuid": sending_profile_uuid},
+            fields=["template_uuid", "name"],
+        )
+        if templates:
+            return (
+                jsonify(
+                    {
+                        "error": "Templates are utilizing this sending profile.",
+                        "templates": templates,
+                    }
+                ),
+                400,
             )
 
-        # TODO: Check if subscriptions are using
+        subscriptions = subscription_manager.all(
+            params={"sending_profile_uuid": sending_profile_uuid},
+            fields=["subscription_uuid", "name"],
+        )
+        if subscriptions:
+            return (
+                jsonify(
+                    {
+                        "error": "Subscriptions currently assigned this sending profile.",
+                        "subscriptions": subscriptions,
+                    }
+                ),
+                400,
+            )
         return jsonify(sending_profile_manager.delete(uuid=sending_profile_uuid))

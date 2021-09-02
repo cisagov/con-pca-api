@@ -4,9 +4,10 @@ from flask import jsonify, request
 from flask.views import MethodView
 
 # cisagov Libraries
-from api.manager import LandingPageManager
+from api.manager import LandingPageManager, TemplateManager
 
 landing_page_manager = LandingPageManager()
+template_manager = TemplateManager()
 
 
 class LandingPagesView(MethodView):
@@ -64,5 +65,22 @@ class LandingPageView(MethodView):
 
     def delete(self, landing_page_uuid):
         """Delete."""
-        # TODO check if templates are using landing page
+        landing_page = landing_page_manager.get(uuid=landing_page_uuid)
+        if landing_page.get("is_default_template"):
+            return jsonify({"Cannot delete default template."}), 400
+
+        templates = template_manager.all(
+            params={"landing_page_uuid": landing_page_uuid},
+            fields=["template_uuid", "name"],
+        )
+        if templates:
+            return (
+                jsonify(
+                    {
+                        "error": "A template currently utilizes this landing page.",
+                        "templates": templates,
+                    }
+                ),
+                400,
+            )
         return jsonify(landing_page_manager.delete(uuid=landing_page_uuid))

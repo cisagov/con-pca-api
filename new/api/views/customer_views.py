@@ -5,9 +5,10 @@ from flask.views import MethodView
 from utils.sectors import SECTORS
 
 # cisagov Libraries
-from api.manager import CustomerManager
+from api.manager import CustomerManager, SubscriptionManager
 
 customer_manager = CustomerManager()
+subscription_manager = SubscriptionManager()
 
 
 class CustomersView(MethodView):
@@ -45,6 +46,20 @@ class CustomerView(MethodView):
 
     def delete(self, customer_uuid):
         """Delete."""
+        subscriptions = subscription_manager.all(
+            params={"customer_uuid": customer_uuid},
+            fields=["subscription_uuid", "name"],
+        )
+        if subscriptions:
+            return (
+                jsonify(
+                    {
+                        "error": "Customer has active subscriptions.",
+                        "subscriptions": subscriptions,
+                    }
+                ),
+                400,
+            )
         return jsonify(customer_manager.delete(uuid=customer_uuid))
 
 
