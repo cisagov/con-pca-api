@@ -7,6 +7,7 @@ from utils.subscriptions import (
     start_subscription,
     stop_subscription,
 )
+from utils.valid import is_subscription_valid
 
 # cisagov Libraries
 from api.manager import CustomerManager, CycleManager, SubscriptionManager
@@ -102,4 +103,12 @@ class SubscriptionValidView(MethodView):
 
     def post(self):
         """Post."""
-        return
+        data = request.json
+        is_valid, message = is_subscription_valid(
+            data["target_count"],
+            data["cycle_minutes"],
+        )
+        if is_valid:
+            return jsonify({"success": "Subscription is valid."}), 200
+        else:
+            return jsonify({"error": message}), 400

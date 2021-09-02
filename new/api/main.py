@@ -23,6 +23,7 @@ from api.views.sending_profile_views import SendingProfilesView, SendingProfileV
 from api.views.subscription_views import (
     SubscriptionLaunchView,
     SubscriptionsView,
+    SubscriptionValidView,
     SubscriptionView,
 )
 from api.views.tag_views import TagsView
@@ -54,6 +55,7 @@ rules = [
     ("/sendingprofile/<sending_profile_uuid>/", SendingProfileView),
     # Subscription Views
     ("/subscriptions/", SubscriptionsView),
+    ("/subscriptions/valid/", SubscriptionValidView),
     ("/subscription/<subscription_uuid>/", SubscriptionView),
     ("/subscription/<subscription_uuid>/launch/", SubscriptionLaunchView),
     # Tag Views
