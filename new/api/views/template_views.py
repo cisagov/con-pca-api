@@ -2,6 +2,7 @@
 # Third-Party Libraries
 from flask import jsonify, request
 from flask.views import MethodView
+from utils.emails import convert_html_links, get_text_from_html
 from utils.templates import select_templates
 
 # cisagov Libraries
@@ -66,8 +67,21 @@ class TemplateView(MethodView):
 
 
 # TODO: TemplateStopView
-# TODO: Send Test Email View
 # TODO: Import Email View
+class TemplateImportView(MethodView):
+    """TemplateImportView."""
+
+    def post(self):
+        """Post."""
+        # TODO: Support email files
+        #   Return subject of email
+        html = request.json["content"]
+        # TODO: Convert html links only if specified.
+        html = convert_html_links(html)
+        text = get_text_from_html(html)
+        return jsonify({"text": text, "html": html})
+
+
 class TemplatesSelectView(MethodView):
     """TemplateSelectView."""
 

@@ -55,6 +55,14 @@ def get_text_from_html(html):
     return text
 
 
+def convert_html_links(html):
+    """Convert all html links to url tag."""
+    soup = BeautifulSoup(html, "html.parser")
+    for link in soup.find_all("a"):
+        link["href"] = "{{ url }}"
+    return soup.prettify()
+
+
 class Email:
     """Email."""
 

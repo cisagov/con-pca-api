@@ -27,7 +27,12 @@ from api.views.subscription_views import (
     SubscriptionView,
 )
 from api.views.tag_views import TagsView
-from api.views.template_views import TemplatesSelectView, TemplatesView, TemplateView
+from api.views.template_views import (
+    TemplateImportView,
+    TemplatesSelectView,
+    TemplatesView,
+    TemplateView,
+)
 from api.views.user_views import UserConfirmView, UsersView, UserView
 from api.views.utility_views import TestEmailView
 
@@ -62,6 +67,7 @@ rules = [
     ("/tags/", TagsView),
     # Template Views
     ("/templates/", TemplatesView),
+    ("/templates/import/", TemplateImportView),
     ("/templates/select/", TemplatesSelectView),
     ("/template/<template_uuid>/", TemplateView),
     # User Views
