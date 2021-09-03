@@ -1,4 +1,7 @@
 """Validity utils."""
+# Standard Python Libraries
+import math
+
 # cisagov Libraries
 from api.manager import CycleManager
 
@@ -98,7 +101,7 @@ def get_needed_hourly_rate(cycle_minutes, target_count, needed_hourly_rate=100):
     # Expected: needed_cycle_hours = target_count / needed_hourly_rate
     needed_cycle_hours = target_count / needed_hourly_rate
     needed_cycle_minutes = needed_cycle_hours * 60
-    return int(needed_target_count), needed_cycle_minutes
+    return math.ceil(needed_target_count), math.ceil(needed_cycle_minutes)
 
 
 def get_needed_daily_rate(
@@ -121,7 +124,7 @@ def get_needed_daily_rate(
     needed_cycle_days = target_count / needed_daily_rate
     needed_cycle_minutes = needed_cycle_days * 60 * 24
 
-    return int(needed_target_count), needed_cycle_minutes
+    return math.ceil(needed_target_count), math.ceil(needed_cycle_minutes)
 
 
 def get_needed_percent_increase(
