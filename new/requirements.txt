@@ -2,7 +2,7 @@ aiohttp==3.7.4.post0
 APScheduler==3.7.0
 async-timeout==3.0.1
 beautifulsoup4==4.9.3
-boto3==1.18.18
+boto3==1.18.36
 botocore==1.21.18
 certifi==2021.5.30
 cffi==1.14.6
