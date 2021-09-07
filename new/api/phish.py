@@ -101,7 +101,13 @@ def process_cycle(cycle):
                 params={"targets.target_uuid": target["target_uuid"]},
             )
 
-    cycle_manager.update(uuid=cycle["cycle_uuid"], data={"processing": False})
+    cycle_manager.update(
+        uuid=cycle["cycle_uuid"],
+        data={
+            "processing": False,
+            "dirty_stats": True,
+        },
+    )
 
 
 def get_cycle():

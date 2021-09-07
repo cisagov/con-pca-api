@@ -256,6 +256,6 @@ def get_indicator_stats(template_stats, all_clicks):
                     }
                     breakdowns.append(item)
                 item["clicks"] += clicks
-                item["percentage"] = item["clicks"] / all_clicks
+                item["percentage"] = get_ratio(item["clicks"], all_clicks)
     breakdowns = sorted(breakdowns, key=lambda x: x["percentage"], reverse=True)
     return breakdowns[:5]
