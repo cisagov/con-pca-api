@@ -23,6 +23,10 @@ class TemplatesView(MethodView):
         templates = request.args.get("templates")
         if templates:
             parameters["template_uuid"] = {"$in": templates.split(",")}
+
+        parameters["retired"] = {"$in": [False, None]}
+        if request.args.get("retired", "").lower() == "true":
+            parameters["retired"] = True
         return jsonify(template_manager.all(params=parameters))
 
     def post(self):
@@ -47,6 +51,29 @@ class TemplateView(MethodView):
         data = request.json
         if data.get("landing_page_uuid") in ["0", None]:
             data["landing_page_uuid"] = None
+
+        if data.get("retired"):
+            subscriptions = subscription_manager.all(
+                params={
+                    "$or": [
+                        {"templates_selected.low": template_uuid},
+                        {"templates_selected.moderate": template_uuid},
+                        {"templates_selected.high": template_uuid},
+                    ]
+                },
+                fields=["subscription_uuid", "name"],
+            )
+            if subscriptions:
+                return (
+                    jsonify(
+                        {
+                            "error": "Subscriptions are currently utilizing this template.",
+                            "subscriptions": subscriptions,
+                        }
+                    ),
+                    400,
+                )
+
         template = template_manager.get(uuid=template_uuid)
         template.update(data)
 

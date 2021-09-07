@@ -33,7 +33,12 @@ class SubscriptionsView(MethodView):
                 fields=["subscription_uuid"],
             )
             subscription_uuids = list({c["subscription_uuid"] for c in cycles})
-            parameters["subscription_uuid"] = {"$in": subscription_uuids}
+            parameters["$or"] = [
+                {"subscription_uuid": {"$in": subscription_uuids}},
+                {"templates_selected.low": request.args["template"]},
+                {"templates_selected.moderate": request.args["template"]},
+                {"templates_selected.high": request.args["template"]},
+            ]
 
         parameters["archived"] = {"$in": [False, None]}
         if request.args.get("archived", "").lower() == "true":
