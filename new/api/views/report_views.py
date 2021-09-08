@@ -7,10 +7,17 @@ import os
 from flask import jsonify, request, send_file
 from flask.views import MethodView
 from utils.notifications import Notification
-from utils.reports import get_report, get_report_pdf
+from utils.reports import (
+    get_all_customer_stats,
+    get_report,
+    get_report_pdf,
+    get_reports_sent,
+    get_sector_industry_report,
+)
 
 # cisagov Libraries
 from api.manager import CustomerManager, CycleManager, SubscriptionManager
+from api.schemas.reports_schema import AggregateReportsSchema
 
 subscription_manager = SubscriptionManager()
 cycle_manager = CycleManager()
@@ -61,3 +68,17 @@ class ReportEmailView(MethodView):
         subscription = subscription_manager.get(uuid=cycle["subscription_uuid"])
         Notification(f"{report_type}_report", subscription, cycle).send(nonhuman)
         return jsonify({"success": True}), 200
+
+
+class AggregateReportView(MethodView):
+    """AggregateReportView."""
+
+    def get(self):
+        """Get."""
+        context = {
+            "customers_enrolled": len(customer_manager.all(fields=["customer_uuid"])),
+        }
+        context.update(get_reports_sent())
+        context.update(get_sector_industry_report())
+        context.update(get_all_customer_stats())
+        return AggregateReportsSchema().dump(context)
