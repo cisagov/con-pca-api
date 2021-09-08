@@ -11,9 +11,10 @@ from utils.reports import get_report_pdf
 
 # cisagov Libraries
 from api.config import SMTP_FROM
-from api.manager import TemplateManager
+from api.manager import SubscriptionManager, TemplateManager
 
 template_manager = TemplateManager()
+subscription_manager = SubscriptionManager()
 
 
 class Notification:
@@ -76,6 +77,20 @@ class Notification:
             self.subscription["admin_email"],
         ]
 
+    def add_notification_history(self, addresses):
+        """Add history of notification to subscription."""
+        data = {
+            "message_type": self.message_type,
+            "sent": datetime.now(),
+            "email_to": addresses,
+            "email_from": SMTP_FROM,
+        }
+        subscription_manager.add_to_list(
+            uuid=self.subscription["subscription_uuid"],
+            field="notification_history",
+            data=data,
+        )
+
     def send(self, nonhuman=False):
         """Send Email."""
         ses = SES()
@@ -104,6 +119,7 @@ class Notification:
                 html=report["html"],
                 attachments=attachments,
             )
+            self.add_notification_history(addresses)
         except Exception as e:
             raise e
         finally:

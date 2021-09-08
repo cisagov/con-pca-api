@@ -8,6 +8,15 @@ from api.schemas.customer_schema import CustomerContactSchema
 from api.schemas.fields import DateTimeField
 
 
+class SubscriptionNotificationSchema(Schema):
+    """SubscriptionNotificationSchema."""
+
+    message_type = fields.Str()
+    sent = fields.DateTime()
+    email_to = fields.List(fields.Str())
+    email_from = fields.Str()
+
+
 class SubscriptionTargetSchema(Schema):
     """SubscriptionTargetSerializer."""
 
@@ -69,3 +78,4 @@ class SubscriptionSchema(BaseSchema):
     tasks = fields.List(fields.Nested(SubscriptionTasksSchema))
     processing = fields.Bool()
     archived = fields.Bool()
+    notification_history = fields.List(fields.Nested(SubscriptionNotificationSchema))
