@@ -9,8 +9,8 @@ from smtplib import SMTP
 
 # Third-Party Libraries
 from bs4 import BeautifulSoup
-from faker import Faker
 from utils import time
+from utils.fake import Fake
 
 
 def build_message(
@@ -99,7 +99,7 @@ def get_email_context(customer=None, target=None, url=None):
         "target": target,
         "customer": customer,
         "time": time,
-        "fake": Faker(),
+        "fake": Fake(),
         "url": url,
         "datetime": datetime,
     }
