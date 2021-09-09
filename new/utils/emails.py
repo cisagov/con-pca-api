@@ -1,5 +1,6 @@
 """Email utils."""
 # Standard Python Libraries
+from datetime import datetime
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -100,6 +101,7 @@ def get_email_context(customer=None, target=None, url=None):
         "time": time,
         "fake": Faker(),
         "url": url,
+        "datetime": datetime,
     }
 
 

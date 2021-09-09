@@ -6,6 +6,7 @@ from utils.emails import Email, get_email_context, get_from_address
 
 # cisagov Libraries
 from api.manager import CustomerManager
+from api.phish import get_tracking_info
 
 customer_manager = CustomerManager()
 
@@ -27,7 +28,16 @@ class TestEmailView(MethodView):
                 "position": data["position"],
             }
             template = data["template"]
-            context = get_email_context(customer=customer, target=target)
+            tracking_info = get_tracking_info(
+                data["smtp"],
+                "test",
+                "test",
+            )
+            context = get_email_context(
+                customer=customer,
+                target=target,
+                url=tracking_info["click"],
+            )
             email_body = render_template_string(template["html"], **context)
             from_address = get_from_address(data["smtp"], template["from_address"])
             email.send(

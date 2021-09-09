@@ -6,16 +6,25 @@ from datetime import datetime
 from flask import request, send_file
 from flask.templating import render_template_string
 from flask.views import MethodView
+from utils.emails import get_email_context
 from utils.maxmind import get_asn_org, get_city_country
 from utils.request import get_request_ip
 
 # cisagov Libraries
-from api.manager import CycleManager, LandingPageManager, TemplateManager
+from api.manager import (
+    CustomerManager,
+    CycleManager,
+    LandingPageManager,
+    SubscriptionManager,
+    TemplateManager,
+)
 from api.phish import decode_tracking_id
 
 cycle_manager = CycleManager()
 template_manager = TemplateManager()
 landing_page_manager = LandingPageManager()
+subscription_manager = SubscriptionManager()
+customer_manager = CustomerManager()
 
 
 class ClickView(MethodView):
@@ -25,6 +34,8 @@ class ClickView(MethodView):
         """Get."""
         cycle_uuid, target_uuid = decode_tracking_id(tracking_id)
         cycle = cycle_manager.get(uuid=cycle_uuid)
+        if not cycle:
+            return render_template_string("404 Not Found"), 404
         target = next(
             filter(lambda x: x["target_uuid"] == target_uuid, cycle["targets"])
         )
@@ -61,7 +72,13 @@ class ClickView(MethodView):
         )
         cycle_manager.update(uuid=cycle["cycle_uuid"], data={"dirty_stats": True})
 
-        return render_template_string(landing_page["html"])
+        subscription = subscription_manager.get(
+            uuid=cycle["subscription_uuid"], fields=["customer_uuid"]
+        )
+        customer = customer_manager.get(uuid=subscription["customer_uuid"])
+
+        context = get_email_context(target=target, customer=customer)
+        return render_template_string(landing_page["html"], **context)
 
 
 class OpenView(MethodView):
@@ -71,6 +88,8 @@ class OpenView(MethodView):
         """Get."""
         cycle_uuid, target_uuid = decode_tracking_id(tracking_id)
         cycle = cycle_manager.get(uuid=cycle_uuid)
+        if not cycle:
+            return render_template_string("404 Not Found"), 404
         target = next(
             filter(lambda x: x["target_uuid"] == target_uuid, cycle["targets"])
         )
