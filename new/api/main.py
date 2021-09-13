@@ -12,6 +12,7 @@ from utils.decorators.auth import auth_required
 # cisagov Libraries
 from api.app import app
 from api.config import EMAIL_MINUTES, TASK_MINUTES, logger
+from api.initialize import initialize_templates
 from api.phish import emails_job
 from api.tasks import tasks_job
 from api.views.auth_views import LoginView, RefreshTokenView, RegisterView
@@ -142,3 +143,9 @@ def api_map():
         if endpoint.rule not in ["/static/<path:filename>", "/"]
     }
     return render_template("index.html", endpoints=endpoints)
+
+
+@app.before_first_request
+def initialize_db():
+    """Initialize database."""
+    initialize_templates()
