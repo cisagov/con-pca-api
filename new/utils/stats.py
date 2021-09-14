@@ -24,10 +24,11 @@ def get_cycle_stats(cycle):
             "dirty_stats": False,
         }
         cycle.update(data)
-        cycle_manager.update(
-            uuid=cycle["cycle_uuid"],
-            data=data,
-        )
+        if cycle.get("cycle_uuid"):
+            cycle_manager.update(
+                uuid=cycle["cycle_uuid"],
+                data=data,
+            )
 
 
 def generate_cycle_stats(cycle, nonhuman=False):

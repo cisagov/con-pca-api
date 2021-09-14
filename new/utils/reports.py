@@ -15,9 +15,32 @@ cycle_manager = CycleManager()
 subscription_manager = SubscriptionManager()
 
 
-def get_report(cycle_uuid, report_type, nonhuman=False):
+def merge_cycles(cycles):
+    """Merge cycles."""
+    if len(cycles) == 1:
+        return cycles[0]
+    cycles = sorted(cycles, key=lambda x: x["start_date"])
+
+    cycle_set = {
+        "start_date": cycles[0]["start_date"],
+        "end_date": cycles[-1]["end_date"],
+        "subscription_uuid": cycles[0]["subscription_uuid"],
+        "template_uuids": [],
+        "target_count": 0,
+        "targets": [],
+    }
+    for cycle in cycles:
+        cycle_set["template_uuids"].extend(cycle["template_uuids"])
+        cycle_set["targets"].extend(cycle["targets"])
+        cycle_set["target_count"] += cycle["target_count"]
+
+    return cycle_set
+
+
+def get_report(cycle_uuids, report_type, nonhuman=False):
     """Get report by type and cycle."""
-    cycle = cycle_manager.get(uuid=cycle_uuid)
+    cycles = cycle_manager.all(params={"cycle_uuid": {"$in": cycle_uuids}})
+    cycle = merge_cycles(cycles)
     subscription = subscription_manager.get(
         uuid=cycle["subscription_uuid"],
         fields=[
@@ -44,9 +67,9 @@ def get_report(cycle_uuid, report_type, nonhuman=False):
     return render_template(f"reports/{report_type}.html", **context)
 
 
-def get_report_pdf(cycle_uuid, report_type, nonhuman=False):
+def get_report_pdf(cycle_uuids, report_type, nonhuman=False):
     """Get report pdf."""
-    args = ["node", "report.js", cycle_uuid, report_type, str(nonhuman)]
+    args = ["node", "report.js", ",".join(cycle_uuids), report_type, str(nonhuman)]
     filename = str(check_output(args).decode("utf-8")).strip()  # nosec
     return f"/var/www/{filename}"
 

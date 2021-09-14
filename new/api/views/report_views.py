@@ -27,23 +27,25 @@ customer_manager = CustomerManager()
 class ReportHtmlView(MethodView):
     """Status report view."""
 
-    def get(self, cycle_uuid, report_type):
-        """Get."""
+    def get(self, report_type):
+        """Post."""
+        data = request.args.get("cycles").split(",")
         nonhuman = False
         if request.args.get("nonhuman", "") == "true":
             nonhuman = True
-        return get_report(cycle_uuid, report_type, nonhuman), 200
+        return get_report(data, report_type, nonhuman), 200
 
 
 class ReportPdfView(MethodView):
     """ReportPdfView."""
 
-    def get(self, cycle_uuid, report_type):
+    def get(self, report_type):
         """Get."""
+        data = request.args.get("cycles").split(",")
         nonhuman = False
         if request.args.get("nonhuman", "") == "true":
             nonhuman = True
-        filepath = get_report_pdf(cycle_uuid, report_type, nonhuman)
+        filepath = get_report_pdf(data, report_type, nonhuman)
         try:
             logging.info(f"Sending file {filepath}")
             return send_file(
@@ -59,12 +61,13 @@ class ReportPdfView(MethodView):
 class ReportEmailView(MethodView):
     """ReportEmailView."""
 
-    def get(self, cycle_uuid, report_type):
+    def get(self, report_type):
         """Get."""
+        data = request.args.get("cycles").split(",")
         nonhuman = False
         if request.args.get("nonhuman", "") == "true":
             nonhuman = True
-        cycle = cycle_manager.get(uuid=cycle_uuid)
+        cycle = cycle_manager.get(uuid=data[0])
         subscription = subscription_manager.get(uuid=cycle["subscription_uuid"])
         Notification(f"{report_type}_report", subscription, cycle).send(nonhuman)
         return jsonify({"success": True}), 200
