@@ -27,7 +27,7 @@ idna==2.10
 jmespath==0.10.0
 maxminddb==2.0.3
 multidict==5.1.0
-packaging==20.4
+packaging==21.0
 pyasn1==0.4.8
 pycparser==2.20
 pyee==8.1.0
