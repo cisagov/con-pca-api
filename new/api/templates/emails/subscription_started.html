@@ -167,10 +167,11 @@
                               color: #1b2352;
                             "
                           >
-                            Thank you for participating in the CISA Phishing
-                            This email is to inform you that your campaign has
-                            begun starting {{start_date}} UTC and will run until
-                            {{end_date}} UTC.
+                            Thank you for participating in CISA Continuous
+                            Phishing (Con-PCA). This email is to inform you that
+                            your campaign has begun starting {{ start_date }}
+                            UTC and will run until {{ end_date }} UTC. You have
+                            enrolled {{ target_count }} targets in this cycle.
                           </div>
                         </td>
                       </tr>
@@ -192,22 +193,49 @@
                               color: #1b2352;
                             "
                           >
-                            To assist you in differentianting between Con-PCA
-                            phishing exercise emails and actual phishing
+                            The following template subjects will be used over
+                            the duration of this cycle.
+                            <ul>
+                              {% for template in templates %}
+                              <li>{{ template.subject }}</li>
+                              {% endfor %}
+                            </ul>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td
+                          align="left"
+                          style="
+                            font-size: 0px;
+                            padding: 10px 25px;
+                            word-break: break-word;
+                          "
+                        >
+                          <div
+                            style="
+                              font-family: helvetica;
+                              font-size: 20px;
+                              line-height: 1;
+                              text-align: left;
+                              color: #1b2352;
+                            "
+                          >
+                            To assist you in differentianting between CISA
+                            Con-PCA phishing exercise emails and actual phishing
                             attempts please use the following:
                             <ul>
                               <li>
                                 All emails coming from the Con-PCA program will
-                                have a custom header
-                                CISA-PHISH:{{subscription_uuid}}}. Please look
-                                for this header the value for this header is
-                                unique to your subscription and changes every 90
-                                days or more frequently.
+                                have a custom Cisa-Phish header. Your CISA
+                                Administrator should have provided this value
+                                before the start of this subscription.
                               </li>
                               <li>
-                                The whois guard for all Con-PCA domains is
-                                turned off. Doing a whois lookup on the actual
-                                sender domain will show the domain owner as DHS.
+                                All emails coming from the Con-PCA program will
+                                come from a single IP Address. Your CISA
+                                Administrator should have provided this IP
+                                before the start of this subscription.
                               </li>
                             </ul>
                           </div>
@@ -232,8 +260,8 @@
                             "
                           >
                             In the interests of security and efficiency, please
-                            respond to your DHS contact directly with any
-                            questions or concerns you may have
+                            respond to your CISA contact directly with any
+                            questions or concerns you may have.
                           </div>
                         </td>
                       </tr>
@@ -277,7 +305,7 @@
                               color: #1b2352;
                             "
                           >
-                            CISA Continuous Phishing Program Adminstrator
+                            CISA Continuous Phishing Program Administrator
                           </div>
                         </td>
                       </tr>

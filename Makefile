@@ -57,7 +57,7 @@ shell:
 
 # target: build_emails: build mjml emails - requires: npm install -g mjml
 build_emails:
-	mjml src/templates/emails/mjml/* -o src/templates/emails/
+	mjml new/api/templates/emails/mjml/* -o new/api/templates/emails/
 
 # target: dummy - initializes init_dummy_data for cpa
 dummy:
