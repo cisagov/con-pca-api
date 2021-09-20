@@ -1,228 +1,292 @@
-"""GoPhish API Manager."""
+"""Database Managers."""
 # Standard Python Libraries
-import json
-import logging
+from datetime import datetime
+from uuid import uuid4
 
 # Third-Party Libraries
-from faker import Faker
-from gophish import Gophish
-from gophish.models import SMTP, Campaign, Group, Page, Template, User
-import requests
+from flask import g
+import pymongo
 
 # cisagov Libraries
-from config import settings
+from api.config import DB
+from api.schemas.customer_schema import CustomerSchema
+from api.schemas.cycle_schema import CycleSchema
+from api.schemas.landing_page_schema import LandingPageSchema
+from api.schemas.sending_profile_schema import SendingProfileSchema
+from api.schemas.subscription_schema import SubscriptionSchema
+from api.schemas.template_schema import TemplateSchema
 
-faker = Faker()
+
+class Manager:
+    """Manager."""
+
+    def __init__(self, collection, schema, unique_indexes=[], other_indexes=[]):
+        """Initialize Manager."""
+        self.collection = collection
+        self.schema = schema
+        self.unique_indexes = unique_indexes
+        self.other_indexes = other_indexes
+        self.uuid_field = f"{collection}_uuid"
+        self.db = getattr(DB, collection)
+
+    def get_query(self, data):
+        """Get query parameters from schema."""
+        schema = self.schema()
+        return schema.load(dict(data), partial=True)
+
+    def convert_fields(self, fields):
+        """Convert list of fields into mongo syntax."""
+        if not fields:
+            return None
+        result = {}
+        for field in fields:
+            result[field] = 1
+        return result
+
+    def format_params(self, params):
+        """Format params."""
+        if not params:
+            return {}
+        return params
+
+    def format_sort(self, sortby: dict):
+        """Format sortby for pymongo."""
+        sorts = []
+        for k, v in sortby.items():
+            if v == "DESC":
+                sorts.append((k, pymongo.DESCENDING))
+            if v == "ASC":
+                sorts.append((k, pymongo.ASCENDING))
+        return sorts
+
+    def read_data(self, data, many=False):
+        """Read data from database."""
+        if data:
+            schema = self.schema(many=many)
+            return schema.load(schema.dump(data), partial=True)
+        return data
+
+    def load_data(self, data, many=False, partial=False):
+        """Load data into database."""
+        schema = self.schema(many=many)
+        return schema.load(data, partial=partial)
+
+    def create_indexes(self):
+        """Create indexes for collection."""
+        for index in self.unique_indexes:
+            self.db.create_index(index, unique=True)
+        for index in self.other_indexes:
+            self.db.create_index(index, unique=False)
+
+    def add_created(self, data):
+        """Add created attribute to data on save."""
+        if type(data) is dict:
+            data["created"] = datetime.utcnow().isoformat()
+            data["created_by"] = g.get("username", "bot")
+        elif type(data) is list:
+            for item in data:
+                item["created"] = datetime.utcnow().isoformat()
+                item["created_by"] = g.get("username", "bot")
+        return data
+
+    def add_updated(self, data):
+        """Update updated data on update."""
+        if type(data) is dict:
+            data["updated"] = datetime.utcnow().isoformat()
+            data["updated_by"] = g.get("username", "bot")
+        elif type(data) is list:
+            for item in data:
+                item["updated"] = datetime.utcnow().isoformat()
+                item["updated_by"] = g.get("username", "bot")
+        return data
+
+    def clean_data(self, data):
+        """Clean data for saves to the database."""
+        invalid_fields = ["_id", "created", "updated", self.uuid_field]
+        if type(data) is dict:
+            for field in invalid_fields:
+                if data.get(field):
+                    data.pop(field)
+        elif type(data) is list:
+            for item in data:
+                for field in invalid_fields:
+                    if item.get(field):
+                        item.pop(field)
+        return data
+
+    def get(self, uuid=None, filter_data=None, fields=None):
+        """Get item from collection by id or filter."""
+        if uuid:
+            return self.read_data(
+                self.db.find_one(
+                    {self.uuid_field: str(uuid)},
+                    self.convert_fields(fields),
+                )
+            )
+        else:
+            return self.read_data(
+                self.db.find_one(
+                    filter_data,
+                    self.convert_fields(fields),
+                )
+            )
+
+    def all(self, params=None, fields=None, sortby=None, limit=None):
+        """Get all items in a collection."""
+        query = self.db.find(self.format_params(params), self.convert_fields(fields))
+        if sortby:
+            query.sort(self.format_sort(sortby))
+        if limit:
+            query.limit(limit)
+        return self.read_data(query, many=True)
+
+    def delete(self, uuid=None, params=None):
+        """Delete item by object id."""
+        if uuid:
+            self.db.delete_one({self.uuid_field: str(uuid)})
+            return {self.uuid_field: str(uuid)}
+        if params:
+            self.db.delete_many(params)
+            return {self.uuid_field: str(uuid)}
+        raise Exception(
+            "Either a document id or params must be supplied when deleting."
+        )
+
+    def update(self, uuid, data):
+        """Update item by id."""
+        data = self.clean_data(data)
+        data = self.add_updated(data)
+        self.db.update_one(
+            {self.uuid_field: str(uuid)},
+            {"$set": self.load_data(data, partial=True)},
+        )
+        return {self.uuid_field: str(uuid)}
+
+    def save(self, data):
+        """Save new item to collection."""
+        self.create_indexes()
+        data = self.clean_data(data)
+        data = self.add_created(data)
+        data[self.uuid_field] = str(uuid4())
+        self.db.insert_one(self.load_data(data))
+        return {self.uuid_field: data[self.uuid_field]}
+
+    def add_to_list(self, uuid, field, data):
+        """Add item to list in document."""
+        self.db.update_one({self.uuid_field: str(uuid)}, {"$push": {field: data}})
+        return {self.uuid_field: str(uuid)}
+
+    def delete_from_list(self, uuid, field, data):
+        """Delete item from list in document."""
+        self.db.update_one({self.uuid_field: str(uuid)}, {"$pull": {field: data}})
+        return {self.uuid_field: str(uuid)}
+
+    def update_in_list(self, uuid, field, data, params):
+        """Update item in list from document."""
+        self.db.update_one(
+            {self.uuid_field: str(uuid), **params}, {"$set": {field: data}}
+        )
+        return {self.uuid_field: str(uuid)}
+
+    def random(self, count=1):
+        """Select a random record from collection."""
+        return list(self.db.aggregate([{"$sample": {"size": count}}]))
+
+    def exists(self, parameters=None):
+        """Check if record exists."""
+        fields = self.convert_fields([self.uuid_field])
+        result = list(self.db.find(parameters, fields))
+        return bool(result)
+
+    def find_one_and_update(self, params, data):
+        """Find an object and update it."""
+        data = self.clean_data(data)
+        data = self.add_updated(data)
+        return self.db.find_one_and_update(
+            params,
+            {"$set": self.load_data(data, partial=True)},
+            return_document=pymongo.ReturnDocument.AFTER,
+        )
 
 
-class CampaignManager:
-    """GoPhish API Manager. TODO: create put methods."""
+class CustomerManager(Manager):
+    """Customer Manager."""
 
     def __init__(self):
-        """Init."""
-        self.gp_api = Gophish(settings.GP_API_KEY, host=settings.GP_URL)
-
-    # Create methods
-    def create_campaign(
-        self,
-        campaign_name: str,
-        smtp_name: str,
-        page_name: str,
-        user_group=None,
-        email_template=None,
-        launch_date=None,
-        send_by_date=None,
-        url=None,
-    ):
-        """Generate campaign Method."""
-        smtp = SMTP(name=smtp_name)
-        landing_page = Page(name=page_name)
-        campaign = Campaign(
-            name=campaign_name,
-            groups=[user_group],
-            page=landing_page,
-            template=email_template,
-            smtp=smtp,
-            url=url,
-            launch_date=launch_date,
-            send_by_date=send_by_date,
+        """Super."""
+        return super().__init__(
+            collection="customer",
+            schema=CustomerSchema,
         )
 
-        logging.info(f"Creating campaign with name {campaign_name}")
-        return self.gp_api.campaigns.post(campaign)
 
-    def create_sending_profile(
-        self,
-        name,
-        username,
-        password,
-        host,
-        interface_type,
-        from_address,
-        ignore_cert_errors,
-        headers,
-    ):
-        """Create Sending Profile."""
-        smtp = SMTP(
-            name=name,
-            username=username,
-            password=password,
-            host=host,
-            interface_type=interface_type,
-            from_address=from_address,
-            ignore_cert_errors=ignore_cert_errors,
-            headers=headers,
+class CycleManager(Manager):
+    """CycleManager."""
+
+    def __init__(self):
+        """Super."""
+        return super().__init__(
+            collection="cycle",
+            schema=CycleSchema,
         )
 
-        logging.info(f"Creating sending profile with name {name}")
-        return self.gp_api.smtp.post(smtp=smtp)
-
-    def put_sending_profile(self, sp):
-        """Update Sending Profile."""
-        return self.gp_api.smtp.put(smtp=sp)
-
-    def create_email_template(self, name: str, template: str, subject: str, text=None):
-        """Generate Email Templates."""
-        template = "<html><head></head><body>" + template + "</body></html>"
-        email_template = Template(name=name, subject=subject, html=template)
-        if text is not None:
-            email_template.text = text
-
-        logging.info(f"Creating email template with name {name}")
-        return self.gp_api.templates.post(email_template)
-
-    def create_landing_page(self, name: str, template: str):
-        """Generate Landing Page."""
-        landing_page = Page(
-            name=name, html=template, capture_credentials=False, capture_passwords=False
+    def add_timeline_item(self, cycle_uuid, target_uuid, data):
+        """Add an item to the cycle, target's timeline."""
+        self.db.update_one(
+            {self.uuid_field: str(cycle_uuid), "targets.target_uuid": target_uuid},
+            {"$push": {"targets.$.timeline": data}},
         )
-        return self.gp_api.pages.post(landing_page)
+        return {self.uuid_field: cycle_uuid}
 
-    def put_landing_page(self, gp_id, name, html):
-        """Modify Landing Page."""
-        landing_page = Page(id=gp_id, name=name, html=html)
-        return self.gp_api.pages.put(landing_page)
 
-    def create_user_group(
-        self,
-        subscription_name: str,
-        deception_level: int,
-        index: int,
-        target_list: list = [],
-    ):
-        """Generate User Group."""
-        users = [
-            User(
-                first_name=target.get("first_name"),
-                last_name=target.get("last_name"),
-                email=target.get("email"),
-                position=target.get("position"),
-            )
-            for target in target_list
-        ]
+class LandingPageManager(Manager):
+    """LandingPageManager."""
 
-        group_name = f"{subscription_name}.Targets.{deception_level}.{index}"
-
-        target_group = Group(name=group_name, targets=users)
-
-        logging.info(f"Creating user group with name {group_name}")
-        return self.gp_api.groups.post(target_group)
-
-    # Get methods
-    def get_campaign(self, campaign_id: int = None):
-        """GET Campaign."""
-        if campaign_id:
-            return self.gp_api.campaigns.get(campaign_id=campaign_id)
-        return self.gp_api.campaigns.get()
-
-    def get_sending_profile(self, smtp_id: int = None):
-        """GET Sending Profile."""
-        if smtp_id:
-            return self.gp_api.smtp.get(smtp_id=smtp_id)
-        return self.gp_api.smtp.get()
-
-    def get_email_template(self, template_id: int = None):
-        """GET Email Temp."""
-        if template_id:
-            return self.gp_api.templates.get(template_id=template_id)
-        return self.gp_api.templates.get()
-
-    def get_landing_page(self, page_id: int = None):
-        """GET landingpage."""
-        if page_id:
-            return self.gp_api.pages.get(page_id=page_id)
-        return self.gp_api.pages.get()
-
-    def get_user_group(self, group_id: int = None):
-        """GET User group."""
-        if group_id:
-            return self.gp_api.groups.get(group_id=group_id)
-        return self.gp_api.groups.get()
-
-    # Delete methods
-    def delete_campaign(self, campaign_id: int):
-        """DELETE Campaign."""
-        if campaign_id:
-            return self.gp_api.campaigns.delete(campaign_id=campaign_id)
-
-    def delete_sending_profile(self, smtp_id: int):
-        """DELETE Sending Profile."""
-        if smtp_id:
-            return self.gp_api.smtp.delete(smtp_id=smtp_id)
-
-    def delete_email_template(self, template_id: int):
-        """DELETE Email Temp."""
-        if template_id:
-            return self.gp_api.templates.delete(template_id=template_id)
-
-    def delete_landing_page(self, page_id: int):
-        """DELETE landingpage."""
-        if page_id:
-            return self.gp_api.pages.delete(page_id=page_id)
-
-    def delete_user_group(self, group_id: int):
-        """DELETE User group."""
-        if group_id:
-            try:
-                return self.gp_api.groups.delete(group_id=group_id)
-            except Exception:
-                return None
-
-    def send_test_email(self, test_string):
-        """Send Test Email."""
-        try:
-            # sending post request and saving response as response object
-            url = settings.GP_URL + "api/util/send_test_email"
-            headers = {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer {}".format(settings.GP_API_KEY),
-            }
-            r = requests.post(url=url, json=test_string, headers=headers)
-            # extracting response text
-            return json.loads(r.text)
-        except Exception as e:
-            logging.exception(e)
-            if hasattr(e, "message"):
-                return e.message
-            else:
-                return e
-
-    # Other Methods
-    def complete_campaign(self, campaign_id: int):
-        """Complete Campaign."""
-        if campaign_id:
-            return self.gp_api.campaigns.complete(campaign_id=campaign_id)
-
-    def import_email(self, content: str, convert_link: bool):
-        """Import source email."""
-        url = f"{settings.GP_URL}api/import/email"
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {settings.GP_API_KEY}",
-        }
-        resp = requests.post(
-            url=url,
-            json={"content": content, "convert_link": convert_link},
-            headers=headers,
+    def __init__(self):
+        """Super."""
+        return super().__init__(
+            collection="landing_page",
+            schema=LandingPageSchema,
         )
-        return json.loads(resp.text)
+
+    def clear_and_set_default(self, uuid):
+        """Set Default Landing Page."""
+        sub_query = {}
+        newvalues = {"$set": {"is_default_template": False}}
+        self.db.update_many(sub_query, newvalues)
+        sub_query = {"landing_page_uuid": str(uuid)}
+        newvalues = {"$set": {"is_default_template": True}}
+        self.db.update_one(sub_query, newvalues)
+
+
+class SendingProfileManager(Manager):
+    """SendingProfileManager."""
+
+    def __init__(self):
+        """Super."""
+        return super().__init__(
+            collection="sending_profile",
+            schema=SendingProfileSchema,
+        )
+
+
+class SubscriptionManager(Manager):
+    """SubscriptionManager."""
+
+    def __init__(self):
+        """Super."""
+        return super().__init__(
+            collection="subscription",
+            schema=SubscriptionSchema,
+        )
+
+
+class TemplateManager(Manager):
+    """Template Manager."""
+
+    def __init__(self):
+        """Super."""
+        return super().__init__(
+            collection="template",
+            schema=TemplateSchema,
+        )

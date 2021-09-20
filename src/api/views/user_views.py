@@ -1,33 +1,53 @@
-"""User Views."""
+"""User views."""
 # Third-Party Libraries
-from rest_framework.response import Response
-from rest_framework.views import APIView
+from flask import jsonify
+from flask.views import MethodView
 
 # cisagov Libraries
-from api.utils.aws_utils import Cognito
+from api.manager import SubscriptionManager
+from utils.aws import Cognito
 
 cognito = Cognito()
+subscription_manager = SubscriptionManager()
 
 
-class UsersView(APIView):
+class UsersView(MethodView):
     """UsersView."""
 
-    def get(self, request):
+    def get(self):
         """Get."""
-        return Response(cognito.list_users())
+        return jsonify(cognito.list_users())
 
 
-class UserView(APIView):
+class UserView(MethodView):
     """UserView."""
 
-    def delete(self, request, username):
+    def delete(self, username):
         """Delete."""
-        return Response(cognito.delete_user(username))
+        users = cognito.list_users()
+        user = next(filter(lambda x: x["username"] == username, users), None)
+        if not user:
+            return jsonify({"error": "User does not exist."}), 400
+
+        subscriptions = subscription_manager.all(
+            {"admin_email": user["email"]}, fields=["subscription_uuid", "name"]
+        )
+        if subscriptions:
+            return (
+                jsonify(
+                    {
+                        "error": "This user is assigned to active subscription.",
+                        "subscriptions": subscriptions,
+                    }
+                ),
+                400,
+            )
+        return jsonify(cognito.delete_user(username))
 
 
-class UserConfirmView(APIView):
+class UserConfirmView(MethodView):
     """UserConfirmView."""
 
-    def get(self, request, username):
+    def get(self, username):
         """Get."""
-        return Response(cognito.confirm_user(username))
+        return jsonify(cognito.confirm_user(username))

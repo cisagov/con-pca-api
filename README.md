@@ -70,7 +70,7 @@ Run your web application locally
 
 - `make up`
 
-Run Django logs in the terminal
+Run docker logs in the terminal
 
 - `make logs`
 
@@ -86,7 +86,7 @@ Remove containers
 
 - `make down`
 
-Access Django shell
+Access Docker python shell
 
 - `make shell`
 
@@ -116,9 +116,9 @@ Incase you want to clear out all data in the DB, use: `make db_drop_mongo`
 
 WARNING: This will drop ALL DATA in the connected docker mongodb
 
-### To access the Django API
+### To access the Flask API
 
-Django base app located at [localhost:8000](http://localhost:8000)
+Flask base app located at [localhost:8000](http://localhost:8000)
 
 ## Api Usage
 
@@ -305,9 +305,6 @@ pip install -r test_requirements.txt
 
 - [pytest](https://docs.pytest.org/en/latest/) - Easier to use
   testing framework.
-
-- [pytest-django](https://pytest-django.readthedocs.io/en/latest/) -
-  Library to better integrate pytest with Django
 
 - [pytest-env](https://github.com/MobileDynasty/pytest-env) - Allows
   environment variables to be put in pytest.ini for loading.

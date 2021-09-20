@@ -1,1 +1,1 @@
-"""Blank __init__."""
+"""Empty __init__."""

@@ -1,32 +1,26 @@
 FROM python:3.9.6
 
-# Nginx
-RUN apt-get update
-RUN apt-get install cron nginx -y
-
-# Set work directory
-RUN mkdir /app/
-WORKDIR /app
-
-# Set environment variables
-# CRYPTOGRAPHY_DONT_BUILD_RUST required for building linux/s390x,linux/ppc64le,linux/armv7,linux/armv6
-ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
-ENV DJANGO_SETTINGS_MODULE "config.settings"
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-ENV PYTHONPATH "${PYTHONPATH}:/app"
 
-# Install dependencies
-RUN pip install --upgrade pip
-COPY requirements.txt /app/requirements.txt
-RUN pip install -r requirements.txt
+RUN apt-get update -y && \
+    apt-get install -y python3-pip python-dev
 
-# Copy project
-ADD ./src /app
+RUN apt-get install -y nodejs npm chromium
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
-# Copy nginx conf
-COPY etc/nginx.conf /etc/nginx/conf.d/
-RUN rm -rf /etc/nginx/sites-enabled/
+WORKDIR /var/www/
+
+COPY ./src/package*.json ./
+RUN npm install
+
+ADD ./requirements.txt /var/www/requirements.txt
+RUN pip install --upgrade pip \
+    pip install -r requirements.txt
+
+ADD ./src/ /var/www/
+
+ENV PYTHONPATH "${PYTHONPATH}:/var/www"
 
 # Install GeoIPUpdate
 WORKDIR /tmp
@@ -39,10 +33,10 @@ COPY etc/GeoIP.conf /usr/local/etc/GeoIP.conf
 COPY ./etc/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod a+x /usr/local/bin/entrypoint.sh
 
-EXPOSE 8000
+EXPOSE 5000
 EXPOSE 80
 EXPOSE 443
 
-WORKDIR /app
+WORKDIR /var/www
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

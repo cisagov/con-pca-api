@@ -1,56 +1,54 @@
-"""Cycle View."""
+"""Cycle view."""
 # Third-Party Libraries
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.views import APIView
+from flask import jsonify, request
+from flask.views import MethodView
 
 # cisagov Libraries
-from api.serializers.cycle_serializers import CycleEmailReportedListSerializer
-from api.services import SubscriptionService
-from api.utils.subscription.cycles import (
-    delete_reported_emails,
-    get_reported_emails,
-    override_total_reported,
-    update_reported_emails,
-)
+from api.manager import CycleManager
+from utils.stats import get_cycle_stats
 
-subscription_service = SubscriptionService()
+cycle_manager = CycleManager()
 
 
-class CycleReportedView(APIView):
-    """
-    This is the Cycle Email reported View.
+class CyclesView(MethodView):
+    """CyclesView."""
 
-    This handles the list of emails reported in each cycle.
-    """
-
-    def get(self, request, subscription_uuid):
-        """Get Method."""
-        subscription = subscription_service.get(subscription_uuid)
-        emails_reported_list = get_reported_emails(subscription)
-
-        serializer = CycleEmailReportedListSerializer(emails_reported_list, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def post(self, request, subscription_uuid):
-        """Post method."""
-        subscription = subscription_service.get(subscription_uuid)
-
-        data = request.data.copy()
-
-        if int(data.get("override_total_reported", -1)) > -1:
-            override_total_reported(subscription, data)
-        else:
-            override_total_reported(subscription, data)
-            delete_reported_emails(subscription, data)
-            update_reported_emails(subscription, data)
-
-        subscription_service.update_nested(
-            uuid=subscription["subscription_uuid"],
-            field="cycles.$.phish_results_dirty",
-            data=True,
-            params={"cycles.cycle_uuid": data["cycle_uuid"]},
+    def get(self):
+        """Get."""
+        parameters = cycle_manager.get_query(request.args)
+        return jsonify(
+            cycle_manager.all(
+                params=parameters,
+                fields=[
+                    "cycle_uuid",
+                    "subscription_uuid",
+                    "template_uuids",
+                    "start_date",
+                    "end_date",
+                    "send_by_date",
+                    "active",
+                    "target_count",
+                ],
+            )
         )
-        emails_reported_list = get_reported_emails(subscription)
-        serializer = CycleEmailReportedListSerializer(emails_reported_list, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class CycleView(MethodView):
+    """CycleView."""
+
+    def get(self, cycle_uuid):
+        """Get."""
+        return cycle_manager.get(uuid=cycle_uuid)
+
+
+class CycleStatsView(MethodView):
+    """CycleStatsView."""
+
+    def get(self, cycle_uuid):
+        """Get."""
+        nonhuman = False
+        if request.args.get("nonhuman", "") == "true":
+            nonhuman = True
+        cycle = cycle_manager.get(uuid=cycle_uuid)
+        get_cycle_stats(cycle)
+        return jsonify(cycle["nonhuman_stats"] if nonhuman else cycle["stats"])

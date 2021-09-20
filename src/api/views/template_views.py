@@ -1,275 +1,158 @@
-"""
-Template Views.
-
-This handles the api for all the Template urls.
-"""
+"""Template Views."""
 # Third-Party Libraries
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.views import APIView
+from flask import jsonify, request
+from flask.views import MethodView
 
 # cisagov Libraries
-from api.manager import CampaignManager
-from api.serializers.template_serializers import (
-    TemplateQuerySerializer,
-    TemplateStopResponseSerializer,
-)
-from api.services import (
-    CampaignService,
-    CustomerService,
-    SubscriptionService,
-    TagService,
-    TemplateService,
-)
-from api.utils.subscription.actions import stop_subscription
-from api.utils.subscription.campaigns import get_campaign_from_address, get_campaign_url
-from api.utils.template.personalize import personalize_template
-from api.utils.template.selector import select_templates
-from api.utils.template.templates import validate_template
+from api.manager import CycleManager, SubscriptionManager, TemplateManager
+from utils.emails import convert_html_links, get_text_from_html
+from utils.templates import select_templates
 
-campaign_manager = CampaignManager()
-
-template_service = TemplateService()
-subscription_service = SubscriptionService()
-campaign_service = CampaignService()
-customer_service = CustomerService()
-tag_service = TagService()
+template_manager = TemplateManager()
+subscription_manager = SubscriptionManager()
+cycle_manager = CycleManager()
 
 
-class TemplatesListView(APIView):
-    """This is the TemplatesListView."""
+class TemplatesView(MethodView):
+    """TemplatesView."""
 
-    def get(self, request):
-        """Get method."""
-        serializer = TemplateQuerySerializer(request.GET.dict())
-        parameters = serializer.data
-        if not parameters:
-            parameters = request.data.copy()
-
+    def get(self):
+        """Get."""
         # Allow querying a list of templates
-        templates = request.GET.get("templates")
+        parameters = template_manager.get_query(request.args)
+        templates = request.args.get("templates")
         if templates:
             parameters["template_uuid"] = {"$in": templates.split(",")}
 
-        template_list = template_service.get_list(parameters)
-        return Response(template_list, status=status.HTTP_200_OK)
+        parameters["retired"] = {"$in": [False, None]}
+        if request.args.get("retired", "").lower() == "true":
+            parameters["retired"] = True
+        return jsonify(template_manager.all(params=parameters))
 
-    def post(self, request, format=None):
-        """Post method."""
-        post_data = request.data.copy()
-        if template_service.exists({"name": post_data["name"]}):
-            return Response(
-                {"error": "Template with that name already exists"},
-                status=status.HTTP_409_CONFLICT,
-            )
+    def post(self):
+        """Post."""
+        data = request.json
+        if template_manager.exists({"name": data["name"]}):
+            return jsonify({"error": "Template with that name already exists."}), 400
 
-        is_invalid = validate_template(post_data)
-        if is_invalid:
-            return Response(is_invalid, status=status.HTTP_400_BAD_REQUEST)
-
-        created_response = template_service.save(post_data)
-        return Response(created_response, status=status.HTTP_201_CREATED)
+        # TODO: Validate Template
+        return jsonify(template_manager.save(data))
 
 
-class TemplateView(APIView):
+class TemplateView(MethodView):
     """TemplateView."""
 
-    def get(self, request, template_uuid):
-        """Get method."""
-        template = template_service.get(template_uuid)
-        return Response(template)
+    def get(self, template_uuid):
+        """Get."""
+        return template_manager.get(uuid=template_uuid)
 
-    def patch(self, request, template_uuid):
-        """Patch method."""
-        put_data = request.data.copy()
-        if put_data["landing_page_uuid"] == "0" or not put_data["landing_page_uuid"]:
-            put_data["landing_page_uuid"] = None
+    def put(self, template_uuid):
+        """Put."""
+        data = request.json
+        if data.get("landing_page_uuid") in ["0", None]:
+            data["landing_page_uuid"] = None
 
-        template = template_service.get(template_uuid)
-        template.update(put_data)
-        is_invalid = validate_template(template)
-        if is_invalid:
-            return Response(is_invalid, status=status.HTTP_400_BAD_REQUEST)
-        updated_response = template_service.update(template_uuid, template)
-        return Response(updated_response, status=status.HTTP_202_ACCEPTED)
-
-    def delete(self, request, template_uuid):
-        """Delete method."""
-        # Get template
-        template = template_service.get(template_uuid)
-
-        # Check if retired
-        if not template["retired"]:
-            return Response(
-                {"error": "You must retire the template first"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        # Check if its used in any campaigns
-        if campaign_service.exists(parameters={"template_uuid": template_uuid}):
-            return Response(
-                {
-                    "error": "This template can not be deleted, it is associated with subscriptions.",
+        if data.get("retired"):
+            subscriptions = subscription_manager.all(
+                params={
+                    "$or": [
+                        {"templates_selected.low": template_uuid},
+                        {"templates_selected.moderate": template_uuid},
+                        {"templates_selected.high": template_uuid},
+                    ]
                 },
-                status=status.HTTP_400_BAD_REQUEST,
+                fields=["subscription_uuid", "name"],
             )
+            if subscriptions:
+                return (
+                    jsonify(
+                        {
+                            "error": "Subscriptions are currently utilizing this template.",
+                            "subscriptions": subscriptions,
+                        }
+                    ),
+                    400,
+                )
 
-        # check if a subscription has this template in the list of selected templates
-        subscriptions = subscription_service.get_list(fields=["templates_selected"])
-        for sub in subscriptions:
-            templates_selected = []
-            [
-                templates_selected.extend(v)
-                for v in sub.get("templates_selected", {}).values()
-            ]
-            if template_uuid in templates_selected:
-                return Response(
+        template = template_manager.get(uuid=template_uuid)
+        template.update(data)
+
+        # TODO: Validate Template
+        template_manager.update(uuid=template_uuid, data=template)
+        return jsonify({"success": True})
+
+    def delete(self, template_uuid):
+        """Delete."""
+        template = template_manager.get(uuid=template_uuid)
+
+        if not template.get("retired"):
+            return jsonify({"error": "You must retire the template first."}), 400
+
+        cycles = cycle_manager.all(
+            params={"template_uuids": template_uuid}, fields=["subscription_uuid"]
+        )
+        if cycles:
+            cycle_subs = subscription_manager.all(
+                params={
+                    "subscription_uuid": {
+                        "$in": {c["subscription_uuid"] for c in cycles}
+                    }
+                },
+                fields=["subscription_uuid", "name"],
+            )
+            return (
+                jsonify(
                     {
-                        "error": "This template cannot be deleted, it is assocated with subscriptions."
-                    },
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-
-        delete_response = template_service.delete(template_uuid)
-        return Response(delete_response, status=status.HTTP_200_OK)
-
-
-class TemplateStopView(APIView):
-    """TemplateStopView."""
-
-    def get(self, request, template_uuid):
-        """Get method."""
-        # get subscriptions
-        campaigns = campaign_service.get_list(
-            parameters={"template_uuid": template_uuid},
-            fields=["subscription_uuid"],
-        )
-
-        subscription_uuids = {c["subscription_uuid"] for c in campaigns}
-        updated_subscriptions = []
-        for uuid in subscription_uuids:
-            subscription = subscription_service.get(uuid)
-            if subscription["active"]:
-                stop_subscription(subscription)
-                updated_subscriptions.append(subscription)
-
-        # Get template
-        template = template_service.get(template_uuid)
-
-        # Update template
-        template["retired"] = True
-        template["retired_description"] = "Manually Stopped"
-        template_service.update(template_uuid, template)
-
-        # Generate and return response
-        resp = {"template": template, "subscriptions": updated_subscriptions}
-        serializer = TemplateStopResponseSerializer(resp)
-        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
-
-
-class SendingTestEmailsView(APIView):
-    """SendingTestEmailsView."""
-
-    def post(self, request):
-        """Post."""
-        sp = request.data.copy()
-        # build the template
-        # send the test
-        # tear the template down
-        sent_template = None
-        try:
-            if sp.get("customer_uuid"):
-                customer = customer_service.get(sp["customer_uuid"])
-            else:
-                customer = customer_service.get_list()[0]
-            if sp.get("template").get("name"):
-                tmp_template = sp.get("template")
-                tmp_template["html"] = str(tmp_template["html"]).replace(
-                    "<%URL%>", "{{.URL}}"
-                )
-                personalized_data = personalize_template(
-                    customer_info=customer,
-                    template_data=[tmp_template],
-                    sub_data=None,
-                    tag_list=tag_service.get_list(),
-                )[0]
-                sent_template = campaign_manager.create_email_template(
-                    tmp_template.get("name") + "_test",
-                    personalized_data["data"],
-                    personalized_data["subject"],
-                    tmp_template.get("text"),
-                )
-
-                test_send = self._build_test_smtp(sp, personalized_data["from_address"])
-            else:
-                test_send = self._build_test_smtp(
-                    sp, sp.get("smtp").get("from_address")
-                )
-            test_response = campaign_manager.send_test_email(test_send)
-        finally:
-            if sent_template:
-                campaign_manager.delete_email_template(sent_template.id)
-
-        return Response(test_response)
-
-    def _build_test_smtp(self, sp, from_address):
-        smtp = sp.get("smtp")
-        if sp.get("template").get("name"):
-            template = sp.get("template")
-            template["name"] = template["name"] + "_test"
-        else:
-            template = {"name": sp.get("template").get("name")}
-
-        smtp_test = {
-            "template": template,
-            "first_name": sp.get("first_name"),
-            "last_name": sp.get("last_name"),
-            "email": sp.get("email"),
-            "position": sp.get("position"),
-            "url": get_campaign_url(smtp),
-            "smtp": {
-                "from_address": get_campaign_from_address(smtp, from_address),
-                "host": smtp.get("host"),
-                "username": smtp.get("username"),
-                "password": smtp.get("password"),
-                "ignore_cert_errors": smtp.get("ignore_cert_errors"),
-                "headers": smtp.get("headers"),
-            },
-        }
-        return smtp_test
-
-
-class TemplateEmailImportView(APIView):
-    """TemplateEmailImportView."""
-
-    def post(self, request):
-        """Post."""
-        post_data = request.data.copy()
-        return Response(
-            campaign_manager.import_email(
-                content=post_data["content"],
-                convert_link=post_data["convert_link"],
+                        "error": "Subscriptions are currently utilizing this template.",
+                        "subscriptions": cycle_subs,
+                    }
+                ),
+                400,
             )
+
+        subscriptions = subscription_manager.all(
+            params={
+                "$or": [
+                    {"templates_selected.low": template_uuid},
+                    {"templates_selected.moderate": template_uuid},
+                    {"templates_selected.high": template_uuid},
+                ]
+            },
+            fields=["subscription_uuid", "name"],
         )
+        if subscriptions:
+            return (
+                jsonify(
+                    {
+                        "error": "Subscriptions are currently utilizing this template.",
+                        "subscriptions": subscriptions,
+                    }
+                ),
+                400,
+            )
+
+        return jsonify(template_manager.delete(uuid=template_uuid))
 
 
-class TemplateSelectView(APIView):
+# TODO: TemplateStopView
+class TemplateImportView(MethodView):
+    """TemplateImportView."""
+
+    def post(self):
+        """Post."""
+        # TODO: Support email files
+        #   Return subject of email
+        html = request.json["content"]
+        # TODO: Convert html links only if specified.
+        html = convert_html_links(html)
+        text = get_text_from_html(html)
+        return jsonify({"text": text, "html": html})
+
+
+class TemplatesSelectView(MethodView):
     """TemplateSelectView."""
 
-    def get(self, request):
+    def get(self):
         """Get."""
-        templates = template_service.get_list({"retired": False})
-        return Response(select_templates(templates))
-
-
-class TemplateBulkDownload(APIView):
-    """TemplateBulkDownloadView."""
-
-    def get(self, request):
-        """Get all temlpates for json download."""
-        serializer = TemplateQuerySerializer(request.GET.dict())
-        parameters = serializer.data
-
-        templates = template_service.get_list({"retired": parameters["retired"]})
-
-        return Response(templates, status=status.HTTP_200_OK)
+        templates = template_manager.all({"retired": False})
+        return jsonify(select_templates(templates))

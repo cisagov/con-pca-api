@@ -5,7 +5,7 @@ ts := $(shell /bin/date "+%Y-%m-%d--%H-%M-%S")
 
 # make all - Default Target. Does nothing.
 all:
-	@echo "Django helper commands."
+	@echo "Helper commands."
 	@echo "For more information try 'make help'."
 
 # target: help - Display callable targets.
@@ -22,42 +22,34 @@ attach:
 
 # target: build = build all containers
 build:
-	docker-compose -f new-docker-compose.yml build
-build_old:
 	docker-compose build
 
-# target: app logs - Runs django logs in the terminal
+# target: app logs - Runs docker logs in the terminal
 logs:
 	 docker logs pca-api
 
 # target: up - Run local web server.
 up:
-	docker-compose -f new-docker-compose.yml up -d
-up_old:
 	docker-compose up -d
 
 # target: stop - Stop all docker containers
 stop:
-	docker-compose -f new-docker-compose.yml stop
-stop_old:
 	docker-compose stop
 
 # target: down - Remove all docker containers
 down:
-	docker-compose -f new-docker-compose.yml down
-down_old:
 	docker-compose down
 
 # target: redeploy = bring down, rebuild and redeploy all containers
 redeploy: down build up
 
-# target: shell - django shell within container
+# target: shell - docker python shell within container
 shell:
 	docker exec -it pca-api python3
 
 # target: build_emails: build mjml emails - requires: npm install -g mjml
 build_emails:
-	mjml new/api/templates/emails/mjml/* -o new/api/templates/emails/
+	mjml src/api/templates/emails/mjml/* -o src/api/templates/emails/
 
 # target: dummy - initializes init_dummy_data for cpa
 dummy:
