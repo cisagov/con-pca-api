@@ -4,7 +4,6 @@ coverage
 flake8
 pre-commit
 pytest
-pytest-django
 pytest-dockerc
 pytest-dotenv
 pytest-env

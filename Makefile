@@ -5,7 +5,7 @@ ts := $(shell /bin/date "+%Y-%m-%d--%H-%M-%S")
 
 # make all - Default Target. Does nothing.
 all:
-	@echo "Django helper commands."
+	@echo "Helper commands."
 	@echo "For more information try 'make help'."
 
 # target: help - Display callable targets.
@@ -24,7 +24,7 @@ attach:
 build:
 	docker-compose build
 
-# target: app logs - Runs django logs in the terminal
+# target: app logs - Runs docker logs in the terminal
 logs:
 	 docker logs pca-api
 
@@ -43,7 +43,7 @@ down:
 # target: redeploy = bring down, rebuild and redeploy all containers
 redeploy: down build up
 
-# target: shell - django shell within container
+# target: shell - docker python shell within container
 shell:
 	docker exec -it pca-api python3
 
