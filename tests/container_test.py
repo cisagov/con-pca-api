@@ -38,7 +38,11 @@ def test_wait_for_ready(main_container):
     assert main_container.is_restarting is False
     assert main_container.exit_code == 0
 
-    # Make a request against the base url on the container
+    # Make a request against landing app
     resp = requests.get("http://localhost:8000")
+    assert resp.status_code == 404
+
+    # Make a request against api
+    resp = requests.get("http://localhost:5000")
     assert resp.status_code == 200
     assert "Con-PCA" in resp.text
