@@ -14,46 +14,98 @@ class LEVELS:
 TEMPLATE_INDICATORS = {
     "appearance": {
         "grammar": {
-            "name": "Apperance & Grammar",
-            "0": "Poor",
-            "1": "Decent",
-            "2": "Proper",
+            "name": "Grammar",
+            "values": {
+                "0": "Poor",
+                "1": "Decent",
+                "2": "Proper",
+            },
         },
         "link_domain": {
-            "name": "Link Domain",
-            "0": "Fake",
-            "1": "Spoofed / Hidden",
+            "name": "Link/Domain",
+            "values": {
+                "0": "Unrelated",
+                "1": "Related/Hidden/Spoofed",
+            },
         },
         "logo_graphics": {
-            "name": "Logo / Graphics",
-            "0": "Fake / None",
-            "1": "Sppofed / HTML",
+            "name": "Logo/Graphics",
+            "values": {
+                "0": "Plain Text",
+                "1": "Visual Appeal",
+            },
         },
     },
     "sender": {
-        "external": {"name": "Sender External", "0": "Fake / NA", "1": "Spoofed"},
+        "external": {
+            "name": "External",
+            "values": {
+                "0": "Not External/Unpsecified",
+                "1": "Specified",
+            },
+        },
         "internal": {
             "name": "Internal",
-            "0": "Fake / NA",
-            "1": "Unknown Spoofed",
-            "2": "Known Spoofed",
+            "values": {
+                "0": "Not Internal/Unspecified",
+                "1": "Generic/Close",
+                "2": "Spoofed",
+            },
         },
         "authoritative": {
             "name": "Authoritative",
-            "0": "None",
-            "1": "Corprate / Local",
-            "2": "Federal / State",
+            "values": {
+                "0": "None",
+                "1": "Peer",
+                "2": "Superior",
+            },
         },
     },
     "relevancy": {
-        "organization": {"name": "Relevancy Orginization", "0": "No", "1": "Yes"},
-        "public_news": {"name": "Public News", "0": "No", "1": "Yes"},
+        "organization": {
+            "name": "Orginization",
+            "values": {
+                "0": "No",
+                "1": "Yes",
+            },
+        },
+        "public_news": {
+            "name": "Public News",
+            "values": {
+                "0": "No",
+                "1": "Yes",
+            },
+        },
     },
     "behavior": {
-        "fear": {"name": "Fear", "0": "Yes", "1": "No"},
-        "duty_obligation": {"name": "Duty or Obligation", "0": "Yes", "1": "No"},
-        "curiosity": {"name": "Curiosity", "0": "Yes", "1": "No"},
-        "greed": {"name": "Greed", "0": "Yes", "1": "No"},
+        "fear": {
+            "name": "Fear",
+            "values": {
+                "0": "Yes",
+                "1": "No",
+            },
+        },
+        "duty_obligation": {
+            "name": "Duty or Obligation",
+            "values": {
+                "0": "Yes",
+                "1": "No",
+            },
+        },
+        "curiosity": {
+            "name": "Curiosity",
+            "values": {
+                "0": "Yes",
+                "1": "No",
+            },
+        },
+        "greed": {
+            "name": "Greed",
+            "values": {
+                "0": "Yes",
+                "1": "No",
+            },
+        },
     },
 }
 
