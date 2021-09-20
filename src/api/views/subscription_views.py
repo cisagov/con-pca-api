@@ -1,231 +1,119 @@
 """Subscription Views."""
-# Standard Python Libraries
-import logging
-
 # Third-Party Libraries
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.views import APIView
+from flask import jsonify, request
+from flask.views import MethodView
 
 # cisagov Libraries
-from api.manager import CampaignManager
-from api.services import (
-    CampaignService,
-    CustomerService,
-    DHSContactService,
-    SubscriptionService,
-)
-from api.utils.stats import update_phish_results
-from api.utils.subscription.actions import (
-    create_subscription,
-    launch_subscription,
+from api.manager import CustomerManager, CycleManager, SubscriptionManager
+from utils.subscriptions import (
+    create_subscription_name,
+    start_subscription,
     stop_subscription,
 )
-from api.utils.subscription.subscriptions import add_remove_continuous_subscription_task
-from api.utils.subscription.valid import is_subscription_valid
+from utils.valid import is_subscription_valid
 
-campaign_manager = CampaignManager()
-
-dhs_contact_service = DHSContactService()
-campaign_service = CampaignService()
-customer_service = CustomerService()
-subscription_service = SubscriptionService()
+subscription_manager = SubscriptionManager()
+customer_manager = CustomerManager()
+cycle_manager = CycleManager()
 
 
-class SubscriptionsListView(APIView):
-    """SubscriptionsListView."""
-
-    def get(self, request):
-        """Get."""
-        parameters = {"archived": {"$in": [False, None]}}
-        archivedParm = request.GET.get("archived")
-        if archivedParm:
-            if archivedParm.lower() == "true":
-                parameters["archived"] = True
-
-        # Need to get subscriptions using templates from campaign list.
-        # If a template is deleted that a subscription historically has used.
-        # The subscription stops working in the UI.
-        if request.GET.get("template"):
-            campaigns = campaign_service.get_list(
-                parameters={"template_uuid": request.GET.get("template")}
-            )
-            parameters["subscription_uuid"] = {
-                "$in": [str(c["subscription_uuid"]) for c in campaigns]
-            }
-
-        if request.GET.get("dhs_contact"):
-            parameters["dhs_contact_uuid"] = request.GET.get("dhs_contact")
-
-        subscription_list = subscription_service.get_list(
-            parameters=parameters,
-            fields=[
-                "subscription_uuid",
-                "customer_uuid",
-                "name",
-                "status",
-                "start_date",
-                "active",
-                "archived",
-                "lub_timestamp",
-                "primary_contact",
-                "dhs_contact_uuid",
-            ],
-        )
-        return Response(subscription_list)
-
-    def post(self, request, format=None):
-        """Post."""
-        resp = create_subscription(request.data)
-        return Response(resp, status=status.HTTP_201_CREATED)
-
-
-class SubscriptionView(APIView):
+class SubscriptionsView(MethodView):
     """SubscriptionsView."""
 
-    def get(self, request, subscription_uuid):
+    def get(self):
         """Get."""
-        subscription = subscription_service.get(subscription_uuid)
-        if subscription is None:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-        update_phish_results(subscription)
-        return Response(subscription)
+        parameters = dict(request.args)
 
-    def patch(self, request, subscription_uuid):
-        """Patch."""
-        put_data = request.data.copy()
-        # Don't add task if tasks dont exist. This means the subscription is already stopped.
-        subscription = subscription_service.get(subscription_uuid, fields=["tasks"])
-        if "continuous_subscription" in put_data and subscription.get("tasks"):
-            add_remove_continuous_subscription_task(
-                subscription_uuid,
-                subscription["tasks"],
-                put_data["continuous_subscription"],
+        # TODO: Allow querying by template
+        parameters = subscription_manager.get_query(parameters)
+
+        if request.args.get("template"):
+            cycles = cycle_manager.all(
+                params={"template_uuids": request.args["template"]},
+                fields=["subscription_uuid"],
             )
-        updated_response = subscription_service.update(subscription_uuid, put_data)
-        return Response(updated_response, status=status.HTTP_202_ACCEPTED)
+            subscription_uuids = list({c["subscription_uuid"] for c in cycles})
+            parameters["$or"] = [
+                {"subscription_uuid": {"$in": subscription_uuids}},
+                {"templates_selected.low": request.args["template"]},
+                {"templates_selected.moderate": request.args["template"]},
+                {"templates_selected.high": request.args["template"]},
+            ]
 
-    def delete(self, request, subscription_uuid):
-        """Delete."""
-        subscription = subscription_service.get(subscription_uuid)
-        if subscription["status"] != "stopped":
-            try:
-                # Stop subscription
-                stop_subscription(subscription)
-            except Exception as e:
-                logging.exception(e)
+        parameters["archived"] = {"$in": [False, None]}
+        if request.args.get("archived", "").lower() == "true":
+            parameters["archived"] = True
 
-        # Delete Campaigns
-        campaigns = campaign_service.get_list({"subscription_uuid": subscription_uuid})
-        for campaign in campaigns:
-            campaign_service.delete(str(campaign["campaign_uuid"]))
-
-        # Delete Subscription
-        delete_response = subscription_service.delete(subscription_uuid)
-
-        return Response(delete_response, status=status.HTTP_200_OK)
-
-
-class SubscriptionsCustomerListView(APIView):
-    """SubscriptionsCustomerListView."""
-
-    def get(self, request, customer_uuid):
-        """Get."""
-        parameters = {"customer_uuid": customer_uuid, "archived": False}
-        subscription_list = subscription_service.get_list(parameters)
-        return Response(subscription_list)
-
-    def post(self, request, customer_uuid):
-        """Post."""
-        search_data = request.data.copy()
-        cust_arch = {"customer_uuid": customer_uuid, "archived": False}
-        parameters = {**search_data, **cust_arch}
-        subscription_list = subscription_service.get_list(parameters)
-        return Response(subscription_list)
-
-
-class SubscriptionsTemplateListView(APIView):
-    """SubscriptionsTemplateListView."""
-
-    def get(self, request, template_uuid):
-        """Get."""
-        parameters = {"templates_selected_uuid_list": template_uuid, "archived": False}
-        subscription_list = subscription_service.get_list(parameters)
-        return Response(subscription_list)
-
-
-class SubscriptionStopView(APIView):
-    """SubscriptionStopView."""
-
-    def get(self, request, subscription_uuid):
-        """Get."""
-        subscription = subscription_service.get(subscription_uuid)
-        resp = stop_subscription(subscription)
-        return Response(resp, status=status.HTTP_202_ACCEPTED)
-
-
-class SubscriptionRestartView(APIView):
-    """SubscriptionRestartView."""
-
-    def get(self, request, subscription_uuid):
-        """Get."""
-        created_response = launch_subscription(subscription_uuid)
-        return Response(created_response, status=status.HTTP_202_ACCEPTED)
-
-
-class SubscriptionTargetCacheView(APIView):
-    """SubscriptionTargetCacheView."""
-
-    def post(self, request, subscription_uuid):
-        """Post."""
-        target_update_data = request.data.copy()
-
-        resp = subscription_service.update(
-            subscription_uuid, {"target_email_list_cached_copy": target_update_data}
+        return jsonify(
+            subscription_manager.all(
+                params=parameters,
+                fields=[
+                    "subscription_uuid",
+                    "customer_uuid",
+                    "name",
+                    "status",
+                    "start_date",
+                    "active",
+                    "archived",
+                    "primary_contact",
+                    "admin_email",
+                ],
+            )
         )
 
-        return Response(resp, status=status.HTTP_202_ACCEPTED)
+    def post(self):
+        """Post."""
+        subscription = request.json
+        customer = customer_manager.get(uuid=subscription["customer_uuid"])
+        subscription["name"] = create_subscription_name(customer)
+        subscription["status"] = "created"
+        response = subscription_manager.save(subscription)
+        response["name"] = subscription["name"]
+        return jsonify(response)
 
 
-class SubscriptionValidView(APIView):
+class SubscriptionView(MethodView):
+    """SubscriptionView."""
+
+    def get(self, subscription_uuid):
+        """Get."""
+        return jsonify(subscription_manager.get(uuid=subscription_uuid))
+
+    def put(self, subscription_uuid):
+        """Put."""
+        subscription_manager.update(uuid=subscription_uuid, data=request.json)
+        return jsonify({"success": True})
+
+    def delete(self, subscription_uuid):
+        """Delete."""
+        subscription_manager.delete(uuid=subscription_uuid)
+        cycle_manager.delete(params={"subscription_uuid": subscription_uuid})
+        return jsonify({"success": True})
+
+
+class SubscriptionLaunchView(MethodView):
+    """SubscriptionLaunchView."""
+
+    def get(self, subscription_uuid):
+        """Launch a subscription."""
+        return jsonify(start_subscription(subscription_uuid))
+
+    def delete(self, subscription_uuid):
+        """Stop a subscription."""
+        return jsonify(stop_subscription(subscription_uuid))
+
+
+class SubscriptionValidView(MethodView):
     """SubscriptionValidView."""
 
-    def post(self, request):
+    def post(self):
         """Post."""
-        data = request.data.copy()
+        data = request.json
         is_valid, message = is_subscription_valid(
             data["target_count"],
             data["cycle_minutes"],
         )
         if is_valid:
-            return Response("Subscription is valid", status=status.HTTP_200_OK)
+            return jsonify({"success": "Subscription is valid."}), 200
         else:
-            return Response(message, status=status.HTTP_400_BAD_REQUEST)
-
-
-class SubscriptionJSONDownloadView(APIView):
-    """SubscriptionsView."""
-
-    def get(self, request, subscription_uuid):
-        """Get."""
-        subscription = subscription_service.get(subscription_uuid)
-        if subscription is None:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-        update_phish_results(subscription)
-        customer = customer_service.get(subscription["customer_uuid"])
-        subscription["customer"] = customer
-        dhs_contact = dhs_contact_service.get(subscription["dhs_contact_uuid"])
-        subscription["dhs_contact"] = dhs_contact
-
-        fields_to_remove = [
-            "customer_uuid",
-            "dhs_contact_uuid",
-            "subscription_uuid",
-            "target_email_list_cached_copy",
-            "templates_selected_uuid_list",
-        ]
-
-        for field in fields_to_remove:
-            subscription.pop(field)
-
-        return Response(subscription)
+            return jsonify({"error": message}), 400
