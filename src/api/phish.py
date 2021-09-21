@@ -1,7 +1,7 @@
 """Phishing tasks."""
 # Standard Python Libraries
 import base64
-from datetime import datetime, timedelta
+from datetime import datetime
 from itertools import groupby
 import logging
 
@@ -85,9 +85,8 @@ def process_targets(targets):
                 target_manager.update(
                     uuid=t["target_uuid"],
                     data={
-                        "sent": False,
                         "error": str(e),
-                        "send_date": datetime.utcnow() + timedelta(minutes=5),
+                        "sent_date": datetime.utcnow(),
                     },
                 )
 
