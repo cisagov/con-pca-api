@@ -4,7 +4,12 @@ from flask import jsonify, request
 from flask.views import MethodView
 
 # cisagov Libraries
-from api.manager import CustomerManager, CycleManager, SubscriptionManager
+from api.manager import (
+    CustomerManager,
+    CycleManager,
+    SubscriptionManager,
+    TargetManager,
+)
 from utils.subscriptions import (
     create_subscription_name,
     start_subscription,
@@ -15,6 +20,7 @@ from utils.valid import is_subscription_valid
 subscription_manager = SubscriptionManager()
 customer_manager = CustomerManager()
 cycle_manager = CycleManager()
+target_manager = TargetManager()
 
 
 class SubscriptionsView(MethodView):
@@ -88,6 +94,7 @@ class SubscriptionView(MethodView):
         """Delete."""
         subscription_manager.delete(uuid=subscription_uuid)
         cycle_manager.delete(params={"subscription_uuid": subscription_uuid})
+        target_manager.delete(params={"subscription_uuid": subscription_uuid})
         return jsonify({"success": True})
 
 
