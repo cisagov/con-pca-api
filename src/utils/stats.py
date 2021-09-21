@@ -249,7 +249,7 @@ def get_indicator_stats(template_stats, all_clicks):
                         "clicks": 0,
                         "percentage": 0,
                         "name": TEMPLATE_INDICATORS[indicator][subindicator]["name"],
-                        "label": TEMPLATE_INDICATORS[indicator][subindicator][
+                        "label": TEMPLATE_INDICATORS[indicator][subindicator]["values"][
                             str(score)
                         ],
                     }
