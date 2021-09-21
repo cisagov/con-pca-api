@@ -29,7 +29,12 @@ def start_subscription(subscription_uuid):
     cycle["target_count"] = total_targets
     cycle["template_uuids"] = set()
     deception_mods = get_deception_mods()
+    resp = cycle_manager.save(cycle)
+    cycle_uuid = resp["cycle_uuid"]
     for index, target in enumerate(subscription["target_email_list"]):
+        # Assign uuids to target
+        target["cycle_uuid"] = cycle_uuid
+        target["subscription_uuid"] = subscription_uuid
         # Assign send date to target
         target["send_date"] = get_target_send_date(
             index, total_targets, cycle["start_date"], cycle["send_by_date"]
@@ -53,11 +58,8 @@ def start_subscription(subscription_uuid):
             "tasks": tasks,
         },
     )
-    resp = cycle_manager.save(cycle)
-    for target in targets:
-        target["cycle_uuid"] = resp["cycle_uuid"]
-        target["subscription_uuid"] = cycle["subscription_uuid"]
-        target_manager.save(target)
+    cycle_manager.update(uuid=cycle_uuid, data=cycle)
+    target_manager.save_many(targets)
     return resp
 
 
