@@ -1,7 +1,7 @@
 """Phishing tasks."""
 # Standard Python Libraries
 import base64
-from datetime import datetime
+from datetime import datetime, timedelta
 from itertools import groupby
 import logging
 
@@ -74,51 +74,66 @@ def get_target():
 
 def process_targets(targets):
     """Process cycle targets for sending."""
-    for subscription_uuid, targets in groupby(
+    for subscription_uuid, subscription_targets in groupby(
         targets, key=lambda x: x["subscription_uuid"]
     ):
-        # Get subscription for sending profile and customer
-        subscription = subscription_manager.get(
-            uuid=subscription_uuid,
-            fields=["sending_profile_uuid", "customer_uuid"],
-        )
-        # Get sending profile to send emails
-        sending_profile = sending_profile_manager.get(
-            uuid=subscription["sending_profile_uuid"]
-        )
-        # Get customer for email context
-        customer = customer_manager.get(uuid=subscription["customer_uuid"])
+        try:
+            process_subscription_targets(subscription_uuid, subscription_targets)
+        except Exception as e:
+            logging.exception(e)
+            for t in subscription_targets:
+                target_manager.update(
+                    uuid=t["target_uuid"],
+                    data={
+                        "sent": False,
+                        "error": str(e),
+                        "send_date": datetime.utcnow() + timedelta(minutes=5),
+                    },
+                )
 
-        # Group targets by template
-        for template_uuid, targets in groupby(
-            targets, key=lambda x: x["template_uuid"]
-        ):
-            template = template_manager.get(uuid=template_uuid)
-            sp = (
-                sending_profile_manager.get(template["sending_profile_uuid"])
-                if template.get("sending_profile_uuid")
-                else sending_profile
-            )
-            email = Email(sending_profile=sp)
-            for target in targets:
-                try:
-                    process_target(sp, target, customer, template, email)
-                except Exception as e:
-                    logging.exception(e)
-                    target["error"] = str(e)
-                finally:
-                    target_manager.update(
-                        uuid=target["target_uuid"],
-                        data={"sent": True, "sent_date": datetime.utcnow()},
-                    )
 
-        cycle_manager.update(
-            uuid=target["cycle_uuid"],
-            data={
-                "processing": False,
-                "dirty_stats": True,
-            },
+def process_subscription_targets(subscription_uuid, targets):
+    """Process subscription targets."""
+    # Get subscription for sending profile and customer
+    subscription = subscription_manager.get(
+        uuid=subscription_uuid,
+        fields=["sending_profile_uuid", "customer_uuid"],
+    )
+    # Get sending profile to send emails
+    sending_profile = sending_profile_manager.get(
+        uuid=subscription["sending_profile_uuid"]
+    )
+    # Get customer for email context
+    customer = customer_manager.get(uuid=subscription["customer_uuid"])
+
+    # Group targets by template
+    for template_uuid, targets in groupby(targets, key=lambda x: x["template_uuid"]):
+        template = template_manager.get(uuid=template_uuid)
+        sp = (
+            sending_profile_manager.get(template["sending_profile_uuid"])
+            if template.get("sending_profile_uuid")
+            else sending_profile
         )
+        email = Email(sending_profile=sp)
+        for target in targets:
+            try:
+                process_target(sp, target, customer, template, email)
+            except Exception as e:
+                logging.exception(e)
+                target["error"] = str(e)
+            finally:
+                target_manager.update(
+                    uuid=target["target_uuid"],
+                    data={"sent": True, "sent_date": datetime.utcnow()},
+                )
+
+    cycle_manager.update(
+        uuid=target["cycle_uuid"],
+        data={
+            "processing": False,
+            "dirty_stats": True,
+        },
+    )
 
 
 def process_target(sending_profile, target, customer, template, email):
