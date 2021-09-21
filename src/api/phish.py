@@ -101,31 +101,17 @@ def process_targets(targets):
             )
             email = Email(sending_profile=sp)
             for target in targets:
-                tracking_info = get_tracking_info(
-                    sp,
-                    target["cycle_uuid"],
-                    target["target_uuid"],
-                )
-                context = get_email_context(
-                    customer=customer,
-                    target=target,
-                    url=tracking_info["click"],
-                )
+                try:
+                    process_target(sp, target, customer, template, email)
+                except Exception as e:
+                    logging.exception(e)
+                    target["error"] = str(e)
+                finally:
+                    target_manager.update(
+                        uuid=target["target_uuid"],
+                        data={"sent": True, "sent_date": datetime.utcnow()},
+                    )
 
-                html = template["html"] + tracking_info["open"]
-
-                email_body = render_template_string(html, **context)
-                from_address = get_from_address(sp, template["from_address"])
-                email.send(
-                    to_email=target["email"],
-                    from_email=from_address,
-                    subject=template["subject"],
-                    body=email_body,
-                )
-                target_manager.update(
-                    uuid=target["target_uuid"],
-                    data={"sent": True, "sent_date": datetime.utcnow()},
-                )
         cycle_manager.update(
             uuid=target["cycle_uuid"],
             data={
@@ -133,6 +119,31 @@ def process_targets(targets):
                 "dirty_stats": True,
             },
         )
+
+
+def process_target(sending_profile, target, customer, template, email):
+    """Send email to target."""
+    tracking_info = get_tracking_info(
+        sending_profile,
+        target["cycle_uuid"],
+        target["target_uuid"],
+    )
+    context = get_email_context(
+        customer=customer,
+        target=target,
+        url=tracking_info["click"],
+    )
+
+    html = template["html"] + tracking_info["open"]
+
+    email_body = render_template_string(html, **context)
+    from_address = get_from_address(sending_profile, template["from_address"])
+    email.send(
+        to_email=target["email"],
+        from_email=from_address,
+        subject=template["subject"],
+        body=email_body,
+    )
 
 
 def get_landing_url(sending_profile):
