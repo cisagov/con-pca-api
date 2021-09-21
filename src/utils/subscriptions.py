@@ -9,11 +9,12 @@ import dateutil.parser
 
 # cisagov Libraries
 from api import config
-from api.manager import CycleManager, SubscriptionManager
+from api.manager import CycleManager, SubscriptionManager, TargetManager
 from utils.time import get_yearly_minutes
 
 subscription_manager = SubscriptionManager()
 cycle_manager = CycleManager()
+target_manager = TargetManager()
 
 
 def start_subscription(subscription_uuid):
@@ -23,13 +24,12 @@ def start_subscription(subscription_uuid):
     cycle.update(calculate_cycle_dates(subscription))
     cycle["subscription_uuid"] = subscription_uuid
     cycle["active"] = True
-    cycle["targets"] = []
+    targets = []
     total_targets = len(subscription["target_email_list"])
     cycle["target_count"] = total_targets
     cycle["template_uuids"] = set()
     deception_mods = get_deception_mods()
     for index, target in enumerate(subscription["target_email_list"]):
-        target["target_uuid"] = str(uuid4())
         # Assign send date to target
         target["send_date"] = get_target_send_date(
             index, total_targets, cycle["start_date"], cycle["send_by_date"]
@@ -37,11 +37,12 @@ def start_subscription(subscription_uuid):
         # Assign deception level to target
         target["deception_level"] = deception_mods[index % 3]
         # Assign template to target
+        # TODO: find template that target hasn't been sent from set
         # https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b311-random
         target["template_uuid"] = random.choice(  # nosec
             subscription["templates_selected"][target["deception_level"]]
         )
-        cycle["targets"].append(target)
+        targets.append(target)
         cycle["template_uuids"].add(target["template_uuid"])
 
     tasks = get_initial_tasks(subscription, cycle)
@@ -52,12 +53,23 @@ def start_subscription(subscription_uuid):
             "tasks": tasks,
         },
     )
-    return cycle_manager.save(cycle)
+    resp = cycle_manager.save(cycle)
+    for target in targets:
+        target["cycle_uuid"] = resp["cycle_uuid"]
+        target["subscription_uuid"] = cycle["subscription_uuid"]
+        target_manager.save(target)
+    return resp
 
 
 def stop_subscription(subscription_uuid):
     """Stop a subscription."""
-    cycle = cycle_manager.get(filter_data={"active": True}, fields=["cycle_uuid"])
+    cycle = cycle_manager.get(
+        filter_data={
+            "active": True,
+            "subscription_uuid": subscription_uuid,
+        },
+        fields=["cycle_uuid"],
+    )
     cycle_manager.update(cycle["cycle_uuid"], {"active": False})
     subscription_manager.update(
         uuid=subscription_uuid, data={"status": "stopped", "tasks": []}

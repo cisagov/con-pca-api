@@ -16,6 +16,7 @@ from api.manager import (
     CycleManager,
     SendingProfileManager,
     SubscriptionManager,
+    TargetManager,
     TemplateManager,
 )
 from utils.emails import Email, get_email_context, get_from_address
@@ -24,107 +25,114 @@ customer_manager = CustomerManager()
 cycle_manager = CycleManager()
 sending_profile_manager = SendingProfileManager()
 subscription_manager = SubscriptionManager()
+target_manager = TargetManager()
 template_manager = TemplateManager()
 
 
 def emails_job():
     """Email job to run every minute."""
     with app.app_context():
+        targets = []
         while True:
-            cycle = get_cycle()
-            if not cycle:
-                logging.info("No more cycles to process.")
+            target = get_target()
+            if not target:
+                logging.info("No more targets found.")
                 break
-            process_cycle(cycle)
+            targets.append(target)
+        if targets:
+            process_targets(targets)
+            logging.info("Processed all targets.")
+        else:
+            logging.info("No targets to send to.")
 
 
-def process_cycle(cycle):
-    """Process cycle targets for sending."""
-    # Get subscription for sending profile and customer
-    subscription = subscription_manager.get(
-        uuid=cycle["subscription_uuid"],
-        fields=["sending_profile_uuid", "customer_uuid"],
-    )
-    # Get sending profile to send emails
-    sending_profile = sending_profile_manager.get(
-        uuid=subscription["sending_profile_uuid"]
-    )
-    # Get customer for email context
-    customer = customer_manager.get(uuid=subscription["customer_uuid"])
-
-    # Filter out targets that need sent to
-    targets = list(
-        filter(
-            lambda x: x["send_date"].timestamp() < datetime.utcnow().timestamp()
-            and not x.get("sent"),
-            cycle["targets"],
-        )
-    )
-
-    # Group targets by template
-    for template_uuid, targets in groupby(targets, key=lambda x: x["template_uuid"]):
-        template = template_manager.get(uuid=template_uuid)
-        sp = (
-            sending_profile_manager.get(template["sending_profile_uuid"])
-            if template.get("sending_profile_uuid")
-            else sending_profile
-        )
-        email = Email(sending_profile=sp)
-        for target in targets:
-            tracking_info = get_tracking_info(
-                sp,
-                cycle["cycle_uuid"],
-                target["target_uuid"],
-            )
-            context = get_email_context(
-                customer=customer,
-                target=target,
-                url=tracking_info["click"],
-            )
-
-            html = template["html"] + tracking_info["open"]
-
-            email_body = render_template_string(html, **context)
-            from_address = get_from_address(sp, template["from_address"])
-            email.send(
-                to_email=target["email"],
-                from_email=from_address,
-                subject=template["subject"],
-                body=email_body,
-            )
-            target["sent"] = True
-            target["sent_date"] = datetime.utcnow()
-            cycle_manager.update_in_list(
-                uuid=cycle["cycle_uuid"],
-                field="targets.$",
-                data=target,
-                params={"targets.target_uuid": target["target_uuid"]},
-            )
-
-    cycle_manager.update(
-        uuid=cycle["cycle_uuid"],
-        data={
-            "processing": False,
-            "dirty_stats": True,
-        },
-    )
-
-
-def get_cycle():
-    """Get and update cycle for processing."""
-    return cycle_manager.find_one_and_update(
+def get_target():
+    """Get and update target for processing."""
+    active_cycles = cycle_manager.all(params={"active": True}, fields=["cycle_uuid"])
+    if not active_cycles:
+        return None
+    uuids = [c["cycle_uuid"] for c in active_cycles]
+    return target_manager.find_one_and_update(
         params={
-            "targets": {
-                "$elemMatch": {
-                    "send_date": {"$lt": datetime.utcnow()},
-                    "sent": {"$in": [False, None]},
-                }
-            },
-            "processing": {"$in": [False, None]},
-            "active": True,
+            "send_date": {"$lt": datetime.utcnow()},
+            "sent": {"$in": [False, None]},
+            "cycle_uuid": {"$in": uuids},
         },
-        data={"processing": True},
+        data={"sent": True},
+        fields=[
+            "target_uuid",
+            "cycle_uuid",
+            "subscription_uuid",
+            "template_uuid",
+            "email",
+            "first_name",
+            "last_name",
+            "position",
+        ],
     )
+
+
+def process_targets(targets):
+    """Process cycle targets for sending."""
+    for subscription_uuid, targets in groupby(
+        targets, key=lambda x: x["subscription_uuid"]
+    ):
+        # Get subscription for sending profile and customer
+        subscription = subscription_manager.get(
+            uuid=subscription_uuid,
+            fields=["sending_profile_uuid", "customer_uuid"],
+        )
+        # Get sending profile to send emails
+        sending_profile = sending_profile_manager.get(
+            uuid=subscription["sending_profile_uuid"]
+        )
+        # Get customer for email context
+        customer = customer_manager.get(uuid=subscription["customer_uuid"])
+
+        # Group targets by template
+        for template_uuid, targets in groupby(
+            targets, key=lambda x: x["template_uuid"]
+        ):
+            template = template_manager.get(uuid=template_uuid)
+            sp = (
+                sending_profile_manager.get(template["sending_profile_uuid"])
+                if template.get("sending_profile_uuid")
+                else sending_profile
+            )
+            email = Email(sending_profile=sp)
+            for target in targets:
+                tracking_info = get_tracking_info(
+                    sp,
+                    target["cycle_uuid"],
+                    target["target_uuid"],
+                )
+                context = get_email_context(
+                    customer=customer,
+                    target=target,
+                    url=tracking_info["click"],
+                )
+
+                html = template["html"] + tracking_info["open"]
+
+                email_body = render_template_string(html, **context)
+                from_address = get_from_address(sp, template["from_address"])
+                email.send(
+                    to_email=target["email"],
+                    from_email=from_address,
+                    subject=template["subject"],
+                    body=email_body,
+                )
+                target_manager.update(
+                    uuid=target["target_uuid"],
+                    data={"sent": True, "sent_date": datetime.utcnow()},
+                )
+        cycle_manager.update(
+            uuid=target["cycle_uuid"],
+            data={
+                "processing": False,
+                "dirty_stats": True,
+            },
+        )
 
 
 def get_landing_url(sending_profile):

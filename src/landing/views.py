@@ -13,6 +13,7 @@ from api.manager import (
     CycleManager,
     LandingPageManager,
     SubscriptionManager,
+    TargetManager,
     TemplateManager,
 )
 from api.phish import decode_tracking_id
@@ -25,6 +26,7 @@ template_manager = TemplateManager()
 landing_page_manager = LandingPageManager()
 subscription_manager = SubscriptionManager()
 customer_manager = CustomerManager()
+target_manager = TargetManager()
 
 
 class ClickView(MethodView):
@@ -34,11 +36,9 @@ class ClickView(MethodView):
         """Get."""
         cycle_uuid, target_uuid = decode_tracking_id(tracking_id)
         cycle = cycle_manager.get(uuid=cycle_uuid)
-        if not cycle:
+        target = target_manager.get(uuid=target_uuid)
+        if not cycle or not target:
             return render_template_string("404 Not Found"), 404
-        target = next(
-            filter(lambda x: x["target_uuid"] == target_uuid, cycle["targets"])
-        )
         template = template_manager.get(
             uuid=target["template_uuid"], fields=["landing_page_uuid"]
         )
@@ -55,9 +55,9 @@ class ClickView(MethodView):
         city, country = get_city_country(ip)
         asn_org = get_asn_org(ip)
 
-        cycle_manager.add_timeline_item(
-            cycle_uuid=cycle["cycle_uuid"],
-            target_uuid=target["target_uuid"],
+        target_manager.add_to_list(
+            uuid=target["target_uuid"],
+            field="timeline",
             data={
                 "time": datetime.utcnow(),
                 "message": "clicked",
@@ -88,14 +88,12 @@ class OpenView(MethodView):
         """Get."""
         cycle_uuid, target_uuid = decode_tracking_id(tracking_id)
         cycle = cycle_manager.get(uuid=cycle_uuid)
-        if not cycle:
+        target = target_manager.get(uuid=target_uuid)
+        if not cycle or not target:
             return render_template_string("404 Not Found"), 404
-        target = next(
-            filter(lambda x: x["target_uuid"] == target_uuid, cycle["targets"])
-        )
-        cycle_manager.add_timeline_item(
-            cycle_uuid=cycle["cycle_uuid"],
-            target_uuid=target["target_uuid"],
+        target_manager.add_to_list(
+            uuid=target["target_uuid"],
+            field="timeline",
             data={
                 "time": datetime.utcnow(),
                 "message": "opened",

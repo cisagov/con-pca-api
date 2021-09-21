@@ -105,7 +105,7 @@ for rule in login_rules:
     app.add_url_rule(url, view_func=rule[1].as_view(url))
 
 sched = BackgroundScheduler()
-sched.add_job(emails_job, "interval", minutes=EMAIL_MINUTES)
+sched.add_job(emails_job, "interval", minutes=EMAIL_MINUTES, max_instances=3)
 sched.add_job(tasks_job, "interval", minutes=TASK_MINUTES)
 sched.start()
 

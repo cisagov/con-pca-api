@@ -14,6 +14,7 @@ from api.schemas.cycle_schema import CycleSchema
 from api.schemas.landing_page_schema import LandingPageSchema
 from api.schemas.sending_profile_schema import SendingProfileSchema
 from api.schemas.subscription_schema import SubscriptionSchema
+from api.schemas.target_schema import TargetSchema
 from api.schemas.template_schema import TemplateSchema
 
 
@@ -81,10 +82,12 @@ class Manager:
     def add_created(self, data):
         """Add created attribute to data on save."""
         if type(data) is dict:
+            data[self.uuid_field] = str(uuid4())
             data["created"] = datetime.utcnow().isoformat()
             data["created_by"] = g.get("username", "bot")
         elif type(data) is list:
             for item in data:
+                item[self.uuid_field] = str(uuid4())
                 item["created"] = datetime.utcnow().isoformat()
                 item["created_by"] = g.get("username", "bot")
         return data
@@ -167,9 +170,15 @@ class Manager:
         self.create_indexes()
         data = self.clean_data(data)
         data = self.add_created(data)
-        data[self.uuid_field] = str(uuid4())
         self.db.insert_one(self.load_data(data))
         return {self.uuid_field: data[self.uuid_field]}
+
+    def save_many(self, data):
+        """Save list to collection."""
+        self.create_indexes()
+        data = self.clean_data(data)
+        data = self.add_created(data)
+        self.db.insert_many(self.load_data(data, many=True))
 
     def add_to_list(self, uuid, field, data):
         """Add item to list in document."""
@@ -198,7 +207,7 @@ class Manager:
         result = list(self.db.find(parameters, fields))
         return bool(result)
 
-    def find_one_and_update(self, params, data):
+    def find_one_and_update(self, params, data, fields=None):
         """Find an object and update it."""
         data = self.clean_data(data)
         data = self.add_updated(data)
@@ -206,6 +215,7 @@ class Manager:
             params,
             {"$set": self.load_data(data, partial=True)},
             return_document=pymongo.ReturnDocument.AFTER,
+            projection=self.convert_fields(fields),
         )
 
 
@@ -230,13 +240,26 @@ class CycleManager(Manager):
             schema=CycleSchema,
         )
 
-    def add_timeline_item(self, cycle_uuid, target_uuid, data):
-        """Add an item to the cycle, target's timeline."""
-        self.db.update_one(
-            {self.uuid_field: str(cycle_uuid), "targets.target_uuid": target_uuid},
-            {"$push": {"targets.$.timeline": data}},
-        )
-        return {self.uuid_field: cycle_uuid}
+    def get(self, uuid=None, filter_data=None, fields=None):
+        """Get a cycle."""
+        if uuid:
+            cycle = self.read_data(
+                self.db.find_one(
+                    {self.uuid_field: str(uuid)},
+                    self.convert_fields(fields),
+                )
+            )
+        else:
+            cycle = self.read_data(
+                self.db.find_one(
+                    filter_data,
+                    self.convert_fields(fields),
+                )
+            )
+        if fields is None or "targets" in fields:
+            target_manager = TargetManager()
+            cycle["targets"] = target_manager.all(params={"cycle_uuid": uuid})
+        return cycle
 
 
 class LandingPageManager(Manager):
@@ -278,6 +301,18 @@ class SubscriptionManager(Manager):
         return super().__init__(
             collection="subscription",
             schema=SubscriptionSchema,
+        )
+
+
+class TargetManager(Manager):
+    """Target Manager."""
+
+    def __init__(self):
+        """Super."""
+        return super().__init__(
+            collection="target",
+            schema=TargetSchema,
+            other_indexes=["email"],
         )
 
 
