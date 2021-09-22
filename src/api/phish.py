@@ -172,11 +172,14 @@ def process_target(sending_profile, target, customer, template, email):
     html = template["html"] + tracking_info["open"]
 
     email_body = render_template_string(html, **context)
-    from_address = get_from_address(sending_profile, template["from_address"])
+    from_address = render_template_string(
+        get_from_address(sending_profile, template["from_address"]), **context
+    )
+    subject = render_template_string(template["subject"], **context)
     email.send(
         to_email=target["email"],
         from_email=from_address,
-        subject=template["subject"],
+        subject=subject,
         body=email_body,
     )
 
