@@ -21,11 +21,10 @@ from api.schemas.template_schema import TemplateSchema
 class Manager:
     """Manager."""
 
-    def __init__(self, collection, schema, unique_indexes=[], other_indexes=[]):
+    def __init__(self, collection, schema, other_indexes=[]):
         """Initialize Manager."""
         self.collection = collection
         self.schema = schema
-        self.unique_indexes = unique_indexes
         self.other_indexes = other_indexes
         self.uuid_field = f"{collection}_uuid"
         self.db = getattr(DB, collection)
@@ -74,8 +73,7 @@ class Manager:
 
     def create_indexes(self):
         """Create indexes for collection."""
-        for index in self.unique_indexes:
-            self.db.create_index(index, unique=True)
+        self.db.create_index(self.uuid_field, unique=True)
         for index in self.other_indexes:
             self.db.create_index(index, unique=False)
 

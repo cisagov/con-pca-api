@@ -35,7 +35,9 @@ class ClickView(MethodView):
     def get(self, tracking_id):
         """Get."""
         cycle_uuid, target_uuid = decode_tracking_id(tracking_id)
-        cycle = cycle_manager.get(uuid=cycle_uuid)
+        cycle = cycle_manager.get(
+            uuid=cycle_uuid, fields=["cycle_uuid", "subscription_uuid"]
+        )
         target = target_manager.get(uuid=target_uuid)
         if not cycle or not target:
             return render_template_string("404 Not Found"), 404
@@ -87,7 +89,9 @@ class OpenView(MethodView):
     def get(self, tracking_id):
         """Get."""
         cycle_uuid, target_uuid = decode_tracking_id(tracking_id)
-        cycle = cycle_manager.get(uuid=cycle_uuid)
+        cycle = cycle_manager.get(
+            uuid=cycle_uuid, fields=["cycle_uuid", "subscription_uuid"]
+        )
         target = target_manager.get(uuid=target_uuid)
         if not cycle or not target:
             return render_template_string("404 Not Found"), 404
