@@ -15,6 +15,13 @@ cycle_manager = CycleManager()
 subscription_manager = SubscriptionManager()
 
 
+def get_cycles(cycle_uuids):
+    """Individually get each cycle so they contain targets."""
+    cycles = []
+    for uuid in cycle_uuids:
+        cycles.append(cycle_manager.get(uuid=uuid))
+
+
 def merge_cycles(cycles):
     """Merge cycles."""
     if len(cycles) == 1:
@@ -39,7 +46,7 @@ def merge_cycles(cycles):
 
 def get_report(cycle_uuids, report_type, nonhuman=False):
     """Get report by type and cycle."""
-    cycles = cycle_manager.all(params={"cycle_uuid": {"$in": cycle_uuids}})
+    cycles = get_cycles(cycle_uuids)
     cycle = merge_cycles(cycles)
     subscription = subscription_manager.get(
         uuid=cycle["subscription_uuid"],
