@@ -33,8 +33,12 @@ def emails_job():
     """Email job to run every minute."""
     with app.app_context():
         targets = []
+        cycle_uuids = get_active_cycles()
+        if not cycle_uuids:
+            logging.info("No cycles to process")
+            return
         while True:
-            target = get_target()
+            target = get_target(cycle_uuids)
             if not target:
                 logging.info("No more targets found.")
                 break
@@ -46,17 +50,22 @@ def emails_job():
             logging.info("No targets to send to.")
 
 
-def get_target():
-    """Get and update target for processing."""
+def get_active_cycles():
+    """Get active cycle uuids."""
     active_cycles = cycle_manager.all(params={"active": True}, fields=["cycle_uuid"])
     if not active_cycles:
         return None
     uuids = [c["cycle_uuid"] for c in active_cycles]
+    return uuids
+
+
+def get_target(cycle_uuids):
+    """Get and update target for processing."""
     return target_manager.find_one_and_update(
         params={
             "send_date": {"$lt": datetime.utcnow()},
             "sent": {"$in": [False, None]},
-            "cycle_uuid": {"$in": uuids},
+            "cycle_uuid": {"$in": cycle_uuids},
         },
         data={"sent": True},
         fields=[
@@ -98,6 +107,7 @@ def process_subscription_targets(subscription_uuid, targets):
         uuid=subscription_uuid,
         fields=["sending_profile_uuid", "customer_uuid"],
     )
+
     # Get sending profile to send emails
     sending_profile = sending_profile_manager.get(
         uuid=subscription["sending_profile_uuid"]
@@ -105,18 +115,29 @@ def process_subscription_targets(subscription_uuid, targets):
     # Get customer for email context
     customer = customer_manager.get(uuid=subscription["customer_uuid"])
 
+    # Login to subscription SMTP server
+    subscription_email = Email(sending_profile)
+
     # Group targets by template
     for template_uuid, targets in groupby(targets, key=lambda x: x["template_uuid"]):
         template = template_manager.get(uuid=template_uuid)
-        sp = (
-            sending_profile_manager.get(template["sending_profile_uuid"])
-            if template.get("sending_profile_uuid")
-            else sending_profile
-        )
-        email = Email(sending_profile=sp)
+        # If template has a different SMTP Server defined, connect to that one
+        template_email = None
+        template_sp = None
+        if template.get("sending_profile_uuid"):
+            template_sp = sending_profile_manager.get(template["sending_profile_uuid"])
+            template_email = Email(sending_profile=template_sp)
+
         for target in targets:
             try:
-                process_target(sp, target, customer, template, email)
+                if template_email:
+                    process_target(
+                        template_sp, target, customer, template, template_email
+                    )
+                else:
+                    process_target(
+                        sending_profile, target, customer, template, subscription_email
+                    )
             except Exception as e:
                 logging.exception(e)
                 target["error"] = str(e)
