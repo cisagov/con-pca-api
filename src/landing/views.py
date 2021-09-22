@@ -95,6 +95,10 @@ class OpenView(MethodView):
         target = target_manager.get(uuid=target_uuid)
         if not cycle or not target:
             return render_template_string("404 Not Found"), 404
+
+        ip = get_request_ip()
+        city, country = get_city_country(ip)
+        asn_org = get_asn_org(ip)
         target_manager.add_to_list(
             uuid=target["target_uuid"],
             field="timeline",
@@ -103,8 +107,10 @@ class OpenView(MethodView):
                 "message": "opened",
                 "details": {
                     "user_agent": request.user_agent.string,
-                    "ip": request.remote_addr,
-                    "asn_org": "",
+                    "ip": ip,
+                    "asn_org": asn_org,
+                    "city": city,
+                    "country": country,
                 },
             },
         )

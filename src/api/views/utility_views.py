@@ -39,11 +39,14 @@ class TestEmailView(MethodView):
                 url=tracking_info["click"],
             )
             email_body = render_template_string(template["html"], **context)
-            from_address = get_from_address(data["smtp"], template["from_address"])
+            from_address = render_template_string(
+                get_from_address(data["smtp"], template["from_address"]), **context
+            )
+            subject = render_template_string(template["subject"], **context)
             email.send(
                 to_email=data["email"],
                 from_email=from_address,
-                subject=template["subject"],
+                subject=subject,
                 body=email_body,
             )
         else:
