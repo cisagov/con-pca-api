@@ -20,6 +20,7 @@ def get_cycles(cycle_uuids):
     cycles = []
     for uuid in cycle_uuids:
         cycles.append(cycle_manager.get(uuid=uuid))
+    return cycles
 
 
 def merge_cycles(cycles):
