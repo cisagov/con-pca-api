@@ -23,7 +23,7 @@ Jinja2==3.0.1
 jmespath==0.10.0
 MarkupSafe==2.0.1
 marshmallow==3.13.0
-maxminddb==2.0.3
+maxminddb==2.1.0
 mongomock==3.23.0
 multidict==5.1.0
 pyasn1==0.4.8
