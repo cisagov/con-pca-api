@@ -114,11 +114,9 @@ class SubscriptionValidView(MethodView):
     def post(self):
         """Post."""
         data = request.json
-        is_valid, message = is_subscription_valid(
-            data["target_count"],
-            data["cycle_minutes"],
+        return jsonify(
+            is_subscription_valid(
+                data["target_count"],
+                data["cycle_minutes"],
+            )
         )
-        if is_valid:
-            return jsonify({"success": "Subscription is valid."}), 200
-        else:
-            return jsonify({"error": message}), 400

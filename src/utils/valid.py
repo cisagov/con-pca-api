@@ -27,22 +27,32 @@ def is_subscription_valid(target_count, cycle_minutes):
             needed_targets, needed_minutes = get_needed_hourly_rate(
                 cycle_minutes, target_count, needed_hourly_rate=100
             )
-            message = (
-                "There cannot be more than 100 emails per hour."
-                f"You will need to reduce targets to {needed_targets}, "
-                f"or increase minutes to {needed_minutes}."
-            )
-            return False, message
+            return {
+                "message": (
+                    "There cannot be more than 100 emails per hour."
+                    f"You will need to reduce targets to {needed_targets}, "
+                    f"or increase minutes to {needed_minutes}."
+                ),
+                "success": False,
+                "daily_rate": daily_rate,
+                "hourly_rate": hourly_rate,
+                "current_daily_rate": current_daily_rate,
+            }
         if daily_rate > 1000:
             needed_targets, needed_minutes = get_needed_daily_rate(
                 cycle_minutes, target_count, needed_daily_rate=1000
             )
-            message = (
-                "There cannot be more than 1000 emails per day. "
-                f"You will need to reduce targets to {needed_targets}, "
-                f"or increase minutes to {needed_minutes}."
-            )
-            return False, message
+            return {
+                "message": (
+                    "There cannot be more than 1000 emails per day. "
+                    f"You will need to reduce targets to {needed_targets}, "
+                    f"or increase minutes to {needed_minutes}."
+                ),
+                "success": False,
+                "daily_rate": daily_rate,
+                "hourly_rate": hourly_rate,
+                "current_daily_rate": current_daily_rate,
+            }
     else:
         percent_increase = get_daily_percent_increase(current_daily_rate, daily_rate)
         new_daily_rate = current_daily_rate + daily_rate
@@ -55,14 +65,25 @@ def is_subscription_valid(target_count, cycle_minutes):
                 current_daily_rate,
                 needed_percent_increase=20,
             )
-            message = (
-                "There cannot be more than a 20% increase in a 24 hour window. "
-                f"You will need to reduce targets to {needed_targets}, "
-                f"or increase minutes to {needed_minutes}."
-            )
-            return False, message
+            return {
+                "message": (
+                    "There cannot be more than a 20% increase in a 24 hour window. "
+                    f"You will need to reduce targets to {needed_targets}, "
+                    f"or increase minutes to {needed_minutes}."
+                ),
+                "success": False,
+                "current_daily_rate": current_daily_rate,
+                "daily_rate": daily_rate,
+                "hourly_rate": hourly_rate,
+            }
 
-    return True, ""
+    return {
+        "message": "Subscription is valid.",
+        "success": True,
+        "daily_rate": daily_rate,
+        "hourly_rate": hourly_rate,
+        "current_daily_rate": current_daily_rate,
+    }
 
 
 def get_hourly_rate(target_count, cycle_minutes):
@@ -124,7 +145,7 @@ def get_needed_daily_rate(
     needed_cycle_days = target_count / needed_daily_rate
     needed_cycle_minutes = needed_cycle_days * 60 * 24
 
-    return math.ceil(needed_target_count), math.ceil(needed_cycle_minutes)
+    return math.floor(needed_target_count), math.ceil(needed_cycle_minutes)
 
 
 def get_needed_percent_increase(
