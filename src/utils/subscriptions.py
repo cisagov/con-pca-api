@@ -9,12 +9,19 @@ import dateutil.parser
 
 # cisagov Libraries
 from api import config
-from api.manager import CycleManager, SubscriptionManager, TargetManager
+from api.manager import (
+    CycleManager,
+    SubscriptionManager,
+    TargetManager,
+    TemplateManager,
+)
+from utils.templates import get_deception_level
 from utils.time import get_yearly_minutes
 
 subscription_manager = SubscriptionManager()
 cycle_manager = CycleManager()
 target_manager = TargetManager()
+template_manager = TemplateManager()
 
 
 def start_subscription(subscription_uuid):
@@ -28,9 +35,13 @@ def start_subscription(subscription_uuid):
     total_targets = len(subscription["target_email_list"])
     cycle["target_count"] = total_targets
     cycle["template_uuids"] = set()
-    deception_mods = get_deception_mods()
     resp = cycle_manager.save(cycle)
     cycle_uuid = resp["cycle_uuid"]
+    templates = template_manager.all(
+        params={"template_uuid": {"$in": subscription["templates_selected"]}},
+        fields=["template_uuid", "deception_score"],
+    )
+
     for index, target in enumerate(subscription["target_email_list"]):
         # Assign uuids to target
         target["cycle_uuid"] = cycle_uuid
@@ -39,14 +50,20 @@ def start_subscription(subscription_uuid):
         target["send_date"] = get_target_send_date(
             index, total_targets, cycle["start_date"], cycle["send_by_date"]
         )
-        # Assign deception level to target
-        target["deception_level"] = deception_mods[index % 3]
+
         # Assign template to target
         # TODO: find template that target hasn't been sent from set
         # https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b311-random
         target["template_uuid"] = random.choice(  # nosec
-            subscription["templates_selected"][target["deception_level"]]
+            subscription["templates_selected"]
         )
+
+        # Assign deception level to target
+        template = next(
+            filter(lambda x: x["template_uuid"] == target["template_uuid"], templates)
+        )
+        target["deception_level"] = get_deception_level(template["deception_score"])
+
         targets.append(target)
         cycle["template_uuids"].add(target["template_uuid"])
 
@@ -123,13 +140,6 @@ def get_target_send_date(
     minutes_per_email = total_minutes / total_targets
     offset = minutes_per_email * index
     return start_date + timedelta(minutes=offset)
-
-
-def get_deception_mods():
-    """Get modulus value to determine deception level to assign target."""
-    mods = [0, 1, 2]
-    random.shuffle(mods)
-    return {mods[0]: "low", mods[1]: "moderate", mods[2]: "high"}
 
 
 def get_initial_tasks(subscription, cycle):

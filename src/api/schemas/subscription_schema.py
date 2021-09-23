@@ -69,7 +69,7 @@ class SubscriptionSchema(BaseSchema):
         validate=validate.OneOf(["created", "queued", "running", "stopped"])
     )
     target_email_list = fields.List(fields.Nested(SubscriptionTargetSchema))
-    templates_selected = fields.Nested(SubscriptionTemplatesSelectedSchema)
+    templates_selected = fields.List(fields.Str())
     sending_profile_uuid = fields.Str()
     continuous_subscription = fields.Bool()
     cycle_length_minutes = fields.Integer()

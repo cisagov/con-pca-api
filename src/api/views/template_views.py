@@ -54,13 +54,7 @@ class TemplateView(MethodView):
 
         if data.get("retired"):
             subscriptions = subscription_manager.all(
-                params={
-                    "$or": [
-                        {"templates_selected.low": template_uuid},
-                        {"templates_selected.moderate": template_uuid},
-                        {"templates_selected.high": template_uuid},
-                    ]
-                },
+                params={"templates_selected": template_uuid},
                 fields=["subscription_uuid", "name"],
             )
             if subscriptions:
@@ -111,13 +105,7 @@ class TemplateView(MethodView):
             )
 
         subscriptions = subscription_manager.all(
-            params={
-                "$or": [
-                    {"templates_selected.low": template_uuid},
-                    {"templates_selected.moderate": template_uuid},
-                    {"templates_selected.high": template_uuid},
-                ]
-            },
+            params={"templates_selected": template_uuid},
             fields=["subscription_uuid", "name"],
         )
         if subscriptions:
