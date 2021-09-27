@@ -54,7 +54,7 @@ class ClickView(MethodView):
             landing_page = landing_page_manager.get(filter_data={})
 
         click_events = list(
-            filter(lambda x: x["message"] == "clicked", target["timeline"])
+            filter(lambda x: x["message"] == "clicked", target.get("timeline", []))
         )
         if len(click_events) < 10:
             ip = get_request_ip()
@@ -101,7 +101,7 @@ class OpenView(MethodView):
             return render_template_string("404 Not Found"), 404
 
         open_events = list(
-            filter(lambda x: x["message"] == "opened", target["timeline"])
+            filter(lambda x: x["message"] == "opened", target.get("timeline", []))
         )
         if len(open_events) < 10:
             ip = get_request_ip()
