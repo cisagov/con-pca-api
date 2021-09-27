@@ -53,26 +53,30 @@ class ClickView(MethodView):
         if not landing_page:
             landing_page = landing_page_manager.get(filter_data={})
 
-        ip = get_request_ip()
-        city, country = get_city_country(ip)
-        asn_org = get_asn_org(ip)
-
-        target_manager.add_to_list(
-            uuid=target["target_uuid"],
-            field="timeline",
-            data={
-                "time": datetime.utcnow(),
-                "message": "clicked",
-                "details": {
-                    "user_agent": request.user_agent.string,
-                    "ip": ip,
-                    "asn_org": asn_org,
-                    "city": city,
-                    "country": country,
-                },
-            },
+        click_events = list(
+            filter(lambda x: x["message"] == "clicked", target["timeline"])
         )
-        cycle_manager.update(uuid=cycle["cycle_uuid"], data={"dirty_stats": True})
+        if len(click_events) < 10:
+            ip = get_request_ip()
+            city, country = get_city_country(ip)
+            asn_org = get_asn_org(ip)
+
+            target_manager.add_to_list(
+                uuid=target["target_uuid"],
+                field="timeline",
+                data={
+                    "time": datetime.utcnow(),
+                    "message": "clicked",
+                    "details": {
+                        "user_agent": request.user_agent.string,
+                        "ip": ip,
+                        "asn_org": asn_org,
+                        "city": city,
+                        "country": country,
+                    },
+                },
+            )
+            cycle_manager.update(uuid=cycle["cycle_uuid"], data={"dirty_stats": True})
 
         subscription = subscription_manager.get(
             uuid=cycle["subscription_uuid"], fields=["customer_uuid"]
@@ -96,23 +100,27 @@ class OpenView(MethodView):
         if not cycle or not target:
             return render_template_string("404 Not Found"), 404
 
-        ip = get_request_ip()
-        city, country = get_city_country(ip)
-        asn_org = get_asn_org(ip)
-        target_manager.add_to_list(
-            uuid=target["target_uuid"],
-            field="timeline",
-            data={
-                "time": datetime.utcnow(),
-                "message": "opened",
-                "details": {
-                    "user_agent": request.user_agent.string,
-                    "ip": ip,
-                    "asn_org": asn_org,
-                    "city": city,
-                    "country": country,
-                },
-            },
+        open_events = list(
+            filter(lambda x: x["message"] == "opened", target["timeline"])
         )
-        cycle_manager.update(uuid=cycle["cycle_uuid"], data={"dirty_stats": True})
+        if len(open_events) < 10:
+            ip = get_request_ip()
+            city, country = get_city_country(ip)
+            asn_org = get_asn_org(ip)
+            target_manager.add_to_list(
+                uuid=target["target_uuid"],
+                field="timeline",
+                data={
+                    "time": datetime.utcnow(),
+                    "message": "opened",
+                    "details": {
+                        "user_agent": request.user_agent.string,
+                        "ip": ip,
+                        "asn_org": asn_org,
+                        "city": city,
+                        "country": country,
+                    },
+                },
+            )
+            cycle_manager.update(uuid=cycle["cycle_uuid"], data={"dirty_stats": True})
         return send_file("static/pixel.gif", mimetype="image/gif")
