@@ -61,23 +61,18 @@ def process_subscription(subscription):
     end_cycle_task = bool(list(filter(lambda x: x["task_type"] == "end_cycle", tasks)))
     is_stopping = end_cycle_task and not subscription.get("continuous_subscription")
     for task in tasks:
+        task["executed"] = True
+        task["executed_date"] = datetime.utcnow()
+        logging.info(f"Processing task {task}")
         try:
-            logging.info(f"Processing task {task}")
             process_task(task, subscription, cycle)
-            task["executed"] = True
-            task["error"] = ""
-            task["executed_date"] = datetime.utcnow()
-            if not is_stopping:
-                update_task(subscription["subscription_uuid"], task)
-                add_new_task(subscription, task)
-            logging.info(f"Successfully executed task {task}")
         except Exception as e:
-            logging.error(f"Error executing task {task}")
             logging.exception(e)
-            task["executed"] = False
             task["error"] = str(e)
-            task["scheduled_date"] = datetime.utcnow() + timedelta(minutes=10)
+        if not is_stopping:
             update_task(subscription["subscription_uuid"], task)
+            add_new_task(subscription, task)
+        logging.info(f"Executed task {task}")
 
     subscription_manager.update(
         uuid=subscription["subscription_uuid"],
