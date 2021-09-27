@@ -121,8 +121,14 @@ def rank_templates(template_stats: dict):
     stats = list(template_stats.values())
     for event in ["opened", "clicked"]:
         stats.sort(reverse=True, key=lambda x: x[event]["ratio"])
+        rank = 1
         for index, stat in enumerate(stats):
-            template_stats[stat["template_uuid"]][event]["rank"] = index + 1
+            if (
+                stat[event]["ratio"] != stats[index - 1][event]["ratio"]
+                and not index == 0
+            ):
+                rank += 1
+            template_stats[stat["template_uuid"]][event]["rank"] = rank
 
 
 def process_ratios(stats: dict):
