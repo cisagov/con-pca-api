@@ -1,6 +1,7 @@
 """Report utils."""
 # Standard Python Libraries
-from subprocess import check_output  # nosec
+import os.path
+import subprocess  # nosec
 
 # Third-Party Libraries
 from flask import render_template
@@ -77,8 +78,20 @@ def get_report(cycle_uuids, report_type, nonhuman=False):
 
 def get_report_pdf(cycle_uuids, report_type, nonhuman=False):
     """Get report pdf."""
-    args = ["node", "report.js", ",".join(cycle_uuids), report_type, str(nonhuman)]
-    filename = str(check_output(args).decode("utf-8")).strip()  # nosec
+    filename = f"{cycle_uuids[0]}_report.pdf"
+    args = [
+        "node",
+        "report.js",
+        filename,
+        ",".join(cycle_uuids),
+        report_type,
+        str(nonhuman),
+    ]
+    subprocess.run(args)  # nosec
+
+    if not os.path.exists(f"/var/www/{filename}"):
+        raise Exception("Reporting Exception - Check Logs")
+
     return f"/var/www/{filename}"
 
 

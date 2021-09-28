@@ -42,6 +42,10 @@ def start_subscription(subscription_uuid):
         fields=["template_uuid", "deception_score"],
     )
 
+    template_counts = {t: 0 for t in subscription["templates_selected"]}
+
+    # Shuffle list for more random template selection across cycles
+    random.shuffle(subscription["target_email_list"])
     for index, target in enumerate(subscription["target_email_list"]):
         # Assign uuids to target
         target["cycle_uuid"] = cycle_uuid
@@ -52,11 +56,8 @@ def start_subscription(subscription_uuid):
         )
 
         # Assign template to target
-        # TODO: find template that target hasn't been sent from set
-        # https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b311-random
-        target["template_uuid"] = random.choice(  # nosec
-            subscription["templates_selected"]
-        )
+        target["template_uuid"] = min(template_counts, key=lambda k: template_counts[k])
+        template_counts[target["template_uuid"]] += 1
 
         # Assign deception level to target
         template = next(
