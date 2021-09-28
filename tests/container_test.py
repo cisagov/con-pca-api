@@ -5,7 +5,7 @@
 import time
 
 # Third-Party Libraries
-import requests
+import requests  # type: ignore
 
 READY_MESSAGE = "Starting Con-PCA API"
 

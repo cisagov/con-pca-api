@@ -5,7 +5,7 @@ import random
 from uuid import uuid4
 
 # Third-Party Libraries
-import dateutil.parser
+import dateutil.parser  # type: ignore
 
 # cisagov Libraries
 from api import config
