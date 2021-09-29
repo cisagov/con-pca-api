@@ -5,7 +5,7 @@
 import time
 
 # Third-Party Libraries
-import requests
+import requests  # type: ignore
 
 READY_MESSAGE = "Starting Con-PCA API"
 
@@ -14,7 +14,7 @@ def test_container_count(dockerc):
     """Verify the test composition and container."""
     # stopped parameter allows non-running containers in results
     assert (
-        len(dockerc.containers(stopped=True)) == 3
+        len(dockerc.containers(stopped=True)) == 2
     ), "Wrong number of containers were started."
 
 

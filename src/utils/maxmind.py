@@ -3,8 +3,8 @@
 import logging
 
 # Third-Party Libraries
-import geoip2.database
-import geoip2.errors
+import geoip2.database  # type: ignore
+import geoip2.errors  # type: ignore
 
 
 def get_asn_org(ip_address):

@@ -23,4 +23,4 @@ rules = [
 ]
 
 for rule in rules:
-    app.add_url_rule(rule[0], view_func=rule[1].as_view(rule[0]))
+    app.add_url_rule(rule[0], view_func=rule[1].as_view(rule[0]))  # type: ignore
