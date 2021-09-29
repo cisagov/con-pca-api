@@ -12,6 +12,7 @@ from api.config import DB
 from api.schemas.customer_schema import CustomerSchema
 from api.schemas.cycle_schema import CycleSchema
 from api.schemas.landing_page_schema import LandingPageSchema
+from api.schemas.nonhuman_schema import NonHumanSchema
 from api.schemas.sending_profile_schema import SendingProfileSchema
 from api.schemas.subscription_schema import SubscriptionSchema
 from api.schemas.target_schema import TargetSchema
@@ -163,6 +164,15 @@ class Manager:
         )
         return {self.uuid_field: str(uuid)}
 
+    def update_many(self, params, data):
+        """Update many items with params."""
+        data = self.clean_data(data)
+        data = self.add_updated(data)
+        self.db.update_many(
+            params,
+            {"$set": self.load_data(data, partial=True)},
+        )
+
     def save(self, data):
         """Save new item to collection."""
         self.create_indexes()
@@ -278,6 +288,17 @@ class LandingPageManager(Manager):
         sub_query = {"landing_page_uuid": str(uuid)}
         newvalues = {"$set": {"is_default_template": True}}
         self.db.update_one(sub_query, newvalues)
+
+
+class NonHumanManager(Manager):
+    """NonHumanManager."""
+
+    def __init__(self):
+        """Super."""
+        return super().__init__(
+            collection="nonhuman",
+            schema=NonHumanSchema,
+        )
 
 
 class SendingProfileManager(Manager):
