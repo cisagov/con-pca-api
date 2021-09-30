@@ -4,9 +4,10 @@ import json
 import logging
 
 # cisagov Libraries
-from api.manager import TemplateManager
+from api.manager import NonHumanManager, TemplateManager
 
 template_manager = TemplateManager()
+nonhuman_manager = NonHumanManager()
 
 
 def initialize_templates():
@@ -23,3 +24,18 @@ def initialize_templates():
             logging.info(f"Creating template {template['name']}.")
             template_manager.save(template)
     logging.info("Templates initialized")
+
+
+def initialize_nonhumans():
+    """Create initial set of non-human ASN orgs."""
+    initial_orgs = ["GOOGLE", "AMAZON-02", "MICROSOFT-CORP-MSN-AS-BLOCK"]
+
+    if len(nonhuman_manager.all()) > 0:
+        logging.info("Non humans already initialized")
+        return
+
+    logging.info("Initializing nonhumans.")
+    for org in initial_orgs:
+        logging.info(f"Adding asn org {org}")
+        nonhuman_manager.save({"asn_org": org})
+    logging.info("ASN Orgs Initialized.")

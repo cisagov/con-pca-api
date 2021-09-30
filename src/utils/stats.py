@@ -5,12 +5,13 @@ from itertools import groupby
 import statistics
 
 # cisagov Libraries
-from api.manager import CycleManager, TemplateManager
+from api.manager import CycleManager, NonHumanManager, TemplateManager
 from api.schemas.stats_schema import CycleStatsSchema
 from utils.templates import TEMPLATE_INDICATORS
 
 template_manager = TemplateManager()
 cycle_manager = CycleManager()
+nonhuman_manager = NonHumanManager()
 
 
 def get_cycle_stats(cycle):
@@ -176,19 +177,18 @@ def get_event(timeline, event):
 
 def filter_nonhuman_events(timeline):
     """Filter nonhuman events from timeline."""
+    nonhuman_orgs = get_nonhuman_orgs()
     return list(
         filter(
-            lambda x: not is_nonhuman_event(x.get("details", "").get("asn_org")),
+            lambda x: x.get("details", {}).get("asn_org") not in nonhuman_orgs,
             timeline,
         )
     )
 
 
-def is_nonhuman_event(asn_org):
-    """Determine if nonhuman event."""
-    if asn_org in ["GOOGLE", "AMAZON-02", "MICROSOFT-CORP-MSN-AS-BLOCK"]:
-        return True
-    return False
+def get_nonhuman_orgs():
+    """Get nonhuman orgs from database."""
+    return [x["asn_org"] for x in nonhuman_manager.all()]
 
 
 def event_asn_org(event):
@@ -207,10 +207,11 @@ def get_maxmind_stats(cycle):
         timeline.extend(target.get("timeline", []))
 
     sorted_timeline = sorted(timeline, key=lambda x: event_asn_org(x))
+    nonhuman_orgs = get_nonhuman_orgs()
     for org, events in groupby(sorted_timeline, lambda x: event_asn_org(x)):
         val = {
             "asn_org": org,
-            "is_nonhuman": is_nonhuman_event(org),
+            "is_nonhuman": org in nonhuman_orgs,
             "ips": set(),
             "cities": set(),
             "opens": 0,
