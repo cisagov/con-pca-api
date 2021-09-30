@@ -55,6 +55,7 @@ def generate_cycle_stats(cycle, nonhuman=False):
         },
     }
     template_stats = {}
+    nonhuman_orgs = get_nonhuman_orgs()
     for target in cycle["targets"]:
         if target["template_uuid"] not in template_stats:
             template_stats[target["template_uuid"]] = {
@@ -70,7 +71,12 @@ def generate_cycle_stats(cycle, nonhuman=False):
             }
         timeline = target.get("timeline", [])
         if not nonhuman:
-            timeline = filter_nonhuman_events(timeline)
+            timeline = list(
+                filter(
+                    lambda x: x.get("details", {}).get("asn_org") not in nonhuman_orgs,
+                    timeline,
+                )
+            )
         sent = target.get("sent")
         sent_time = target.get("send_date")
         opened = get_event(timeline, "opened")
@@ -173,17 +179,6 @@ def get_event(timeline, event):
     if events:
         return min(events, key=lambda x: x["time"])
     return None
-
-
-def filter_nonhuman_events(timeline):
-    """Filter nonhuman events from timeline."""
-    nonhuman_orgs = get_nonhuman_orgs()
-    return list(
-        filter(
-            lambda x: x.get("details", {}).get("asn_org") not in nonhuman_orgs,
-            timeline,
-        )
-    )
 
 
 def get_nonhuman_orgs():
