@@ -108,7 +108,7 @@ class Cognito(AWS):
     def reset_password(self, username: str):
         """Reset password by sending a confirm code to user email."""
         return self.client.admin_reset_user_password(
-            UserPoolId=COGNITO_CLIENT_ID, Username=username
+            UserPoolId=COGNITO_USER_POOL_ID, Username=username
         )
 
     def refresh(self, token):
