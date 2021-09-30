@@ -11,7 +11,7 @@ from flask.json import JSONEncoder
 # cisagov Libraries
 from api.app import app
 from api.config import EMAIL_MINUTES, TASK_MINUTES, logger
-from api.initialize import initialize_templates
+from api.initialize import initialize_nonhumans, initialize_templates
 from api.phish import emails_job
 from api.tasks import tasks_job
 from api.views.auth_views import (
@@ -23,6 +23,7 @@ from api.views.auth_views import (
 from api.views.customer_views import CustomersView, CustomerView, SectorIndustryView
 from api.views.cycle_views import CycleStatsView, CyclesView, CycleView
 from api.views.landing_page_views import LandingPagesView, LandingPageView
+from api.views.nonhuman_views import NonHumansView
 from api.views.report_views import (
     AggregateReportView,
     ReportEmailView,
@@ -64,6 +65,8 @@ rules = [
     # Landing Page Views
     ("/landingpages/", LandingPagesView),
     ("/landingpage/<landing_page_uuid>/", LandingPageView),
+    # Non Human Views
+    ("/nonhumans/", NonHumansView),
     # Report Views
     ("/reports/aggregate/", AggregateReportView),
     # Sector/Industry View
@@ -155,3 +158,4 @@ def api_map():
 def initialize_db():
     """Initialize database."""
     initialize_templates()
+    initialize_nonhumans()
