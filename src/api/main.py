@@ -14,7 +14,12 @@ from api.config import EMAIL_MINUTES, TASK_MINUTES, logger
 from api.initialize import initialize_templates
 from api.phish import emails_job
 from api.tasks import tasks_job
-from api.views.auth_views import LoginView, RefreshTokenView, RegisterView
+from api.views.auth_views import (
+    LoginView,
+    RefreshTokenView,
+    RegisterView,
+    ResetPasswordView,
+)
 from api.views.customer_views import CustomersView, CustomerView, SectorIndustryView
 from api.views.cycle_views import CycleStatsView, CyclesView, CycleView
 from api.views.landing_page_views import LandingPagesView, LandingPageView
@@ -91,6 +96,7 @@ login_rules = [
     ("/auth/register/", RegisterView),
     ("/auth/login/", LoginView),
     ("/auth/refresh/", RefreshTokenView),
+    ("/auth/resetpassword/<username>/", ResetPasswordView),
 ]
 
 for rule in rules:

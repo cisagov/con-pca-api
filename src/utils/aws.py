@@ -86,6 +86,31 @@ class Cognito(AWS):
             },
         )
 
+    def auto_verify_user_email(self, username: str):
+        """Auto verify user email."""
+        return self.client.admin_update_user_attributes(
+            UserPoolId=COGNITO_USER_POOL_ID,
+            Username=username,
+            UserAttributes=[{"Name": "email_verified", "Value": "true"}],
+        )
+
+    def confirm_forgot_password(
+        self, username: str, confirmation_code: str, password: str
+    ):
+        """Prompt a user to enter a confirmation code to reset a forgotten password."""
+        return self.client.confirm_forgot_password(
+            ClientId=COGNITO_CLIENT_ID,
+            Username=username,
+            ConfirmationCode=confirmation_code,
+            Password=password,
+        )
+
+    def reset_password(self, username: str):
+        """Reset password by sending a confirm code to user email."""
+        return self.client.admin_reset_user_password(
+            UserPoolId=COGNITO_CLIENT_ID, Username=username
+        )
+
     def refresh(self, token):
         """Refresh auth token."""
         return self.client.admin_initiate_auth(
