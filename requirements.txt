@@ -3,7 +3,7 @@ beautifulsoup4==4.10.0
 boto3==1.18.53
 cognitojwt==1.4.1
 Faker==8.14.0
-Flask==2.0.1
+Flask==2.0.2
 Flask-Cors==3.0.10
 geoip2==4.2.0
 gunicorn==20.1.0
