@@ -29,12 +29,19 @@ async function getReport(filename, cycleUuids, reportType, nonhuman) {
     await browser.close();
     return;
   }
+  if (reportType == "monthly") {
+    pdfContent = await page.pdf({
+      format: "letter",
+      path: filename,
+      pageRanges: "1",
+    });
+  } else {
+    pdfContent = await page.pdf({
+      format: "letter",
+      path: filename,
+    });
+  }
 
-  pdfContent = await page.pdf({
-    format: "letter",
-    path: filename,
-    pageRanges: "1",
-  });
   await page.close();
   await browser.close();
 }
