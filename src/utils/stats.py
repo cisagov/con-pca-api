@@ -71,6 +71,7 @@ def generate_cycle_stats(cycle, nonhuman=False):
                         "indicators",
                         "html",
                         "from_address",
+                        "deception_score",
                     ],
                 ),
                 "deception_level": target["deception_level"],

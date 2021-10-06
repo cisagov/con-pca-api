@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Cycle Status Report</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/status_report.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/styles.css') }}"
+    />
+    <link
+      rel="shortcut icon"
+      href="{{ url_for('static', filename='image/favicon.ico') }}"
+    />
+    <script src="{{ url_for('static', filename='js/chart.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/chartjs-plugin-datalabels.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/reports.js') }}"></script>
+  </head>
+  <body class="mat-typography">
+    {% for t in stats.template_stats %}
+    <div style="width: 8.5in; height: 11in; margin: 10px" class="p-0">
+      <h2>Level {{ t.template.deception_score }} Template</h2>
+      <b>Subject: {{ preview_template(t.template.subject, customer) }}</b><br />
+      <b>From: {{ preview_template(t.template.from_address, customer) }}</b
+      ><br />
+      <div
+        style="
+          width: 50%;
+          border-left: 2px solid;
+          border-right: 2px solid;
+          border-bottom: 2px solid;
+          border-top: 2px solid;
+          padding: 1rem;
+        "
+      >
+        {{ t.template.html | safe }}
+        <br />
+      </div>
+      <p><b>Key Characteristics:</b> Some key characteristics</p>
+      <p><b>Total emails sent:</b> {{ t.sent.count }}</p>
+      <p><b>Unique targets who clicked:</b> {{ t.clicked.count }}</p>
+      <p><b>Unique click rate:</b> {{ t.clicked.ratio * 100 }}%</p>
+    </div>
+    {% endfor %}
+  </body>
+</html>
