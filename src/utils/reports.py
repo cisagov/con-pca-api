@@ -4,11 +4,14 @@ import os.path
 import subprocess  # nosec
 
 # Third-Party Libraries
+from faker import Faker
 from flask import render_template
+from flask.templating import render_template_string
 
 # cisagov Libraries
 from api.manager import CustomerManager, CycleManager, SubscriptionManager
 from utils import time
+from utils.emails import get_email_context
 from utils.stats import get_cycle_stats, get_ratio
 
 customer_manager = CustomerManager()
@@ -72,6 +75,7 @@ def get_report(cycle_uuids, report_type, nonhuman=False):
         "subscription": subscription,
         "customer": customer,
         "time": time,
+        "preview_template": preview_template,
     }
     return render_template(f"reports/{report_type}.html", **context)
 
@@ -161,3 +165,16 @@ def get_all_customer_stats():
             0 if len(averages) == 0 else sum(averages) / len(averages)
         ),
     }
+
+
+def preview_template(data, customer):
+    """Preview template subjects, html and from addresses for reports."""
+    fake = Faker()
+    target = {
+        "email": fake.email(),
+        "first_name": fake.first_name(),
+        "last_name": fake.last_name(),
+        "position": fake.job(),
+    }
+    context = get_email_context(customer=customer, target=target)
+    return render_template_string(data, **context)

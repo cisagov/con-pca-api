@@ -22,7 +22,8 @@
       rel="shortcut icon"
       href="{{ url_for('static', filename='image/favicon.ico') }}"
     />
-    <script src="{{ url_for('static', filename='js/Chart.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/chart.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/chartjs-plugin-datalabels.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/reports.js') }}"></script>
   </head>
   <body class="mat-typography">
@@ -80,6 +81,7 @@
                   <h2>Overall Campaign Numbers</h2>
                 </div>
                 <div id="campaignNumbers">
+                  Total Targets: {{ cycle.target_count }} <br />
                   Total Emails Sent: {{ stats.stats.all.sent.count }} <br />
                   Email Click Rate: {{ stats.stats.all.clicked.ratio * 100 }}%
                   <br />
@@ -98,87 +100,12 @@
                     alt="Monthly Subscription Report"
                   />
                 </div>
-                <div class="data-report">
-                  <!-- Averages -->
-                  <div class="row">
-                    <div class="col-5">
-                      <div id="averageClickTitle">
-                        <h3>
-                          Average Time <br />
-                          to First Click
-                        </h3>
-                      </div>
-                      <div id="averageClickTime">
-                        <span style="display: block"
-                          >{{
-                          time.convert_seconds(stats.stats.all.clicked.average)
-                          }}</span
-                        >
-                      </div>
-                    </div>
-                    <div class="col-5">
-                      <div id="averageClickTitle">
-                        <h3>
-                          Average Time <br />
-                          to First Report
-                        </h3>
-                      </div>
-                      <div id="averageClickTime">
-                        <span style="display: block">00:00:00</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row yellow-circle-container">
-                    <div class="col-5">
-                      <div class="circles">
-                        <img
-                          src="{{ url_for('static', filename='image/dotted_circle.svg') }}"
-                          alt="Yellow dotted circle outline"
-                        />
-                      </div>
-                    </div>
-                    <div class="col-5">
-                      <div class="circles">
-                        <img
-                          src="{{ url_for('static', filename='image/dotted_circle.svg') }}"
-                          alt="Yellow dotted circle outline"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <!-- Campaign Progress -->
-                  <div class="row">
-                    <div class="col-10">
-                      <div id="campaignProgressText">
-                        <ul>
-                          <li>
-                            This Report has been generated in Q1 of your
-                            phishing subscription
-                          </li>
-                          <li>
-                            Of the total {{ cycle.target_count }} targets in
-                            this cycle, {{ stats.stats.all.sent.count }} targets
-                            have had emails sent.
-                          </li>
-                          <li>
-                            The most clicked template indicators for this cycle
-                            so far have been:
-                          </li>
-                          {% for i in stats.indicator_stats %}
-                          <ul>
-                            {{ "%.1f" % (i.percentage * 100) }}% {{ i.name }}
-                            ({{ i.label }}) : {{ i.clicks }} clicks
-                          </ul>
-                          {% endfor %}
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- Donut Charts -->
-                  <div class="row">
-                    <div class="col-12">
-                      <div id="donut-charts">
-                        <div class="col-3">
+                <!-- Donut Charts -->
+                <div class="row">
+                  <div class="col-12">
+                    <div id="donut-charts">
+                      <div class="col-3">
+                        <div>
                           <canvas id="doughnut-sent">
                             <script>
                               createDoughnut(
@@ -188,24 +115,14 @@
                               );
                             </script>
                           </canvas>
-                          <p class="donut-caption">
-                            Emails Sent of Total Targets
-                          </p>
                         </div>
-                        <div class="col-3">
-                          <canvas id="doughnut-opened">
-                            <script>
-                              createDoughnut(
-                                "doughnut-opened",
-                                "{{ stats.stats.all.opened.count }}",
-                                "{{ stats.stats.all.sent.count }}"
-                              );
-                            </script>
-                          </canvas>
-                          <p class="donut-caption">Emails Opened of Sent</p>
-                        </div>
+                        <p class="donut-caption" style="margin-top: 25px">
+                          Emails Sent of Total Targets
+                        </p>
+                      </div>
 
-                        <div class="col-3">
+                      <div class="col-3">
+                        <div>
                           <canvas id="doughnut-clicked">
                             <script>
                               createDoughnut(
@@ -215,36 +132,83 @@
                               );
                             </script>
                           </canvas>
-                          <p class="donut-caption">Emails Clicked of Sent</p>
                         </div>
+                        <p class="donut-caption" style="margin-top: 25px">
+                          Emails Clicked of Sent
+                        </p>
+                      </div>
+
+                      <div class="col-3">
+                        <div id="averageClickTime">
+                          {% set average_click_time =
+                          time.convert_seconds(stats.stats.all.clicked.average)
+                          %}
+                          <span>{{ average_click_time.hours }} hours</span
+                          ><br />
+                          <span>{{ average_click_time.minutes }} minutes</span
+                          ><br />
+                          <span>{{ average_click_time.seconds }} seconds</span>
+                        </div>
+                        <p class="donut-caption" style="margin-top: 8px">
+                          Average Time to First Click
+                        </p>
                       </div>
                     </div>
                   </div>
+                </div>
+                <div class="data-report">
+                  <!-- Campaign Progress -->
+                  <div class="flex flex-row">
+                    <div class="col-10">
+                      <div class="template-preview">
+                        <h2>Top Templates</h2>
+                        {% for t in stats.template_stats |
+                        sort(attribute="clicked.ratio", reverse=True) %} {% if
+                        loop.index <= 3 %}
+                        <div>
+                          <b>Subject:</b> {{
+                          preview_template(t['template']['subject'], customer)
+                          }}<br />
+                          <b>From:</b> {{
+                          preview_template(t['template']['from_address'],
+                          customer) }}<br />
+
+                          <ul>
+                            <li>Sent - {{ t.sent.count }}</li>
+                            <li>Clicks - {{ t.clicked.count }}</li>
+                            <li>Click Rate - {{ t.clicked.ratio * 100 }}%</li>
+                          </ul>
+                        </div>
+                        {% endif %} {% endfor %}
+                        <!-- </ol> -->
+                      </div>
+                    </div>
+                  </div>
+
                   <!-- Bar Chart -->
-                  <div class="row">
-                    <div class="col-10 container-fluid">
+                  <div class="row mt-2">
+                    <div class="col container-fluid" style="margin-left: 50px">
                       <div class="bar-chart m-2">
                         <h2>STATISTICS BY LEVEL</h2>
-                        <canvas
-                          id="bar-stats-by-level"
-                          class="d-flex report-chart"
-                          style="height: 15rem"
-                        >
-                          <script>
-                            createStatsByLevelChart(
-                              "bar-stats-by-level",
-                              "{{ stats.stats.low.sent.count }}",
-                              "{{ stats.stats.low.opened.count }}",
-                              "{{ stats.stats.low.clicked.count }}",
-                              "{{ stats.stats.moderate.sent.count }}",
-                              "{{ stats.stats.moderate.opened.count }}",
-                              "{{ stats.stats.moderate.clicked.count }}",
-                              "{{ stats.stats.high.sent.count }}",
-                              "{{ stats.stats.high.opened.count }}",
-                              "{{ stats.stats.high.clicked.count }}"
-                            );
-                          </script>
-                        </canvas>
+                        <div>
+                          <canvas
+                            id="bar-stats-by-level"
+                            class="d-flex report-chart"
+                            style="height: 15rem"
+                          >
+                            <script>
+                              createStatsByLevelChart(
+                                "bar-stats-by-level",
+                                "{{ stats.stats.low.sent.count }}",
+                                "{{ stats.stats.low.clicked.count }}",
+                                "{{ stats.stats.moderate.sent.count }}",
+                                "{{ stats.stats.moderate.clicked.count }}",
+                                "{{ stats.stats.high.sent.count }}",
+                                "{{ stats.stats.high.clicked.count }}"
+                              );
+                            </script>
+                          </canvas>
+                        </div>
                       </div>
                     </div>
                   </div>

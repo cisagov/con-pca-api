@@ -7,48 +7,80 @@ function createDoughnut(chartId, subtotal, total) {
         backgroundColor: ["#164A91", "#cecece"],
         borderWidth: 0,
         cutout: "65%",
+        datalabels: {
+          anchor: "end",
+        },
       },
     ],
   };
 
-  const options = {};
+  const options = {
+    plugins: {
+      datalabels: {
+        backgroundColor: function (context) {
+          return context.dataset.backgroundColor;
+        },
+        borderColor: "white",
+        borderRadius: 25,
+        borderWidth: 2,
+        color: "white",
+        display: function (context) {
+          var dataset = context.dataset;
+          var value = dataset.data[context.dataIndex];
+          return value > 0;
+        },
+        font: {
+          weight: "bold",
+        },
+        padding: 6,
+      },
+    },
+    // Core options
+    aspectRatio: 1,
+    layout: {
+      padding: 15,
+    },
+  };
 
-  new Chart(ctx, {
+  const chart = new Chart(ctx, {
     type: "doughnut",
     data: data,
     options: options,
+    plugins: [ChartDataLabels],
   });
+  chart.canvas.parentNode.style.height = "115px";
+  chart.canvas.parentNode.style.width = "130px";
 }
 
 function createStatsByLevelChart(
   chartId,
   low_sent,
-  low_opened,
   low_clicked,
   mod_sent,
-  mod_opened,
   mod_clicked,
   high_sent,
-  high_opened,
   high_clicked
 ) {
   var ctx = document.getElementById(chartId).getContext("2d");
   const data = {
-    labels: ["Sent", "Opened", "Clicked"],
+    labels: ["Sent", "Clicked"],
     datasets: [
       {
-        data: [low_sent, low_opened, low_clicked],
+        data: [low_sent, low_clicked],
         backgroundColor: "#064875",
+        barThickness: 40,
         label: "Low",
       },
       {
-        data: [mod_sent, mod_opened, mod_clicked],
+        data: [mod_sent, mod_clicked],
         backgroundColor: "#fcbf10",
+        barThickness: 40,
         label: "Moderate",
       },
       {
-        data: [high_sent, high_opened, high_clicked],
+        data: [high_sent, high_clicked],
         backgroundColor: "#007bc1",
+        barThickness: 40,
         label: "High",
       },
     ],
@@ -60,6 +92,15 @@ function createStatsByLevelChart(
         display: true,
         position: "right",
       },
+      datalabels: {
+        color: "white",
+        font: {
+          weight: "bold",
+        },
+        display: function (context) {
+          return context.dataset.data[context.dataIndex] > 0;
+        },
+      },
     },
     scales: {
       y: {
@@ -70,9 +111,10 @@ function createStatsByLevelChart(
     },
   };
 
-  new Chart(ctx, {
+  const chart = new Chart(ctx, {
     type: "bar",
     data: data,
     options: options,
+    plugins: [ChartDataLabels],
   });
 }
