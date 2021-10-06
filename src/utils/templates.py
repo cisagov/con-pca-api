@@ -81,29 +81,29 @@ TEMPLATE_INDICATORS = {
         "fear": {
             "name": "Fear",
             "values": {
-                "0": "Yes",
-                "1": "No",
+                "0": "No",
+                "1": "Yes",
             },
         },
         "duty_obligation": {
             "name": "Duty or Obligation",
             "values": {
-                "0": "Yes",
-                "1": "No",
+                "0": "No",
+                "1": "Yes",
             },
         },
         "curiosity": {
             "name": "Curiosity",
             "values": {
-                "0": "Yes",
-                "1": "No",
+                "0": "No",
+                "1": "Yes",
             },
         },
         "greed": {
             "name": "Greed",
             "values": {
-                "0": "Yes",
-                "1": "No",
+                "0": "No",
+                "1": "Yes",
             },
         },
     },

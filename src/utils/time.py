@@ -1,6 +1,7 @@
 """Time utils."""
 # Standard Python Libraries
 from datetime import datetime
+from types import SimpleNamespace
 
 
 def current_season():
@@ -70,4 +71,5 @@ def convert_seconds(seconds):
     seconds %= 3600
     minutes = seconds // 60
     seconds %= 60
-    return "%02d:%02d:%02d" % (hour, minutes, seconds)
+    d = {"hours": hour, "minutes": minutes, "seconds": seconds}
+    return SimpleNamespace(**d)

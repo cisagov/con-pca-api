@@ -7,7 +7,6 @@ import statistics
 # cisagov Libraries
 from api.manager import CycleManager, NonHumanManager, TemplateManager
 from api.schemas.stats_schema import CycleStatsSchema
-from utils.templates import TEMPLATE_INDICATORS
 
 template_manager = TemplateManager()
 cycle_manager = CycleManager()
@@ -65,7 +64,14 @@ def generate_cycle_stats(cycle, nonhuman=False):
                 "template_uuid": target["template_uuid"],
                 "template": template_manager.get(
                     uuid=target["template_uuid"],
-                    fields=["template_uuid", "name", "subject", "indicators"],
+                    fields=[
+                        "template_uuid",
+                        "name",
+                        "subject",
+                        "indicators",
+                        "html",
+                        "from_address",
+                    ],
                 ),
                 "deception_level": target["deception_level"],
             }
@@ -110,15 +116,11 @@ def generate_cycle_stats(cycle, nonhuman=False):
     rank_templates(template_stats)
     maxmind_stats = get_maxmind_stats(cycle)
     template_stats = template_stats.values()
-    indicator_stats = get_indicator_stats(
-        template_stats, stats["all"]["clicked"]["count"]
-    )
     return CycleStatsSchema().dump(
         {
             "stats": stats,
             "template_stats": template_stats,
             "maxmind_stats": maxmind_stats,
-            "indicator_stats": indicator_stats,
         }
     )
 
@@ -224,39 +226,3 @@ def get_maxmind_stats(cycle):
                 val["clicks"] += 1
         response.append(val)
     return response
-
-
-def get_indicator_stats(template_stats, all_clicks):
-    """Rank which indicators performed the highest."""
-    breakdowns = []
-    for stat in template_stats:
-        clicks = stat["clicked"]["count"]
-        indicators = stat["template"]["indicators"]
-        for indicator, subindicators in indicators.items():
-            for subindicator, score in subindicators.items():
-                item = next(
-                    filter(
-                        lambda x: x["indicator"] == indicator
-                        and x["subindicator"] == subindicator
-                        and x["score"] == score,
-                        breakdowns,
-                    ),
-                    None,
-                )
-                if not item:
-                    item = {
-                        "indicator": indicator,
-                        "subindicator": subindicator,
-                        "score": score,
-                        "clicks": 0,
-                        "percentage": 0,
-                        "name": TEMPLATE_INDICATORS[indicator][subindicator]["name"],
-                        "label": TEMPLATE_INDICATORS[indicator][subindicator]["values"][
-                            str(score)
-                        ],
-                    }
-                    breakdowns.append(item)
-                item["clicks"] += clicks
-                item["percentage"] = get_ratio(item["clicks"], all_clicks)
-    breakdowns = sorted(breakdowns, key=lambda x: x["percentage"], reverse=True)
-    return breakdowns[:5]

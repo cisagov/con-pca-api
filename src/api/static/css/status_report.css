@@ -172,24 +172,15 @@ h1 strong {
   text-align: center;
 }
 #averageClickTime {
-  margin-left: 50px;
-}
-#averageReportTime {
-  margin-left: 34px;
-}
-#averageClickTime,
-#averageReportTime {
   color: #174a91;
-  font-size: 1.95em;
+  font-size: 1em;
   line-height: 0.9em;
-  text-align: center;
-  height: 230px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  height: 130px;
+  padding-top: 50px;
+  margin-left: 10px;
+  width: 120px;
 }
-#averageClickTime span,
-#averageReportTime span {
+#averageClickTime span {
   font-family: Orbitron, sans-serif;
   font-size: 1.125em;
   font-weight: 700;
@@ -201,7 +192,6 @@ h1 strong {
   align-items: center;
   justify-content: center;
   z-index: 10;
-  margin-top: -240px;
 }
 .circles {
   text-align: center;
@@ -244,12 +234,28 @@ h1 strong {
   height: auto;
   margin: 20px auto 0;
   text-align: center;
-  width: 100%;
+  width: 600px;
 }
 .bar-chart h2 {
   font-size: 1.25em;
   font-weight: 400;
   margin: 10px;
+}
+.template-preview {
+  border: 1px solid #fdc010;
+  border-radius: 10px;
+  color: #164a91;
+  height: auto;
+  margin: 20px auto 0;
+  width: 600px;
+  margin-left: 15px;
+  padding: 7px;
+}
+.template-preview h2 {
+  font-size: 1.25em;
+  font-weight: 400;
+  margin: 10px;
+  text-align: center;
 }
 .legend {
   color: #000;
