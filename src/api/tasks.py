@@ -150,7 +150,8 @@ def cycle_report(subscription, cycle):
 
 def yearly_report(subscription, cycle):
     """Send yearly report."""
-    Notification("yearly_report", subscription, cycle).send()
+    # Notification("yearly_report", subscription, cycle).send()
+    return
 
 
 def end_cycle(subscription, cycle):
