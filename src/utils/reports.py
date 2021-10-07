@@ -1,5 +1,6 @@
 """Report utils."""
 # Standard Python Libraries
+from datetime import datetime
 import os.path
 import subprocess  # nosec
 
@@ -76,6 +77,7 @@ def get_report(cycle_uuids, report_type, nonhuman=False):
         "customer": customer,
         "time": time,
         "preview_template": preview_template,
+        "datetime": datetime,
     }
     return render_template(f"reports/{report_type}.html", **context)
 

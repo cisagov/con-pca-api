@@ -69,19 +69,19 @@ function createStatsByLevelChart(
         data: [low_sent, low_clicked],
         backgroundColor: "#064875",
         barThickness: 40,
-        label: "Low",
+        label: "Low (1, 2)",
       },
       {
         data: [mod_sent, mod_clicked],
         backgroundColor: "#fcbf10",
         barThickness: 40,
-        label: "Moderate",
+        label: "Moderate (3, 4)",
       },
       {
         data: [high_sent, high_clicked],
         backgroundColor: "#007bc1",
         barThickness: 40,
-        label: "High",
+        label: "High (5, 6)",
       },
     ],
   };
