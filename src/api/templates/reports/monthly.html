@@ -27,7 +27,7 @@
     <script src="{{ url_for('static', filename='js/reports.js') }}"></script>
   </head>
   <body class="mat-typography">
-    <div style="width: 8.5in" class="p-0">
+    <div style="min-width: 8.5in; min-height: 11in" class="p-0">
       <article>
         <!-- Top blue banner -->
         <header>
@@ -50,12 +50,9 @@
           <div class="container-fluid">
             <div class="row">
               <!-- Left side bar -->
-              <aside style="min-height: 1225px">
+              <aside style="min-height: 1225px; position: relative">
                 <div id="reportDate">
-                  <h3>
-                    {{ cycle.start_date.strftime('%b %d, %Y') }} - {{
-                    cycle.end_date.strftime('%b %d, %Y') }}
-                  </h3>
+                  <h3>{{ datetime.utcnow().strftime('%b %d, %Y')}}</h3>
                 </div>
                 <div id="gonePhishingImage">
                   <img
@@ -86,19 +83,61 @@
                   Email Click Rate: {{ stats.stats.all.clicked.ratio * 100 }}%
                   <br />
                 </div>
-                <div id="preparedFor">
+
+                <div id="numbersTitle">
+                  <h2>Campaign Timeline</h2>
+                </div>
+                <div id="campaignNumbers">
+                  Start: {{ cycle.start_date.strftime('%b %d, %Y') }}
+                  <br />
+                  Emails Sent By: {{ cycle.send_by_date.strftime('%b %d, %Y') }}
+                  <br />
+                  End: {{ cycle.end_date.strftime('%b %d, %Y') }}
+                  <br />
+                </div>
+
+                <div
+                  style="
+                    color: #add8e6;
+                    margin-bottom: 15px;
+                    margin-left: 40px;
+                    position: absolute;
+                    bottom: 0;
+                  "
+                >
                   Prepared for <br />
-                  <span>{{ customer.name }}</span>
+                  <span style="font-size: 1.375em; line-height: 1em"
+                    >{{ customer.name }}</span
+                  >
                 </div>
               </aside>
 
               <!-- Right 2/3 of the screen -->
               <div class="main-content">
-                <div id="reportTitle">
-                  <img
-                    src="{{ url_for('static', filename='image/title.svg') }}"
-                    alt="Monthly Subscription Report"
-                  />
+                <div id="title">
+                  <svg width="582px" height="92px" viewBox="0 0 582 70">
+                    <text x="0" y="20" fill="#174a91" font-size="50">
+                      <tspan
+                        font-family="Arial, sans-serif"
+                        textLength="598px"
+                        x="0"
+                        y="27"
+                        font-weight="bold"
+                      >
+                        SUBSCRIPTION STATUS
+                      </tspan>
+                      <tspan
+                        x="0"
+                        dx="0"
+                        dy="45"
+                        textLength="578px"
+                        font-weight="530"
+                        font-family="Arial Narrow, Arial, sans-serif"
+                      >
+                        REPORT
+                      </tspan>
+                    </text>
+                  </svg>
                 </div>
                 <!-- Donut Charts -->
                 <div class="row">
@@ -157,7 +196,7 @@
                   </div>
                 </div>
                 <div class="data-report">
-                  <!-- Campaign Progress -->
+                  <!-- Template Stats -->
                   <div class="flex flex-row">
                     <div class="col-10">
                       <div class="template-preview">
@@ -165,22 +204,29 @@
                         {% for t in stats.template_stats |
                         sort(attribute="clicked.ratio", reverse=True) %} {% if
                         loop.index <= 3 %}
-                        <div>
-                          <b>Subject:</b> {{
-                          preview_template(t['template']['subject'], customer)
-                          }}<br />
-                          <b>From:</b> {{
-                          preview_template(t['template']['from_address'],
-                          customer) }}<br />
+                        <div class="row align-items-center">
+                          <div class="col-1">
+                            <h3 style="margin-left: 8px">
+                              #{{ t.clicked.rank }}
+                            </h3>
+                          </div>
+                          <div class="col">
+                            <b>Subject:</b> {{
+                            preview_template(t.template.subject, customer) }}<br />
+                            <b>From:</b> {{
+                            preview_template(t.template.from_address, customer)
+                            }}<br />
+                            <b>Deception: </b> {{ t.template.deception_score }}
+                            ({{ t.deception_level }})
 
-                          <ul>
-                            <li>Sent - {{ t.sent.count }}</li>
-                            <li>Clicks - {{ t.clicked.count }}</li>
-                            <li>Click Rate - {{ t.clicked.ratio * 100 }}%</li>
-                          </ul>
+                            <ul>
+                              <li>Sent - {{ t.sent.count }}</li>
+                              <li>Clicks - {{ t.clicked.count }}</li>
+                              <li>Click Rate - {{ t.clicked.ratio * 100 }}%</li>
+                            </ul>
+                          </div>
                         </div>
                         {% endif %} {% endfor %}
-                        <!-- </ol> -->
                       </div>
                     </div>
                   </div>
