@@ -13,6 +13,7 @@ from api.schemas.customer_schema import CustomerSchema
 from api.schemas.cycle_schema import CycleSchema
 from api.schemas.landing_page_schema import LandingPageSchema
 from api.schemas.nonhuman_schema import NonHumanSchema
+from api.schemas.recommendation_schema import RecommendationsSchema
 from api.schemas.sending_profile_schema import SendingProfileSchema
 from api.schemas.subscription_schema import SubscriptionSchema
 from api.schemas.target_schema import TargetSchema
@@ -205,6 +206,17 @@ class Manager:
         )
         return {self.uuid_field: str(uuid)}
 
+    def upsert(self, query, data):
+        """Upsert documents into the database."""
+        data = self.clean_data(data)
+        data = self.add_created(data)
+        data = self.add_updated(data)
+        self.db.update_one(
+            query,
+            {"$set": self.load_data(data)},
+            upsert=True,
+        )
+
     def random(self, count=1):
         """Select a random record from collection."""
         return list(self.db.aggregate([{"$sample": {"size": count}}]))
@@ -298,6 +310,17 @@ class NonHumanManager(Manager):
         return super().__init__(
             collection="nonhuman",
             schema=NonHumanSchema,
+        )
+
+
+class RecommendationManager(Manager):
+    """RecommendationManager."""
+
+    def __init__(self):
+        """Super."""
+        return super().__init__(
+            collection="recommendation",
+            schema=RecommendationsSchema,
         )
 
 
