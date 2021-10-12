@@ -17,7 +17,6 @@ class HeaderSchema(Schema):
 class SendingProfileSchema(BaseSchema):
     """SendingProfileSchema."""
 
-    sending_profile_uuid = fields.Str(required=True)
     name = fields.Str(required=True)
     username = fields.Str()
     password = fields.Str()

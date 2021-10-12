@@ -55,17 +55,17 @@ url_prefix = "/api"
 rules = [
     # Customer Views
     ("/customers/", CustomersView),
-    ("/customer/<customer_uuid>/", CustomerView),
+    ("/customer/<customer_id>/", CustomerView),
     # Cycle Views
     ("/cycles/", CyclesView),
-    ("/cycle/<cycle_uuid>/", CycleView),
-    ("/cycle/<cycle_uuid>/stats/", CycleStatsView),
+    ("/cycle/<cycle_id>/", CycleView),
+    ("/cycle/<cycle_id>/stats/", CycleStatsView),
     ("/cycle/reports/<report_type>/", ReportHtmlView),
     ("/cycle/reports/<report_type>/pdf/", ReportPdfView),
     ("/cycle/reports/<report_type>/email/", ReportEmailView),
     # Landing Page Views
     ("/landingpages/", LandingPagesView),
-    ("/landingpage/<landing_page_uuid>/", LandingPageView),
+    ("/landingpage/<landing_page_id>/", LandingPageView),
     # Non Human Views
     ("/nonhumans/", NonHumansView),
     # Recommendation Views
@@ -76,19 +76,19 @@ rules = [
     ("/sectorindustry/", SectorIndustryView),
     # Sending Profile Views
     ("/sendingprofiles/", SendingProfilesView),
-    ("/sendingprofile/<sending_profile_uuid>/", SendingProfileView),
+    ("/sendingprofile/<sending_profile_id>/", SendingProfileView),
     # Subscription Views
     ("/subscriptions/", SubscriptionsView),
     ("/subscriptions/valid/", SubscriptionValidView),
-    ("/subscription/<subscription_uuid>/", SubscriptionView),
-    ("/subscription/<subscription_uuid>/launch/", SubscriptionLaunchView),
+    ("/subscription/<subscription_id>/", SubscriptionView),
+    ("/subscription/<subscription_id>/launch/", SubscriptionLaunchView),
     # Tag Views
     ("/tags/", TagsView),
     # Template Views
     ("/templates/", TemplatesView),
     ("/templates/import/", TemplateImportView),
     ("/templates/select/", TemplatesSelectView),
-    ("/template/<template_uuid>/", TemplateView),
+    ("/template/<template_id>/", TemplateView),
     # User Views
     ("/users/", UsersView),
     ("/user/<username>/", UserView),

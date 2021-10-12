@@ -25,7 +25,7 @@ class LandingPagesView(MethodView):
                 default_landing_page["name"] = (
                     "(System Default)" + default_landing_page["name"]
                 )
-                default_landing_page["landing_page_uuid"] = 0
+                default_landing_page["_id"] = 0
                 if with_default:
                     pages.append(default_landing_page)
                 break
@@ -39,39 +39,37 @@ class LandingPagesView(MethodView):
             return jsonify({"error": "Landing page exists with that name."}), 400
         landing_page = landing_page_manager.save(data)
         if data["is_default_template"]:
-            landing_page_manager.clear_and_set_default(
-                landing_page["landing_page_uuid"]
-            )
+            landing_page_manager.clear_and_set_default(landing_page["_id"])
         return jsonify(landing_page)
 
 
 class LandingPageView(MethodView):
     """LandingPageView."""
 
-    def get(self, landing_page_uuid):
+    def get(self, landing_page_id):
         """Get."""
-        return jsonify(landing_page_manager.get(uuid=landing_page_uuid))
+        return jsonify(landing_page_manager.get(document_id=landing_page_id))
 
-    def put(self, landing_page_uuid):
+    def put(self, landing_page_id):
         """Put."""
-        landing_page = landing_page_manager.get(uuid=landing_page_uuid)
+        landing_page = landing_page_manager.get(document_id=landing_page_id)
         landing_page.update(request.json)
 
         if landing_page["is_default_template"]:
-            landing_page_manager.clear_and_set_default(landing_page_uuid)
+            landing_page_manager.clear_and_set_default(landing_page_id)
 
-        landing_page_manager.update(uuid=landing_page_uuid, data=landing_page)
+        landing_page_manager.update(document_id=landing_page_id, data=landing_page)
         return jsonify({"success": True})
 
-    def delete(self, landing_page_uuid):
+    def delete(self, landing_page_id):
         """Delete."""
-        landing_page = landing_page_manager.get(uuid=landing_page_uuid)
+        landing_page = landing_page_manager.get(document_id=landing_page_id)
         if landing_page.get("is_default_template"):
             return jsonify({"Cannot delete default template."}), 400
 
         templates = template_manager.all(
-            params={"landing_page_uuid": landing_page_uuid},
-            fields=["template_uuid", "name"],
+            params={"landing_page_id": landing_page_id},
+            fields=["template_id", "name"],
         )
         if templates:
             return (
@@ -83,4 +81,4 @@ class LandingPageView(MethodView):
                 ),
                 400,
             )
-        return jsonify(landing_page_manager.delete(uuid=landing_page_uuid))
+        return jsonify(landing_page_manager.delete(document_id=landing_page_id))

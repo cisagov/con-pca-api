@@ -67,8 +67,8 @@ class ReportEmailView(MethodView):
         nonhuman = False
         if request.args.get("nonhuman", "") == "true":
             nonhuman = True
-        cycle = cycle_manager.get(uuid=data[0])
-        subscription = subscription_manager.get(uuid=cycle["subscription_uuid"])
+        cycle = cycle_manager.get(document_id=data[0])
+        subscription = subscription_manager.get(document_id=cycle["subscription_id"])
         Notification(f"{report_type}_report", subscription, cycle).send(nonhuman)
         return jsonify({"success": True}), 200
 
@@ -79,7 +79,7 @@ class AggregateReportView(MethodView):
     def get(self):
         """Get."""
         context = {
-            "customers_enrolled": len(customer_manager.all(fields=["customer_uuid"])),
+            "customers_enrolled": len(customer_manager.all(fields=["_id"])),
         }
         context.update(get_reports_sent())
         context.update(get_sector_industry_report())

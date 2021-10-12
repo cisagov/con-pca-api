@@ -33,20 +33,22 @@ class SendingProfilesView(MethodView):
 class SendingProfileView(MethodView):
     """SendingProfileView."""
 
-    def get(self, sending_profile_uuid):
+    def get(self, sending_profile_id):
         """Get."""
-        return jsonify(sending_profile_manager.get(uuid=sending_profile_uuid))
+        return jsonify(sending_profile_manager.get(document_id=sending_profile_id))
 
-    def put(self, sending_profile_uuid):
+    def put(self, sending_profile_id):
         """Put."""
-        sending_profile_manager.update(uuid=sending_profile_uuid, data=request.json)
+        sending_profile_manager.update(
+            document_id=sending_profile_id, data=request.json
+        )
         return jsonify({"success": True})
 
-    def delete(self, sending_profile_uuid):
+    def delete(self, sending_profile_id):
         """Delete."""
         templates = template_manager.all(
-            params={"sending_profile_uuid": sending_profile_uuid},
-            fields=["template_uuid", "name"],
+            params={"sending_profile_id": sending_profile_id},
+            fields=["template_id", "name"],
         )
         if templates:
             return (
@@ -60,8 +62,8 @@ class SendingProfileView(MethodView):
             )
 
         subscriptions = subscription_manager.all(
-            params={"sending_profile_uuid": sending_profile_uuid},
-            fields=["subscription_uuid", "name"],
+            params={"sending_profile_id": sending_profile_id},
+            fields=["_id", "name"],
         )
         if subscriptions:
             return (
@@ -73,4 +75,4 @@ class SendingProfileView(MethodView):
                 ),
                 400,
             )
-        return jsonify(sending_profile_manager.delete(uuid=sending_profile_uuid))
+        return jsonify(sending_profile_manager.delete(document_id=sending_profile_id))

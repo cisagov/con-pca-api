@@ -20,11 +20,11 @@ cycle_manager = CycleManager()
 subscription_manager = SubscriptionManager()
 
 
-def get_cycles(cycle_uuids):
+def get_cycles(cycle_ids):
     """Individually get each cycle so they contain targets."""
     cycles = []
-    for uuid in cycle_uuids:
-        cycles.append(cycle_manager.get(uuid=uuid))
+    for cycle_id in cycle_ids:
+        cycles.append(cycle_manager.get(document_id=cycle_id))
     return cycles
 
 
@@ -37,29 +37,29 @@ def merge_cycles(cycles):
     cycle_set = {
         "start_date": cycles[0]["start_date"],
         "end_date": cycles[-1]["end_date"],
-        "subscription_uuid": cycles[0]["subscription_uuid"],
-        "template_uuids": [],
+        "subscription_id": cycles[0]["subscription_id"],
+        "template_ids": [],
         "target_count": 0,
         "targets": [],
     }
     for cycle in cycles:
-        cycle_set["template_uuids"].extend(cycle["template_uuids"])
+        cycle_set["template_ids"].extend(cycle["template_ids"])
         cycle_set["targets"].extend(cycle["targets"])
         cycle_set["target_count"] += cycle["target_count"]
 
     return cycle_set
 
 
-def get_report(cycle_uuids, report_type, nonhuman=False):
+def get_report(cycle_ids, report_type, nonhuman=False):
     """Get report by type and cycle."""
-    cycles = get_cycles(cycle_uuids)
+    cycles = get_cycles(cycle_ids)
     cycle = merge_cycles(cycles)
     subscription = subscription_manager.get(
-        uuid=cycle["subscription_uuid"],
+        document_id=cycle["subscription_id"],
         fields=[
-            "subscription_uuid",
+            "_id",
             "name",
-            "customer_uuid",
+            "customer_id",
             "target_domain",
             "start_date",
             "primary_contact",
@@ -67,7 +67,7 @@ def get_report(cycle_uuids, report_type, nonhuman=False):
             "status",
         ],
     )
-    customer = customer_manager.get(uuid=subscription["customer_uuid"])
+    customer = customer_manager.get(document_id=subscription["customer_id"])
     get_cycle_stats(cycle)
 
     context = {
@@ -82,14 +82,14 @@ def get_report(cycle_uuids, report_type, nonhuman=False):
     return render_template(f"reports/{report_type}.html", **context)
 
 
-def get_report_pdf(cycle_uuids, report_type, nonhuman=False):
+def get_report_pdf(cycle_ids, report_type, nonhuman=False):
     """Get report pdf."""
-    filename = f"{cycle_uuids[0]}_report.pdf"
+    filename = f"{cycle_ids[0]}_report.pdf"
     args = [
         "node",
         "report.js",
         filename,
-        ",".join(cycle_uuids),
+        ",".join(cycle_ids),
         report_type,
         str(nonhuman),
     ]
@@ -125,20 +125,16 @@ def get_sector_industry_report():
         "tribal_stats": {"subscription_count": 0, "cycle_count": 0},
         "private_stats": {"subscription_count": 0, "cycle_count": 0},
     }
-    customers = customer_manager.all(fields=["customer_uuid", "customer_type"])
+    customers = customer_manager.all(fields=["_id", "customer_type"])
     for customer in customers:
         stat = f"{customer['customer_type'].lower()}_stats"
         subscriptions = subscription_manager.all(
-            params={"customer_uuid": customer["customer_uuid"]},
-            fields=["subscription_uuid"],
+            params={"customer_id": customer["_id"]},
+            fields=["_id"],
         )
         cycles = cycle_manager.all(
-            params={
-                "subscription_uuid": {
-                    "$in": [s["subscription_uuid"] for s in subscriptions]
-                }
-            },
-            fields=["cycle_uuid"],
+            params={"subscription_id": {"$in": [s["_id"] for s in subscriptions]}},
+            fields=["_id"],
         )
         response[stat]["subscription_count"] += len(subscriptions)
         response[stat]["cycle_count"] += len(cycles)
@@ -150,10 +146,10 @@ def get_all_customer_stats():
     sent = 0
     total_clicks = 0
     averages = []
-    cycles = cycle_manager.all(fields=["cycle_uuid", "dirty_stats", "stats"])
+    cycles = cycle_manager.all(fields=["_id", "dirty_stats", "stats"])
     for cycle in cycles:
         if cycle.get("dirty_stats", True):
-            cycle = cycle_manager.get(cycle["cycle_uuid"])
+            cycle = cycle_manager.get(cycle["_id"])
             get_cycle_stats(cycle)
         sent += cycle["stats"]["stats"]["all"]["sent"]["count"]
         clicks = cycle["stats"]["stats"]["all"]["clicked"]["count"]

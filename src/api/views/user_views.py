@@ -30,7 +30,7 @@ class UserView(MethodView):
             return jsonify({"error": "User does not exist."}), 400
 
         subscriptions = subscription_manager.all(
-            {"admin_email": user["email"]}, fields=["subscription_uuid", "name"]
+            {"admin_email": user["email"]}, fields=["_id", "name"]
         )
         if subscriptions:
             return (

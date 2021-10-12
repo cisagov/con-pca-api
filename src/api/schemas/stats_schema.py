@@ -38,7 +38,7 @@ class CycleStatsLevelSchema(Schema):
 class TemplateStatsSchema(CycleStatsEventsSchema):
     """TemplateStats."""
 
-    template_uuid = fields.Str()
+    template_id = fields.Str()
     template = fields.Nested(TemplateSchema)
     deception_level = fields.Str()
 

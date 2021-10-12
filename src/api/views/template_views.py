@@ -22,7 +22,7 @@ class TemplatesView(MethodView):
         parameters = template_manager.get_query(request.args)
         templates = request.args.get("templates")
         if templates:
-            parameters["template_uuid"] = {"$in": templates.split(",")}
+            parameters["_id"] = {"$in": templates.split(",")}
 
         parameters["retired"] = {"$in": [False, None]}
         if request.args.get("retired", "").lower() == "true":
@@ -34,28 +34,26 @@ class TemplatesView(MethodView):
         data = request.json
         if template_manager.exists({"name": data["name"]}):
             return jsonify({"error": "Template with that name already exists."}), 400
-
-        # TODO: Validate Template
         return jsonify(template_manager.save(data))
 
 
 class TemplateView(MethodView):
     """TemplateView."""
 
-    def get(self, template_uuid):
+    def get(self, template_id):
         """Get."""
-        return template_manager.get(uuid=template_uuid)
+        return jsonify(template_manager.get(document_id=template_id))
 
-    def put(self, template_uuid):
+    def put(self, template_id):
         """Put."""
         data = request.json
-        if data.get("landing_page_uuid") in ["0", None]:
-            data["landing_page_uuid"] = None
+        if data.get("landing_page_id") in ["0", None]:
+            data["landing_page_id"] = None
 
         if data.get("retired"):
             subscriptions = subscription_manager.all(
-                params={"templates_selected": template_uuid},
-                fields=["subscription_uuid", "name"],
+                params={"templates_selected": template_id},
+                fields=["_id", "name"],
             )
             if subscriptions:
                 return (
@@ -68,31 +66,25 @@ class TemplateView(MethodView):
                     400,
                 )
 
-        template = template_manager.get(uuid=template_uuid)
+        template = template_manager.get(document_id=template_id)
         template.update(data)
-
-        # TODO: Validate Template
-        template_manager.update(uuid=template_uuid, data=template)
+        template_manager.update(document_id=template_id, data=template)
         return jsonify({"success": True})
 
-    def delete(self, template_uuid):
+    def delete(self, template_id):
         """Delete."""
-        template = template_manager.get(uuid=template_uuid)
+        template = template_manager.get(document_id=template_id)
 
         if not template.get("retired"):
             return jsonify({"error": "You must retire the template first."}), 400
 
         cycles = cycle_manager.all(
-            params={"template_uuids": template_uuid}, fields=["subscription_uuid"]
+            params={"template_ids": template_id}, fields=["subscription_id"]
         )
         if cycles:
             cycle_subs = subscription_manager.all(
-                params={
-                    "subscription_uuid": {
-                        "$in": {c["subscription_uuid"] for c in cycles}
-                    }
-                },
-                fields=["subscription_uuid", "name"],
+                params={"_id": {"$in": {c["subscription_id"] for c in cycles}}},
+                fields=["_id", "name"],
             )
             return (
                 jsonify(
@@ -105,8 +97,8 @@ class TemplateView(MethodView):
             )
 
         subscriptions = subscription_manager.all(
-            params={"templates_selected": template_uuid},
-            fields=["subscription_uuid", "name"],
+            params={"templates_selected": template_id},
+            fields=["_id", "name"],
         )
         if subscriptions:
             return (
@@ -119,10 +111,9 @@ class TemplateView(MethodView):
                 400,
             )
 
-        return jsonify(template_manager.delete(uuid=template_uuid))
+        return jsonify(template_manager.delete(document_id=template_id))
 
 
-# TODO: TemplateStopView
 class TemplateImportView(MethodView):
     """TemplateImportView."""
 

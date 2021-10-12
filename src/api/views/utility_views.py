@@ -20,7 +20,7 @@ class TestEmailView(MethodView):
 
         email = Email(data["smtp"])
         if data.get("template"):
-            customer = customer_manager.get(uuid=data["customer_uuid"])
+            customer = customer_manager.get(document_id=data["customer_id"])
             target = {
                 "email": data["email"],
                 "first_name": data["first_name"],
