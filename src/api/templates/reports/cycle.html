@@ -101,7 +101,7 @@
         </tr>
         {% for campaign in cycle.stats.template_stats %}
         <tr>
-          <td>{{ campaign.template.deception_score }}</td>
+          <th scope="row">{{ campaign.template.deception_score }}</th>
           <td>{{ campaign.template.subject }}</td>
           <td>{{ (campaign.clicked.ratio * 100) | int }}%</td>
           <td>{{ campaign.clicked.count }}</td>
