@@ -92,10 +92,12 @@
       </p>
       <table class="table">
         <tr>
-          <th>Level</th>
-          <th>Campaign Subject</th>
-          <th>User Click Rate</th>
-          <th>Unique Clicks</th>
+          <thead>
+            <th scope="col">Level</th>
+            <th scope="col">Campaign Subject</th>
+            <th scope="col">User Click Rate</th>
+            <th scope="col">Unique Clicks</th>
+          </thead>
         </tr>
         {% for campaign in cycle.stats.template_stats %}
         <tr>
