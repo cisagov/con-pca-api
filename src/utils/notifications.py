@@ -34,7 +34,7 @@ class Notification:
             end_date = self.cycle["end_date"]
 
         templates = template_manager.all(
-            params={"template_uuid": {"$in": self.cycle["template_uuids"]}}
+            params={"template_id": {"$in": self.cycle["template_ids"]}}
         )
 
         return {
@@ -45,7 +45,7 @@ class Notification:
             "templates": templates,
             "target_count": self.cycle["target_count"],
             "admin_email": self.subscription["admin_email"],
-            "subscription_uuid": self.subscription["subscription_uuid"],
+            "subscription_id": self.subscription["_id"],
         }
 
     def get_report(self, message_type: str, context: dict):
@@ -86,7 +86,7 @@ class Notification:
             "email_from": SMTP_FROM,
         }
         subscription_manager.add_to_list(
-            uuid=self.subscription["subscription_uuid"],
+            document_id=self.subscription["_id"],
             field="notification_history",
             data=data,
         )
@@ -101,7 +101,7 @@ class Notification:
         attachments = []
         if self.message_type in ["monthly_report"]:
             filename = get_report_pdf(
-                [self.cycle["cycle_uuid"]],
+                [self.cycle["_id"]],
                 self.message_type.split("_")[0],
                 nonhuman,
             )

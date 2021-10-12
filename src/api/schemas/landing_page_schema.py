@@ -9,7 +9,6 @@ from api.schemas.base_schema import BaseSchema
 class LandingPageSchema(BaseSchema):
     """LandingPageSchema."""
 
-    landing_page_uuid = fields.Str(required=True)
     name = fields.Str(required=True)
     is_default_template = fields.Bool(missing=False)
     html = fields.Str()

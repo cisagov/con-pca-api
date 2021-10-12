@@ -29,18 +29,16 @@ class SubscriptionsView(MethodView):
     def get(self):
         """Get."""
         parameters = dict(request.args)
-
-        # TODO: Allow querying by template
         parameters = subscription_manager.get_query(parameters)
 
         if request.args.get("template"):
             cycles = cycle_manager.all(
-                params={"template_uuids": request.args["template"]},
-                fields=["subscription_uuid"],
+                params={"template_ids": request.args["template"]},
+                fields=["subscription_id"],
             )
-            subscription_uuids = list({c["subscription_uuid"] for c in cycles})
+            subscription_ids = list({c["subscription_id"] for c in cycles})
             parameters["$or"] = [
-                {"subscription_uuid": {"$in": subscription_uuids}},
+                {"_id": {"$in": subscription_ids}},
                 {"templates_selected": request.args["templates"]},
             ]
 
@@ -52,8 +50,8 @@ class SubscriptionsView(MethodView):
             subscription_manager.all(
                 params=parameters,
                 fields=[
-                    "subscription_uuid",
-                    "customer_uuid",
+                    "_id",
+                    "customer_id",
                     "name",
                     "status",
                     "start_date",
@@ -68,7 +66,7 @@ class SubscriptionsView(MethodView):
     def post(self):
         """Post."""
         subscription = request.json
-        customer = customer_manager.get(uuid=subscription["customer_uuid"])
+        customer = customer_manager.get(document_id=subscription["customer_id"])
         subscription["name"] = create_subscription_name(customer)
         subscription["status"] = "created"
         response = subscription_manager.save(subscription)
@@ -79,33 +77,33 @@ class SubscriptionsView(MethodView):
 class SubscriptionView(MethodView):
     """SubscriptionView."""
 
-    def get(self, subscription_uuid):
+    def get(self, subscription_id):
         """Get."""
-        return jsonify(subscription_manager.get(uuid=subscription_uuid))
+        return jsonify(subscription_manager.get(document_id=subscription_id))
 
-    def put(self, subscription_uuid):
+    def put(self, subscription_id):
         """Put."""
-        subscription_manager.update(uuid=subscription_uuid, data=request.json)
+        subscription_manager.update(document_id=subscription_id, data=request.json)
         return jsonify({"success": True})
 
-    def delete(self, subscription_uuid):
+    def delete(self, subscription_id):
         """Delete."""
-        subscription_manager.delete(uuid=subscription_uuid)
-        cycle_manager.delete(params={"subscription_uuid": subscription_uuid})
-        target_manager.delete(params={"subscription_uuid": subscription_uuid})
+        subscription_manager.delete(document_id=subscription_id)
+        cycle_manager.delete(params={"subscription_id": subscription_id})
+        target_manager.delete(params={"subscription_id": subscription_id})
         return jsonify({"success": True})
 
 
 class SubscriptionLaunchView(MethodView):
     """SubscriptionLaunchView."""
 
-    def get(self, subscription_uuid):
+    def get(self, subscription_id):
         """Launch a subscription."""
-        return jsonify(start_subscription(subscription_uuid))
+        return jsonify(start_subscription(subscription_id))
 
-    def delete(self, subscription_uuid):
+    def delete(self, subscription_id):
         """Stop a subscription."""
-        return jsonify(stop_subscription(subscription_uuid))
+        return jsonify(stop_subscription(subscription_id))
 
 
 class SubscriptionValidView(MethodView):

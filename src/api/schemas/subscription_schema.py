@@ -58,9 +58,9 @@ class SubscriptionTasksSchema(Schema):
 class SubscriptionSchema(BaseSchema):
     """SubscripionSchema."""
 
-    subscription_uuid = fields.Str()
     name = fields.Str()
-    customer_uuid = fields.Str()
+    customer_id = fields.Str()
+    sending_profile_id = fields.Str()
     target_domain = fields.Str()
     start_date = DateTimeField()
     primary_contact = fields.Nested(CustomerContactSchema)
@@ -70,7 +70,6 @@ class SubscriptionSchema(BaseSchema):
     )
     target_email_list = fields.List(fields.Nested(SubscriptionTargetSchema))
     templates_selected = fields.List(fields.Str())
-    sending_profile_uuid = fields.Str()
     continuous_subscription = fields.Bool()
     cycle_length_minutes = fields.Integer()
     cooldown_minutes = fields.Integer()

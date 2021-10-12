@@ -46,7 +46,7 @@ def process_subscription(subscription):
     """Process subscription tasks."""
     cycle = cycle_manager.get(
         filter_data={
-            "subscription_uuid": subscription["subscription_uuid"],
+            "subscription_id": subscription["_id"],
             "active": True,
         }
     )
@@ -70,20 +70,20 @@ def process_subscription(subscription):
             logging.exception(e)
             task["error"] = str(e)
         if not is_stopping:
-            update_task(subscription["subscription_uuid"], task)
+            update_task(subscription["_id"], task)
             add_new_task(subscription, task)
         logging.info(f"Executed task {task}")
 
     subscription_manager.update(
-        uuid=subscription["subscription_uuid"],
+        document_id=subscription["_id"],
         data={"processing": False},
     )
 
 
-def update_task(subscription_uuid, task):
+def update_task(subscription_id, task):
     """Update subsscription task."""
     return subscription_manager.update_in_list(
-        uuid=subscription_uuid,
+        document_id=subscription_id,
         field="tasks.$",
         data=task,
         params={"tasks.task_uuid": task["task_uuid"]},
@@ -114,7 +114,7 @@ def add_new_task(subscription, task):
         logging.info(f"Adding new task {task}")
 
         return subscription_manager.add_to_list(
-            uuid=subscription["subscription_uuid"],
+            document_id=subscription["_id"],
             field="tasks",
             data=task,
         )
@@ -157,8 +157,8 @@ def yearly_report(subscription, cycle):
 def end_cycle(subscription, cycle):
     """End cycle by stopping or continuing new cycle."""
     if subscription.get("continuous_subscription"):
-        stop_subscription(subscription["subscription_uuid"])
-        start_subscription(subscription["subscription_uuid"])
+        stop_subscription(subscription["_id"])
+        start_subscription(subscription["_id"])
     else:
-        stop_subscription(subscription["subscription_uuid"])
+        stop_subscription(subscription["_id"])
         Notification("subscription_stopped", subscription, cycle).send()

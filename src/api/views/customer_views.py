@@ -34,21 +34,20 @@ class CustomersView(MethodView):
 class CustomerView(MethodView):
     """CustomerView."""
 
-    def get(self, customer_uuid):
+    def get(self, customer_id):
         """Get."""
-        customer = customer_manager.get(uuid=customer_uuid)
-        return jsonify(customer)
+        return jsonify(customer_manager.get(document_id=customer_id))
 
-    def put(self, customer_uuid):
+    def put(self, customer_id):
         """Put."""
-        customer_manager.update(uuid=customer_uuid, data=request.json)
+        customer_manager.update(document_id=customer_id, data=request.json)
         return jsonify({"success": True})
 
-    def delete(self, customer_uuid):
+    def delete(self, customer_id):
         """Delete."""
         subscriptions = subscription_manager.all(
-            params={"customer_uuid": customer_uuid},
-            fields=["subscription_uuid", "name"],
+            params={"customer_id": customer_id},
+            fields=["_id", "name"],
         )
         if subscriptions:
             return (
@@ -60,7 +59,7 @@ class CustomerView(MethodView):
                 ),
                 400,
             )
-        return jsonify(customer_manager.delete(uuid=customer_uuid))
+        return jsonify(customer_manager.delete(document_id=customer_id))
 
 
 class SectorIndustryView(MethodView):

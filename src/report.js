@@ -1,13 +1,13 @@
 const puppeteer = require("puppeteer");
 
-async function getReport(filename, cycleUuids, reportType, nonhuman) {
+async function getReport(filename, cycleIds, reportType, nonhuman) {
   const browser = await puppeteer.launch({
     headless: true,
     executablePath: "/usr/bin/chromium",
     args: ["--no-sandbox"],
   });
   const page = await browser.newPage();
-  let url = `http://localhost:5000/api/cycle/reports/${reportType}/?cycles=${cycleUuids}`;
+  let url = `http://localhost:5000/api/cycle/reports/${reportType}/?cycles=${cycleIds}`;
   if (nonhuman === "True") {
     url += "?nonhuman=true";
   }

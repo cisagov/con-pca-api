@@ -50,10 +50,9 @@ class TemplateIndicatorSchema(Schema):
 class TemplateSchema(BaseSchema):
     """TemplateSchema."""
 
-    template_uuid = fields.Str(required=True)
     name = fields.Str(required=True)
-    landing_page_uuid = fields.Str(required=False, allow_none=True)
-    sending_profile_uuid = fields.Str(required=False, allow_none=True)
+    landing_page_id = fields.Str(required=False, allow_none=True)
+    sending_profile_id = fields.Str(required=False, allow_none=True)
     deception_score = fields.Integer()
     from_address = fields.Str(required=True)
     retired = fields.Bool(missing=False)

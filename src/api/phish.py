@@ -33,12 +33,12 @@ def emails_job():
     """Email job to run every minute."""
     with app.app_context():
         targets = []
-        cycle_uuids = get_active_cycles()
-        if not cycle_uuids:
+        cycle_ids = get_active_cycles()
+        if not cycle_ids:
             logging.info("No cycles to process")
             return
         while True:
-            target = get_target(cycle_uuids)
+            target = get_target(cycle_ids)
             if not target:
                 logging.info("No more targets found.")
                 break
@@ -51,28 +51,27 @@ def emails_job():
 
 
 def get_active_cycles():
-    """Get active cycle uuids."""
-    active_cycles = cycle_manager.all(params={"active": True}, fields=["cycle_uuid"])
+    """Get active cycle ids."""
+    active_cycles = cycle_manager.all(params={"active": True}, fields=["_id"])
     if not active_cycles:
         return None
-    uuids = [c["cycle_uuid"] for c in active_cycles]
-    return uuids
+    return [c["_id"] for c in active_cycles]
 
 
-def get_target(cycle_uuids):
+def get_target(cycle_ids):
     """Get and update target for processing."""
     return target_manager.find_one_and_update(
         params={
             "send_date": {"$lt": datetime.utcnow()},
             "sent": {"$in": [False, None]},
-            "cycle_uuid": {"$in": cycle_uuids},
+            "cycle_id": {"$in": cycle_ids},
         },
         data={"sent": True},
         fields=[
-            "target_uuid",
-            "cycle_uuid",
-            "subscription_uuid",
-            "template_uuid",
+            "_id",
+            "cycle_id",
+            "subscription_id",
+            "template_id",
             "email",
             "first_name",
             "last_name",
@@ -83,16 +82,16 @@ def get_target(cycle_uuids):
 
 def process_targets(targets):
     """Process cycle targets for sending."""
-    for subscription_uuid, subscription_targets in groupby(
-        targets, key=lambda x: x["subscription_uuid"]
+    for subscription_id, subscription_targets in groupby(
+        targets, key=lambda x: x["subscription_id"]
     ):
         try:
-            process_subscription_targets(subscription_uuid, subscription_targets)
+            process_subscription_targets(subscription_id, subscription_targets)
         except Exception as e:
             logging.exception(e)
             for t in subscription_targets:
                 target_manager.update(
-                    uuid=t["target_uuid"],
+                    document_id=t["_id"],
                     data={
                         "error": str(e),
                         "sent_date": datetime.utcnow(),
@@ -100,32 +99,32 @@ def process_targets(targets):
                 )
 
 
-def process_subscription_targets(subscription_uuid, targets):
+def process_subscription_targets(subscription_id, targets):
     """Process subscription targets."""
     # Get subscription for sending profile and customer
     subscription = subscription_manager.get(
-        uuid=subscription_uuid,
-        fields=["sending_profile_uuid", "customer_uuid"],
+        document_id=subscription_id,
+        fields=["sending_profile_id", "customer_id"],
     )
 
     # Get sending profile to send emails
     sending_profile = sending_profile_manager.get(
-        uuid=subscription["sending_profile_uuid"]
+        document_id=subscription["sending_profile_id"]
     )
     # Get customer for email context
-    customer = customer_manager.get(uuid=subscription["customer_uuid"])
+    customer = customer_manager.get(document_id=subscription["customer_id"])
 
     # Login to subscription SMTP server
     subscription_email = Email(sending_profile)
 
     # Group targets by template
-    for template_uuid, targets in groupby(targets, key=lambda x: x["template_uuid"]):
-        template = template_manager.get(uuid=template_uuid)
+    for template_id, targets in groupby(targets, key=lambda x: x["template_id"]):
+        template = template_manager.get(document_id=template_id)
         # If template has a different SMTP Server defined, connect to that one
         template_email = None
         template_sp = None
-        if template.get("sending_profile_uuid"):
-            template_sp = sending_profile_manager.get(template["sending_profile_uuid"])
+        if template.get("sending_profile_id"):
+            template_sp = sending_profile_manager.get(template["sending_profile_id"])
             template_email = Email(sending_profile=template_sp)
 
         for target in targets:
@@ -143,12 +142,12 @@ def process_subscription_targets(subscription_uuid, targets):
                 target["error"] = str(e)
             finally:
                 target_manager.update(
-                    uuid=target["target_uuid"],
+                    document_id=target["_id"],
                     data={"sent": True, "sent_date": datetime.utcnow()},
                 )
 
     cycle_manager.update(
-        uuid=target["cycle_uuid"],
+        document_id=target["cycle_id"],
         data={
             "processing": False,
             "dirty_stats": True,
@@ -160,8 +159,8 @@ def process_target(sending_profile, target, customer, template, email):
     """Send email to target."""
     tracking_info = get_tracking_info(
         sending_profile,
-        target["cycle_uuid"],
-        target["target_uuid"],
+        target["cycle_id"],
+        target["_id"],
     )
     context = get_email_context(
         customer=customer,
@@ -192,9 +191,9 @@ def get_landing_url(sending_profile):
     return f"http://{LANDING_SUBDOMAIN}.{sp_domain}"
 
 
-def get_tracking_info(sending_profile, cycle_uuid, target_uuid):
+def get_tracking_info(sending_profile, cycle_id, target_id):
     """Get tracking html for opens and link for clicks."""
-    tracking_id = get_tracking_id(cycle_uuid, target_uuid)
+    tracking_id = get_tracking_id(cycle_id, target_id)
     url = get_landing_url(sending_profile)
     return {
         "open": f'<img width="1px" heigh="1px" alt="" src="{url}/o/{tracking_id}/"/>',
@@ -202,17 +201,17 @@ def get_tracking_info(sending_profile, cycle_uuid, target_uuid):
     }
 
 
-def get_tracking_id(cycle_uuid, target_uuid):
+def get_tracking_id(cycle_id, target_id):
     """
     Get url to embed into template.
 
-    Base64 encodes cycle uuid with the target uuid.
+    Base64 encodes cycle id with the target id.
     """
-    data = f"{cycle_uuid}_{target_uuid}"
+    data = f"{cycle_id}_{target_id}"
     urlsafe_bytes = base64.urlsafe_b64encode(data.encode("utf-8"))
     return str(urlsafe_bytes, "utf-8")
 
 
 def decode_tracking_id(s):
-    """Decode base64 url into cycle uuid and target uuid."""
+    """Decode base64 url into cycle id and target id."""
     return str(base64.urlsafe_b64decode(s), "utf-8").split("_")
