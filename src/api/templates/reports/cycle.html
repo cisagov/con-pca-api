@@ -103,7 +103,7 @@
         <tr>
           <td>{{ campaign.template.deception_score }}</td>
           <td>{{ campaign.template.subject }}</td>
-          <td>{{ campaign.clicked.ratio * 100 }}</td>
+          <td>{{ (campaign.clicked.ratio * 100) | int }}%</td>
           <td>{{ campaign.clicked.count }}</td>
         </tr>
         {% endfor %}
