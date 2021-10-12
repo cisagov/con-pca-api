@@ -46,7 +46,7 @@ def process_subscription(subscription):
     """Process subscription tasks."""
     cycle = cycle_manager.get(
         filter_data={
-            "subscription_id": subscription["_id"],
+            "subscription_id": str(subscription["_id"]),
             "active": True,
         }
     )

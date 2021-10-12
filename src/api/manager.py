@@ -35,6 +35,13 @@ class Manager:
         schema = self.schema()
         return schema.load(dict(data), partial=True)
 
+    def document_query(self, document_id):
+        """Get query for a document by id."""
+        if type(document_id) is str:
+            return {"_id": ObjectId(document_id)}
+        elif type(document_id) is ObjectId:
+            return {"_id": document_id}
+
     def convert_fields(self, fields):
         """Convert list of fields into mongo syntax."""
         if not fields:
@@ -123,7 +130,7 @@ class Manager:
         if document_id:
             return self.read_data(
                 self.db.find_one(
-                    {"_id": ObjectId(document_id)},
+                    self.document_query(document_id),
                     self.convert_fields(fields),
                 )
             )
@@ -147,7 +154,7 @@ class Manager:
     def delete(self, document_id=None, params=None):
         """Delete item by object id."""
         if document_id:
-            self.db.delete_one({"_id": ObjectId(document_id)}).raw_result
+            self.db.delete_one(self.document_query(document_id)).raw_result
         if params:
             return self.db.delete_many(params).raw_result
         raise Exception(
@@ -159,7 +166,7 @@ class Manager:
         data = self.clean_data(data)
         data = self.add_updated(data)
         self.db.update_one(
-            {"_id": ObjectId(document_id)},
+            self.document_query(document_id),
             {"$set": self.load_data(data, partial=True)},
         ).raw_result
 
@@ -191,20 +198,20 @@ class Manager:
     def add_to_list(self, document_id, field, data):
         """Add item to list in document."""
         return self.db.update_one(
-            {"_id": ObjectId(document_id)}, {"$push": {field: data}}
+            self.document_query(document_id), {"$push": {field: data}}
         ).raw_result
 
     def delete_from_list(self, document_id, field, data):
         """Delete item from list in document."""
         return self.db.update_one(
-            {"_id": ObjectId(document_id)}, {"$pull": {field: data}}
+            self.document_query(document_id), {"$pull": {field: data}}
         ).raw_result
 
     def update_in_list(self, document_id, field, data, params):
         """Update item in list from document."""
-        return self.db.update_one(
-            {"_id": ObjectId(document_id), **params}, {"$set": {field: data}}
-        ).raw_result
+        query = self.document_query(document_id)
+        query.update(params)
+        return self.db.update_one(query, {"$set": {field: data}}).raw_result
 
     def upsert(self, query, data):
         """Upsert documents into the database."""
@@ -265,7 +272,7 @@ class CycleManager(Manager):
         if document_id:
             cycle = self.read_data(
                 self.db.find_one(
-                    {"_id": ObjectId(document_id)},
+                    self.document_query(document_id),
                     self.convert_fields(fields),
                 )
             )
@@ -297,7 +304,7 @@ class LandingPageManager(Manager):
         sub_query = {}
         newvalues = {"$set": {"is_default_template": False}}
         self.db.update_many(sub_query, newvalues)
-        sub_query = {"_id": ObjectId(document_id)}
+        sub_query = self.document_query(document_id)
         newvalues = {"$set": {"is_default_template": True}}
         self.db.update_one(sub_query, newvalues)
 

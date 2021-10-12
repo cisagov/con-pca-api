@@ -84,7 +84,7 @@ def stop_subscription(subscription_id):
     cycle = cycle_manager.get(
         filter_data={
             "active": True,
-            "subscription_id": subscription_id,
+            "subscription_id": str(subscription_id),
         },
         fields=["_id"],
     )
