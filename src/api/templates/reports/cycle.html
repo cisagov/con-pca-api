@@ -26,6 +26,7 @@
     <script src="{{ url_for('static', filename='js/chartjs-plugin-datalabels.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/reports.js') }}"></script>
   </head>
+
   <body class="mat-typography">
     {% for t in stats.template_stats %}
     <div style="width: 8.5in; height: 11in; margin: 10px" class="p-0">
@@ -52,5 +53,25 @@
       <p><b>Unique click rate:</b> {{ t.clicked.ratio * 100 }}%</p>
     </div>
     {% endfor %}
+    <div style="width: 8.5in; height: 11in; margin: 10px" class="p-0">
+      <table class="table">
+        <tr>
+          <thead class="thead-dark">
+            <th scope="col">Level</th>
+            <th scope="col">Template Subject</th>
+            <th scope="col">User Click Rate</th>
+            <th scope="col">Unique Clicks</th>
+          </thead>
+        </tr>
+        {% for t in cycle.stats.template_stats %}
+        <tr>
+          <th scope="row">{{ t.template.deception_score }}</th>
+          <td>{{ t.template.subject }}</td>
+          <td>{{ (t.clicked.ratio * 100) | int }}%</td>
+          <td>{{ t.clicked.count }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
   </body>
 </html>
