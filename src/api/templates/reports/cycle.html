@@ -53,58 +53,22 @@
       <p><b>Unique click rate:</b> {{ t.clicked.ratio * 100 }}%</p>
     </div>
     {% endfor %}
-    <div>
-      <h1>3.1 Click Rate vs. Report Rate</h1>
-      <p>
-        One of the most common measures of an organization’s susceptibility to
-        phishing attacks is targeted-user click rates. If an actual phishing
-        attack is able to bypass technical controls and arrive in a user’s
-        inbox, the 7A displayed link of type “Hidden” means hyperlinked text was
-        used instead of a bare “Written Out” URL. A displayed link type of
-        “Spoofed” means a fake URL or filename was used that would not match the
-        “Hover Over” URL or file information. A displayed link type of “Written
-        Out” always matches the “Hover Over” URL. human target must click on the
-        malicious link or attachment for the attack to be successful. In
-        practical exer- cises, such as this PCA, targeted-user click rates will
-        fluctuate depending on the level of email deception used in testing.
-        Effective security awareness training, however, should result in a
-        noticeable click rate decrease over time and to a level deemed
-        acceptable based on the organization’s risk management posture. The
-        counterpart to user click rates is the user-reporting rate, determined
-        by the number of emails sent or calls to alert SCONE’s helpdesk during
-        each campaign. CISA recommends that organizations initially aim to have
-        two people reporting the phishing attempts for every person that clicks.
-        This ratio ensures that there is not only reporting coverage for the
-        person clicking, but also redundant coverage in case the person who
-        clicks the link does not report or does not realize they have been
-        phished. Effective security awareness training should result in a
-        noticeable report rate increase over time and to a level deemed
-        acceptable based on the organization’s risk management posture. In this
-        report, the percentages shown by the user click rate and user report
-        rate represent, respectively, the percentage of targeted people
-        (determined by a unique email address) who have clicked at least once on
-        a “malicious” link and those who reported a suspicious email. The number
-        of unique clicks correlates to the number of end user devices
-        potentially compromised in each campaign. The number of user reports
-        correlates to the number of opportunities the SCONE security team had to
-        identify a potential breach and reduce its im- pact. Table 4 and figure
-        1 summarize click and report rates.
-      </p>
+    <div style="width: 8.5in; height: 11in; margin: 10px" class="p-0">
       <table class="table">
         <tr>
           <thead class="thead-dark">
             <th scope="col">Level</th>
-            <th scope="col">Campaign Subject</th>
+            <th scope="col">Template Subject</th>
             <th scope="col">User Click Rate</th>
             <th scope="col">Unique Clicks</th>
           </thead>
         </tr>
-        {% for campaign in cycle.stats.template_stats %}
+        {% for t in cycle.stats.template_stats %}
         <tr>
-          <th scope="row">{{ campaign.template.deception_score }}</th>
-          <td>{{ campaign.template.subject }}</td>
-          <td>{{ (campaign.clicked.ratio * 100) | int }}%</td>
-          <td>{{ campaign.clicked.count }}</td>
+          <th scope="row">{{ t.template.deception_score }}</th>
+          <td>{{ t.template.subject }}</td>
+          <td>{{ (t.clicked.ratio * 100) | int }}%</td>
+          <td>{{ t.clicked.count }}</td>
         </tr>
         {% endfor %}
       </table>
