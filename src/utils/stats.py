@@ -22,9 +22,9 @@ def get_cycle_stats(cycle):
             "dirty_stats": False,
         }
         cycle.update(data)
-        if cycle.get("cycle_uuid"):
+        if cycle.get("_id"):
             cycle_manager.update(
-                uuid=cycle["cycle_uuid"],
+                document_id=cycle["_id"],
                 data=data,
             )
 
@@ -56,16 +56,16 @@ def generate_cycle_stats(cycle, nonhuman=False):
     template_stats = {}
     nonhuman_orgs = get_nonhuman_orgs()
     for target in cycle["targets"]:
-        if target["template_uuid"] not in template_stats:
-            template_stats[target["template_uuid"]] = {
+        if target["template_id"] not in template_stats:
+            template_stats[target["template_id"]] = {
                 "sent": {"count": 0},
                 "opened": {"count": 0},
                 "clicked": {"count": 0},
-                "template_uuid": target["template_uuid"],
+                "template_id": target["template_id"],
                 "template": template_manager.get(
-                    uuid=target["template_uuid"],
+                    document_id=target["template_id"],
                     fields=[
-                        "template_uuid",
+                        "_id",
                         "name",
                         "subject",
                         "indicators",
@@ -95,21 +95,21 @@ def generate_cycle_stats(cycle, nonhuman=False):
         if sent:
             stats["all"]["sent"]["count"] += 1
             stats[target["deception_level"]]["sent"]["count"] += 1
-            template_stats[target["template_uuid"]]["sent"]["count"] += 1
+            template_stats[target["template_id"]]["sent"]["count"] += 1
         if opened:
             stats["all"]["opened"]["count"] += 1
             stats[target["deception_level"]]["opened"]["count"] += 1
             diff = opened["time"] - sent_time
             stats["all"]["opened"]["diffs"].append(diff)
             stats[target["deception_level"]]["opened"]["diffs"].append(diff)
-            template_stats[target["template_uuid"]]["opened"]["count"] += 1
+            template_stats[target["template_id"]]["opened"]["count"] += 1
         if clicked:
             stats["all"]["clicked"]["count"] += 1
             stats[target["deception_level"]]["clicked"]["count"] += 1
             diff = clicked["time"] - sent_time
             stats["all"]["clicked"]["diffs"].append(diff)
             stats[target["deception_level"]]["clicked"]["diffs"].append(diff)
-            template_stats[target["template_uuid"]]["clicked"]["count"] += 1
+            template_stats[target["template_id"]]["clicked"]["count"] += 1
 
     process_time_stats(stats)
     process_ratios(stats)
@@ -138,7 +138,7 @@ def rank_templates(template_stats: dict):
                 and not index == 0
             ):
                 rank += 1
-            template_stats[stat["template_uuid"]][event]["rank"] = rank
+            template_stats[stat["template_id"]][event]["rank"] = rank
 
 
 def process_ratios(stats: dict):

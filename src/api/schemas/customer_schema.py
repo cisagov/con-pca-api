@@ -22,7 +22,6 @@ class CustomerContactSchema(BaseSchema):
 class CustomerSchema(BaseSchema):
     """Customer Schema."""
 
-    customer_uuid = fields.Str(required=True)
     name = fields.Str(required=True)
     identifier = fields.Str(required=True)
     address_1 = fields.Str(required=False, allow_none=True)

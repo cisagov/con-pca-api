@@ -20,9 +20,9 @@ class CyclesView(MethodView):
             cycle_manager.all(
                 params=parameters,
                 fields=[
-                    "cycle_uuid",
-                    "subscription_uuid",
-                    "template_uuids",
+                    "_id",
+                    "subscription_id",
+                    "template_ids",
                     "start_date",
                     "end_date",
                     "send_by_date",
@@ -36,19 +36,19 @@ class CyclesView(MethodView):
 class CycleView(MethodView):
     """CycleView."""
 
-    def get(self, cycle_uuid):
+    def get(self, cycle_id):
         """Get."""
-        return cycle_manager.get(uuid=cycle_uuid)
+        return cycle_manager.get(document_id=cycle_id)
 
 
 class CycleStatsView(MethodView):
     """CycleStatsView."""
 
-    def get(self, cycle_uuid):
+    def get(self, cycle_id):
         """Get."""
         nonhuman = False
         if request.args.get("nonhuman", "") == "true":
             nonhuman = True
-        cycle = cycle_manager.get(uuid=cycle_uuid)
+        cycle = cycle_manager.get(document_id=cycle_id)
         get_cycle_stats(cycle)
         return jsonify(cycle["nonhuman_stats"] if nonhuman else cycle["stats"])

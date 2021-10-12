@@ -28,10 +28,9 @@ class TargetTimelineSchema(Schema):
 class TargetSchema(BaseSchema):
     """CycleTargetSchema."""
 
-    target_uuid = fields.Str()
-    cycle_uuid = fields.Str()
-    subscription_uuid = fields.Str()
-    template_uuid = fields.Str()
+    cycle_id = fields.Str()
+    subscription_id = fields.Str()
+    template_id = fields.Str()
     email = fields.Email(required=True)
     first_name = fields.Str(required=False, allow_none=True)
     last_name = fields.Str(required=False, allow_none=True)

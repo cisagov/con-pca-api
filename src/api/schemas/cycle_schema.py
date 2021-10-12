@@ -11,9 +11,8 @@ from api.schemas.stats_schema import CycleStatsSchema
 class CycleSchema(BaseSchema):
     """CycleSchema."""
 
-    cycle_uuid = fields.Str()
-    subscription_uuid = fields.Str()
-    template_uuids = fields.List(fields.Str())
+    subscription_id = fields.Str()
+    template_ids = fields.List(fields.Str())
     start_date = DateTimeField()
     end_date = DateTimeField()
     send_by_date = DateTimeField()

@@ -28,7 +28,7 @@ def group_templates(templates):
         group = get_deception_level(template["deception_score"])
         if not groups.get(group):
             groups[group] = []
-        groups[group].append(template["template_uuid"])
+        groups[group].append(template["_id"])
     return groups
 
 

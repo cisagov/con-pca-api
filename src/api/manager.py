@@ -1,9 +1,9 @@
 """Database Managers."""
 # Standard Python Libraries
 from datetime import datetime
-from uuid import uuid4
 
 # Third-Party Libraries
+from bson.objectid import ObjectId
 from flask import g
 import pymongo
 
@@ -28,7 +28,6 @@ class Manager:
         self.collection = collection
         self.schema = schema
         self.other_indexes = other_indexes
-        self.uuid_field = f"{collection}_uuid"
         self.db = getattr(DB, collection)
 
     def get_query(self, data):
@@ -49,6 +48,11 @@ class Manager:
         """Format params."""
         if not params:
             return {}
+        if params.get("_id", {}).get("$in"):
+            new_ids = []
+            for i in params["_id"]["$in"]:
+                new_ids.append(ObjectId(i))
+            params["_id"]["$in"] = new_ids
         return params
 
     def format_sort(self, sortby: dict):
@@ -75,19 +79,16 @@ class Manager:
 
     def create_indexes(self):
         """Create indexes for collection."""
-        self.db.create_index(self.uuid_field, unique=True)
         for index in self.other_indexes:
             self.db.create_index(index, unique=False)
 
     def add_created(self, data):
         """Add created attribute to data on save."""
         if type(data) is dict:
-            data[self.uuid_field] = str(uuid4())
             data["created"] = datetime.utcnow().isoformat()
             data["created_by"] = g.get("username", "bot")
         elif type(data) is list:
             for item in data:
-                item[self.uuid_field] = str(uuid4())
                 item["created"] = datetime.utcnow().isoformat()
                 item["created_by"] = g.get("username", "bot")
         return data
@@ -105,24 +106,24 @@ class Manager:
 
     def clean_data(self, data):
         """Clean data for saves to the database."""
-        invalid_fields = ["_id", "created", "updated", self.uuid_field]
+        invalid_fields = ["_id", "created", "updated"]
         if type(data) is dict:
             for field in invalid_fields:
-                if data.get(field):
+                if field in data:
                     data.pop(field)
         elif type(data) is list:
             for item in data:
                 for field in invalid_fields:
-                    if item.get(field):
+                    if field in item:
                         item.pop(field)
         return data
 
-    def get(self, uuid=None, filter_data=None, fields=None):
+    def get(self, document_id=None, filter_data=None, fields=None):
         """Get item from collection by id or filter."""
-        if uuid:
+        if document_id:
             return self.read_data(
                 self.db.find_one(
-                    {self.uuid_field: str(uuid)},
+                    {"_id": ObjectId(document_id)},
                     self.convert_fields(fields),
                 )
             )
@@ -143,27 +144,24 @@ class Manager:
             query.limit(limit)
         return self.read_data(query, many=True)
 
-    def delete(self, uuid=None, params=None):
+    def delete(self, document_id=None, params=None):
         """Delete item by object id."""
-        if uuid:
-            self.db.delete_one({self.uuid_field: str(uuid)})
-            return {self.uuid_field: str(uuid)}
+        if document_id:
+            self.db.delete_one({"_id": ObjectId(document_id)}).raw_result
         if params:
-            self.db.delete_many(params)
-            return {self.uuid_field: str(uuid)}
+            return self.db.delete_many(params).raw_result
         raise Exception(
             "Either a document id or params must be supplied when deleting."
         )
 
-    def update(self, uuid, data):
+    def update(self, document_id, data):
         """Update item by id."""
         data = self.clean_data(data)
         data = self.add_updated(data)
         self.db.update_one(
-            {self.uuid_field: str(uuid)},
+            {"_id": ObjectId(document_id)},
             {"$set": self.load_data(data, partial=True)},
-        )
-        return {self.uuid_field: str(uuid)}
+        ).raw_result
 
     def update_many(self, params, data):
         """Update many items with params."""
@@ -179,32 +177,36 @@ class Manager:
         self.create_indexes()
         data = self.clean_data(data)
         data = self.add_created(data)
-        self.db.insert_one(self.load_data(data))
-        return {self.uuid_field: data[self.uuid_field]}
+        print(type(data))
+        print(data)
+        result = self.db.insert_one(self.load_data(data))
+        return {"_id": str(result.inserted_id)}
 
     def save_many(self, data):
         """Save list to collection."""
         self.create_indexes()
         data = self.clean_data(data)
         data = self.add_created(data)
-        self.db.insert_many(self.load_data(data, many=True))
+        result = self.db.insert_many(self.load_data(data, many=True))
+        return result.inserted_ids
 
-    def add_to_list(self, uuid, field, data):
+    def add_to_list(self, document_id, field, data):
         """Add item to list in document."""
-        self.db.update_one({self.uuid_field: str(uuid)}, {"$push": {field: data}})
-        return {self.uuid_field: str(uuid)}
+        return self.db.update_one(
+            {"_id": ObjectId(document_id)}, {"$push": {field: data}}
+        ).raw_result
 
-    def delete_from_list(self, uuid, field, data):
+    def delete_from_list(self, document_id, field, data):
         """Delete item from list in document."""
-        self.db.update_one({self.uuid_field: str(uuid)}, {"$pull": {field: data}})
-        return {self.uuid_field: str(uuid)}
+        return self.db.update_one(
+            {"_id": ObjectId(document_id)}, {"$pull": {field: data}}
+        ).raw_result
 
-    def update_in_list(self, uuid, field, data, params):
+    def update_in_list(self, document_id, field, data, params):
         """Update item in list from document."""
-        self.db.update_one(
-            {self.uuid_field: str(uuid), **params}, {"$set": {field: data}}
-        )
-        return {self.uuid_field: str(uuid)}
+        return self.db.update_one(
+            {"_id": ObjectId(document_id), **params}, {"$set": {field: data}}
+        ).raw_result
 
     def upsert(self, query, data):
         """Upsert documents into the database."""
@@ -223,7 +225,7 @@ class Manager:
 
     def exists(self, parameters=None):
         """Check if record exists."""
-        fields = self.convert_fields([self.uuid_field])
+        fields = self.convert_fields(["_id"])
         result = list(self.db.find(parameters, fields))
         return bool(result)
 
@@ -260,12 +262,12 @@ class CycleManager(Manager):
             schema=CycleSchema,
         )
 
-    def get(self, uuid=None, filter_data=None, fields=None):
+    def get(self, document_id=None, filter_data=None, fields=None):
         """Get a cycle."""
-        if uuid:
+        if document_id:
             cycle = self.read_data(
                 self.db.find_one(
-                    {self.uuid_field: str(uuid)},
+                    {"_id": ObjectId(document_id)},
                     self.convert_fields(fields),
                 )
             )
@@ -278,7 +280,7 @@ class CycleManager(Manager):
             )
         if fields is None or "targets" in fields:
             target_manager = TargetManager()
-            cycle["targets"] = target_manager.all(params={"cycle_uuid": uuid})
+            cycle["targets"] = target_manager.all(params={"cycle_id": document_id})
         return cycle
 
 
@@ -292,12 +294,12 @@ class LandingPageManager(Manager):
             schema=LandingPageSchema,
         )
 
-    def clear_and_set_default(self, uuid):
+    def clear_and_set_default(self, document_id):
         """Set Default Landing Page."""
         sub_query = {}
         newvalues = {"$set": {"is_default_template": False}}
         self.db.update_many(sub_query, newvalues)
-        sub_query = {"landing_page_uuid": str(uuid)}
+        sub_query = {"_id": ObjectId(document_id)}
         newvalues = {"$set": {"is_default_template": True}}
         self.db.update_one(sub_query, newvalues)
 

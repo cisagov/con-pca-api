@@ -24,22 +24,22 @@ target_manager = TargetManager()
 template_manager = TemplateManager()
 
 
-def start_subscription(subscription_uuid):
+def start_subscription(subscription_id):
     """Launch a subscription."""
-    subscription = subscription_manager.get(uuid=subscription_uuid)
+    subscription = subscription_manager.get(document_id=subscription_id)
     cycle = {}
     cycle.update(calculate_cycle_dates(subscription))
-    cycle["subscription_uuid"] = subscription_uuid
+    cycle["subscription_id"] = subscription_id
     cycle["active"] = True
     targets = []
     total_targets = len(subscription["target_email_list"])
     cycle["target_count"] = total_targets
-    cycle["template_uuids"] = set()
+    cycle["template_ids"] = set()
     resp = cycle_manager.save(cycle)
-    cycle_uuid = resp["cycle_uuid"]
+    cycle_id = resp["_id"]
     templates = template_manager.all(
-        params={"template_uuid": {"$in": subscription["templates_selected"]}},
-        fields=["template_uuid", "deception_score"],
+        params={"_id": {"$in": subscription["templates_selected"]}},
+        fields=["_id", "deception_score"],
     )
 
     template_counts = {t: 0 for t in subscription["templates_selected"]}
@@ -47,52 +47,50 @@ def start_subscription(subscription_uuid):
     # Shuffle list for more random template selection across cycles
     random.shuffle(subscription["target_email_list"])
     for index, target in enumerate(subscription["target_email_list"]):
-        # Assign uuids to target
-        target["cycle_uuid"] = cycle_uuid
-        target["subscription_uuid"] = subscription_uuid
+        # Assign ids to target
+        target["cycle_id"] = cycle_id
+        target["subscription_id"] = subscription_id
         # Assign send date to target
         target["send_date"] = get_target_send_date(
             index, total_targets, cycle["start_date"], cycle["send_by_date"]
         )
 
         # Assign template to target
-        target["template_uuid"] = min(template_counts, key=lambda k: template_counts[k])
-        template_counts[target["template_uuid"]] += 1
+        target["template_id"] = min(template_counts, key=lambda k: template_counts[k])
+        template_counts[target["template_id"]] += 1
 
         # Assign deception level to target
-        template = next(
-            filter(lambda x: x["template_uuid"] == target["template_uuid"], templates)
-        )
+        template = next(filter(lambda x: x["_id"] == target["template_id"], templates))
         target["deception_level"] = get_deception_level(template["deception_score"])
 
         targets.append(target)
-        cycle["template_uuids"].add(target["template_uuid"])
+        cycle["template_ids"].add(target["template_id"])
 
     tasks = get_initial_tasks(subscription, cycle)
     subscription_manager.update(
-        uuid=subscription_uuid,
+        document_id=subscription_id,
         data={
             "status": "running",
             "tasks": tasks,
         },
     )
-    cycle_manager.update(uuid=cycle_uuid, data=cycle)
+    cycle_manager.update(document_id=cycle_id, data=cycle)
     target_manager.save_many(targets)
     return resp
 
 
-def stop_subscription(subscription_uuid):
+def stop_subscription(subscription_id):
     """Stop a subscription."""
     cycle = cycle_manager.get(
         filter_data={
             "active": True,
-            "subscription_uuid": subscription_uuid,
+            "subscription_id": subscription_id,
         },
-        fields=["cycle_uuid"],
+        fields=["_id"],
     )
-    cycle_manager.update(cycle["cycle_uuid"], {"active": False})
+    cycle_manager.update(cycle["_id"], {"active": False})
     subscription_manager.update(
-        uuid=subscription_uuid, data={"status": "stopped", "tasks": []}
+        document_id=subscription_id, data={"status": "stopped", "tasks": []}
     )
     return {"success": True}
 
@@ -100,7 +98,7 @@ def stop_subscription(subscription_uuid):
 def create_subscription_name(customer):
     """Create name for subscription from customer."""
     subscriptions = subscription_manager.all(
-        {"customer_uuid": customer["customer_uuid"]},
+        {"customer_id": customer["_id"]},
         fields=["name", "identifier"],
     )
     if not subscriptions:
