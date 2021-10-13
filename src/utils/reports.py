@@ -13,6 +13,7 @@ from flask.templating import render_template_string
 from api.manager import CustomerManager, CycleManager, SubscriptionManager
 from utils import time
 from utils.emails import get_email_context
+from utils.recommendations import get_recommendations
 from utils.stats import get_cycle_stats, get_ratio
 
 customer_manager = CustomerManager()
@@ -78,6 +79,7 @@ def get_report(cycle_ids, report_type, nonhuman=False):
         "time": time,
         "preview_template": preview_template,
         "datetime": datetime,
+        "recommendations": get_recommendations(),
     }
     return render_template(f"reports/{report_type}.html", **context)
 

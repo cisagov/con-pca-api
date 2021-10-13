@@ -12,7 +12,7 @@
 
     <link
       rel="stylesheet"
-      href="{{ url_for('static', filename='css/status_report.css') }}"
+      href="{{ url_for('static', filename='css/cycle_report.css') }}"
     />
     <link
       rel="stylesheet"
@@ -71,6 +71,51 @@
           <td>{{ t.clicked.count }}</td>
         </tr>
         {% endfor %}
+      </table>
+    </div>
+
+    <div style="width: 8.5in; height: 11in; margin: 10px" class="p-0">
+      <table id="indicator-table" class="table table-striped">
+        <thead class="thead-dark">
+          <tr>
+            <th>Category</th>
+            <th>Indicator</th>
+            <th>Ranking Scale</th>
+            {% for ts in cycle.stats.template_stats %}
+            <th class="rotate">
+              <div><span>{{ ts.template.name }}</span></div>
+            </th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for group, gv in recommendations["indicators"].items() %} {% for
+          indicator, iv in gv.items() %}
+          <tr>
+            {% if loop.index == 1 %}
+            <th rowspan="{{ gv | length }}">{{ group | title }}</th>
+            {% endif %}
+            <td>{{ iv.name }}</td>
+            <td>
+              {% for value, v in iv["values"].items() %}{% if loop.last %}{{
+              value }}={{ v["label"] }}{% else %}{{ value }}={{ v["label"] }},
+              {% endif %}{% endfor %}
+            </td>
+
+            {% for ts in cycle.stats.template_stats %}
+            <td>{{ ts.template.indicators[group][indicator] }}</td>
+            {% endfor %}
+          </tr>
+          {% endfor %} {% endfor %}
+          <tr id="indicator-table-total">
+            <td></td>
+            <td></td>
+            <td>Total</td>
+            {% for ts in cycle.stats.template_stats %}
+            <td>{{ ts.template.deception_score }}</td>
+            {% endfor %}
+          </tr>
+        </tbody>
       </table>
     </div>
   </body>
