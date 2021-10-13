@@ -39,7 +39,7 @@ class SubscriptionsView(MethodView):
             subscription_ids = list({c["subscription_id"] for c in cycles})
             parameters["$or"] = [
                 {"_id": {"$in": subscription_ids}},
-                {"templates_selected": request.args["templates"]},
+                {"templates_selected": request.args["template"]},
             ]
 
         parameters["archived"] = {"$in": [False, None]}
