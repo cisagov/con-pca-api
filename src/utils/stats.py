@@ -7,6 +7,7 @@ import statistics
 # cisagov Libraries
 from api.manager import CycleManager, NonHumanManager, TemplateManager
 from api.schemas.stats_schema import CycleStatsSchema
+from utils.recommendations import get_recommendations
 
 template_manager = TemplateManager()
 cycle_manager = CycleManager()
@@ -117,11 +118,13 @@ def generate_cycle_stats(cycle, nonhuman=False):
     rank_templates(template_stats)
     maxmind_stats = get_maxmind_stats(cycle)
     template_stats = template_stats.values()
+    indicator_stats = get_indicator_stats(template_stats)
     return CycleStatsSchema().dump(
         {
             "stats": stats,
             "template_stats": template_stats,
             "maxmind_stats": maxmind_stats,
+            "indicator_stats": indicator_stats,
         }
     )
 
@@ -143,10 +146,10 @@ def rank_templates(template_stats: dict):
 
 def process_ratios(stats: dict):
     """Get event to sent ratios."""
-    for key in stats.keys():
-        sent = stats[key]["sent"]["count"]
+    for v in stats.values():
+        sent = v["sent"]["count"]
         for event in ["opened", "clicked"]:
-            stats[key][event]["ratio"] = get_ratio(stats[key][event]["count"], sent)
+            v[event]["ratio"] = get_ratio(v[event]["count"], sent)
 
 
 def get_ratio(numerator, denominator):
@@ -226,4 +229,48 @@ def get_maxmind_stats(cycle):
             elif event["message"] == "clicked":
                 val["clicks"] += 1
         response.append(val)
+    return response
+
+
+def get_indicator_stats(template_stats):
+    """Get all indicator stats."""
+    indicator_stats = []
+    indicators = get_recommendations()["indicators"]
+    for group, gv in indicators.items():
+        for indicator, iv in gv.items():
+            for value, v in iv["values"].items():
+                indicator_stats.append(
+                    get_stats_from_indicator(
+                        group,
+                        indicator,
+                        value,
+                        v["label"],
+                        template_stats,
+                    )
+                )
+    return indicator_stats
+
+
+def get_stats_from_indicator(group, indicator, value, label, template_stats):
+    """Get stats for specific indicator."""
+    response = {
+        "group": group,
+        "indicator": indicator,
+        "value": value,
+        "label": label,
+        "sent": {"count": 0},
+        "opened": {
+            "count": 0,
+        },
+        "clicked": {
+            "count": 0,
+        },
+    }
+    for ts in template_stats:
+        template = ts["template"]
+        if int(template["indicators"][group][indicator]) == int(value):
+            response["sent"]["count"] += ts["sent"]["count"]
+            response["opened"]["count"] += ts["opened"]["count"]
+            response["clicked"]["count"] += ts["clicked"]["count"]
+    process_ratios({"stats": response})
     return response
