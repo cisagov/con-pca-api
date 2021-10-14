@@ -34,11 +34,13 @@ async function getReport(filename, cycleIds, reportType, nonhuman) {
       format: "letter",
       path: filename,
       pageRanges: "1",
+      printBackground: true,
     });
   } else {
     pdfContent = await page.pdf({
       format: "letter",
       path: filename,
+      printBackground: true,
     });
   }
 

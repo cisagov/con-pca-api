@@ -1,3 +1,25 @@
+@charset "UTF-8";
+@page {
+  size: Letter;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.page {
+  background: white;
+  display: block;
+  padding: 10px;
+  /* Size = Letter */
+  width: 8.5in;
+  height: 11in;
+  position: relative;
+}
+
 #indicator-table thead {
   border: 2px solid black !important;
   border-collapse: collapse !important;
@@ -23,6 +45,7 @@
 th.rotate {
   height: 200px;
   white-space: nowrap;
+  vertical-align: bottom;
 }
 
 th.rotate > div {

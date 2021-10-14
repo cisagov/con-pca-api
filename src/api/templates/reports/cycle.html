@@ -3,12 +3,6 @@
   <head>
     <title>Cycle Status Report</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
-    />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
     <link
       rel="stylesheet"
@@ -29,7 +23,7 @@
 
   <body class="mat-typography">
     {% for t in stats.template_stats %}
-    <div style="width: 8.5in; height: 11in; margin: 10px" class="p-0">
+    <div class="page">
       <h2>Level {{ t.template.deception_score }} Template</h2>
       <b>Subject: {{ preview_template(t.template.subject, customer) }}</b><br />
       <b>From: {{ preview_template(t.template.from_address, customer) }}</b
@@ -53,7 +47,7 @@
       <p><b>Unique click rate:</b> {{ t.clicked.ratio * 100 }}%</p>
     </div>
     {% endfor %}
-    <div style="width: 8.5in; height: 11in; margin: 10px" class="p-0">
+    <div class="page">
       <table class="table">
         <tr>
           <thead class="thead-dark">
@@ -74,7 +68,7 @@
       </table>
     </div>
 
-    <div style="width: 8.5in; height: 11in; margin: 10px" class="p-0">
+    <div class="page">
       <table id="indicator-table" class="table table-striped">
         <thead class="thead-dark">
           <tr>
