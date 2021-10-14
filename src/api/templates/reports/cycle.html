@@ -28,19 +28,7 @@
       <b>Subject: {{ preview_template(t.template.subject, customer) }}</b><br />
       <b>From: {{ preview_template(t.template.from_address, customer) }}</b
       ><br />
-      <div
-        style="
-          width: 50%;
-          border-left: 2px solid;
-          border-right: 2px solid;
-          border-bottom: 2px solid;
-          border-top: 2px solid;
-          padding: 1rem;
-        "
-      >
-        {{ t.template.html | safe }}
-        <br />
-      </div>
+      <div class="template-preview">{{ t.template.html | safe }}</div>
       <p><b>Key Characteristics:</b> Some key characteristics</p>
       <p><b>Total emails sent:</b> {{ t.sent.count }}</p>
       <p><b>Unique targets who clicked:</b> {{ t.clicked.count }}</p>
@@ -67,7 +55,6 @@
         {% endfor %}
       </table>
     </div>
-
     <div class="page">
       <table id="indicator-table" class="table table-striped">
         <thead class="thead-dark">
@@ -87,10 +74,12 @@
           indicator, iv in gv.items() %}
           <tr>
             {% if loop.index == 1 %}
-            <th rowspan="{{ gv | length }}">{{ group | title }}</th>
+            <th rowspan="{{ gv | length }}" style="vertical-align: middle">
+              {{ group | title }}
+            </th>
             {% endif %}
-            <td>{{ iv.name }}</td>
-            <td>
+            <td style="width: 75px">{{ iv.name }}</td>
+            <td style="width: 75px">
               {% for value, v in iv["values"].items() %}{% if loop.last %}{{
               value }}={{ v["label"] }}{% else %}{{ value }}={{ v["label"] }},
               {% endif %}{% endfor %}
