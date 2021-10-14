@@ -204,7 +204,7 @@
                         {% for t in stats.template_stats |
                         sort(attribute="clicked.ratio", reverse=True) %} {% if
                         loop.index <= 3 %}
-                        <div class="row align-items-center">
+                        <div class="row">
                           <div class="col-1">
                             <h3 style="margin-left: 8px">
                               #{{ t.clicked.rank }}
@@ -233,7 +233,7 @@
 
                   <!-- Bar Chart -->
                   <div class="row mt-2">
-                    <div class="col container-fluid" style="margin-left: 50px">
+                    <div class="col container-fluid" style="margin-left: 25px">
                       <div class="bar-chart m-2">
                         <h2>STATISTICS BY LEVEL</h2>
                         <div>

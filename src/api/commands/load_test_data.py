@@ -5,6 +5,9 @@ import json
 import os
 import random
 
+# Third-Party Libraries
+from faker import Faker
+
 # cisagov Libraries
 from api.config import logger
 from api.manager import (
@@ -15,7 +18,8 @@ from api.manager import (
     TargetManager,
     TemplateManager,
 )
-from utils.subscriptions import create_targets_from_list
+from utils.subscriptions import get_target_send_date
+from utils.templates import get_deception_level
 
 current_dir = os.path.dirname(__file__)
 
@@ -25,11 +29,37 @@ sending_profile_manager = SendingProfileManager()
 subscription_manager = SubscriptionManager()
 target_manager = TargetManager()
 template_manager = TemplateManager()
+fake = Faker()
 
 
-def open_json_file(file_name: str):
+def load_test_data():
+    """Load sample targets and any missing test data."""
+    # Step 1 - Load Customer
+    customer_id = load_customer()
+
+    # Step 2 - Load Sending Profile
+    sending_profile_id = load_sending_profile()
+
+    # Step 3 - Get templates
+    templates = get_templates()
+
+    # Step 4 - Load Subscription
+    subscription_id = load_subscription(customer_id, sending_profile_id, templates)
+
+    # Step 5 - Load Cycle
+    cycle = load_cycle(subscription_id, templates)
+
+    # Step 6 - Load Targets
+    load_targets(
+        cycle=cycle,
+        templates=templates,
+    )
+
+
+def read_json_file(file_name: str):
     """Open json file from path."""
-    return open(os.path.join(current_dir, f"data/{file_name}"))
+    with open(os.path.join(current_dir, f"data/{file_name}")) as f:
+        return json.load(f)
 
 
 def load_sending_profile():
@@ -41,102 +71,141 @@ def load_sending_profile():
         logger.info("Test data for sending profile already exists.")
         return sending_profile["_id"]
 
-    with open_json_file("sending_profile.json") as json_file:
-        logger.info("loading sending profile test data...")
-        sending_profile = sending_profile_manager.save(json.load(json_file))
+    load_data = read_json_file("sending_profile.json")
+    sending_profile = sending_profile_manager.save(load_data)
 
     return sending_profile["_id"]
 
 
 def load_customer():
     """Load sample customer data."""
-    customer = customer_manager.get({"name": "Test Customer"})
+    customer = customer_manager.get(filter_data={"name": "Test Customer"})
     if customer:
         logger.info("Test data for customer already exists.")
         return customer["_id"]
 
-    with open_json_file("customer.json") as json_file:
-        logger.info("loading customer test data...")
-        customer = customer_manager.save(json.load(json_file))
+    load_data = read_json_file("customer.json")
+    logger.info("loading customer test data...")
+    customer = customer_manager.save(load_data)
 
     return customer["_id"]
 
 
-def load_subscription():
+def load_subscription(customer_id, sending_profile_id, templates):
     """Load sample subscription data."""
-    subscription = subscription_manager.get({"name": "test_subscription"})
+    subscription = subscription_manager.get(filter_data={"name": "test_subscription"})
     if subscription:
         logger.info("Test data for subscription already exists.")
-        return subscription["_id"], subscription
+        return subscription["_id"]
 
-    template_ids = [template["_id"] for template in template_manager.all(limit=3)]
-    with open_json_file("subscription.json") as json_file:
-        logger.info("loading subscription test data...")
+    template_ids = [t["_id"] for t in templates]
+    load_data = read_json_file("subscription.json")
+    logger.info("loading subscription test data...")
+    load_data["start_date"] = datetime.utcnow()
+    load_data["customer_id"] = customer_id
+    load_data["sending_profile_id"] = sending_profile_id
+    load_data["templates_selected"] = template_ids
+    subscription = subscription_manager.save(load_data)
 
-        load_data = json.load(json_file)
-        load_data["start_date"] = datetime.now()
-        load_data["customer_id"] = load_customer()
-        load_data["sending_profile_id"] = load_sending_profile()
-        load_data["templates_selected"] = template_ids
-        subscription = subscription_manager.save(load_data)
-
-    return subscription["_id"], load_data
+    return subscription["_id"]
 
 
-def load_cycle(subscription_id: str, template_ids: list):
+def load_cycle(subscription_id: str, templates):
     """Load sample cycle data."""
-    cycle = cycle_manager.get(filter_data={"dirty_stats": True})
-    if cycle:
-        logger.info("Test data for cycle already exists.")
-        return cycle["_id"], cycle
-
-    with open_json_file("cycle.json") as json_file:
-        logger.info("loading cycle test data...")
-
-        load_data = json.load(json_file)
-        load_data["subscription_id"] = subscription_id
-        load_data["start_date"] = datetime.utcnow()
-        load_data["end_date"] = datetime.utcnow() + timedelta(days=90)
-        load_data["send_by_date"] = datetime.utcnow() + timedelta(days=90)
-        load_data["template_ids"] = template_ids
-        cycle = cycle_manager.save(load_data)
-
-    return cycle["_id"], load_data
+    logger.info("loading cycle test data...")
+    load_data = read_json_file("cycle.json")
+    load_data["subscription_id"] = subscription_id
+    load_data["start_date"] = datetime.utcnow()
+    load_data["end_date"] = datetime.utcnow() + timedelta(days=90)
+    load_data["send_by_date"] = datetime.utcnow() + timedelta(days=60)
+    load_data["template_ids"] = [t["_id"] for t in templates]
+    load_data["active"] = False
+    load_data["dirty_stats"] = True
+    load_data["target_count"] = random.randrange(3000, 12000)  # nosec
+    cycle = cycle_manager.save(load_data)
+    load_data["_id"] = cycle["_id"]
+    return load_data
 
 
-def load_test_data():
-    """Load sample targets and any missing test data."""
-    targets = target_manager.all()
-    if len(targets) >= 4:
-        logger.info("Test data for targets already exist.")
-        return
-
-    subscription_id, subscription_data = load_subscription()
-    cycle_id, cycle_data = load_cycle(
-        subscription_id, subscription_data["templates_selected"]
+def get_templates():
+    """Get templates from db to be used in cycle and subscription."""
+    templates = template_manager.all()
+    low = random.choice(  # nosec
+        list(filter(lambda x: x["deception_score"] <= 2, templates))
     )
-    targets = create_targets_from_list(
-        cycle_id=cycle_id,
-        subscription_id=subscription_id,
-        target_list=subscription_data["target_email_list"],
-        templates_selected=subscription_data["templates_selected"],
-        cycle=cycle_data,
+    moderate = random.choice(  # nosec
+        list(
+            filter(
+                lambda x: x["deception_score"] > 2 and x["deception_score"] < 5,
+                templates,
+            )
+        )
     )
+    high = random.choice(  # nosec
+        list(filter(lambda x: x["deception_score"] >= 5, templates))
+    )
+    return [low, moderate, high]
 
-    for target in targets:
 
-        target["timeline"] = [
-            {
-                "time": datetime.utcnow()
-                + timedelta(days=random.randint(0, 20)),  # nosec
-                "message": action,
-                "details": {"country": "USA"},
-            }
-            for action in randomize_actions(["opened", "clicked"])
-        ]
+def load_targets(
+    cycle: dict,
+    templates: list,
+):
+    """Create targets from list."""
+    targets = []
+    for i in range(0, cycle["target_count"]):
+        targets.append(get_target(cycle, i, templates))
     target_manager.save_many(targets)
+    return targets
 
 
-def randomize_actions(elems):
-    """Randomize the number of occurances from a list of actions."""
-    return [random.choice(elems) for _ in range(random.randint(0, 20))]  # nosec
+def get_target(cycle, index, templates):
+    """Get a target."""
+    template = min(templates, key=lambda k: k.get("count", 0))
+    if not template.get("count"):
+        template["count"] = 1
+    else:
+        template["count"] += 1
+    send_date = get_target_send_date(
+        index,
+        cycle["target_count"],
+        cycle["start_date"],
+        cycle["end_date"],
+    )
+    return {
+        "cycle_id": cycle["_id"],
+        "subscription_id": cycle["subscription_id"],
+        "email": f"test_{index}@test.com",
+        "first_name": fake.first_name(),
+        "last_name": fake.last_name(),
+        "position": fake.job(),
+        "send_date": send_date,
+        "template_id": template["_id"],
+        "deception_level": get_deception_level(template["deception_score"]),
+        "timeline": get_target_timeline(send_date),
+        "sent": True,
+        "sent_date": send_date,
+    }
+
+
+def get_target_timeline(send_date):
+    """Get target timeline."""
+    timeline = []
+    if random.choice([True, False]):  # nosec
+        for event in ["opened", "clicked"]:
+            timeline.append(
+                {
+                    "time": send_date + timedelta(minutes=5),
+                    "message": event,
+                    "details": {
+                        "user_agent": "test",
+                        "ip": "127.0.0.1",
+                        "asn_org": random.choice(  # nosec
+                            ["TEST_1", "TEST_2", "TEST_3"]
+                        ),
+                        "city": "TEST",
+                        "country": "TEST",
+                    },
+                }
+            )
+    return timeline
