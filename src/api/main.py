@@ -10,7 +10,7 @@ from flask.json import JSONEncoder
 
 # cisagov Libraries
 from api.app import app
-from api.commands.load_test_data import load_sending_profile
+from api.commands.load_test_data import load_subscription
 from api.config import EMAIL_MINUTES, TASK_MINUTES, logger
 from api.initialize import initialize_nonhumans, initialize_templates
 from api.phish import emails_job
@@ -169,5 +169,5 @@ def initialize_db():
 @app.cli.command("load-test-data")
 def load_test_data():
     """Load test data to db."""
-    load_sending_profile()
+    load_subscription()
     logger.info("Success.")
