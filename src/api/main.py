@@ -162,3 +162,10 @@ def initialize_db():
     """Initialize database."""
     initialize_templates()
     initialize_nonhumans()
+
+
+# management commands
+@app.cli.command("load-test-data")
+def load_test_data():
+    """Load test data to db."""
+    logger.info("Test data loaded to db.")
