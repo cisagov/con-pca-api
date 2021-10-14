@@ -20,6 +20,10 @@ body {
   position: relative;
 }
 
+#indicator-table {
+  text-align: center;
+}
+
 #indicator-table thead {
   border: 2px solid black !important;
   border-collapse: collapse !important;
@@ -43,15 +47,35 @@ body {
 }
 
 th.rotate {
-  height: 200px;
+  height: 240px;
   white-space: nowrap;
   vertical-align: bottom;
 }
 
 th.rotate > div {
-  transform: translate(-10px, 0px) rotate(270deg);
-  width: 30px;
+  transform: translate(-10px, 0px) rotate(285deg);
+  width: 20px;
 }
 th.rotate > div > span {
   padding: 5px 10px;
+  width: 220px;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.template-preview {
+  border-left: 2px solid;
+  border-right: 2px solid;
+  border-bottom: 2px solid;
+  border-top: 2px solid;
+  padding: 1rem;
+  margin-bottom: 1em;
+  width: 796px;
+  max-height: 500px;
+}
+
+.template-preview > .page {
+  width: 100%;
+  height: 100%;
 }
