@@ -3,6 +3,7 @@
 from datetime import datetime, timedelta
 import json
 import os
+import random
 
 # cisagov Libraries
 from api.config import logger
@@ -123,11 +124,19 @@ def load_test_data():
     )
 
     for target in targets:
+
         target["timeline"] = [
             {
-                "time": datetime.utcnow(),
-                "message": "opened",
+                "time": datetime.utcnow()
+                + timedelta(days=random.randint(0, 20)),  # nosec
+                "message": action,
                 "details": {"country": "USA"},
             }
+            for action in randomize_actions(["opened", "clicked"])
         ]
     target_manager.save_many(targets)
+
+
+def randomize_actions(elems):
+    """Randomize the number of occurances from a list of actions."""
+    return [random.choice(elems) for _ in range(random.randint(0, 20))]  # nosec
