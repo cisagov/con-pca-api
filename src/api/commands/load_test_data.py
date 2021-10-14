@@ -11,6 +11,7 @@ from api.manager import (
     CycleManager,
     SendingProfileManager,
     SubscriptionManager,
+    TemplateManager,
 )
 
 current_dir = os.path.dirname(__file__)
@@ -19,6 +20,7 @@ customer_manager = CustomerManager()
 cycle_manager = CycleManager()
 sending_profile_manager = SendingProfileManager()
 subscription_manager = SubscriptionManager()
+template_manager = TemplateManager()
 
 
 def open_json_file(file_name: str):
@@ -42,6 +44,20 @@ def load_sending_profile():
     return sending_profile["_id"]
 
 
+def load_customer():
+    """Load sample customer data."""
+    customer = customer_manager.get({"name": "Test Customer"})
+    if customer:
+        logger.info("Test data for customer already exists.")
+        return customer["_id"]
+
+    with open_json_file("customer.json") as json_file:
+        logger.info("loading customer test data...")
+        customer = customer_manager.save(json.load(json_file))
+
+    return customer["_id"]
+
+
 def load_subscription():
     """Load sample subscription."""
     with open_json_file("subscription.json") as json_file:
@@ -49,7 +65,7 @@ def load_subscription():
 
         load_data = json.load(json_file)
         load_data["start_date"] = datetime.now()
-        load_data["customer_id"] = "6144ee57b5a945126fa074d9"
+        load_data["customer_id"] = load_customer()
         load_data["sending_profile_id"] = load_sending_profile()
         load_data["templates_selected"] = [
             "6144ebb6b5a945126fa07497",

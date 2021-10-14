@@ -1,0 +1,24 @@
+{
+  "address_1": "123 Main St",
+  "address_2": "",
+  "city": "Brooklyn",
+  "contact_list": [
+    {
+      "active": true,
+      "email": "adam.west@inl.gov",
+      "first_name": "Adam",
+      "last_name": "West",
+      "mobile_phone": "888-888-8888",
+      "notes": "",
+      "office_phone": "999-999-9999",
+      "title": "CEO"
+    }
+  ],
+  "customer_type": "Federal",
+  "identifier": "test_customer",
+  "industry": "Government",
+  "name": "Test Customer",
+  "sector": "",
+  "state": "NY",
+  "zip_code": "11207"
+}
