@@ -1,6 +1,6 @@
 """Load Test Data."""
 # Standard Python Libraries
-from datetime import datetime
+import datetime as dt
 import json
 import os
 
@@ -11,6 +11,7 @@ from api.manager import (
     CycleManager,
     SendingProfileManager,
     SubscriptionManager,
+    TargetManager,
     TemplateManager,
 )
 
@@ -20,6 +21,7 @@ customer_manager = CustomerManager()
 cycle_manager = CycleManager()
 sending_profile_manager = SendingProfileManager()
 subscription_manager = SubscriptionManager()
+target_manager = TargetManager()
 template_manager = TemplateManager()
 
 
@@ -59,17 +61,40 @@ def load_customer():
 
 
 def load_subscription():
-    """Load sample subscription."""
+    """Load sample subscription data."""
+    subscription = subscription_manager.get({"name": "test_subscription"})
+    if subscription:
+        logger.info("Test data for subscription already exists.")
+        return subscription["_id"], subscription["templates_selected"]
+
+    template_ids = [template["_id"] for template in template_manager.all(limit=3)]
     with open_json_file("subscription.json") as json_file:
         logger.info("loading subscription test data...")
 
         load_data = json.load(json_file)
-        load_data["start_date"] = datetime.now()
+        load_data["start_date"] = dt.datetime.now()
         load_data["customer_id"] = load_customer()
         load_data["sending_profile_id"] = load_sending_profile()
-        load_data["templates_selected"] = [
-            "6144ebb6b5a945126fa07497",
-            "6144ebb6b5a945126fa074b4",
-            "6144ebb6b5a945126fa074c2",
-        ]
-        subscription_manager.save(load_data)
+        load_data["templates_selected"] = template_ids
+        subscription = subscription_manager.save(load_data)
+
+    return subscription["_id"], subscription["templates_selected"]
+
+
+def load_cycle():
+    """Load sample cycle data."""
+    cycle = cycle_manager.get({"dirty_stats": True})
+    if cycle:
+        logger.info("Test data for cycle already exists.")
+        return
+
+    subscription_id, template_ids = load_subscription()
+    with open_json_file("cycle.json") as json_file:
+        logger.info("loading cycle test data...")
+
+        load_data = json.load(json_file)
+        load_data["subscription_id"] = subscription_id
+        load_data["start_date"] = dt.datetime.now()
+        load_data["end_date"] = dt.datetime.now() + dt.timedelta(days=90)
+        load_data["send_by_date"] = dt.datetime.now() + dt.timedelta(days=90)
+        load_data["template_ids"] = template_ids
