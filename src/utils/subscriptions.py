@@ -24,6 +24,46 @@ target_manager = TargetManager()
 template_manager = TemplateManager()
 
 
+def create_targets_from_list(
+    cycle_id: str,
+    subscription_id: str,
+    target_list: list,
+    templates_selected: list,
+    cycle: dict,
+):
+    """Create targets from list."""
+    targets = []
+    total_targets = len(target_list)
+
+    template_counts = {t: 0 for t in templates_selected}
+    templates = template_manager.all(
+        params={"_id": {"$in": templates_selected}},
+        fields=["_id", "deception_score"],
+    )
+
+    random.shuffle(target_list)
+    for index, target in enumerate(target_list):
+        # Assign ids to target
+        target["cycle_id"] = cycle_id
+        target["subscription_id"] = subscription_id
+        # Assign send date to target
+        target["send_date"] = get_target_send_date(
+            index, total_targets, cycle["start_date"], cycle["send_by_date"]
+        )
+
+        # Assign template to target
+        target["template_id"] = min(template_counts, key=lambda k: template_counts[k])
+        template_counts[target["template_id"]] += 1
+
+        # Assign deception level to target
+        template = next(filter(lambda x: x["_id"] == target["template_id"], templates))
+        target["deception_level"] = get_deception_level(template["deception_score"])
+
+        targets.append(target)
+
+    return targets
+
+
 def start_subscription(subscription_id):
     """Launch a subscription."""
     subscription = subscription_manager.get(document_id=subscription_id)

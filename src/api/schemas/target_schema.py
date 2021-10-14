@@ -20,7 +20,7 @@ class TimelineDetailsSchema(Schema):
 class TargetTimelineSchema(Schema):
     """CycleTargetTimeline."""
 
-    time = fields.DateTime()
+    time = DateTimeField()
     message = fields.Str(validate=validate.OneOf(["opened", "clicked"]))
     details = fields.Nested(TimelineDetailsSchema)
 

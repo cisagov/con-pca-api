@@ -35,6 +35,12 @@
       "first_name": "swanson",
       "last_name": "joe",
       "position": "qa tester"
+    },
+    {
+      "email": "tom.tucker@inl.gov",
+      "first_name": "tom",
+      "last_name": "tucker",
+      "position": "news anchor"
     }
   ]
 }

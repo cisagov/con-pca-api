@@ -1,6 +1,6 @@
 """Load Test Data."""
 # Standard Python Libraries
-import datetime as dt
+from datetime import datetime, timedelta
 import json
 import os
 
@@ -14,6 +14,7 @@ from api.manager import (
     TargetManager,
     TemplateManager,
 )
+from utils.subscriptions import create_targets_from_list
 
 current_dir = os.path.dirname(__file__)
 
@@ -65,36 +66,68 @@ def load_subscription():
     subscription = subscription_manager.get({"name": "test_subscription"})
     if subscription:
         logger.info("Test data for subscription already exists.")
-        return subscription["_id"], subscription["templates_selected"]
+        return subscription["_id"], subscription
 
     template_ids = [template["_id"] for template in template_manager.all(limit=3)]
     with open_json_file("subscription.json") as json_file:
         logger.info("loading subscription test data...")
 
         load_data = json.load(json_file)
-        load_data["start_date"] = dt.datetime.now()
+        load_data["start_date"] = datetime.now()
         load_data["customer_id"] = load_customer()
         load_data["sending_profile_id"] = load_sending_profile()
         load_data["templates_selected"] = template_ids
         subscription = subscription_manager.save(load_data)
 
-    return subscription["_id"], subscription["templates_selected"]
+    return subscription["_id"], load_data
 
 
-def load_cycle():
+def load_cycle(subscription_id: str, template_ids: list):
     """Load sample cycle data."""
-    cycle = cycle_manager.get({"dirty_stats": True})
+    cycle = cycle_manager.get(filter_data={"dirty_stats": True})
     if cycle:
         logger.info("Test data for cycle already exists.")
-        return
+        return cycle["_id"], cycle
 
-    subscription_id, template_ids = load_subscription()
     with open_json_file("cycle.json") as json_file:
         logger.info("loading cycle test data...")
 
         load_data = json.load(json_file)
         load_data["subscription_id"] = subscription_id
-        load_data["start_date"] = dt.datetime.now()
-        load_data["end_date"] = dt.datetime.now() + dt.timedelta(days=90)
-        load_data["send_by_date"] = dt.datetime.now() + dt.timedelta(days=90)
+        load_data["start_date"] = datetime.utcnow()
+        load_data["end_date"] = datetime.utcnow() + timedelta(days=90)
+        load_data["send_by_date"] = datetime.utcnow() + timedelta(days=90)
         load_data["template_ids"] = template_ids
+        cycle = cycle_manager.save(load_data)
+
+    return cycle["_id"], load_data
+
+
+def load_test_data():
+    """Load sample targets and any missing test data."""
+    targets = target_manager.all()
+    if len(targets) >= 4:
+        logger.info("Test data for targets already exist.")
+        return
+
+    subscription_id, subscription_data = load_subscription()
+    cycle_id, cycle_data = load_cycle(
+        subscription_id, subscription_data["templates_selected"]
+    )
+    targets = create_targets_from_list(
+        cycle_id=cycle_id,
+        subscription_id=subscription_id,
+        target_list=subscription_data["target_email_list"],
+        templates_selected=subscription_data["templates_selected"],
+        cycle=cycle_data,
+    )
+
+    for target in targets:
+        target["timeline"] = [
+            {
+                "time": datetime.utcnow(),
+                "message": "opened",
+                "details": {"country": "USA"},
+            }
+        ]
+    target_manager.save_many(targets)
