@@ -283,7 +283,7 @@ class CycleManager(Manager):
                     self.convert_fields(fields),
                 )
             )
-        if fields is None or "targets" in fields:
+        if (fields is None or "targets" in fields) and document_id is not None:
             target_manager = TargetManager()
             cycle["targets"] = target_manager.all(params={"cycle_id": document_id})
         return cycle
