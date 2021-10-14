@@ -1,0 +1,57 @@
+@charset "UTF-8";
+@page {
+  size: Letter;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.page {
+  background: white;
+  display: block;
+  padding: 10px;
+  /* Size = Letter */
+  width: 8.5in;
+  height: 11in;
+  position: relative;
+}
+
+#indicator-table thead {
+  border: 2px solid black !important;
+  border-collapse: collapse !important;
+}
+
+#indicator-table tbody {
+  border: 2px solid black !important;
+  border-collapse: collapse !important;
+}
+
+#indicator-table tbody th {
+  border: 2px solid black !important;
+  border-collapse: collapse !important;
+  background-color: white;
+}
+
+#indicator-table-total td {
+  background-color: white;
+  border-collapse: collapse !important;
+  border: 2px solid black !important;
+}
+
+th.rotate {
+  height: 200px;
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+
+th.rotate > div {
+  transform: translate(-10px, 0px) rotate(270deg);
+  width: 30px;
+}
+th.rotate > div > span {
+  padding: 5px 10px;
+}
