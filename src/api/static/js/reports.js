@@ -118,3 +118,66 @@ function createStatsByLevelChart(
     plugins: [ChartDataLabels],
   });
 }
+
+function createClicksByDeceptionChart(chartId) {
+  var ctx = document.getElementById(chartId).getContext("2d");
+  var templateStats = JSON.parse(
+    document.getElementById("templateStats").innerText
+  );
+  const lowStats = templateStats.find((obj) => obj.deception_level === "low");
+  const moderateStats = templateStats.find(
+    (obj) => obj.deception_level === "moderate"
+  );
+  const highStats = templateStats.find((obj) => obj.deception_level === "high");
+
+  const data = {
+    labels: ["low", "moderate", "high"],
+    datasets: [
+      {
+        data: [
+          lowStats.clicked.ratio * 100,
+          moderateStats.clicked.ratio * 100,
+          highStats.clicked.ratio * 100,
+        ],
+        backgroundColor: "#336BFF",
+        barThickness: 40,
+        label: "Unique Click Rate",
+      },
+    ],
+  };
+
+  const options = {
+    plugins: {
+      legend: {
+        display: true,
+        position: "right",
+      },
+      datalabels: {
+        color: "white",
+        font: {
+          weight: "bold",
+        },
+        display: function (context) {
+          return context.dataset.data[context.dataIndex] > 0;
+        },
+      },
+    },
+    scales: {
+      y: {
+        ticks: {
+          stepSize: 200,
+          callback: function (value, index, values) {
+            return value + "%";
+          },
+        },
+      },
+    },
+  };
+
+  const chart = new Chart(ctx, {
+    type: "bar",
+    data: data,
+    options: options,
+    plugins: [ChartDataLabels],
+  });
+}

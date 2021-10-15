@@ -1,6 +1,7 @@
 """Report utils."""
 # Standard Python Libraries
 from datetime import datetime
+import json
 import os.path
 import subprocess  # nosec
 
@@ -80,6 +81,7 @@ def get_report(cycle_ids, report_type, nonhuman=False):
         "preview_template": preview_template,
         "datetime": datetime,
         "recommendations": get_recommendations(),
+        "json": json,
     }
     return render_template(f"reports/{report_type}.html", **context)
 

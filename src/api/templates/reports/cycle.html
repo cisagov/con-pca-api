@@ -56,6 +56,25 @@
       </table>
     </div>
     <div class="page">
+      <div class="bar-chart m-2">
+        <div>
+          <div style="display: none">
+            <p id="templateStats">{{ json.dumps(stats.template_stats) }}</p>
+          </div>
+          <canvas
+            id="bar-stats-by-deception"
+            class="d-flex report-chart"
+            style="height: 15rem"
+          >
+            <script>
+              createClicksByDeceptionChart("bar-stats-by-deception");
+            </script>
+          </canvas>
+          <h2>Deception Level</h2>
+        </div>
+      </div>
+    </div>
+    <div class="page">
       <table id="indicator-table" class="table table-striped">
         <thead class="thead-dark">
           <tr>
