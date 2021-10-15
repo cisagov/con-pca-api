@@ -51,9 +51,9 @@ shell:
 build_emails:
 	mjml src/api/templates/emails/mjml/* -o src/api/templates/emails/
 
-# target: dummy - initializes init_dummy_data for cpa
+# target: dummy - load test data
 dummy:
-	docker exec -it pca-api python scripts/create_dummy_data.py
+	docker exec -it pca-api flask load-test-data
 
 # target: dummy_reporting initalizes dummy reporting subscriptions
 dummy_reporting:

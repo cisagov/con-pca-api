@@ -1,0 +1,8 @@
+{
+  "from_address": "admin@example.com",
+  "host": "smtp.mailgun.org:587",
+  "interface_type": "SMTP",
+  "name": "Test Sending Profile",
+  "password": "abcdefg12345",
+  "username": "postmaster@example.com"
+}

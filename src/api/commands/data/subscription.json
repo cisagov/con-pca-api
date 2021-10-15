@@ -1,0 +1,46 @@
+{
+  "admin_email": "john.smith@inl.gov",
+  "continuous_subscription": false,
+  "cooldown_minutes": 2880,
+  "cycle_length_minutes": 129600,
+  "name": "test_subscription",
+  "primary_contact": {
+    "active": true,
+    "email": "john.smith@inl.gov",
+    "first_name": "John",
+    "last_name": "Smith",
+    "mobile_phone": "",
+    "notes": "",
+    "office_phone": "",
+    "title": "CEO"
+  },
+  "report_frequency_minutes": 43200,
+  "status": "stopped",
+  "target_domain": "@inl.gov",
+  "target_email_list": [
+    {
+      "email": "peter.griffin@inl.gov",
+      "first_name": "griffin",
+      "last_name": "peter",
+      "position": "engineer"
+    },
+    {
+      "email": "cleveland.brown@inl.gov",
+      "first_name": "brown",
+      "last_name": "cleveland",
+      "position": "manager"
+    },
+    {
+      "email": "joe.swanson@inl.gov",
+      "first_name": "swanson",
+      "last_name": "joe",
+      "position": "qa tester"
+    },
+    {
+      "email": "tom.tucker@inl.gov",
+      "first_name": "tom",
+      "last_name": "tucker",
+      "position": "news anchor"
+    }
+  ]
+}
