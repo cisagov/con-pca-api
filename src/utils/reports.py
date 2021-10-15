@@ -82,6 +82,7 @@ def get_report(cycle_ids, report_type, nonhuman=False):
         "datetime": datetime,
         "recommendations": get_recommendations(),
         "json": json,
+        "str": str,
     }
     return render_template(f"reports/{report_type}.html", **context)
 
