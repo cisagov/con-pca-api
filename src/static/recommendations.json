@@ -1,0 +1,190 @@
+{
+  "indicators": {
+    "appearance": {
+      "grammar": {
+        "name": "Grammar",
+        "values": {
+          "0": {
+            "label": "Poor",
+            "recommendation": "Poor grammar."
+          },
+          "1": {
+            "label": "Decent",
+            "recommendation": "Decent grammar."
+          },
+          "2": {
+            "label": "Proper",
+            "recommendation": "Proper grammar."
+          }
+        }
+      },
+      "link_domain": {
+        "name": "Link/Domain",
+        "values": {
+          "0": {
+            "label": "Unrelated",
+            "recommendation": "Unrelated Link/Domain Link/Domain"
+          },
+          "1": {
+            "label": "Related/Hidden/Spoofed",
+            "recommendation": "Related/Hidden/Spoofed Link/Domain"
+          }
+        }
+      },
+      "logo_graphics": {
+        "name": "Logo/Graphics",
+        "values": {
+          "0": {
+            "label": "Plain Text",
+            "recommendation": "Plain Text Logo/Graphics"
+          },
+          "1": {
+            "label": "Visual Appeal",
+            "recommendation": "Visual Appeal Logo/Graphics"
+          }
+        }
+      }
+    },
+    "behavior": {
+      "curiosity": {
+        "name": "Curiosity",
+        "values": {
+          "1": {
+            "label": "Yes",
+            "recommendation": "Yes Curiosity"
+          }
+        }
+      },
+      "duty_obligation": {
+        "name": "Duty or Obligation",
+        "values": {
+          "1": {
+            "label": "Yes",
+            "recommendation": "Yes Duty or Obligation"
+          }
+        }
+      },
+      "fear": {
+        "name": "Fear",
+        "values": {
+          "1": {
+            "label": "Yes",
+            "recommendation": "Yes Fear"
+          }
+        }
+      },
+      "greed": {
+        "name": "Greed",
+        "values": {
+          "1": {
+            "label": "Yes",
+            "recommendation": "Yes Greed"
+          }
+        }
+      }
+    },
+    "relevancy": {
+      "organization": {
+        "name": "Orginization",
+        "values": {
+          "0": {
+            "label": "No",
+            "recommendation": "No Orginization"
+          },
+          "1": {
+            "label": "Yes",
+            "recommendation": "Yes Orginization"
+          }
+        }
+      },
+      "public_news": {
+        "name": "Public News",
+        "values": {
+          "0": {
+            "label": "No",
+            "recommendation": "No Public News"
+          },
+          "1": {
+            "label": "Yes",
+            "recommendation": "Yes Public News"
+          }
+        }
+      }
+    },
+    "sender": {
+      "authoritative": {
+        "name": "Authoritative",
+        "values": {
+          "0": {
+            "label": "None",
+            "recommendation": "None Authoritative"
+          },
+          "1": {
+            "label": "Peer",
+            "recommendation": "Peer Authoritative"
+          },
+          "2": {
+            "label": "Superior",
+            "recommendation": "Superior Authoritative"
+          }
+        }
+      },
+      "external": {
+        "name": "External",
+        "values": {
+          "0": {
+            "label": "Not External/Unpsecified",
+            "recommendation": "Not External/Unpsecified Sender"
+          },
+          "1": {
+            "label": "Specified",
+            "recommendation": "Specified Sender"
+          }
+        }
+      },
+      "internal": {
+        "name": "Internal",
+        "values": {
+          "0": {
+            "label": "Not Internal/Unspecified",
+            "recommendation": "Not Internal/Unspecified Sender"
+          },
+          "1": {
+            "label": "Generic/Close",
+            "recommendation": "Generic/Close Sender"
+          },
+          "2": {
+            "label": "Spoofed",
+            "recommendation": "Spoofed Sender"
+          }
+        }
+      }
+    }
+  },
+  "levels": {
+    "1": {
+      "name": "Level 1",
+      "recommendation": "This is a level 1 characteristic."
+    },
+    "2": {
+      "name": "Level 2",
+      "recommendation": "This is a level 2 characteristic."
+    },
+    "3": {
+      "name": "Level 3",
+      "recommendation": "This is a level 3 characteristic."
+    },
+    "4": {
+      "name": "Level 4",
+      "recommendation": "This is a level 4 characteristic."
+    },
+    "5": {
+      "name": "Level 5",
+      "recommendation": "This is a level 5 characteristic."
+    },
+    "6": {
+      "name": "Level 6",
+      "recommendation": "This is a level 6 characteristic."
+    }
+  }
+}
