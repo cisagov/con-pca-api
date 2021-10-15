@@ -29,7 +29,13 @@
       <b>From: {{ preview_template(t.template.from_address, customer) }}</b
       ><br />
       <div class="template-preview">{{ t.template.html | safe }}</div>
-      <p><b>Key Characteristics:</b> Some key characteristics</p>
+      <p>
+        {% if t.template.deception_score <= 6 and t.template.deception_score > 0
+        %}
+        <b>Key Characteristics:</b> {{
+        recommendations.levels[str(t.template.deception_score)]["recommendation"]}}
+        {% endif %}
+      </p>
       <p><b>Total emails sent:</b> {{ t.sent.count }}</p>
       <p><b>Unique targets who clicked:</b> {{ t.clicked.count }}</p>
       <p><b>Unique click rate:</b> {{ t.clicked.ratio * 100 }}%</p>
@@ -100,6 +106,46 @@
           </tr>
         </tbody>
       </table>
+    </div>
+    <div class="page">
+      <table class="table table-striped">
+        <thead class="thead-dark">
+          <tr>
+            <th>Rank</th>
+            <th>Group</th>
+            <th>Indicator</th>
+            <th>Value</th>
+            <th>Sent</th>
+            <th>Clicked</th>
+            <th>Percent</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for stat in cycle.stats.indicator_stats |
+          sort(attribute="clicked.ratio", reverse=True) %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ stat.group | title }}</td>
+            <td>{{ stat.indicator | title }}</td>
+            <td>{{ stat.value }} ({{ stat.label }})</td>
+            <td>{{ stat.sent.count }}</td>
+            <td>{{ stat.clicked.count }}</td>
+            <td>{{ stat.clicked.ratio * 100 }}%</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="page">
+      <h2>Recommendations</h2>
+      {% for stat in cycle.stats.indicator_stats |
+      sort(attribute="clicked.ratio", reverse=True) %} {% if loop.index <= 3 %}
+      <p>
+        #{{ loop.index }} - {{
+        recommendations["indicators"][stat.group][stat.indicator]["values"][str(stat.value)]['recommendation']
+        }}
+      </p>
+      {% endif %} {% endfor %}
     </div>
   </body>
 </html>

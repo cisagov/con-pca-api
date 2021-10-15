@@ -58,7 +58,7 @@ class IndicatorStatsSchema(CycleStatsEventsSchema):
     """IndicatorStats."""
 
     group = fields.Str()
-    inidicator = fields.Str()
+    indicator = fields.Str()
     value = fields.Integer()
     label = fields.Str()
 

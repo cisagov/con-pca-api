@@ -80,6 +80,7 @@ def get_report(cycle_ids, report_type, nonhuman=False):
         "preview_template": preview_template,
         "datetime": datetime,
         "recommendations": get_recommendations(),
+        "str": str,
     }
     return render_template(f"reports/{report_type}.html", **context)
 
