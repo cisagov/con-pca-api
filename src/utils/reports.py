@@ -107,7 +107,7 @@ def get_report_pdf(cycle_ids, report_type, nonhuman=False):
 def get_reports_sent():
     """Get reports sent."""
     response = {
-        "monthly_reports_sent": 0,
+        "status_reports_sent": 0,
         "cycle_reports_sent": 0,
         "yearly_reports_sent": 0,
     }
