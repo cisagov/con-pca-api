@@ -60,21 +60,25 @@
                     alt="Gone Phishing"
                   />
                 </div>
+
+                <div id="numbersTitle" style="margin-top: 70px">
+                  <h2>Primary Contact Information</h2>
+                </div>
                 <div id="primaryContact">
-                  <span>Primary Contact Information</span><br />
-                  <h2>
-                    {{ subscription.primary_contact.first_name }} {{
-                    subscription.primary_contact.last_name }}
-                  </h2>
+                  {{ subscription.primary_contact.first_name }} {{
+                  subscription.primary_contact.last_name }} <br />
                   {{ customer.address_1 }} <br />
                   {{ customer.city }}, {{ customer.state }} {{ customer.zip_code
                   }} USA <br />
-                  {{ subscription.primary_contact.email }} <br />
-                  <br />
-                  Admin Contact Information: <br />
-                  {{ subscription.admin_email }} <br />
+                  {{ subscription.primary_contact.email }}
                 </div>
-                <div id="numbersTitle">
+
+                <div id="numbersTitle" style="margin-top: 30px">
+                  <h2>Admin Contact Information</h2>
+                </div>
+                <div id="primaryContact">{{ subscription.admin_email }}</div>
+
+                <div id="numbersTitle" style="margin-top: 30px">
                   <h2>Overall Campaign Numbers</h2>
                 </div>
                 <div id="campaignNumbers">
@@ -84,7 +88,7 @@
                   <br />
                 </div>
 
-                <div id="numbersTitle">
+                <div id="numbersTitle" style="margin-top: 30px">
                   <h2>Campaign Timeline</h2>
                 </div>
                 <div id="campaignNumbers">
