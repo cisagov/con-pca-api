@@ -22,6 +22,13 @@
   </head>
 
   <body class="mat-typography">
+    <!-- For accessing stats within Javascript -->
+    <div style="display: none">
+      <p id="overallStats">{{ json.dumps(cycle.stats.stats) }}</p>
+      <p id="indicatorStats">{{ json.dumps(cycle.stats.indicator_stats) }}</p>
+      <p id="recommendations">{{ json.dumps(recommendations) }}</p>
+      <p id="templateStats">{{ json.dumps(stats.template_stats) }}</p>
+    </div>
     {% for t in stats.template_stats %}
     <div class="page">
       <h2>Level {{ t.template.deception_score }} Template</h2>
@@ -60,6 +67,22 @@
         </tr>
         {% endfor %}
       </table>
+    </div>
+    <div class="page">
+      <div class="bar-chart m-2">
+        <div>
+          <canvas
+            id="bar-stats-by-deception"
+            class="d-flex report-chart"
+            style="height: 15rem"
+          >
+            <script>
+              createClicksByDeceptionChart("bar-stats-by-deception");
+            </script>
+          </canvas>
+          <h2>Deception Level</h2>
+        </div>
+      </div>
     </div>
     <div class="page">
       <table id="indicator-table" class="table table-striped">

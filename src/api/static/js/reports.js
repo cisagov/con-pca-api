@@ -118,3 +118,76 @@ function createStatsByLevelChart(
     plugins: [ChartDataLabels],
   });
 }
+
+function createClicksByDeceptionChart(chartId) {
+  var ctx = document.getElementById(chartId).getContext("2d");
+  var templateStats = JSON.parse(
+    document.getElementById("templateStats").innerText
+  );
+
+  const sentStats = [];
+  const clickStats = [];
+  for (let i = 1; i <= 6; i++) {
+    let templates = templateStats.filter(
+      (obj) => obj.template.deception_score === i
+    );
+    let sent = 0;
+    let clicked = 0;
+    for (var j = 0; j < templates.length; j++) {
+      sent += templates[j].sent.count;
+      clicked += templates[j].clicked.count;
+    }
+    sentStats.push(sent);
+    clickStats.push(clicked);
+  }
+
+  const data = {
+    labels: [1, 2, 3, 4, 5, 6],
+    datasets: [
+      {
+        data: sentStats,
+        backgroundColor: "#336BFF",
+        barThickness: 40,
+        label: "Sent",
+      },
+      {
+        data: clickStats,
+        backgroundColor: "#D61317",
+        barThickness: 40,
+        label: "Clicked",
+      },
+    ],
+  };
+
+  const options = {
+    plugins: {
+      legend: {
+        display: true,
+        position: "right",
+      },
+      datalabels: {
+        color: "white",
+        font: {
+          weight: "bold",
+        },
+        display: function (context) {
+          return context.dataset.data[context.dataIndex] > 0;
+        },
+      },
+    },
+    scales: {
+      y: {
+        ticks: {
+          stepSize: 200,
+        },
+      },
+    },
+  };
+
+  const chart = new Chart(ctx, {
+    type: "bar",
+    data: data,
+    options: options,
+    plugins: [ChartDataLabels],
+  });
+}
