@@ -214,9 +214,8 @@
                           <div class="col">
                             <b>Subject:</b> {{
                             preview_template(t.template.subject, customer) }}<br />
-                            <b>From:</b> {{
-                            preview_template(t.template.from_address, customer)
-                            }}<br />
+                            <b>From:</b> {{ preview_from_address(t.template,
+                            subscription, customer) }}<br />
                             <b>Deception: </b> {{ t.template.deception_score }}
                             ({{ t.deception_level }})
 

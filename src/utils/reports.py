@@ -11,14 +11,20 @@ from flask import render_template
 from flask.templating import render_template_string
 
 # cisagov Libraries
-from api.manager import CustomerManager, CycleManager, SubscriptionManager
+from api.manager import (
+    CustomerManager,
+    CycleManager,
+    SendingProfileManager,
+    SubscriptionManager,
+)
 from utils import time
-from utils.emails import get_email_context
+from utils.emails import get_email_context, get_from_address
 from utils.recommendations import get_recommendations
 from utils.stats import get_cycle_stats, get_ratio
 
 customer_manager = CustomerManager()
 cycle_manager = CycleManager()
+sending_profile_manager = SendingProfileManager()
 subscription_manager = SubscriptionManager()
 
 
@@ -62,6 +68,7 @@ def get_report(cycle_ids, report_type, nonhuman=False):
             "_id",
             "name",
             "customer_id",
+            "sending_profile_id",
             "target_domain",
             "start_date",
             "primary_contact",
@@ -79,6 +86,7 @@ def get_report(cycle_ids, report_type, nonhuman=False):
         "customer": customer,
         "time": time,
         "preview_template": preview_template,
+        "preview_from_address": preview_from_address,
         "datetime": datetime,
         "recommendations": get_recommendations(),
         "json": json,
@@ -170,8 +178,22 @@ def get_all_customer_stats():
     }
 
 
+def preview_from_address(template, subscription, customer):
+    """Preview from address in a report."""
+    if template.get("sending_profile_id"):
+        sending_profile = sending_profile_manager.get(
+            document_id=template["sending_profile_id"]
+        )
+    else:
+        sending_profile = sending_profile_manager.get(
+            document_id=subscription["sending_profile_id"]
+        )
+    from_address = get_from_address(sending_profile, template["from_address"])
+    return preview_template(from_address, customer)
+
+
 def preview_template(data, customer):
-    """Preview template subjects, html and from addresses for reports."""
+    """Preview template subject, from_address and html for reports."""
     fake = Faker()
     target = {
         "email": fake.email(),
