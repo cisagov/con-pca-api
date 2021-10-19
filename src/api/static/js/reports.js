@@ -63,7 +63,7 @@ function createStatsByLevelChart(
 ) {
   var ctx = document.getElementById(chartId).getContext("2d");
   const data = {
-    labels: ["Sent", "Clicked"],
+    labels: ["Emails Sent", "Unique Clicks"],
     datasets: [
       {
         data: [low_sent, low_clicked],
