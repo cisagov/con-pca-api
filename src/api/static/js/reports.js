@@ -125,106 +125,36 @@ function createClicksByDeceptionChart(chartId) {
     document.getElementById("templateStats").innerText
   );
 
-  const oneScore = templateStats.filter(
-    (obj) => obj.template.deception_score === 1
-  );
-  const twoScore = templateStats.filter(
-    (obj) => obj.template.deception_score === 2
-  );
-  const threeScore = templateStats.filter(
-    (obj) => obj.template.deception_score === 3
-  );
-  const fourScore = templateStats.filter(
-    (obj) => obj.template.deception_score === 4
-  );
-  const fiveScore = templateStats.filter(
-    (obj) => obj.template.deception_score === 5
-  );
-  const sixScore = templateStats.filter(
-    (obj) => obj.template.deception_score === 6
-  );
-
-  // click scores
-
-  const oneClickScore =
-    (oneScore.reduce((sum, obj) => sum + obj.clicked.ratio, 0) /
-      oneScore.length) *
-    100;
-  const twoClickScore =
-    (twoScore.reduce((sum, obj) => sum + obj.clicked.ratio, 0) /
-      twoScore.length) *
-    100;
-  const threeClickScore =
-    (threeScore.reduce((sum, obj) => sum + obj.clicked.ratio, 0) /
-      threeScore.length) *
-    100;
-  const fourClickScore =
-    (threeScore.reduce((sum, obj) => sum + obj.clicked.ratio, 0) /
-      fourScore.length) *
-    100;
-  const fiveClickScore =
-    (fiveScore.reduce((sum, obj) => sum + obj.clicked.ratio, 0) /
-      fiveScore.length) *
-    100;
-  const sixClickScore =
-    (sixScore.reduce((sum, obj) => sum + obj.clicked.ratio, 0) /
-      sixScore.length) *
-    100;
-
-  // open scores
-  const oneOpenScore =
-    (oneScore.reduce((sum, obj) => sum + obj.opened.ratio, 0) /
-      oneScore.length) *
-    100;
-  const twoOpenScore =
-    (twoScore.reduce((sum, obj) => sum + obj.opened.ratio, 0) /
-      twoScore.length) *
-    100;
-  const threeOpenScore =
-    (threeScore.reduce((sum, obj) => sum + obj.opened.ratio, 0) /
-      threeScore.length) *
-    100;
-  const fourOpenScore =
-    (fourScore.reduce((sum, obj) => sum + obj.opened.ratio, 0) /
-      fourScore.length) *
-    100;
-  const fiveOpenScore =
-    (fiveScore.reduce((sum, obj) => sum + obj.opened.ratio, 0) /
-      fiveScore.length) *
-    100;
-  const sixOpenScore =
-    (sixScore.reduce((sum, obj) => sum + obj.opened.ratio, 0) /
-      sixScore.length) *
-    100;
+  const sentStats = [];
+  const clickStats = [];
+  for (let i = 1; i <= 6; i++) {
+    let templates = templateStats.filter(
+      (obj) => obj.template.deception_score === i
+    );
+    let sent = 0;
+    let clicked = 0;
+    for (var j = 0; j < templates.length; j++) {
+      sent += templates[j].sent.count;
+      clicked += templates[j].clicked.count;
+    }
+    sentStats.push(sent);
+    clickStats.push(clicked);
+  }
 
   const data = {
     labels: [1, 2, 3, 4, 5, 6],
     datasets: [
       {
-        data: [
-          oneClickScore,
-          twoClickScore,
-          threeClickScore,
-          fourClickScore,
-          fiveClickScore,
-          sixClickScore,
-        ],
+        data: sentStats,
         backgroundColor: "#336BFF",
         barThickness: 40,
-        label: "Sent Rate",
+        label: "Sent",
       },
       {
-        data: [
-          oneOpenScore,
-          twoOpenScore,
-          threeOpenScore,
-          fourOpenScore,
-          fiveOpenScore,
-          sixOpenScore,
-        ],
+        data: clickStats,
         backgroundColor: "#D61317",
         barThickness: 40,
-        label: "Click Rate",
+        label: "Clicked",
       },
     ],
   };
@@ -249,9 +179,6 @@ function createClicksByDeceptionChart(chartId) {
       y: {
         ticks: {
           stepSize: 200,
-          callback: function (value, index, values) {
-            return value + "%";
-          },
         },
       },
     },
