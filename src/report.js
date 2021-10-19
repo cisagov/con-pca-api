@@ -29,7 +29,7 @@ async function getReport(filename, cycleIds, reportType, nonhuman) {
     await browser.close();
     return;
   }
-  if (reportType == "monthly") {
+  if (reportType == "status") {
     pdfContent = await page.pdf({
       format: "letter",
       path: filename,

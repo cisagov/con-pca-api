@@ -88,11 +88,12 @@
                   <h2>Campaign Timeline</h2>
                 </div>
                 <div id="campaignNumbers">
-                  Start: {{ cycle.start_date.strftime('%b %d, %Y') }}
+                  Cycle Start: {{ cycle.start_date.strftime('%b %d, %Y') }}
                   <br />
-                  Emails Sent By: {{ cycle.send_by_date.strftime('%b %d, %Y') }}
+                  Emails Delivered By: {{ cycle.send_by_date.strftime('%b %d,
+                  %Y') }}
                   <br />
-                  End: {{ cycle.end_date.strftime('%b %d, %Y') }}
+                  Cycle End: {{ cycle.end_date.strftime('%b %d, %Y') }}
                   <br />
                 </div>
 
@@ -213,9 +214,8 @@
                           <div class="col">
                             <b>Subject:</b> {{
                             preview_template(t.template.subject, customer) }}<br />
-                            <b>From:</b> {{
-                            preview_template(t.template.from_address, customer)
-                            }}<br />
+                            <b>From:</b> {{ preview_from_address(t.template,
+                            subscription, customer) }}<br />
                             <b>Deception: </b> {{ t.template.deception_score }}
                             ({{ t.deception_level }})
 

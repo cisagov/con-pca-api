@@ -99,7 +99,7 @@ def add_new_task(subscription, task):
     )
     yearly_minutes = get_yearly_minutes()
     new_date = {
-        "monthly_report": scheduled + timedelta(minutes=report_minutes),
+        "status_report": scheduled + timedelta(minutes=report_minutes),
         "cycle_report": task["scheduled_date"] + timedelta(minutes=cycle_minutes),
         "yearly_report": task["scheduled_date"] + timedelta(minutes=yearly_minutes),
         "end_cycle": task["scheduled_date"] + timedelta(minutes=cycle_minutes),
@@ -125,7 +125,7 @@ def process_task(task, subscription, cycle):
     """Process subscription task."""
     task_types = {
         "start_subscription_email": start_subscription_email,
-        "monthly_report": monthly_report,
+        "status_report": status_report,
         "cycle_report": cycle_report,
         "yearly_report": yearly_report,
         "end_cycle": end_cycle,
@@ -138,9 +138,9 @@ def start_subscription_email(subscription, cycle):
     Notification("subscription_started", subscription, cycle).send()
 
 
-def monthly_report(subscription, cycle):
-    """Send monthly report."""
-    Notification("monthly_report", subscription, cycle).send()
+def status_report(subscription, cycle):
+    """Send status report."""
+    Notification("status_report", subscription, cycle).send()
 
 
 def cycle_report(subscription, cycle):

@@ -152,7 +152,7 @@ def get_initial_tasks(subscription, cycle):
     task_types = {
         "start_subscription_email": start_date
         + timedelta(minutes=config.DELAY_MINUTES),
-        "monthly_report": start_date + timedelta(minutes=report_minutes),
+        "status_report": start_date + timedelta(minutes=report_minutes),
         "cycle_report": start_date + timedelta(minutes=cycle_minutes),
         "yearly_report": start_date + timedelta(minutes=yearly_minutes),
         "end_cycle": start_date + timedelta(minutes=cycle_minutes),

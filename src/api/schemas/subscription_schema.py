@@ -42,7 +42,7 @@ class SubscriptionTasksSchema(Schema):
         validate=validate.OneOf(
             [
                 "start_subscription_email",
-                "monthly_report",
+                "status_report",
                 "cycle_report",
                 "yearly_report",
                 "end_cycle",

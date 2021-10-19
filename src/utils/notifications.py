@@ -51,7 +51,7 @@ class Notification:
     def get_report(self, message_type: str, context: dict):
         """Get report html, text and subject."""
         report = {
-            "monthly_report": {
+            "status_report": {
                 "subject": "Con-PCA Phishing Subscription Status Report",
             },
             "cycle_report": {
@@ -99,7 +99,7 @@ class Notification:
         report = self.get_report(self.message_type, context)
 
         attachments = []
-        if self.message_type in ["monthly_report"]:
+        if self.message_type in ["status_report"]:
             filename = get_report_pdf(
                 [self.cycle["_id"]],
                 self.message_type.split("_")[0],
