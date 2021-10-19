@@ -124,24 +124,107 @@ function createClicksByDeceptionChart(chartId) {
   var templateStats = JSON.parse(
     document.getElementById("templateStats").innerText
   );
-  const lowStats = templateStats.find((obj) => obj.deception_level === "low");
-  const moderateStats = templateStats.find(
-    (obj) => obj.deception_level === "moderate"
+
+  const oneScore = templateStats.filter(
+    (obj) => obj.template.deception_score === 1
   );
-  const highStats = templateStats.find((obj) => obj.deception_level === "high");
+  const twoScore = templateStats.filter(
+    (obj) => obj.template.deception_score === 2
+  );
+  const threeScore = templateStats.filter(
+    (obj) => obj.template.deception_score === 3
+  );
+  const fourScore = templateStats.filter(
+    (obj) => obj.template.deception_score === 4
+  );
+  const fiveScore = templateStats.filter(
+    (obj) => obj.template.deception_score === 5
+  );
+  const sixScore = templateStats.filter(
+    (obj) => obj.template.deception_score === 6
+  );
+
+  // click scores
+
+  const oneClickScore =
+    (oneScore.reduce((sum, obj) => sum + obj.clicked.ratio, 0) /
+      oneScore.length) *
+    100;
+  const twoClickScore =
+    (twoScore.reduce((sum, obj) => sum + obj.clicked.ratio, 0) /
+      twoScore.length) *
+    100;
+  const threeClickScore =
+    (threeScore.reduce((sum, obj) => sum + obj.clicked.ratio, 0) /
+      threeScore.length) *
+    100;
+  const fourClickScore =
+    (threeScore.reduce((sum, obj) => sum + obj.clicked.ratio, 0) /
+      fourScore.length) *
+    100;
+  const fiveClickScore =
+    (fiveScore.reduce((sum, obj) => sum + obj.clicked.ratio, 0) /
+      fiveScore.length) *
+    100;
+  const sixClickScore =
+    (sixScore.reduce((sum, obj) => sum + obj.clicked.ratio, 0) /
+      sixScore.length) *
+    100;
+
+  // open scores
+  const oneOpenScore =
+    (oneScore.reduce((sum, obj) => sum + obj.opened.ratio, 0) /
+      oneScore.length) *
+    100;
+  const twoOpenScore =
+    (twoScore.reduce((sum, obj) => sum + obj.opened.ratio, 0) /
+      twoScore.length) *
+    100;
+  const threeOpenScore =
+    (threeScore.reduce((sum, obj) => sum + obj.opened.ratio, 0) /
+      threeScore.length) *
+    100;
+  const fourOpenScore =
+    (fourScore.reduce((sum, obj) => sum + obj.opened.ratio, 0) /
+      fourScore.length) *
+    100;
+  const fiveOpenScore =
+    (fiveScore.reduce((sum, obj) => sum + obj.opened.ratio, 0) /
+      fiveScore.length) *
+    100;
+  const sixOpenScore =
+    (sixScore.reduce((sum, obj) => sum + obj.opened.ratio, 0) /
+      sixScore.length) *
+    100;
 
   const data = {
-    labels: ["low", "moderate", "high"],
+    labels: [1, 2, 3, 4, 5, 6],
     datasets: [
       {
         data: [
-          lowStats.clicked.ratio * 100,
-          moderateStats.clicked.ratio * 100,
-          highStats.clicked.ratio * 100,
+          oneClickScore,
+          twoClickScore,
+          threeClickScore,
+          fourClickScore,
+          fiveClickScore,
+          sixClickScore,
         ],
         backgroundColor: "#336BFF",
         barThickness: 40,
-        label: "Unique Click Rate",
+        label: "Sent Rate",
+      },
+      {
+        data: [
+          oneOpenScore,
+          twoOpenScore,
+          threeOpenScore,
+          fourOpenScore,
+          fiveOpenScore,
+          sixOpenScore,
+        ],
+        backgroundColor: "#D61317",
+        barThickness: 40,
+        label: "Click Rate",
       },
     ],
   };
