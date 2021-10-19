@@ -81,10 +81,7 @@ aside {
 }
 #primaryContact {
   font-size: 1.125em;
-  line-height: 2.5em;
-  position: relative;
-  top: 5px;
-  z-index: 10;
+  line-height: 1.5em;
 }
 #numbersTitle h2,
 #primaryContact h2 {
@@ -93,9 +90,6 @@ aside {
 }
 #primaryContact span {
   line-height: 3em;
-}
-#numbersTitle {
-  margin-top: 70px;
 }
 #campaignNumbers {
   border: 1px solid #fdc010;
@@ -231,6 +225,7 @@ h1 strong {
   margin: 20px auto 0;
   text-align: center;
   width: 600px;
+  padding: 15px;
 }
 .bar-chart h2 {
   font-size: 1.25em;
