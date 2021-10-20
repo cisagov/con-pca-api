@@ -116,15 +116,19 @@ def generate_cycle_stats(cycle, nonhuman=False):
     process_ratios(stats)
     process_ratios(template_stats)
     rank_templates(template_stats)
+
     maxmind_stats = get_maxmind_stats(cycle)
     template_stats = template_stats.values()
     indicator_stats = get_indicator_stats(template_stats)
+    time_stats = get_time_stats(stats)
+
     return CycleStatsSchema().dump(
         {
             "stats": stats,
             "template_stats": template_stats,
             "maxmind_stats": maxmind_stats,
             "indicator_stats": indicator_stats,
+            "time_stats": time_stats,
         }
     )
 
@@ -177,6 +181,73 @@ def process_time_stats(stats: dict):
                 stats[key][event]["minimum"] = timedelta().total_seconds()
                 stats[key][event]["median"] = timedelta().total_seconds()
                 stats[key][event]["maximum"] = timedelta().total_seconds()
+
+
+def get_time_stats(stats: dict):
+    """Get time stats."""
+    time_stats = {
+        "opened": {
+            "one_minutes": 0,
+            "three_minutes": 0,
+            "five_minutes": 0,
+            "fifteen_minutes": 0,
+            "thirty_minutes": 0,
+            "sixty_minutes": 0,
+            "two_hours": 0,
+            "three_hours": 0,
+            "four_hours": 0,
+            "one_day": 0,
+        },
+        "clicked": {
+            "one_minutes": 0,
+            "three_minutes": 0,
+            "five_minutes": 0,
+            "fifteen_minutes": 0,
+            "thirty_minutes": 0,
+            "sixty_minutes": 0,
+            "two_hours": 0,
+            "three_hours": 0,
+            "four_hours": 0,
+            "one_day": 0,
+        },
+    }
+    for key in stats.keys():
+        for event in ["opened", "clicked"]:
+            diffs = stats[key][event]["diffs"]
+            total_count = stats[key][event]["count"]
+
+            time_stats[event]["one_minutes"] += (
+                sum(diff < timedelta(seconds=60) for diff in diffs) / total_count
+            )
+            time_stats[event]["three_minutes"] += (
+                sum(diff < timedelta(minutes=3) for diff in diffs) / total_count
+            )
+            time_stats[event]["five_minutes"] += (
+                sum(diff < timedelta(minutes=5) for diff in diffs) / total_count
+            )
+            time_stats[event]["fifteen_minutes"] += (
+                sum(diff < timedelta(minutes=15) for diff in diffs) / total_count
+            )
+            time_stats[event]["thirty_minutes"] += (
+                sum(diff < timedelta(minutes=30) for diff in diffs) / total_count
+            )
+            time_stats[event]["sixty_minutes"] += (
+                sum(diff < timedelta(minutes=60) for diff in diffs) / total_count
+            )
+            time_stats[event]["two_hours"] += (
+                sum(diff < timedelta(hours=2) for diff in diffs) / total_count
+            )
+            time_stats[event]["three_hours"] += (
+                sum(diff < timedelta(hours=3) for diff in diffs) / total_count
+            )
+            time_stats[event]["four_hours"] += (
+                sum(diff < timedelta(hours=4) for diff in diffs) / total_count
+            )
+            time_stats[event]["one_day"] += (
+                sum(diff < timedelta(hours=24) for diff in diffs) / total_count
+            )
+
+    return time_stats
 
 
 def get_event(timeline, event):

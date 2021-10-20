@@ -66,16 +66,23 @@ class IndicatorStatsSchema(CycleStatsEventsSchema):
 class TimeStatsSchema(Schema):
     """TimeStatsSchema."""
 
-    one_minutes = fields.Nested(CycleStatsEventMetricsSchema)
-    three_minutes = fields.Nested(CycleStatsEventMetricsSchema)
-    five_minutes = fields.Nested(CycleStatsEventMetricsSchema)
-    fifteen_minutes = fields.Nested(CycleStatsEventMetricsSchema)
-    thirty_minutes = fields.Nested(CycleStatsEventMetricsSchema)
-    sixty_minutes = fields.Nested(CycleStatsEventMetricsSchema)
-    two_hours = fields.Nested(CycleStatsEventMetricsSchema)
-    three_hours = fields.Nested(CycleStatsEventMetricsSchema)
-    four_hours = fields.Nested(CycleStatsEventMetricsSchema)
-    one_day = fields.Nested(CycleStatsEventMetricsSchema)
+    one_minutes = fields.Integer()
+    three_minutes = fields.Integer()
+    five_minutes = fields.Integer()
+    fifteen_minutes = fields.Integer()
+    thirty_minutes = fields.Integer()
+    sixty_minutes = fields.Integer()
+    two_hours = fields.Integer()
+    three_hours = fields.Integer()
+    four_hours = fields.Integer()
+    one_day = fields.Integer()
+
+
+class TimeStatsTypeSchema(Schema):
+    """TimeStatsSchema."""
+
+    opened = fields.Nested(TimeStatsSchema)
+    clicked = fields.Nested(TimeStatsSchema)
 
 
 class CycleStatsSchema(Schema):
@@ -85,4 +92,4 @@ class CycleStatsSchema(Schema):
     template_stats = fields.List(fields.Nested(TemplateStatsSchema))
     maxmind_stats = fields.List(fields.Nested(MaxmindStatsSchema))
     indicator_stats = fields.List(fields.Nested(IndicatorStatsSchema))
-    time_stats = fields.Nested(TimeStatsSchema)
+    time_stats = fields.Nested(TimeStatsTypeSchema)
