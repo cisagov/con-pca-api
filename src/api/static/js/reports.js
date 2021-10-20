@@ -198,12 +198,9 @@ function clickRateTimeIntervalChart(chartId) {
     document.getElementById("timeIntervalStats").innerText
   );
   const clicked = timeStats.clicked;
-  const opened = timeStats.opened;
-  console.log(clicked);
   const data = {
     labels: [
       "1 minute",
-      "2 minutes",
       "3 minutes",
       "5 minutes",
       "15 minutes",
@@ -217,39 +214,19 @@ function clickRateTimeIntervalChart(chartId) {
     datasets: [
       {
         data: [
-          clicked.one_minutes,
-          clicked.two_minutes,
-          clicked.three_minutes,
-          clicked.five_minutes,
-          clicked.fifteen_minutes,
-          clicked.thirty_minutes,
-          clicked.sixty_minutes,
-          clicked.two_hours,
-          clicked.three_hours,
-          clicked.four_hours,
-          clicked.one_day,
+          clicked.one_minutes.ratio * 100,
+          clicked.three_minutes.ratio * 100,
+          clicked.five_minutes.ratio * 100,
+          clicked.fifteen_minutes.ratio * 100,
+          clicked.thirty_minutes.ratio * 100,
+          clicked.sixty_minutes.ratio * 100,
+          clicked.two_hours.ratio * 100,
+          clicked.three_hours.ratio * 100,
+          clicked.four_hours.ratio * 100,
+          clicked.one_day.ratio * 100,
         ],
         backgroundColor: "#336BFF",
-        barThickness: 20,
-        label: "Clicked",
-      },
-      {
-        data: [
-          opened.one_minutes,
-          opened.two_minutes,
-          opened.three_minutes,
-          opened.five_minutes,
-          opened.fifteen_minutes,
-          opened.thirty_minutes,
-          opened.sixty_minutes,
-          opened.two_hours,
-          opened.three_hours,
-          opened.four_hours,
-          opened.one_day,
-        ],
-        backgroundColor: "#D61317",
-        barThickness: 20,
-        label: "Opened",
+        label: "Clicked Percentage",
       },
     ],
   };
@@ -267,6 +244,9 @@ function clickRateTimeIntervalChart(chartId) {
         },
         display: function (context) {
           return context.dataset.data[context.dataIndex] > 0;
+        },
+        formatter: function (value, ctx) {
+          return value + "%";
         },
       },
     },
