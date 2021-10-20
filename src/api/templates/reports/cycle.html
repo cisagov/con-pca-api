@@ -28,6 +28,7 @@
       <p id="indicatorStats">{{ json.dumps(cycle.stats.indicator_stats) }}</p>
       <p id="recommendations">{{ json.dumps(recommendations) }}</p>
       <p id="templateStats">{{ json.dumps(stats.template_stats) }}</p>
+      <p id="timeIntervalStats">{{ json.dumps(stats.time_stats) }}</p>
     </div>
     {% for t in stats.template_stats %}
     <div class="page">
@@ -37,7 +38,7 @@
       ><br />
       <div class="template-preview">{{ t.template.html | safe }}</div>
       <p>
-        {% if t.template.deception_score <= 6 and t.template.deception_score > 0
+        {% if t.template.deception_score <= 6 and t.template.deception_score> 0
         %}
         <b>Key Characteristics:</b> {{
         recommendations.levels[str(t.template.deception_score)]["recommendation"]}}
@@ -81,6 +82,22 @@
             </script>
           </canvas>
           <h2>Deception Level</h2>
+        </div>
+      </div>
+    </div>
+    <div class="page">
+      <div class="bar-chart m-2">
+        <div>
+          <canvas
+            id="click-rate-time-interval"
+            class="d-flex report-chart"
+            style="height: 15rem"
+          >
+            <script>
+              clickRateTimeIntervalChart("click-rate-time-interval");
+            </script>
+          </canvas>
+          <h2>Time Intervals</h2>
         </div>
       </div>
     </div>
