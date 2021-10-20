@@ -57,6 +57,7 @@
             <th scope="col">Template Subject</th>
             <th scope="col">User Click Rate</th>
             <th scope="col">Unique Clicks</th>
+            <th scope="col">Emails Sent</th>
           </thead>
         </tr>
         {% for t in cycle.stats.template_stats %}
@@ -65,6 +66,7 @@
           <td>{{ t.template.subject }}</td>
           <td>{{ (t.clicked.ratio * 100) | int }}%</td>
           <td>{{ t.clicked.count }}</td>
+          <td>{{ t.sent.count }}</td>
         </tr>
         {% endfor %}
       </table>
