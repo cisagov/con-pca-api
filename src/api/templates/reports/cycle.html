@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Cycle Status Report</title>
+    <title>Cycle Report</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <link
@@ -20,174 +20,69 @@
     <script src="{{ url_for('static', filename='js/chartjs-plugin-datalabels.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/reports.js') }}"></script>
   </head>
-
   <body class="mat-typography">
-    <!-- For accessing stats within Javascript -->
-    <div style="display: none">
-      <p id="overallStats">{{ json.dumps(cycle.stats.stats) }}</p>
-      <p id="indicatorStats">{{ json.dumps(cycle.stats.indicator_stats) }}</p>
-      <p id="recommendations">{{ json.dumps(recommendations) }}</p>
-      <p id="templateStats">{{ json.dumps(stats.template_stats) }}</p>
-      <p id="timeIntervalStats">{{ json.dumps(stats.time_stats) }}</p>
-    </div>
-    {% for t in stats.template_stats %}
-    <div class="page">
-      <h2>Level {{ t.template.deception_score }} Template</h2>
-      <b>Subject: {{ preview_template(t.template.subject, customer) }}</b><br />
-      <b>From: {{ preview_template(t.template.from_address, customer) }}</b
-      ><br />
-      <div class="template-preview">{{ t.template.html | safe }}</div>
-      <p>
-        {% if t.template.deception_score <= 6 and t.template.deception_score> 0
-        %}
-        <b>Key Characteristics:</b> {{
-        recommendations.levels[str(t.template.deception_score)]["recommendation"]}}
-        {% endif %}
-      </p>
-      <p><b>Total emails sent:</b> {{ t.sent.count }}</p>
-      <p><b>Unique targets who clicked:</b> {{ t.clicked.count }}</p>
-      <p><b>Unique click rate:</b> {{ t.clicked.ratio * 100 }}%</p>
-    </div>
-    {% endfor %}
-    <div class="page">
-      <table class="table">
-        <tr>
-          <thead class="thead-dark">
-            <th scope="col">Level</th>
-            <th scope="col">Template Subject</th>
-            <th scope="col">User Click Rate</th>
-            <th scope="col">Unique Clicks</th>
-            <th scope="col">Emails Sent</th>
-          </thead>
-        </tr>
-        {% for t in cycle.stats.template_stats %}
-        <tr>
-          <th scope="row">{{ t.template.deception_score }}</th>
-          <td>{{ t.template.subject }}</td>
-          <td>{{ (t.clicked.ratio * 100) | int }}%</td>
-          <td>{{ t.clicked.count }}</td>
-          <td>{{ t.sent.count }}</td>
-        </tr>
-        {% endfor %}
-      </table>
-    </div>
-    <div class="page">
-      <div class="bar-chart m-2">
-        <div>
-          <canvas
-            id="bar-stats-by-deception"
-            class="d-flex report-chart"
-            style="height: 15rem"
-          >
-            <script>
-              createClicksByDeceptionChart("bar-stats-by-deception");
-            </script>
-          </canvas>
-          <h2>Deception Level</h2>
+    <div style="width: 8.5in">
+      <article id="cover">
+        <div class="row">
+          <div id="blueDateBox">
+            <span class="year">{{ cycle.start_date.strftime("%Y")}}</span><br />
+            <span class="dateRange">
+              {{ cycle.start_date.strftime("%Y-%m-%d") }} - {{
+              cycle.end_date.strftime("%Y-%m-%d") }}
+            </span>
+          </div>
         </div>
-      </div>
-    </div>
-    <div class="page">
-      <div class="bar-chart m-2">
-        <div>
-          <canvas
-            id="click-rate-time-interval"
-            class="d-flex report-chart"
-            style="height: 15rem"
-          >
-            <script>
-              clickRateTimeIntervalChart("click-rate-time-interval");
-            </script>
-          </canvas>
-          <h2>Time Intervals</h2>
+        <div class="row">
+          <div id="bluePhishLogo" class="col-12">
+            <img
+              src="{{ url_for('static', filename='image/blue_phishlogo.png') }}"
+            />
+          </div>
         </div>
-      </div>
-    </div>
-    <div class="page">
-      <table id="indicator-table" class="table table-striped">
-        <thead class="thead-dark">
-          <tr>
-            <th>Category</th>
-            <th>Indicator</th>
-            <th>Ranking Scale</th>
-            {% for ts in cycle.stats.template_stats %}
-            <th class="rotate">
-              <div><span>{{ ts.template.name }}</span></div>
-            </th>
-            {% endfor %}
-          </tr>
-        </thead>
-        <tbody>
-          {% for group, gv in recommendations["indicators"].items() %} {% for
-          indicator, iv in gv.items() %}
-          <tr>
-            {% if loop.index == 1 %}
-            <th rowspan="{{ gv | length }}" style="vertical-align: middle">
-              {{ group | title }}
-            </th>
-            {% endif %}
-            <td style="width: 75px">{{ iv.name }}</td>
-            <td style="width: 75px">
-              {% for value, v in iv["values"].items() %}{% if loop.last %}{{
-              value }}={{ v["label"] }}{% else %}{{ value }}={{ v["label"] }},
-              {% endif %}{% endfor %}
-            </td>
-
-            {% for ts in cycle.stats.template_stats %}
-            <td>{{ ts.template.indicators[group][indicator] }}</td>
-            {% endfor %}
-          </tr>
-          {% endfor %} {% endfor %}
-          <tr id="indicator-table-total">
-            <td></td>
-            <td></td>
-            <td>Total</td>
-            {% for ts in cycle.stats.template_stats %}
-            <td>{{ ts.template.deception_score }}</td>
-            {% endfor %}
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="page">
-      <table class="table table-striped">
-        <thead class="thead-dark">
-          <tr>
-            <th>Rank</th>
-            <th>Group</th>
-            <th>Indicator</th>
-            <th>Value</th>
-            <th>Sent</th>
-            <th>Clicked</th>
-            <th>Percent</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for stat in cycle.stats.indicator_stats |
-          sort(attribute="clicked.ratio", reverse=True) %}
-          <tr>
-            <td>{{ loop.index }}</td>
-            <td>{{ stat.group | title }}</td>
-            <td>{{ stat.indicator | title }}</td>
-            <td>{{ stat.value }} ({{ stat.label }})</td>
-            <td>{{ stat.sent.count }}</td>
-            <td>{{ stat.clicked.count }}</td>
-            <td>{{ stat.clicked.ratio * 100 }}%</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    <div class="page">
-      <h2>Recommendations</h2>
-      {% for stat in cycle.stats.indicator_stats |
-      sort(attribute="clicked.ratio", reverse=True) %} {% if loop.index <= 3 %}
-      <p>
-        #{{ loop.index }} - {{
-        recommendations["indicators"][stat.group][stat.indicator]["values"][str(stat.value)]['recommendation']
-        }}
-      </p>
-      {% endif %} {% endfor %}
+        <div class="row">
+          <div id="whiteBox" class="col-5"></div>
+        </div>
+        <div class="row">
+          <div id="leftYellowBox"></div>
+        </div>
+        <div class="row">
+          <div id="rightYellowBox"></div>
+        </div>
+        <div class="row">
+          <div id="blueHacker" class="col-12">
+            <img
+              src="{{ url_for('static', filename='image/blue_hacker.png') }}"
+            />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <h2 id="reportTitle">
+              <span class="smallerTitle">Cycle</span><br />Report
+            </h2>
+          </div>
+        </div>
+        <div id="coverFooter" class="row mb-2">
+          <div id="preparationDetails">
+            Prepared for:<br />
+            {{ customer.name }}<br />
+            {{ customer.address_1 }} {{ customer.address_2 }}<br />
+            {{ customer.city }}, {{ customer.state }} {{ customer.zip_code }}
+          </div>
+          <div id="dhsContactDetails">
+            <div class="mb-2">
+              Subscription Primary Contact<br />
+              {{ subscription.primary_contact.first_name }} {{
+              subscription.primary_contact.last_name }}<br />
+              {{ subscription.primary_contact.email }}<br />
+            </div>
+            <div>
+              CISA Contact<br />
+              vulnerability@cisa.dhs.gov
+            </div>
+          </div>
+        </div>
+      </article>
     </div>
   </body>
 </html>

@@ -4,13 +4,6 @@
   margin: 0;
   size: Letter;
 }
-html {
-  /* background-color: #1b2352;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: flex-start; */
-}
 .topBannerRow {
   margin-right: 0;
 }
@@ -23,7 +16,6 @@ aside,
 body,
 html {
   height: 100%;
-  /* background-color: #1b2352; */
 }
 main .container-fluid {
   background-color: #fff;
