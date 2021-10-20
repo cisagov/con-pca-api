@@ -191,3 +191,78 @@ function createClicksByDeceptionChart(chartId) {
     plugins: [ChartDataLabels],
   });
 }
+
+function clickRateTimeIntervalChart(chartId) {
+  var ctx = document.getElementById(chartId).getContext("2d");
+  const timeStats = JSON.parse(
+    document.getElementById("timeIntervalStats").innerText
+  );
+  const clicked = timeStats.clicked;
+  const data = {
+    labels: [
+      "1 minute",
+      "3 minutes",
+      "5 minutes",
+      "15 minutes",
+      "30 minutes",
+      "60 minutes",
+      "2 hours",
+      "3 hours",
+      "4 hours",
+      "1 day",
+    ],
+    datasets: [
+      {
+        data: [
+          clicked.one_minutes.ratio * 100,
+          clicked.three_minutes.ratio * 100,
+          clicked.five_minutes.ratio * 100,
+          clicked.fifteen_minutes.ratio * 100,
+          clicked.thirty_minutes.ratio * 100,
+          clicked.sixty_minutes.ratio * 100,
+          clicked.two_hours.ratio * 100,
+          clicked.three_hours.ratio * 100,
+          clicked.four_hours.ratio * 100,
+          clicked.one_day.ratio * 100,
+        ],
+        backgroundColor: "#336BFF",
+        label: "Clicked Percentage",
+      },
+    ],
+  };
+
+  const options = {
+    plugins: {
+      legend: {
+        display: true,
+        position: "right",
+      },
+      datalabels: {
+        color: "white",
+        font: {
+          weight: "bold",
+        },
+        display: function (context) {
+          return context.dataset.data[context.dataIndex] > 0;
+        },
+        formatter: function (value, ctx) {
+          return value + "%";
+        },
+      },
+    },
+    scales: {
+      y: {
+        ticks: {
+          stepSize: 200,
+        },
+      },
+    },
+  };
+
+  const chart = new Chart(ctx, {
+    type: "bar",
+    data: data,
+    options: options,
+    plugins: [ChartDataLabels],
+  });
+}

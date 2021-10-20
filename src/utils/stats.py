@@ -116,15 +116,19 @@ def generate_cycle_stats(cycle, nonhuman=False):
     process_ratios(stats)
     process_ratios(template_stats)
     rank_templates(template_stats)
+
     maxmind_stats = get_maxmind_stats(cycle)
     template_stats = template_stats.values()
     indicator_stats = get_indicator_stats(template_stats)
+    time_stats = get_time_stats(stats)
+
     return CycleStatsSchema().dump(
         {
             "stats": stats,
             "template_stats": template_stats,
             "maxmind_stats": maxmind_stats,
             "indicator_stats": indicator_stats,
+            "time_stats": time_stats,
         }
     )
 
@@ -177,6 +181,77 @@ def process_time_stats(stats: dict):
                 stats[key][event]["minimum"] = timedelta().total_seconds()
                 stats[key][event]["median"] = timedelta().total_seconds()
                 stats[key][event]["maximum"] = timedelta().total_seconds()
+
+
+def get_time_stats(stats):
+    """Get time stats."""
+    time_stats = {"opened": {}, "clicked": {}}
+
+    for event in ["opened", "clicked"]:
+        diffs = stats["all"][event]["diffs"]
+        total_count = stats["all"][event]["count"]
+
+        count = sum(diff <= timedelta(seconds=60) for diff in diffs)
+        time_stats[event]["one_minutes"] = {
+            "count": count,
+            "ratio": count / total_count,
+        }
+
+        count = sum(diff <= timedelta(minutes=3) for diff in diffs)
+        time_stats[event]["three_minutes"] = {
+            "count": count,
+            "ratio": count / total_count,
+        }
+
+        count = sum(diff <= timedelta(minutes=5) for diff in diffs)
+        time_stats[event]["five_minutes"] = {
+            "count": count,
+            "ratio": count / total_count,
+        }
+
+        count = sum(diff <= timedelta(minutes=15) for diff in diffs)
+        time_stats[event]["fifteen_minutes"] = {
+            "count": count,
+            "ratio": count / total_count,
+        }
+
+        count = sum(diff <= timedelta(minutes=30) for diff in diffs)
+        time_stats[event]["thirty_minutes"] = {
+            "count": count,
+            "ratio": count / total_count,
+        }
+
+        count = sum(diff <= timedelta(minutes=60) for diff in diffs)
+        time_stats[event]["sixty_minutes"] = {
+            "count": count,
+            "ratio": count / total_count,
+        }
+
+        count = sum(diff <= timedelta(hours=2) for diff in diffs)
+        time_stats[event]["two_hours"] = {
+            "count": count,
+            "ratio": count / total_count,
+        }
+
+        count = sum(diff <= timedelta(hours=3) for diff in diffs)
+        time_stats[event]["three_hours"] = {
+            "count": count,
+            "ratio": count / total_count,
+        }
+
+        count = sum(diff <= timedelta(hours=4) for diff in diffs)
+        time_stats[event]["four_hours"] = {
+            "count": count,
+            "ratio": count / total_count,
+        }
+
+        count = sum(diff <= timedelta(hours=24) for diff in diffs)
+        time_stats[event]["one_day"] = {
+            "count": count,
+            "ratio": count / total_count,
+        }
+
+    return time_stats
 
 
 def get_event(timeline, event):
