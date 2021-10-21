@@ -12,20 +12,35 @@ html {
 body {
   -webkit-print-color-adjust: exact !important;
   font-size: 16px;
-  background-color: white;
+  background: white;
   font-family: Arial, sans-serif;
 }
 
-article {
+.page {
+  background: white;
+  display: block;
+  position: relative;
+  padding: 10px;
   page-break-after: always;
+  /* Size = Letter */
+  width: 8.5in;
+  height: 11in;
 }
 
-.template_pages {
-  page-break-after: always;
+#pageTitle {
+  font-size: 3em;
+  color: #015596 !important;
+  letter-spacing: 2px;
+  line-height: 0.8em;
+  margin-bottom: 30px;
+  text-transform: uppercase;
 }
 
-article:nth-of-type(n + 2) {
-  padding: 2rem 0;
+.smallerTitle {
+  font-size: 0.5em;
+  color: #015596 !important;
+  letter-spacing: 1px;
+  padding-left: 5px;
 }
 
 /* Cover */
@@ -33,7 +48,6 @@ article:nth-of-type(n + 2) {
 #blueDateBox {
   background-color: #164a91 !important;
   color: #fff !important;
-  margin: 0 0 0 -0px;
   padding: 160px 30px 400px 100px;
   text-align: right;
 }
@@ -86,14 +100,15 @@ article:nth-of-type(n + 2) {
   width: 745px;
 }
 
-.smallerTitle {
-  font-size: 0.5em;
+#reportTitle {
+  font-size: 4em;
   color: #015596 !important;
-  letter-spacing: 1px;
-  padding-left: 5px;
+  letter-spacing: 2px;
+  margin: -85px 0 30px 100px;
+  text-transform: uppercase;
 }
 
-#reportTitle {
+#reportDate {
   font-size: 4em;
   color: #015596 !important;
   letter-spacing: 2px;
@@ -110,47 +125,31 @@ article:nth-of-type(n + 2) {
 
 /* Page One */
 
-#centerCisaLogo {
-  margin: 30px 0;
+.detailsTable {
+  border-collapse: collapse;
+  margin-right: auto;
+  margin-left: auto;
+  width: 75%;
+}
+
+.detailsTable td,
+.detailsTable th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.detailsTable td {
+  text-align: left;
+}
+
+.detailsTable thead {
+  background-color: #164a91;
+  color: white;
   text-align: center;
 }
 
-#assessmentTitle {
-  font-size: 2em;
-  margin: 30px 0;
-  text-align: center;
-}
-
-#subscriptionDetailsTable,
-#datesTable {
-  margin: 0 0 40px 0;
-}
-
-#datesTable {
-  margin-bottom: 300px;
-}
-
-#subscriptionDetailsTable td,
-#subscriptionDetailsTable th,
-#datesTable td,
-#datesTable th {
-  padding: 8px 0;
-  vertical-align: bottom;
-}
-
-#subscriptionDetailsTable tr td:first-of-type {
-  padding-right: 20px;
-  width: 280px;
-}
-
-#datesTable tr td:first-of-type {
-  padding-right: 20px;
-  width: 160px;
-}
-
-#datesTable tr td:nth-of-type(2) {
-  padding-right: 20px;
-  width: 350px;
+.detailsTable tr:nth-child(even) {
+  background-color: #f2f2f2;
 }
 
 /* Page Two */
@@ -277,6 +276,11 @@ numbersByLevelGraph {
 
 #trendStatistics td {
   padding: 5px 8px 5px 5px;
+}
+
+#trendStatistics th {
+  padding: 0 75px 0 0;
+  text-align: right;
 }
 
 /* Page Six */
@@ -474,6 +478,11 @@ table.report-table td {
   border-bottom: 2px solid #eeeeee;
   border-radius: 0 0 1rem 1rem;
   padding: 1rem;
+}
+
+.template-html > .page {
+  width: 100%;
+  height: 100%;
 }
 
 .congrats {

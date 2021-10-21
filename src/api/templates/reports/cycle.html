@@ -21,68 +21,385 @@
     <script src="{{ url_for('static', filename='js/reports.js') }}"></script>
   </head>
   <body class="mat-typography">
-    <div style="width: 8.5in">
-      <article id="cover">
-        <div class="row">
-          <div id="blueDateBox">
-            <span class="year">{{ cycle.start_date.strftime("%Y")}}</span><br />
-            <span class="dateRange">
-              {{ cycle.start_date.strftime("%Y-%m-%d") }} - {{
-              cycle.end_date.strftime("%Y-%m-%d") }}
-            </span>
+    <!-- PAGE 1 - Cover Page -->
+    <div class="page" style="padding: 0">
+      <div class="row">
+        <div id="blueDateBox">
+          <span class="year">{{ datetime.utcnow().strftime("%Y")}}</span><br />
+          <span class="dateRange">
+            {{ cycle.start_date.strftime("%Y-%m-%d") }} - {{
+            cycle.end_date.strftime("%Y-%m-%d") }}
+          </span>
+        </div>
+      </div>
+      <div class="row">
+        <div id="bluePhishLogo" class="col-12">
+          <img
+            src="{{ url_for('static', filename='image/blue_phishlogo.png') }}"
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div id="whiteBox" class="col-5"></div>
+      </div>
+      <div class="row">
+        <div id="leftYellowBox"></div>
+      </div>
+      <div class="row">
+        <div id="rightYellowBox"></div>
+      </div>
+      <div class="row">
+        <div id="blueHacker" class="col-12">
+          <img
+            src="{{ url_for('static', filename='image/blue_hacker.png') }}"
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <h2 id="reportTitle">
+            <span class="smallerTitle">Cycle</span><br />Report
+          </h2>
+        </div>
+        <div class="col">
+          <h2 id="reportDate">
+            <br /><span class="smallerTitle"
+              >{{ datetime.utcnow().strftime('%b %d, %Y') }}</span
+            >
+          </h2>
+        </div>
+      </div>
+      <div id="coverFooter" class="row mb-2">
+        <div id="preparationDetails">
+          Prepared for:<br />
+          {{ customer.name }}<br />
+          {{ customer.address_1 }} {{ customer.address_2 }}<br />
+          {{ customer.city }}, {{ customer.state }} {{ customer.zip_code }}
+        </div>
+        <div id="dhsContactDetails">
+          <div class="mb-2">
+            Subscription Primary Contact<br />
+            {{ subscription.primary_contact.first_name }} {{
+            subscription.primary_contact.last_name }}<br />
+            {{ subscription.primary_contact.email }}<br />
+          </div>
+          <div>
+            CISA Contact<br />
+            vulnerability@cisa.dhs.gov
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- PAGE 2 - Assessment Details -->
+    <div class="page">
+      <div>
         <div class="row">
-          <div id="bluePhishLogo" class="col-12">
-            <img
-              src="{{ url_for('static', filename='image/blue_phishlogo.png') }}"
-            />
+          <div class="col-12">
+            <table class="detailsTable">
+              <thead>
+                <tr>
+                  <th colspan="2">
+                    Continuous Phishing Campaign Assessment Details
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>Customer Name:</th>
+                  <td>{{ customer.name }}</td>
+                </tr>
+                <tr>
+                  <th>Customer POC:</th>
+                  <td>
+                    {{ subscription.primary_contact.first_name }} {{
+                    subscription.primary_contact.last_name }}
+                  </td>
+                </tr>
+                <tr>
+                  <th>Vulnerability Management:</th>
+                  <td>vulnerability@cisa.dhs.gov</td>
+                </tr>
+                <tr>
+                  <th>Dates:</th>
+                  <td>
+                    {{ cycle.start_date.strftime("%b %d, %Y") }} - {{
+                    cycle.end_date.strftime("%b %d, %Y") }}
+                  </td>
+                </tr>
+                <tr>
+                  <th>Test Location:</th>
+                  <td>CISA/VM Lab</td>
+                </tr>
+                <tr>
+                  <th>Service:</th>
+                  <td>Continuous Phishing Assessment</td>
+                </tr>
+                <tr>
+                  <th>Scope:</th>
+                  <td>
+                    {{ cycle.target_count }} users within the following
+                    domain[s]:<br />
+                    {{ subscription.target_domain }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- PAGE 3 - Report Instructions -->
+    <div class="page">
+      <div class="container-fluid">
         <div class="row">
-          <div id="whiteBox" class="col-5"></div>
-        </div>
-        <div class="row">
-          <div id="leftYellowBox"></div>
-        </div>
-        <div class="row">
-          <div id="rightYellowBox"></div>
-        </div>
-        <div class="row">
-          <div id="blueHacker" class="col-12">
-            <img
-              src="{{ url_for('static', filename='image/blue_hacker.png') }}"
-            />
+          <div class="col-12">
+            <h2 id="pageTitle">Instructions</h2>
           </div>
         </div>
         <div class="row">
           <div class="col-12">
-            <h2 id="reportTitle">
-              <span class="smallerTitle">Cycle</span><br />Report
+            <div id="reportInstructions">
+              <section>
+                <p>
+                  The CON-PCA Phishing Assessments are organized into 90-day
+                  campaigns in which each of your users will be phished once
+                  every 90 days from the start of your subscription.
+                </p>
+                <p class="mb-0">
+                  Each of these individuals here after referred to as targets
+                  are tracked on two potential actions.
+                </p>
+                <ol>
+                  <li>Opening the email</li>
+                  <li>Clicked a malicious link</li>
+                </ol>
+                <p>
+                  To track statistics on the reported email, that information
+                  must be supplied to CISA in the required format or a reporting
+                  mailbox must be available and advertised in the consuming
+                  organization.
+                </p>
+                <p>
+                  Most organizations will setup a reporting mailbox that
+                  employees can forward suspicious emails to for further
+                  investigation. In order to determine some statics such as time
+                  to first report, the email content, the target email address,
+                  and time of first report will be required to determine those
+                  statics.
+                </p>
+              </section>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 4 - Executive Report-->
+    <div class="page">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <h2 id="pageTitle">
+              <span class="smallerTitle">Executive</span><br />Report
             </h2>
           </div>
         </div>
-        <div id="coverFooter" class="row mb-2">
-          <div id="preparationDetails">
-            Prepared for:<br />
-            {{ customer.name }}<br />
-            {{ customer.address_1 }} {{ customer.address_2 }}<br />
-            {{ customer.city }}, {{ customer.state }} {{ customer.zip_code }}
-          </div>
-          <div id="dhsContactDetails">
-            <div class="mb-2">
-              Subscription Primary Contact<br />
-              {{ subscription.primary_contact.first_name }} {{
-              subscription.primary_contact.last_name }}<br />
-              {{ subscription.primary_contact.email }}<br />
-            </div>
-            <div>
-              CISA Contact<br />
-              vulnerability@cisa.dhs.gov
+        <div class="row">
+          <div class="col-12">
+            <div class="executiveReportDetails">
+              <p>
+                This report provides the results for the CISA National
+                Cybersecurity Assessments and Technical Services -
+                (Vulnerability Management) led Continuous Phishing Campaign
+                Assessment (CON-PCA) for {{ customer.name }}. The CON-PCA is a
+                practical exercise intended to support and measure the
+                effectiveness of security awareness training for information
+                system users. The results of this CON-PCA show the
+                susceptibility of {{ customer.identifier }} personnel to social
+                engineering attacks—specifically email phishing attacks—in which
+                an adversary tricks an email user into clicking a malicious link
+                to gain unauthorized network access. In the scenario that this
+                CON-PCA tested, the phishing attack bypassed technical controls
+                that would normally detect and/or block malicious emails and
+                links. The CON-PCA, therefore, measured {{ customer.name }}’s
+                level of vulnerability to a successful phishing attack by
+                targeted user click rates, click times, response rates, and
+                response times, as shown in Table 1.
+              </p>
+
+              <p>
+                This report aims to enhance {{ customer.name }}'s understanding
+                of their information system users’ cybersecurity behavior and to
+                promote a more secure and resilient workforce.
+              </p>
             </div>
           </div>
         </div>
-      </article>
+        <div class="row">
+          <div class="col-12">
+            <p class="table-title">Table 1: Targeted User Measurements</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <table class="report-table w-100 mb-5">
+              <tr>
+                <th>User Activity Metrics</th>
+                <th>Results</th>
+              </tr>
+              <tr>
+                <td>Total users targeted for phishing</td>
+                <td>{{ cycle.target_count }}</td>
+              </tr>
+              <tr>
+                <td># of emails (phishing attempts) sent overall</td>
+                <td>{{ stats.stats.all.sent.count }}</td>
+              </tr>
+              <tr>
+                <td>
+                  # of clicked emails (successful phishing attempts) overall
+                </td>
+                <td>
+                  {{ stats.stats.all.clicked.count }} ({{
+                  stats.stats.all.clicked.ratio * 100 }}% click rate)
+                </td>
+              </tr>
+              <tr>
+                {% set average_click_time =
+                time.convert_seconds(stats.stats.all.clicked.average) %}
+                <td>Average time to first click</td>
+                <td>
+                  {{ average_click_time.hours }} hours, {{
+                  average_click_time.minutes }} minutes, {{
+                  average_click_time.seconds }} seconds
+                </td>
+              </tr>
+              <tr>
+                {% set most_successful_template = stats.template_stats |
+                sort(attribute="clicked.ratio", reverse=True) | first %}
+                <td>Most successful phishing template</td>
+                <td>
+                  Level {{ most_successful_template.template.deception_score }}
+                  "{{ most_successful_template.template.name }}"
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <p>
+              Vulnerability Management has provided this CON-PCA to {{
+              customer.name }} at no cost and coordinated all
+              activities—including planning and testing–with {{ customer.name
+              }}'s point of contact. {{ customer.name }} maintained control over
+              the testing, including providing target email addresses, approving
+              phishing email templates, approving testing timeframes, and
+              adjusting mail security setting to ensure inbox access. This
+              CON-PCA was not intended to, and did not, test technical controls
+              or electronic protections designed to block phishing attempts.
+              This CON-PCA spanned a six-week period and aimed to capture
+              behavior-based metrics of {{ customer.name }} information system
+              users’ reaction to phishing emails of multiple complexity levels.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <!-- PAGE 5 - Summary -->
+    <div class="page">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <h2 id="pageTitle">Summary</h2>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12">
+            {% set median_click_time =
+            time.convert_seconds(stats.stats.all.clicked.median) %} {% set
+            min_click_time =
+            time.convert_seconds(stats.stats.all.clicked.minimum) %} {% set
+            max_click_time =
+            time.convert_seconds(stats.stats.all.clicked.maximum) %}
+            <table id="trendStatistics">
+              <tr>
+                <th>Median Time to click email:</th>
+                <td>
+                  {{ median_click_time.hours }} hours, {{
+                  median_click_time.minutes }} minutes, {{
+                  median_click_time.seconds }} seconds
+                </td>
+              </tr>
+              <tr>
+                <th>Shortest Time to click email:</th>
+                <td>
+                  {{ min_click_time.hours }} hours, {{ min_click_time.minutes }}
+                  minutes, {{ min_click_time.seconds }} seconds
+                </td>
+              </tr>
+              <tr>
+                <th>Longest Time to click email:</th>
+                <td>
+                  {{ max_click_time.hours }} hours, {{ max_click_time.minutes }}
+                  minutes, {{ max_click_time.seconds }} seconds
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEMPLATE PAGES -->
+    {% for template in stats.template_stats | sort(attribute="clicked.ratio") %}
+    <div class="page">
+      <div class="template-stat-header">
+        <table>
+          <tr>
+            <td>Template Name:</td>
+            <td>{{ template.template.name }}</td>
+          </tr>
+          <tr>
+            <td>Deception Level:</td>
+            <td>{{ template.deception_level }}</td>
+          </tr>
+          <tr>
+            <td>Total Sent:</td>
+            <td>{{ template.sent.count }}</td>
+          </tr>
+          <tr>
+            <td>Unique Clicks:</td>
+            <td>{{ template.clicked.count }}</td>
+          </tr>
+          <tr>
+            <td>Click Rate:</td>
+            <td>{{ template.clicked.ratio * 100 }}%</td>
+          </tr>
+        </table>
+      </div>
+      <div class="row" style="margin-bottom: 10px">
+        <div class="col-12">
+          <div class="template-body">
+            <b>Subject:</b>
+            {{ preview_template(template.template.subject, customer) }}<br />
+            <b style="margin-bottom: 1rem">From:</b>
+            {{ preview_from_address(template.template, subscription, customer)
+            }}<br />
+            <div class="template-html">{{ template.template.html | safe }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <b>Key Characteristics: </b>Some key characteristics.
+        </div>
+      </div>
+    </div>
+    {% endfor %}
   </body>
 </html>
