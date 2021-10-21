@@ -21,6 +21,14 @@
     <script src="{{ url_for('static', filename='js/reports.js') }}"></script>
   </head>
   <body class="mat-typography">
+    <!-- For accessing stats within Javascript -->
+    <div style="display: none">
+      <p id="overallStats">{{ json.dumps(cycle.stats.stats) }}</p>
+      <p id="indicatorStats">{{ json.dumps(cycle.stats.indicator_stats) }}</p>
+      <p id="recommendations">{{ json.dumps(recommendations) }}</p>
+      <p id="templateStats">{{ json.dumps(stats.template_stats) }}</p>
+      <p id="timeIntervalStats">{{ json.dumps(stats.time_stats) }}</p>
+    </div>
     <!-- PAGE 1 - Cover Page -->
     <div class="page" style="padding: 0">
       <div class="row">
@@ -318,39 +326,84 @@
           </div>
         </div>
 
+        <!-- Template Stats Table -->
         <div class="row">
           <div class="col-12">
-            {% set median_click_time =
-            time.convert_seconds(stats.stats.all.clicked.median) %} {% set
-            min_click_time =
-            time.convert_seconds(stats.stats.all.clicked.minimum) %} {% set
-            max_click_time =
-            time.convert_seconds(stats.stats.all.clicked.maximum) %}
-            <table id="trendStatistics">
-              <tr>
-                <th>Median Time to click email:</th>
-                <td>
-                  {{ median_click_time.hours }} hours, {{
-                  median_click_time.minutes }} minutes, {{
-                  median_click_time.seconds }} seconds
-                </td>
-              </tr>
-              <tr>
-                <th>Shortest Time to click email:</th>
-                <td>
-                  {{ min_click_time.hours }} hours, {{ min_click_time.minutes }}
-                  minutes, {{ min_click_time.seconds }} seconds
-                </td>
-              </tr>
-              <tr>
-                <th>Longest Time to click email:</th>
-                <td>
-                  {{ max_click_time.hours }} hours, {{ max_click_time.minutes }}
-                  minutes, {{ max_click_time.seconds }} seconds
-                </td>
-              </tr>
+            <p class="table-title">Table 2: Template Stats</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <table class="templatesTable">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Level</th>
+                  <th>Template Subject</th>
+                  <th>Emails Sent</th>
+                  <th>Unique Clicks</th>
+                  <th>Click Rate</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for t in cycle.stats.template_stats |
+                sort(attribute="clicked.ratio") %}
+                <tr>
+                  <td>{{ loop.index }}</td>
+                  <td>{{ t.template.deception_score }}</td>
+                  <td>{{ t.template.subject }}</td>
+                  <td>{{ t.sent.count }}</td>
+                  <td>{{ t.clicked.count }}</td>
+                  <td>{{ t.clicked.ratio * 100 }}%</td>
+                </tr>
+                {% endfor %}
+              </tbody>
             </table>
           </div>
+        </div>
+
+        <div class="row" style="margin-top: 25px">
+          <div class="col-12">
+            <p class="table-title">Graph 1: Deception Score Stats</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <canvas id="bar-stats-by-deception" class="d-flex report-chart">
+              <script>
+                createStatsByDeceptionChart();
+              </script>
+            </canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 6- SUMMARY CONT. -->
+    <div class="page">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <h2 id="pageTitle">Summary Cont.</h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <p class="table-title">Graph 2 - Click Time Interval Chart</p>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <canvas
+            id="click-rate-time-interval"
+            class="d-flex report-chart"
+            style="height: 15rem"
+          >
+            <script>
+              clickRateTimeIntervalChart();
+            </script>
+          </canvas>
         </div>
       </div>
     </div>

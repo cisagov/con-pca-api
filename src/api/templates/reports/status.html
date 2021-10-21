@@ -27,6 +27,14 @@
     <script src="{{ url_for('static', filename='js/reports.js') }}"></script>
   </head>
   <body class="mat-typography">
+    <!-- For accessing stats within Javascript -->
+    <div style="display: none">
+      <p id="overallStats">{{ json.dumps(cycle.stats.stats) }}</p>
+      <p id="indicatorStats">{{ json.dumps(cycle.stats.indicator_stats) }}</p>
+      <p id="recommendations">{{ json.dumps(recommendations) }}</p>
+      <p id="templateStats">{{ json.dumps(stats.template_stats) }}</p>
+      <p id="timeIntervalStats">{{ json.dumps(stats.time_stats) }}</p>
+    </div>
     <div style="min-width: 8.5in; min-height: 11in" class="p-0">
       <article>
         <!-- Top blue banner -->
@@ -247,15 +255,7 @@
                             style="height: 15rem"
                           >
                             <script>
-                              createStatsByLevelChart(
-                                "bar-stats-by-level",
-                                "{{ stats.stats.low.sent.count }}",
-                                "{{ stats.stats.low.clicked.count }}",
-                                "{{ stats.stats.moderate.sent.count }}",
-                                "{{ stats.stats.moderate.clicked.count }}",
-                                "{{ stats.stats.high.sent.count }}",
-                                "{{ stats.stats.high.clicked.count }}"
-                              );
+                              createStatsByLevelChart();
                             </script>
                           </canvas>
                         </div>

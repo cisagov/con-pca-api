@@ -6,7 +6,7 @@
 
     <link
       rel="stylesheet"
-      href="{{ url_for('static', filename='css/cycle_report.css') }}"
+      href="{{ url_for('static', filename='css/new_cycle_report.css') }}"
     />
     <link
       rel="stylesheet"
@@ -29,79 +29,6 @@
       <p id="recommendations">{{ json.dumps(recommendations) }}</p>
       <p id="templateStats">{{ json.dumps(stats.template_stats) }}</p>
       <p id="timeIntervalStats">{{ json.dumps(stats.time_stats) }}</p>
-    </div>
-    {% for t in stats.template_stats %}
-    <div class="page">
-      <h2>Level {{ t.template.deception_score }} Template</h2>
-      <b>Subject: {{ preview_template(t.template.subject, customer) }}</b><br />
-      <b>From: {{ preview_template(t.template.from_address, customer) }}</b
-      ><br />
-      <div class="template-preview">{{ t.template.html | safe }}</div>
-      <p>
-        {% if t.template.deception_score <= 6 and t.template.deception_score> 0
-        %}
-        <b>Key Characteristics:</b> {{
-        recommendations.levels[str(t.template.deception_score)]["recommendation"]}}
-        {% endif %}
-      </p>
-      <p><b>Total emails sent:</b> {{ t.sent.count }}</p>
-      <p><b>Unique targets who clicked:</b> {{ t.clicked.count }}</p>
-      <p><b>Unique click rate:</b> {{ t.clicked.ratio * 100 }}%</p>
-    </div>
-    {% endfor %}
-    <div class="page">
-      <table class="table">
-        <tr>
-          <thead class="thead-dark">
-            <th scope="col">Level</th>
-            <th scope="col">Template Subject</th>
-            <th scope="col">User Click Rate</th>
-            <th scope="col">Unique Clicks</th>
-            <th scope="col">Emails Sent</th>
-          </thead>
-        </tr>
-        {% for t in cycle.stats.template_stats %}
-        <tr>
-          <th scope="row">{{ t.template.deception_score }}</th>
-          <td>{{ t.template.subject }}</td>
-          <td>{{ (t.clicked.ratio * 100) | int }}%</td>
-          <td>{{ t.clicked.count }}</td>
-          <td>{{ t.sent.count }}</td>
-        </tr>
-        {% endfor %}
-      </table>
-    </div>
-    <div class="page">
-      <div class="bar-chart m-2">
-        <div>
-          <canvas
-            id="bar-stats-by-deception"
-            class="d-flex report-chart"
-            style="height: 15rem"
-          >
-            <script>
-              createClicksByDeceptionChart("bar-stats-by-deception");
-            </script>
-          </canvas>
-          <h2>Deception Level</h2>
-        </div>
-      </div>
-    </div>
-    <div class="page">
-      <div class="bar-chart m-2">
-        <div>
-          <canvas
-            id="click-rate-time-interval"
-            class="d-flex report-chart"
-            style="height: 15rem"
-          >
-            <script>
-              clickRateTimeIntervalChart("click-rate-time-interval");
-            </script>
-          </canvas>
-          <h2>Time Intervals</h2>
-        </div>
-      </div>
     </div>
     <div class="page">
       <table id="indicator-table" class="table table-striped">
