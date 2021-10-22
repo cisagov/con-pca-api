@@ -52,33 +52,26 @@ function createDoughnut(chartId, subtotal, total) {
   chart.canvas.parentNode.style.width = "130px";
 }
 
-function createStatsByLevelChart(
-  chartId,
-  low_sent,
-  low_clicked,
-  mod_sent,
-  mod_clicked,
-  high_sent,
-  high_clicked
-) {
-  var ctx = document.getElementById(chartId).getContext("2d");
+function createStatsByLevelChart() {
+  var ctx = document.getElementById("bar-stats-by-level").getContext("2d");
+  var stats = JSON.parse(document.getElementById("overallStats").innerText);
   const data = {
     labels: ["Emails Sent", "Unique Clicks"],
     datasets: [
       {
-        data: [low_sent, low_clicked],
+        data: [stats.low.sent.count, stats.low.clicked.count],
         backgroundColor: "#064875",
         barThickness: 40,
         label: "Low (1, 2)",
       },
       {
-        data: [mod_sent, mod_clicked],
+        data: [stats.moderate.sent.count, stats.moderate.clicked.count],
         backgroundColor: "#fcbf10",
         barThickness: 40,
         label: "Moderate (3, 4)",
       },
       {
-        data: [high_sent, high_clicked],
+        data: [stats.high.sent.count, stats.high.clicked.count],
         backgroundColor: "#007bc1",
         barThickness: 40,
         label: "High (5, 6)",
@@ -119,8 +112,8 @@ function createStatsByLevelChart(
   });
 }
 
-function createClicksByDeceptionChart(chartId) {
-  var ctx = document.getElementById(chartId).getContext("2d");
+function createStatsByDeceptionChart() {
+  var ctx = document.getElementById("bar-stats-by-deception").getContext("2d");
   var templateStats = JSON.parse(
     document.getElementById("templateStats").innerText
   );
@@ -146,13 +139,13 @@ function createClicksByDeceptionChart(chartId) {
     datasets: [
       {
         data: sentStats,
-        backgroundColor: "#336BFF",
+        backgroundColor: "#064875",
         barThickness: 40,
         label: "Sent",
       },
       {
         data: clickStats,
-        backgroundColor: "#D61317",
+        backgroundColor: "#fcbf10",
         barThickness: 40,
         label: "Clicked",
       },
@@ -192,8 +185,10 @@ function createClicksByDeceptionChart(chartId) {
   });
 }
 
-function clickRateTimeIntervalChart(chartId) {
-  var ctx = document.getElementById(chartId).getContext("2d");
+function clickRateTimeIntervalChart() {
+  var ctx = document
+    .getElementById("click-rate-time-interval")
+    .getContext("2d");
   const timeStats = JSON.parse(
     document.getElementById("timeIntervalStats").innerText
   );
@@ -225,7 +220,7 @@ function clickRateTimeIntervalChart(chartId) {
           clicked.four_hours.ratio * 100,
           clicked.one_day.ratio * 100,
         ],
-        backgroundColor: "#336BFF",
+        backgroundColor: "#064875",
         label: "Clicked Percentage",
       },
     ],

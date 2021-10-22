@@ -1,49 +1,576 @@
 @charset "UTF-8";
 @page {
+  margin: 0;
   size: Letter;
 }
 
-html,
+html {
+  display: flex;
+  flex-direction: row;
+}
+
 body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
+  -webkit-print-color-adjust: exact !important;
+  font-size: 16px;
+  background: white;
+  font-family: Arial, sans-serif;
 }
 
 .page {
   background: white;
   display: block;
+  position: relative;
   padding: 10px;
+  page-break-after: always;
   /* Size = Letter */
   width: 8.5in;
   height: 11in;
-  position: relative;
 }
 
-#indicator-table {
+#pageTitle {
+  font-size: 3em;
+  color: #015596 !important;
+  letter-spacing: 2px;
+  line-height: 0.8em;
+  margin-bottom: 30px;
+  text-transform: uppercase;
+}
+
+.smallerTitle {
+  font-size: 0.5em;
+  color: #015596 !important;
+  letter-spacing: 1px;
+  padding-left: 5px;
+}
+
+/* Cover */
+
+#blueDateBox {
+  background-color: #164a91 !important;
+  color: #fff !important;
+  padding: 160px 30px 400px 100px;
+  text-align: right;
+}
+
+.year {
+  font-size: 4.7em;
+  letter-spacing: 5px;
+  line-height: 1em;
+  padding-top: 150px;
+  color: #fff !important;
+}
+
+.dateRange {
+  font-size: 1em;
+  letter-spacing: 1px;
+  padding-right: 10px;
+  color: #fff !important;
+}
+
+#bluePhishLogo {
+  margin: -535px -100px 0 0;
+  text-align: right;
+}
+
+#whiteBox {
+  background-color: #fff !important;
+  height: 400px;
+  margin: -385px 0 0 40px;
+}
+
+#blueHacker {
+  margin-top: -730px;
+  margin-left: -50px;
+  transform: scale(0.8);
+}
+
+#leftYellowBox {
+  border-left: 2px solid #fdc010;
+  border-top: 2px solid #fdc010;
+  height: 150px;
+  margin: -525px 0 0 400px;
+  width: 45px;
+}
+
+#rightYellowBox {
+  border: 2px solid #fdc010;
+  border-left: none;
+  height: 290px;
+  margin: -25px 0 0 50px;
+  width: 745px;
+}
+
+#reportTitle {
+  font-size: 4em;
+  color: #015596 !important;
+  letter-spacing: 2px;
+  margin: -85px 0 30px 100px;
+  text-transform: uppercase;
+}
+
+#reportDate {
+  font-size: 4em;
+  color: #015596 !important;
+  letter-spacing: 2px;
+  margin: -85px 0 30px 100px;
+  text-transform: uppercase;
+}
+
+#coverFooter {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-evenly;
+}
+
+/* Page One */
+
+.detailsTable {
+  border-collapse: collapse;
+  margin-right: auto;
+  margin-left: auto;
+  width: 75%;
+}
+
+.detailsTable td,
+.detailsTable th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.detailsTable td {
+  text-align: left;
+}
+
+.detailsTable thead {
+  background-color: #164a91;
+  color: white;
   text-align: center;
 }
 
+.detailsTable tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+/* Page Two */
+
+#reportInstructions {
+  margin-bottom: 500px;
+}
+
+ol {
+  padding-left: 20px;
+}
+
+h3 {
+  font-weight: bold;
+}
+
+/* PAGE 4 - EXECUTIVE REPORT */
+
+#executiveReportTitle {
+  font-size: 3em;
+  color: #015596 !important;
+  letter-spacing: 2px;
+  line-height: 0.8em;
+  margin-bottom: 30px;
+  text-transform: uppercase;
+}
+
+#executiveReportDetails:last-child {
+  margin-bottom: 0;
+}
+
+.table-title {
+  color: #015596;
+  font-size: 0.8em;
+  text-align: center;
+}
+
+ul {
+  padding-left: 20px;
+}
+
+/* PAGE 5 - SUMMARY */
+
+.templatesTable {
+  border-collapse: collapse;
+  /* width: 75%; */
+}
+
+.templatesTable td,
+.templatesTable th {
+  border: 1px solid #ddd;
+  padding: 7px;
+}
+
+.templatesTable td {
+  text-align: left;
+}
+
+.templatesTable thead {
+  background-color: #164a91;
+  color: white;
+  text-align: left;
+}
+
+.templatesTable tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+#summaryTitle {
+  font-size: 3em;
+  color: #015596 !important;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+#statFlexContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  margin-top: 20px;
+}
+#companyAverageText {
+  text-align: center;
+}
+
+#nationalAverageText,
+#industryAverageText,
+#sectorAverageText {
+  text-align: center;
+}
+
+#nationalAverageText {
+  margin: 20px;
+  max-width: 140px;
+}
+
+#sectorAverageText {
+  margin: 20px;
+}
+
+#industryAverageText {
+  margin: 20px;
+}
+
+#companyAverageBox {
+  background-image: linear-gradient(to right, #164a91, #1979a7) !important;
+  color: #fff !important;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 3.5em;
+  padding: 20px 35px;
+  max-width: 180px;
+}
+
+#nationalAverageBox,
+#industryAverageBox,
+#sectorAverageBox {
+  background-image: linear-gradient(to right, #164a91, #1979a7) !important;
+  color: #fff !important;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 2.5em;
+  padding: 20px 30px;
+}
+
+#percentageTrendGraph,
+#clickedVsReportedGraph,
+#yearTrendGraph,
+#levelGraphTitle,
+.timeIntervalGraph,
+.timeComplexityGraph {
+  border: 1px solid #fdc010;
+  border-radius: 10px;
+  color: #015596;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+#yearTrendGraph p {
+  padding-top: 20px;
+}
+
+#trendLineGraph,
+numbersByLevelGraph {
+  margin-bottom: 10px;
+}
+
+#trendStatistics {
+  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+}
+
+#trendStatistics td {
+  padding: 5px 8px 5px 5px;
+}
+
+#trendStatistics th {
+  padding: 0 75px 0 0;
+  text-align: right;
+}
+
+/* Page Six */
+
+/* SVG Bar Chart */
+.caption,
+.legend-caption {
+  fill: #164a91;
+}
+
+.legend-caption {
+  font-size: 0.75em;
+}
+
+.blue-bar {
+  fill: #1979a7;
+}
+
+.dark-blue-bar {
+  fill: #164a91;
+}
+
+.yellow-bar {
+  fill: #fdc010;
+}
+
+.bar-chart,
+#successOverview {
+  border: 1px solid #fdc010;
+  border-radius: 10px;
+  color: #164a91;
+  height: auto;
+  margin: 20px auto 0 auto;
+  text-align: center;
+  width: 100%;
+}
+
+#successOverview {
+  margin-bottom: 100px;
+}
+
+#successOverview h4,
+.bar-chart h4,
+.timeIntervalGraph h4,
+.timeComplexityGraph h4 {
+  margin-top: 10px;
+}
+
+/* Page Seven */
+
+#methodologyTitle,
+#testingSummaryTitle {
+  font-size: 2.5em;
+  color: #015596 !important;
+  letter-spacing: 2px;
+}
+
+/* Tables on Page Eight, Nine and Ten */
+
+table.report-table th,
+table.report-table td {
+  padding: 5px;
+  padding-right: 7px;
+  vertical-align: top;
+}
+
+table.report-table th {
+  background-color: #dddddd;
+}
+
+table.report-table td {
+  border-bottom: 1px solid #dddddd;
+}
+
+#templateOverviewTable,
+#rateComparisonTable,
+#timeComparisonTable {
+  margin-bottom: 40px;
+}
+
+#timeComparisonTable {
+  width: 100%;
+}
+
+#timeComparisonTable th {
+  padding: 10px;
+}
+
+#timeComparisonTable th:first-of-type {
+  width: 100px;
+}
+
+#templateOverviewTable tr td:nth-of-type(2),
+#rateComparisonTable tr td:nth-of-type(2) {
+  text-align: left;
+}
+
+#rateComparisonTable td {
+  width: auto;
+}
+
+.legend {
+  color: #000;
+  list-style-type: square;
+}
+
+.legend li {
+  display: inline-block;
+  padding: 0 10px;
+}
+.legend li:nth-of-type(1)::after {
+  content: "\25A0";
+  color: #164a91;
+  margin-left: 5px;
+}
+
+.legend li:nth-of-type(2)::after {
+  content: "\25A0";
+  color: #fdc010;
+  margin-left: 5px;
+}
+
+.legend li:nth-of-type(3)::after {
+  content: "\25A0";
+  color: #1979a7;
+  margin-left: 5px;
+}
+
+/* Page Nine */
+
+.complexityLegend {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  list-style-type: none;
+}
+
+.complexityLegend li:nth-of-type(1)::after {
+  content: "\25A0";
+  height: 20px;
+  width: 20px;
+  margin: 0 15px 0 5px;
+  background-color: #fdc010;
+}
+
+.complexityLegend li:nth-of-type(2)::after {
+  content: "\25A0";
+  height: 20px;
+  width: 20px;
+  margin: 0 15px 0 5px;
+  background-color: #1979a7;
+}
+
+.complexityLegend li:nth-of-type(3)::after {
+  content: "\25A0";
+  height: 20px;
+  width: 20px;
+  margin: 0 15px 0 5px;
+  background-color: #015596;
+}
+
+/* Page Thirteen */
+
+/* fix level descriptions */
+
+/* Page Fourteen */
+
+.template-level-header {
+  font-weight: bold;
+  border-top: 2px solid #eeeeee;
+}
+
+.template-container {
+  border: 2px solid #dddddd;
+  border-radius: 1rem;
+  margin-bottom: 2rem;
+  display: grid;
+}
+
+.template-stat-header {
+  border-radius: 1rem 1rem 0 0;
+  background-color: #b8cfe0;
+  padding: 1rem;
+}
+
+.template-stat-header td {
+  padding: 0.2rem;
+  padding-right: 2rem;
+}
+
+.template-body {
+  border-left: 2px solid #eeeeee;
+  border-right: 2px solid #eeeeee;
+  border-bottom: 2px solid #eeeeee;
+  border-radius: 0 0 1rem 1rem;
+  padding: 1rem;
+}
+
+.template-html > .page {
+  width: 100%;
+  height: 100%;
+}
+
+.congrats {
+  font-size: 1.3em;
+  margin: 20px 0;
+}
+
+.blue-font {
+  color: #1979a7;
+}
+
+#dumbPhishBenefits li {
+  margin-left: 10px;
+}
+
+.vintageCars {
+  font-size: 1.325em;
+  font-weight: 600;
+  margin-top: 40px;
+  text-align: center;
+}
+
+/* Page Fifteen */
+
+.md-font {
+  font-size: 1.325em;
+  font-weight: 600;
+}
+
+/* Indicators Table */
+
+#indicator-table {
+  border-collapse: collapse;
+  text-align: center;
+}
+
+#indicator-table td,
+#indicator-table th {
+  padding: 7px;
+}
+
 #indicator-table thead {
-  border: 2px solid black !important;
-  border-collapse: collapse !important;
+  background-color: #164a91;
+  color: white;
+  border: 2px solid black;
+}
+
+#indicator-table tr:nth-child(even) {
+  background-color: #f2f2f2;
 }
 
 #indicator-table tbody {
-  border: 2px solid black !important;
-  border-collapse: collapse !important;
+  border: 2px solid black;
 }
 
 #indicator-table tbody th {
-  border: 2px solid black !important;
-  border-collapse: collapse !important;
+  border: 2px solid black;
   background-color: white;
 }
 
 #indicator-table-total td {
   background-color: white;
-  border-collapse: collapse !important;
-  border: 2px solid black !important;
+  border: 2px solid black;
 }
 
 th.rotate {
@@ -53,8 +580,8 @@ th.rotate {
 }
 
 th.rotate > div {
-  transform: translate(-10px, 0px) rotate(285deg);
-  width: 20px;
+  transform: translate(2px, 0px) rotate(270deg);
+  width: 30px;
 }
 th.rotate > div > span {
   padding: 5px 10px;
@@ -64,18 +591,29 @@ th.rotate > div > span {
   text-overflow: ellipsis;
 }
 
-.template-preview {
-  border-left: 2px solid;
-  border-right: 2px solid;
-  border-bottom: 2px solid;
-  border-top: 2px solid;
-  padding: 1rem;
-  margin-bottom: 1em;
-  width: 796px;
-  max-height: 500px;
+/* Indicator Stats Table */
+
+#indicatorStatsTable {
+  border-collapse: collapse;
+  /* width: 75%; */
 }
 
-.template-preview > .page {
-  width: 100%;
-  height: 100%;
+#indicatorStatsTable td,
+#indicatorStatsTable th {
+  border: 1px solid #ddd;
+  padding: 7px;
+}
+
+#indicatorStatsTable td {
+  text-align: left;
+}
+
+#indicatorStatsTable thead {
+  background-color: #164a91;
+  color: white;
+  text-align: left;
+}
+
+#indicatorStatsTable tr:nth-child(even) {
+  background-color: #f2f2f2;
 }
