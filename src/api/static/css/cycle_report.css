@@ -536,3 +536,84 @@ table.report-table td {
   font-size: 1.325em;
   font-weight: 600;
 }
+
+/* Indicators Table */
+
+#indicator-table {
+  border-collapse: collapse;
+  text-align: center;
+}
+
+#indicator-table td,
+#indicator-table th {
+  padding: 7px;
+}
+
+#indicator-table thead {
+  background-color: #164a91;
+  color: white;
+  border: 2px solid black;
+}
+
+#indicator-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+#indicator-table tbody {
+  border: 2px solid black;
+}
+
+#indicator-table tbody th {
+  border: 2px solid black;
+  background-color: white;
+}
+
+#indicator-table-total td {
+  background-color: white;
+  border: 2px solid black;
+}
+
+th.rotate {
+  height: 240px;
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+
+th.rotate > div {
+  transform: translate(2px, 0px) rotate(270deg);
+  width: 30px;
+}
+th.rotate > div > span {
+  padding: 5px 10px;
+  width: 220px;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Indicator Stats Table */
+
+#indicatorStatsTable {
+  border-collapse: collapse;
+  /* width: 75%; */
+}
+
+#indicatorStatsTable td,
+#indicatorStatsTable th {
+  border: 1px solid #ddd;
+  padding: 7px;
+}
+
+#indicatorStatsTable td {
+  text-align: left;
+}
+
+#indicatorStatsTable thead {
+  background-color: #164a91;
+  color: white;
+  text-align: left;
+}
+
+#indicatorStatsTable tr:nth-child(even) {
+  background-color: #f2f2f2;
+}

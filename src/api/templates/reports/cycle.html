@@ -379,7 +379,7 @@
       </div>
     </div>
 
-    <!-- PAGE 6- SUMMARY CONT. -->
+    <!-- PAGE 6 - SUMMARY CONT. -->
     <div class="page">
       <div class="container-fluid">
         <div class="row">
@@ -392,18 +392,132 @@
             <p class="table-title">Graph 2 - Click Time Interval Chart</p>
           </div>
         </div>
+        <div class="row">
+          <div class="col-12">
+            <canvas
+              id="click-rate-time-interval"
+              class="d-flex report-chart"
+              style="height: 15rem"
+            >
+              <script>
+                clickRateTimeIntervalChart();
+              </script>
+            </canvas>
+          </div>
+        </div>
       </div>
-      <div class="row">
-        <div class="col-12">
-          <canvas
-            id="click-rate-time-interval"
-            class="d-flex report-chart"
-            style="height: 15rem"
-          >
-            <script>
-              clickRateTimeIntervalChart();
-            </script>
-          </canvas>
+    </div>
+
+    <!-- PAGE 7 - Indicator Table -->
+    <div class="page">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <h2 id="pageTitle">Indicators</h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <p class="table-title">Table 3 - Indicator Breakdown</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <table id="indicator-table">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Indicator</th>
+                  <th>Ranking Scale</th>
+                  {% for ts in cycle.stats.template_stats %}
+                  <th class="rotate">
+                    <div><span>{{ ts.template.name }}</span></div>
+                  </th>
+                  {% endfor %}
+                </tr>
+              </thead>
+              <tbody>
+                {% for group, gv in recommendations["indicators"].items() %} {%
+                for indicator, iv in gv.items() %}
+                <tr>
+                  {% if loop.index == 1 %}
+                  <th
+                    rowspan="{{ gv | length }}"
+                    style="vertical-align: middle"
+                  >
+                    {{ group | title }}
+                  </th>
+                  {% endif %}
+                  <td style="width: 75px">{{ iv.name }}</td>
+                  <td style="width: 75px">
+                    {% for value, v in iv["values"].items() %}{% if loop.last
+                    %}{{ value }}={{ v["label"] }}{% else %}{{ value }}={{
+                    v["label"] }}, {% endif %}{% endfor %}
+                  </td>
+
+                  {% for ts in cycle.stats.template_stats %}
+                  <td>{{ ts.template.indicators[group][indicator] }}</td>
+                  {% endfor %}
+                </tr>
+                {% endfor %} {% endfor %}
+                <tr id="indicator-table-total">
+                  <td></td>
+                  <td></td>
+                  <td>Total</td>
+                  {% for ts in cycle.stats.template_stats %}
+                  <td>{{ ts.template.deception_score }}</td>
+                  {% endfor %}
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 8 - Indicator Stats Table -->
+    <div class="page">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <h2 id="pageTitle">Indicators Cont.</h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <p class="table-title">Table 4 - Indicator Stats</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <table id="indicatorStatsTable">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Group</th>
+                  <th>Indicator</th>
+                  <th>Value</th>
+                  <th>Sent</th>
+                  <th>Clicked</th>
+                  <th>Percent</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for stat in cycle.stats.indicator_stats |
+                sort(attribute="clicked.ratio", reverse=True) %}
+                <tr>
+                  <td>{{ loop.index }}</td>
+                  <td>{{ stat.group | title }}</td>
+                  <td>{{ stat.indicator | title }}</td>
+                  <td>{{ stat.value }} ({{ stat.label }})</td>
+                  <td>{{ stat.sent.count }}</td>
+                  <td>{{ stat.clicked.count }}</td>
+                  <td>{{ stat.clicked.ratio * 100 }}%</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -411,48 +525,53 @@
     <!-- TEMPLATE PAGES -->
     {% for template in stats.template_stats | sort(attribute="clicked.ratio") %}
     <div class="page">
-      <div class="template-stat-header">
-        <table>
-          <tr>
-            <td>Template Name:</td>
-            <td>{{ template.template.name }}</td>
-          </tr>
-          <tr>
-            <td>Deception Level:</td>
-            <td>{{ template.deception_level }}</td>
-          </tr>
-          <tr>
-            <td>Total Sent:</td>
-            <td>{{ template.sent.count }}</td>
-          </tr>
-          <tr>
-            <td>Unique Clicks:</td>
-            <td>{{ template.clicked.count }}</td>
-          </tr>
-          <tr>
-            <td>Click Rate:</td>
-            <td>{{ template.clicked.ratio * 100 }}%</td>
-          </tr>
-        </table>
-      </div>
-      <div class="row" style="margin-bottom: 10px">
-        <div class="col-12">
-          <div class="template-body">
-            <b>Subject:</b>
-            {{ preview_template(template.template.subject, customer) }}<br />
-            <b style="margin-bottom: 1rem">From:</b>
-            {{ preview_from_address(template.template, subscription, customer)
-            }}<br />
-            <div class="template-html">{{ template.template.html | safe }}</div>
+      <div class="container-fluid">
+        <div class="template-stat-header">
+          <table>
+            <tr>
+              <td>Template Name:</td>
+              <td>{{ template.template.name }}</td>
+            </tr>
+            <tr>
+              <td>Deception Level:</td>
+              <td>{{ template.deception_level }}</td>
+            </tr>
+            <tr>
+              <td>Total Sent:</td>
+              <td>{{ template.sent.count }}</td>
+            </tr>
+            <tr>
+              <td>Unique Clicks:</td>
+              <td>{{ template.clicked.count }}</td>
+            </tr>
+            <tr>
+              <td>Click Rate:</td>
+              <td>{{ template.clicked.ratio * 100 }}%</td>
+            </tr>
+          </table>
+        </div>
+        <div class="row" style="margin-bottom: 10px">
+          <div class="col-12">
+            <div class="template-body">
+              <b>Subject:</b>
+              {{ preview_template(template.template.subject, customer) }}<br />
+              <b style="margin-bottom: 1rem">From:</b>
+              {{ preview_from_address(template.template, subscription, customer)
+              }}<br />
+              <div class="template-html">
+                {{ template.template.html | safe }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <b>Key Characteristics: </b>Some key characteristics.
           </div>
         </div>
       </div>
-      <div class="row">
-        <div class="col-12">
-          <b>Key Characteristics: </b>Some key characteristics.
-        </div>
-      </div>
     </div>
+
     {% endfor %}
   </body>
 </html>
