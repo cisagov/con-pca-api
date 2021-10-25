@@ -9,5 +9,5 @@ geoip2==4.4.0
 gunicorn==20.1.0
 marshmallow==3.14.0
 mongomock==3.23.0
-pymongo==3.12.0
+pymongo==3.12.1
 requests==2.26.0
