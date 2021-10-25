@@ -28,11 +28,11 @@ body {
 }
 
 #pageTitle {
-  font-size: 3em;
+  font-size: 1.5em;
   color: #015596 !important;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   line-height: 0.8em;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   text-transform: uppercase;
 }
 
@@ -41,6 +41,11 @@ body {
   color: #015596 !important;
   letter-spacing: 1px;
   padding-left: 5px;
+}
+
+hr {
+  background-color: #fdc010 !important;
+  color: #fdc010 !important;
 }
 
 /* Cover */

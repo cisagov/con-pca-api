@@ -101,7 +101,12 @@
 
     <!-- PAGE 2 - Assessment Details -->
     <div class="page">
-      <div>
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <hr />
+          </div>
+        </div>
         <div class="row">
           <div class="col-12">
             <table class="detailsTable">
@@ -163,6 +168,7 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col-12">
+            <hr />
             <h2 id="pageTitle">Instructions</h2>
           </div>
         </div>
@@ -209,9 +215,8 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col-12">
-            <h2 id="pageTitle">
-              <span class="smallerTitle">Executive</span><br />Report
-            </h2>
+            <hr />
+            <h2 id="pageTitle">Executive Report</h2>
           </div>
         </div>
         <div class="row">
@@ -322,6 +327,7 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col-12">
+            <hr />
             <h2 id="pageTitle">Summary</h2>
           </div>
         </div>
@@ -384,6 +390,7 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col-12">
+            <hr />
             <h2 id="pageTitle">Summary Cont.</h2>
           </div>
         </div>
@@ -408,21 +415,156 @@
       </div>
     </div>
 
-    <!-- PAGE 7 - Indicator Table -->
+    <!-- Deception Levels -->
     <div class="page">
       <div class="container-fluid">
         <div class="row">
           <div class="col-12">
+            <hr />
+            <h2 id="pageTitle">Deception Levels</h2>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12">
+            <p>
+              The phishing templates used throughout this service include six
+              levels of varying deception. Each level is based on a calculation
+              of the factors designed to entice users to click on a malicious
+              link. An explanation of the four factors used when determining an
+              email’s level of deception can be found in "Deception Calculator”.
+              The following defines key differences between each level:
+            </p>
+
+            <div style="text-indent: -10px; margin-left: 30px">
+              <p>
+                <b>Level 1 - </b>This level will be the easiest to detect and
+                features common scams that are easily identified. Templates will
+                usually include low deception indicators such as bad grammar,
+                fake domains, and unknown external senders. Commonly the emails
+                will appeal to emotions of greed, monetary gain, or guilt to
+                elicit a user’s response.
+              </p>
+              <p>
+                <b>Level 2 - </b>These email templates also use low deception
+                indicators in that they typically appear to be from an external,
+                unauthoritative sender. The templates use one higher deception
+                indicator such as decent or proper grammar and are written in a
+                tone of urgency to help the email appear genuine. They also
+                commonly appeal to emotions of greed, monetary gain, or guilt.
+              </p>
+              <p>
+                <b>Level 3 -</b>These are email scams that usually use two
+                higher deception indicators such as appearing to be from a
+                legitimate external organization or spoofing a known internal
+                office or job title, but the link is usually fake and not
+                associated with the content. Templates typically will include
+                low deception indicators such as bad grammar or display fake
+                domains. The theme of the templates can appeal to emotions or
+                guilt and cause a sense of urgency if the request is not
+                followed quickly.
+              </p>
+              <p>
+                <b>Level 4 -</b>The email templates use more high deception
+                indicators than low deception and frequently appear to come from
+                a commonly found internal department, such as “IT Support” or
+                “Human Resources”. The templates will request actions or
+                information that real world departments would be trained not to
+                ask users over email such as their passwords, private
+                information, or financial accounts. The email templates will
+                normally have decent grammar, but will be sent by a generic
+                account internal with fake domains. The template can appeal to
+                sense of urgency and fear of disciplinary action to elicit a
+                user’s click.
+              </p>
+              <p>
+                <b>Level 5 -</b>– This level includes seemingly common emails
+                that might be sent from the respective organization and uses
+                information gathered from publicly available sources to seem
+                genuine. The templates usually come from internal and
+                authoritative senders (high deception indicators) but with fake
+                domains or generic information (lower deception indicators). The
+                templates can appeal to a sense of fear and the need to comply
+                with authority to elicit a user’s response.
+              </p>
+              <p>
+                <b>Level 6 -</b> This level’s templates will be the hardest to
+                detect and will typically have the highest click rate. These
+                templates can appear to be from an internal office, personally
+                address the recipient, and include themes such as negative
+                policy changes and responses to internal and external news that
+                may negatively affect employees. This level uses information
+                gathered from public sources to develop the templates such as
+                names of organizational individuals or departments, any relevant
+                news, or information about specific organizational processes or
+                tools.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Indicators -->
+    <div class="page">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <hr />
             <h2 id="pageTitle">Indicators</h2>
           </div>
         </div>
         <div class="row">
           <div class="col-12">
-            <p class="table-title">Table 3 - Indicator Breakdown</p>
+            <p class="table-title">Indicator Stats</p>
           </div>
         </div>
         <div class="row">
           <div class="col-12">
+            <table id="indicatorStatsTable">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Group</th>
+                  <th>Indicator</th>
+                  <th>Value</th>
+                  <th>Sent</th>
+                  <th>Clicked</th>
+                  <th>Percent</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for stat in cycle.stats.indicator_stats |
+                sort(attribute="clicked.ratio", reverse=True) %}
+                <tr>
+                  <td>{{ loop.index }}</td>
+                  <td>{{ stat.group | title }}</td>
+                  <td>{{ stat.indicator | title }}</td>
+                  <td>{{ stat.value }} ({{ stat.label }})</td>
+                  <td>{{ stat.sent.count }}</td>
+                  <td>{{ stat.clicked.count }}</td>
+                  <td>{{ stat.clicked.ratio * 100 }}%</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Deception Calculator -->
+    <div class="page">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <hr />
+            <h2 id="pageTitle">Deception Calculator</h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <p class="table-title">Deception Calculator</p>
             <table id="indicator-table">
               <thead>
                 <tr>
@@ -475,103 +617,112 @@
       </div>
     </div>
 
-    <!-- PAGE 8 - Indicator Stats Table -->
-    <div class="page">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-12">
-            <h2 id="pageTitle">Indicators Cont.</h2>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-12">
-            <p class="table-title">Table 4 - Indicator Stats</p>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-12">
-            <table id="indicatorStatsTable">
-              <thead>
-                <tr>
-                  <th>Rank</th>
-                  <th>Group</th>
-                  <th>Indicator</th>
-                  <th>Value</th>
-                  <th>Sent</th>
-                  <th>Clicked</th>
-                  <th>Percent</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for stat in cycle.stats.indicator_stats |
-                sort(attribute="clicked.ratio", reverse=True) %}
-                <tr>
-                  <td>{{ loop.index }}</td>
-                  <td>{{ stat.group | title }}</td>
-                  <td>{{ stat.indicator | title }}</td>
-                  <td>{{ stat.value }} ({{ stat.label }})</td>
-                  <td>{{ stat.sent.count }}</td>
-                  <td>{{ stat.clicked.count }}</td>
-                  <td>{{ stat.clicked.ratio * 100 }}%</td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- TEMPLATE PAGES -->
     {% for template in stats.template_stats | sort(attribute="clicked.ratio") %}
     <div class="page">
       <div class="container-fluid">
-        <div class="template-stat-header">
-          <table>
-            <tr>
-              <td>Template Name:</td>
-              <td>{{ template.template.name }}</td>
-            </tr>
-            <tr>
-              <td>Deception Level:</td>
-              <td>{{ template.deception_level }}</td>
-            </tr>
-            <tr>
-              <td>Total Sent:</td>
-              <td>{{ template.sent.count }}</td>
-            </tr>
-            <tr>
-              <td>Unique Clicks:</td>
-              <td>{{ template.clicked.count }}</td>
-            </tr>
-            <tr>
-              <td>Click Rate:</td>
-              <td>{{ template.clicked.ratio * 100 }}%</td>
-            </tr>
-          </table>
-        </div>
-        <div class="row" style="margin-bottom: 10px">
+        <div class="row">
           <div class="col-12">
-            <div class="template-body">
-              <b>Subject:</b>
-              {{ preview_template(template.template.subject, customer) }}<br />
-              <b style="margin-bottom: 1rem">From:</b>
-              {{ preview_from_address(template.template, subscription, customer)
-              }}<br />
-              <div class="template-html">
-                {{ template.template.html | safe }}
-              </div>
-            </div>
+            <hr />
           </div>
         </div>
         <div class="row">
           <div class="col-12">
-            <b>Key Characteristics: </b>Some key characteristics.
+            <div class="template-stat-header">
+              <table>
+                <tr>
+                  <td>Template Name:</td>
+                  <td>{{ template.template.name }}</td>
+                </tr>
+                <tr>
+                  <td>Deception Level:</td>
+                  <td>
+                    {{ template.template.deception_score }} ({{
+                    template.deception_level | title }})
+                  </td>
+                </tr>
+                <tr>
+                  <td>Total Sent:</td>
+                  <td>{{ template.sent.count }}</td>
+                </tr>
+                <tr>
+                  <td>Unique Clicks:</td>
+                  <td>{{ template.clicked.count }}</td>
+                </tr>
+                <tr>
+                  <td>Click Rate:</td>
+                  <td>{{ template.clicked.ratio * 100 }}%</td>
+                </tr>
+              </table>
+            </div>
+            <div class="row" style="margin-bottom: 10px">
+              <div class="col-12">
+                <div class="template-body">
+                  <b>Subject:</b>
+                  {{ preview_template(template.template.subject, customer) }}<br />
+                  <b style="margin-bottom: 1rem">From:</b>
+                  {{ preview_from_address(template.template, subscription,
+                  customer) }}<br />
+                  <div class="template-html">
+                    {{ template.template.html | safe }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <p>
+                  <b>Key Characteristics: </b>
+                  {% if template.template.deception_score <= 1 %} These poorly
+                  worded or purposefully vague messages are self-filtering. If
+                  someone is curious, greedy, or gullible enough to believe the
+                  sender then they are more likely to follow through with the
+                  request for personal or banking information. {% elif
+                  template.template.deception_score == 2 %} These purposefully
+                  vague messages attempt to short circuit common sense security
+                  training by looking somewhat work related or evoke enough
+                  curiosity click the link to learn more, even though the
+                  message comes from an external sending domain and has unusual
+                  misspellings for a professional or automated email. {% elif
+                  template.template.deception_score == 3 %} Typically
+                  impersonating a legitimate business interaction, these
+                  messages are more focused on their target, but are still
+                  self-filtering for more gullible recipients by using poor
+                  grammar or following unusual business practices.{% elif
+                  template.template.deception_score == 4 %}These messages are
+                  specific to work environments or try to blend in as typical or
+                  expected communications. Goal is usually to harvest
+                  credentials to later gain access to sensitive business
+                  networks since people tend to reuse credentials over several
+                  platforms. Typical phishing techniques include spoofing a
+                  sending address to look like a legitimate group, individually
+                  addressing the recipient, and having a display name and
+                  signature of group typically seen in the workplace. {% elif
+                  template.template.deception_score == 5 %} Second highest level
+                  of deception, these messages typically target specific
+                  organizations or groups that access a common resource. In real
+                  attacks, the goal is to have a recipient to download a
+                  malicious program on their workstation to give the attacker
+                  access to the internal network. Typical advanced phishing
+                  techniques include using all hidden or spoofed links that
+                  require the extra step of hovering over (or long pressing on
+                  mobile) to show the underlying URL and spoofing or mimicking
+                  the target organization’s email domain or signature block. {%
+                  else %} The highest level of deception, these are usually
+                  fine-tuned for sensitive account access or deep-pocket
+                  credential harvesting and rely on customized content to convey
+                  a sense of legitimacy. Typical advanced phishing techniques
+                  include personally addressing the recipient, spoofing or
+                  mimicking the organization’s email domain or signature block,
+                  referencing relevant real world events or data, and writing in
+                  a tone that motivates the recipient is to act.{% endif %}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-
     {% endfor %}
   </body>
 </html>
