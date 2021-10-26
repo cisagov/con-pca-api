@@ -154,7 +154,7 @@ class Manager:
     def delete(self, document_id=None, params=None):
         """Delete item by object id."""
         if document_id:
-            self.db.delete_one(self.document_query(document_id)).raw_result
+            return self.db.delete_one(self.document_query(document_id)).raw_result
         if params:
             return self.db.delete_many(params).raw_result
         raise Exception(

@@ -28,6 +28,10 @@ TAGS = [
         "tag": "{{customer['name']}}",
     },
     {
+        "description": "The customer domain.",
+        "tag": "{{customer['domain']}}",
+    },
+    {
         "description": "An abbreviated form of a phrase, such as a company/organization's name (i.e. CISA for Cybersecurity and Infrastructure Security Agency).",
         "tag": "{{customer['identifier']}}",
     },
