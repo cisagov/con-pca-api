@@ -1,0 +1,87 @@
+[
+  {
+    "description": "Using a subject line or content that inspires feelings of fear or duty/obilgation to respond to motivate a response. A cybercriminal may use a range of emotions to help persuade a user to click a link or open an attachment without examining it first.",
+    "title": "Emotional triggers (FEAR/DUTY)",
+    "type": "sophisticated"
+  },
+  {
+    "description": "Providing an opportunity to share opinions which may elicit feelings of curiosity on the types of questions asked. A cybercriminal may use a range of emotions to help persuade a user to click a link or open an attachment without examining it first.",
+    "title": "Emotional triggers (CURIOSITY-QUESTIONS)",
+    "type": "sophisticated"
+  },
+  {
+    "description": "Offering opportunities for low effort financial gain that may trigger feelings of greed to motivate a response. A cybercriminal may use a range of emotions to help persuade a user to click a link or open an attachment without examining it first.",
+    "title": "Emotional triggers (GREED)",
+    "type": "sophisticated"
+  },
+  {
+    "description": "Attempting to appear organizationally relevant by speaking as a peer and work-related resources. Cybercriminals can use publically available information about organization's systems, personnel, leadership hierarchy, and tool sets to make their message look and feel legitimate.",
+    "title": "Context alignment.",
+    "type": "sophisticated"
+  },
+  {
+    "description": "Hiding the externally-hosted link under hyperlinked text which requires the extra step of hovering over or long - pressing (on mobile phone) to investigate legitimacy. Additionally, cybercriminals may use a URL shortening service to hide the true destination of the link.",
+    "title": "Spoofed hyperlinks and websites. ",
+    "type": "sophisticated"
+  },
+  {
+    "description": "Speaking from a place of power and stating that recipients are expected to respond may persuade the targeted user into clicking the link without first questioning it.",
+    "title": "Authoritative tone. ",
+    "type": "sophisticated"
+  },
+  {
+    "description": "Professional formatting and proper spelling and grammar to imitate reputable institutions that have dedicated personnel that produce, verify, and proofread correspondence. ",
+    "title": "Spelling and layout",
+    "type": "sophisticated"
+  },
+  {
+    "description": "Using an unknown external sending address to send an internal message that should have come from the <<ORG DOMAIN>> or another known and trusted domain. Trusted organizations send from known domains or provide advance notice that a new domain will provide important communications to set expectations.",
+    "title": "Unfamiliar sender",
+    "type": "red_flag"
+  },
+  {
+    "description": "Requiring the recipient to click an unfamiliar and externally hosted link when the message content is describing an internally hosted resource.",
+    "title": "Externally hosted resource",
+    "type": "red_flag"
+  },
+  {
+    "description": "Not personally addressing the recipient for what looks to be a personalized message. A trusted organization will normally address the recipient by name and provide their contact information.",
+    "title": "Generic greeting",
+    "type": "red_flag"
+  },
+  {
+    "description": "Not providing organizationally relevant contact information in the signature block.  A trusted organization or sender will typically provide their contact information or be verifiable through out-of-band information resources.",
+    "title": "Generic signature",
+    "type": "red_flag"
+  },
+  {
+    "description": "Citing non-compliance of a previously unknown requirement or document. A legitimate alert or notification would follow known processes, reference well-known requirements or documents, or be verifiable through trusted information resources.",
+    "title": "Unusual business process",
+    "type": "red_flag"
+  },
+  {
+    "description": "Requiring the recipient to click a link to complete the request and not setting expectations as to where the link is hosted. A trusted organization would provide sufficient details about the request without requiring the recipient to follow links or download attachments if the message was unsolicited or unexpected.",
+    "title": "Requirement to click",
+    "type": "red_flag"
+  },
+  {
+    "description": "Providing information throughout the message, in the display name, and the signature block that are inconsistent or contradictory.",
+    "title": "Content irregularities",
+    "type": "red_flag"
+  },
+  {
+    "description": "Using generic phrases instead of known system names or office groups, and referencing topics and/or deadlines that cannot be verified by requesting confirmation from the related department points of contact or viewing website content.",
+    "title": "Generic terms",
+    "type": "red_flag"
+  },
+  {
+    "description": "Using an authoritative tone but follows uncommon or unexpected business practices. Mature oganizations do not compel employees to circumvent established business process for the sake of speed or compliance.",
+    "title": "Misplaced authority",
+    "type": "red_flag"
+  },
+  {
+    "description": "Unusually poor spelling and grammar in a supposedly automated message. Reputable institutions have dedicated personnel that produce, verify, and proofread customer correspondence.",
+    "title": "Spelling and layout",
+    "type": "red_flag"
+  }
+]

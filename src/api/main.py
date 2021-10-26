@@ -12,7 +12,11 @@ from flask.json import JSONEncoder
 from api.app import app
 from api.commands.load_test_data import load_test_data
 from api.config import EMAIL_MINUTES, TASK_MINUTES, logger
-from api.initialize import initialize_nonhumans, initialize_templates
+from api.initialize import (
+    initialize_nonhumans,
+    initialize_recommendations,
+    initialize_templates,
+)
 from api.phish import emails_job
 from api.tasks import tasks_job
 from api.views.auth_views import (
@@ -162,6 +166,7 @@ def api_map():
 @app.before_first_request
 def initialize_db():
     """Initialize database."""
+    initialize_recommendations()
     initialize_templates()
     initialize_nonhumans()
 
