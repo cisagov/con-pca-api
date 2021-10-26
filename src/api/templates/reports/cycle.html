@@ -30,7 +30,7 @@
       <p id="timeIntervalStats">{{ json.dumps(stats.time_stats) }}</p>
     </div>
 
-    <!-- PAGE 1 - Cover Page -->
+    <!-- Cover Page -->
     <div class="page" style="padding: 0">
       <div class="row">
         <div id="blueDateBox">
@@ -100,7 +100,7 @@
       </div>
     </div>
 
-    <!-- PAGE 2 - Assessment Details -->
+    <!-- Assessment Details -->
     <div class="page">
       <div class="container-fluid">
         <div class="row">
@@ -164,54 +164,7 @@
       </div>
     </div>
 
-    <!-- PAGE 3 - Report Instructions -->
-    <div class="page">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-12">
-            <hr />
-            <h2 id="pageTitle">Instructions</h2>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-12">
-            <div id="reportInstructions">
-              <section>
-                <p>
-                  The CON-PCA Phishing Assessments are organized into 90-day
-                  campaigns in which each of your users will be phished once
-                  every 90 days from the start of your subscription.
-                </p>
-                <p class="mb-0">
-                  Each of these individuals here after referred to as targets
-                  are tracked on two potential actions.
-                </p>
-                <ol>
-                  <li>Opening the email</li>
-                  <li>Clicked a malicious link</li>
-                </ol>
-                <p>
-                  To track statistics on the reported email, that information
-                  must be supplied to CISA in the required format or a reporting
-                  mailbox must be available and advertised in the consuming
-                  organization.
-                </p>
-                <p>
-                  Most organizations will setup a reporting mailbox that
-                  employees can forward suspicious emails to for further
-                  investigation. In order to determine some statics such as time
-                  to first report, the email content, the target email address,
-                  and time of first report will be required to determine those
-                  statics.
-                </p>
-              </section>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- PAGE 4 - Executive Report-->
+    <!-- Executive Report-->
     <div class="page">
       <div class="container-fluid">
         <div class="row">
@@ -240,7 +193,8 @@
                 links. The CON-PCA, therefore, measured {{ customer.name }}’s
                 level of vulnerability to a successful phishing attack by
                 targeted user click rates, click times, response rates, and
-                response times, as shown in Table 1.
+                response times, as shown in the "Targeted User Measurements"
+                table.
               </p>
 
               <p>
@@ -253,7 +207,7 @@
         </div>
         <div class="row">
           <div class="col-12">
-            <p class="table-title">Table 1: Targeted User Measurements</p>
+            <p class="table-title">Targeted User Measurements</p>
           </div>
         </div>
         <div class="row">
@@ -333,10 +287,36 @@
           </div>
         </div>
 
+        <div class="row">
+          <div class="col-12">
+            <p>
+              One of the most common measures of an organization’s
+              susceptibility to phishing attacks is targeted-user click rates.
+              If an actual phishing attack is able to bypass technical controls
+              and arrive in a user’s inbox, the human target must click on the
+              malicious link or attachment for the attack to be successful. In
+              practical exercises, such as this PCA, targeted-user click rates
+              will fluctuate depending on the level of email deception used in
+              testing. Effective security awareness training, however, should
+              result in a noticeable click rate decrease over time and to a
+              level deemed acceptable based on the organization’s risk
+              management posture.
+            </p>
+            <p>
+              In this report, the percentages shown by the user click rate
+              represent the percentage of targeted people who have clicked at
+              least once on a “malicious” link. The number of unique clicks
+              correlates to the number of end user devices potentially
+              compromised in each campaign. The following table and graph
+              summarizes click rates.
+            </p>
+          </div>
+        </div>
+
         <!-- Template Stats Table -->
         <div class="row">
           <div class="col-12">
-            <p class="table-title">Table 2: Template Stats</p>
+            <p class="table-title">Template Stats</p>
           </div>
         </div>
         <div class="row">
@@ -371,7 +351,7 @@
 
         <div class="row" style="margin-top: 25px">
           <div class="col-12">
-            <p class="table-title">Graph 1: Deception Score Stats</p>
+            <p class="table-title">Deception Score Stats</p>
           </div>
         </div>
         <div class="row">
@@ -396,7 +376,19 @@
         </div>
         <div class="row">
           <div class="col-12">
-            <p class="table-title">Graph 2 - Click Time Interval Chart</p>
+            {% set median_click_time =
+            time.convert_seconds(stats.stats.all.clicked.median) %}
+            <p style="text-indent: 30px">
+              The figure below shows the percentage of users who clicked during
+              certain time intervals in the first 24 hours of being sent a
+              phish. Overall, nearly {{
+              stats.time_stats.clicked.sixty_minutes.ratio * 100 }} percent of
+              all clicks occurred within one hour of receiving a phishing email.
+              The median time to click was {{ median_click_time.hours }} hours,
+              {{ median_click_time.minutes }} minutes, and {{
+              median_click_time.seconds }} seconds for the entire assessment.
+            </p>
+            <p class="table-title">Click Time Interval Chart</p>
           </div>
         </div>
         <div class="row">
@@ -715,7 +707,8 @@
     </div>
 
     <!-- TEMPLATE PAGES -->
-    {% for template in stats.template_stats | sort(attribute="clicked.ratio") %}
+    {% for template in stats.template_stats | sort(attribute="clicked.ratio",
+    reverse=True) %}
     <div class="page">
       <div class="container-fluid">
         <div class="row">
@@ -727,6 +720,10 @@
           <div class="col-12">
             <div class="template-stat-header">
               <table>
+                <tr>
+                  <td>Rank:</td>
+                  <td>{{ loop.index }}</td>
+                </tr>
                 <tr>
                   <td>Template Name:</td>
                   <td>{{ template.template.name }}</td>
