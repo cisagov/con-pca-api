@@ -37,3 +37,4 @@ class CustomerSchema(BaseSchema):
     contact_list = fields.List(fields.Nested(CustomerContactSchema))
     industry = fields.Str(required=False, allow_none=True)
     sector = fields.Str(required=False, allow_none=True)
+    domain = fields.Str(required=False, allow_none=True)
