@@ -4,6 +4,8 @@
   size: Letter;
 }
 
+/* Tag Styling */
+
 html {
   display: flex;
   flex-direction: row;
@@ -15,6 +17,25 @@ body {
   background: white;
   font-family: Arial, sans-serif;
 }
+
+ol {
+  padding-left: 20px;
+}
+
+h3 {
+  font-weight: bold;
+}
+
+hr {
+  background-color: #fdc010 !important;
+  color: #fdc010 !important;
+}
+
+ul {
+  padding-left: 20px;
+}
+
+/* Global */
 
 .page {
   background: white;
@@ -36,16 +57,8 @@ body {
   text-transform: uppercase;
 }
 
-.smallerTitle {
-  font-size: 0.5em;
-  color: #015596 !important;
-  letter-spacing: 1px;
-  padding-left: 5px;
-}
-
-hr {
-  background-color: #fdc010 !important;
-  color: #fdc010 !important;
+.blue-font {
+  color: #1979a7;
 }
 
 /* Cover */
@@ -128,7 +141,14 @@ hr {
   justify-content: space-evenly;
 }
 
-/* Page One */
+.smallerTitle {
+  font-size: 0.5em;
+  color: #015596 !important;
+  letter-spacing: 1px;
+  padding-left: 5px;
+}
+
+/* Details Table */
 
 .detailsTable {
   border-collapse: collapse;
@@ -157,21 +177,13 @@ hr {
   background-color: #f2f2f2;
 }
 
-/* Page Two */
+/* Report Instructions */
 
 #reportInstructions {
   margin-bottom: 500px;
 }
 
-ol {
-  padding-left: 20px;
-}
-
-h3 {
-  font-weight: bold;
-}
-
-/* PAGE 4 - EXECUTIVE REPORT */
+/* Executive Report */
 
 #executiveReportTitle {
   font-size: 3em;
@@ -192,15 +204,10 @@ h3 {
   text-align: center;
 }
 
-ul {
-  padding-left: 20px;
-}
-
-/* PAGE 5 - SUMMARY */
+/* Templates Table */
 
 .templatesTable {
   border-collapse: collapse;
-  /* width: 75%; */
 }
 
 .templatesTable td,
@@ -223,152 +230,7 @@ ul {
   background-color: #f2f2f2;
 }
 
-#summaryTitle {
-  font-size: 3em;
-  color: #015596 !important;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-
-#statFlexContainer {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  margin-top: 20px;
-}
-#companyAverageText {
-  text-align: center;
-}
-
-#nationalAverageText,
-#industryAverageText,
-#sectorAverageText {
-  text-align: center;
-}
-
-#nationalAverageText {
-  margin: 20px;
-  max-width: 140px;
-}
-
-#sectorAverageText {
-  margin: 20px;
-}
-
-#industryAverageText {
-  margin: 20px;
-}
-
-#companyAverageBox {
-  background-image: linear-gradient(to right, #164a91, #1979a7) !important;
-  color: #fff !important;
-  font-family: "Times New Roman", Times, serif;
-  font-size: 3.5em;
-  padding: 20px 35px;
-  max-width: 180px;
-}
-
-#nationalAverageBox,
-#industryAverageBox,
-#sectorAverageBox {
-  background-image: linear-gradient(to right, #164a91, #1979a7) !important;
-  color: #fff !important;
-  font-family: "Times New Roman", Times, serif;
-  font-size: 2.5em;
-  padding: 20px 30px;
-}
-
-#percentageTrendGraph,
-#clickedVsReportedGraph,
-#yearTrendGraph,
-#levelGraphTitle,
-.timeIntervalGraph,
-.timeComplexityGraph {
-  border: 1px solid #fdc010;
-  border-radius: 10px;
-  color: #015596;
-  margin-bottom: 30px;
-  text-align: center;
-}
-
-#yearTrendGraph p {
-  padding-top: 20px;
-}
-
-#trendLineGraph,
-numbersByLevelGraph {
-  margin-bottom: 10px;
-}
-
-#trendStatistics {
-  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
-}
-
-#trendStatistics td {
-  padding: 5px 8px 5px 5px;
-}
-
-#trendStatistics th {
-  padding: 0 75px 0 0;
-  text-align: right;
-}
-
-/* Page Six */
-
-/* SVG Bar Chart */
-.caption,
-.legend-caption {
-  fill: #164a91;
-}
-
-.legend-caption {
-  font-size: 0.75em;
-}
-
-.blue-bar {
-  fill: #1979a7;
-}
-
-.dark-blue-bar {
-  fill: #164a91;
-}
-
-.yellow-bar {
-  fill: #fdc010;
-}
-
-.bar-chart,
-#successOverview {
-  border: 1px solid #fdc010;
-  border-radius: 10px;
-  color: #164a91;
-  height: auto;
-  margin: 20px auto 0 auto;
-  text-align: center;
-  width: 100%;
-}
-
-#successOverview {
-  margin-bottom: 100px;
-}
-
-#successOverview h4,
-.bar-chart h4,
-.timeIntervalGraph h4,
-.timeComplexityGraph h4 {
-  margin-top: 10px;
-}
-
-/* Page Seven */
-
-#methodologyTitle,
-#testingSummaryTitle {
-  font-size: 2.5em;
-  color: #015596 !important;
-  letter-spacing: 2px;
-}
-
-/* Tables on Page Eight, Nine and Ten */
+/* Report Table */
 
 table.report-table th,
 table.report-table td {
@@ -385,104 +247,7 @@ table.report-table td {
   border-bottom: 1px solid #dddddd;
 }
 
-#templateOverviewTable,
-#rateComparisonTable,
-#timeComparisonTable {
-  margin-bottom: 40px;
-}
-
-#timeComparisonTable {
-  width: 100%;
-}
-
-#timeComparisonTable th {
-  padding: 10px;
-}
-
-#timeComparisonTable th:first-of-type {
-  width: 100px;
-}
-
-#templateOverviewTable tr td:nth-of-type(2),
-#rateComparisonTable tr td:nth-of-type(2) {
-  text-align: left;
-}
-
-#rateComparisonTable td {
-  width: auto;
-}
-
-.legend {
-  color: #000;
-  list-style-type: square;
-}
-
-.legend li {
-  display: inline-block;
-  padding: 0 10px;
-}
-.legend li:nth-of-type(1)::after {
-  content: "\25A0";
-  color: #164a91;
-  margin-left: 5px;
-}
-
-.legend li:nth-of-type(2)::after {
-  content: "\25A0";
-  color: #fdc010;
-  margin-left: 5px;
-}
-
-.legend li:nth-of-type(3)::after {
-  content: "\25A0";
-  color: #1979a7;
-  margin-left: 5px;
-}
-
-/* Page Nine */
-
-.complexityLegend {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  list-style-type: none;
-}
-
-.complexityLegend li:nth-of-type(1)::after {
-  content: "\25A0";
-  height: 20px;
-  width: 20px;
-  margin: 0 15px 0 5px;
-  background-color: #fdc010;
-}
-
-.complexityLegend li:nth-of-type(2)::after {
-  content: "\25A0";
-  height: 20px;
-  width: 20px;
-  margin: 0 15px 0 5px;
-  background-color: #1979a7;
-}
-
-.complexityLegend li:nth-of-type(3)::after {
-  content: "\25A0";
-  height: 20px;
-  width: 20px;
-  margin: 0 15px 0 5px;
-  background-color: #015596;
-}
-
-/* Page Thirteen */
-
-/* fix level descriptions */
-
-/* Page Fourteen */
-
-.template-level-header {
-  font-weight: bold;
-  border-top: 2px solid #eeeeee;
-}
+/* Template Pages */
 
 .template-container {
   border: 2px solid #dddddd;
@@ -515,33 +280,6 @@ table.report-table td {
   height: 100%;
 }
 
-.congrats {
-  font-size: 1.3em;
-  margin: 20px 0;
-}
-
-.blue-font {
-  color: #1979a7;
-}
-
-#dumbPhishBenefits li {
-  margin-left: 10px;
-}
-
-.vintageCars {
-  font-size: 1.325em;
-  font-weight: 600;
-  margin-top: 40px;
-  text-align: center;
-}
-
-/* Page Fifteen */
-
-.md-font {
-  font-size: 1.325em;
-  font-weight: 600;
-}
-
 /* Indicators Table */
 
 #indicator-table {
@@ -551,7 +289,7 @@ table.report-table td {
 
 #indicator-table td,
 #indicator-table th {
-  padding: 7px;
+  padding: 3px;
 }
 
 #indicator-table thead {
@@ -565,12 +303,13 @@ table.report-table td {
 }
 
 #indicator-table tbody {
-  border: 2px solid black;
+  border: 2px solid #015596;
 }
 
 #indicator-table tbody th {
   border: 2px solid black;
   background-color: white;
+  color: black;
 }
 
 #indicator-table-total td {
@@ -578,16 +317,27 @@ table.report-table td {
   border: 2px solid black;
 }
 
+.indicator-table-top-section {
+  border-top: 2px solid black;
+}
+
+.indicator-table-value {
+  border-left: 2px solid black;
+  border-right: 2px solid black;
+}
+
 th.rotate {
   height: 240px;
   white-space: nowrap;
   vertical-align: bottom;
+  text-align: left;
 }
 
 th.rotate > div {
   transform: translate(2px, 0px) rotate(270deg);
   width: 30px;
 }
+
 th.rotate > div > span {
   padding: 5px 10px;
   width: 220px;

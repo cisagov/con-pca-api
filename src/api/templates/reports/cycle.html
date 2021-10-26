@@ -29,6 +29,7 @@
       <p id="templateStats">{{ json.dumps(stats.template_stats) }}</p>
       <p id="timeIntervalStats">{{ json.dumps(stats.time_stats) }}</p>
     </div>
+
     <!-- PAGE 1 - Cover Page -->
     <div class="page" style="padding: 0">
       <div class="row">
@@ -391,7 +392,6 @@
         <div class="row">
           <div class="col-12">
             <hr />
-            <h2 id="pageTitle">Summary Cont.</h2>
           </div>
         </div>
         <div class="row">
@@ -478,8 +478,8 @@
                 user’s click.
               </p>
               <p>
-                <b>Level 5 -</b>– This level includes seemingly common emails
-                that might be sent from the respective organization and uses
+                <b>Level 5 -</b>This level includes seemingly common emails that
+                might be sent from the respective organization and uses
                 information gathered from publicly available sources to seem
                 genuine. The templates usually come from internal and
                 authoritative senders (high deception indicators) but with fake
@@ -498,6 +498,167 @@
                 names of organizational individuals or departments, any relevant
                 news, or information about specific organizational processes or
                 tools.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Deception Calculator -->
+    <div class="page">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <hr />
+            <h2 id="pageTitle">Deception Calculator</h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <p style="text-indent: 20px">
+              The following calculator provides the method for determining the
+              deception of each template (1 being not deceptive and easy to
+              detect and 6 being very deceptive and difficult to detect).
+            </p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <table id="indicator-table">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Indicator</th>
+                  <th>Ranking Scale</th>
+                  {% for ts in cycle.stats.template_stats %}
+                  <th class="rotate">
+                    <div><span>{{ ts.template.name }}</span></div>
+                  </th>
+                  {% endfor %}
+                </tr>
+              </thead>
+              <tbody>
+                {% for group, gv in recommendations["indicators"].items() %} {%
+                for indicator, iv in gv.items() %}
+                <tr class="{{ 'indicator-table-top-section' if loop.first }}">
+                  {% if loop.index == 1 %}
+                  <th
+                    rowspan="{{ gv | length }}"
+                    style="vertical-align: middle"
+                  >
+                    {{ group | title }}
+                  </th>
+                  {% endif %}
+                  <td style="width: 75px">{{ iv.name }}</td>
+                  <td style="width: 75px">
+                    {% for value, v in iv["values"].items() %}{% if loop.last
+                    %}{{ value }}={{ v["label"] }}{% else %}{{ value }}={{
+                    v["label"] }}, {% endif %}{% endfor %}
+                  </td>
+
+                  {% for ts in cycle.stats.template_stats %}
+                  <td class="indicator-table-value">
+                    {{ ts.template.indicators[group][indicator] }}
+                  </td>
+                  {% endfor %}
+                </tr>
+                {% endfor %} {% endfor %}
+                <tr id="indicator-table-total">
+                  <td></td>
+                  <td></td>
+                  <td><b>Total</b></td>
+                  {% for ts in cycle.stats.template_stats %}
+                  <td>{{ ts.template.deception_score }}</td>
+                  {% endfor %}
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <hr />
+            <h2 class="blue-font">Appearance</h2>
+            <div style="margin-left: 30px">
+              <p><b>Grammar - </b>Writing level of the content in the email</p>
+              <ul style="margin-left: 10px">
+                <li>
+                  Poor indicates several misspellings and awkward use of the
+                  English language
+                </li>
+                <li>
+                  Decent indicates few misspellings and few grammatical errors
+                  or is relatively short in length
+                </li>
+                <li>
+                  Proper indicates one or no misspellings or grammatical errors
+                  and the email is longer/more formal than the usual email
+                </li>
+              </ul>
+              <p>
+                <b>Link Domain - </b>Embedded link can be clearly fake or
+                attempt to impersonate a real domain
+              </p>
+              <p>
+                <b>Logo/Graphics - </b>Images can be either clearly fake or
+                close impostors
+              </p>
+            </div>
+            <h2 class="blue-font" style="margin-top: 30px">Sender</h2>
+            <div style="margin-left: 30px">
+              <p>
+                <b>External - </b>Sender and email domain are external to the
+                users organization, but are clearly fake or look like real
+                external entities
+              </p>
+              <p>
+                <b>Internal - </b>Sender and email domain appear to come from
+                user’s organization, but are clearly fake or spoof internal
+                senders
+              </p>
+              <p>
+                <b>Authoritative (Corporate/Local or Federal/State) - </b>Sender
+                making a request or demand and speaks from a position of power
+                that could be associated with a Corporate/Local office or
+                Federal/State office
+              </p>
+            </div>
+            <h2 class="blue-font" style="margin-top: 30px">Relevancy</h2>
+            <div style="margin-left: 30px">
+              <p>
+                <b>Organization - </b>Content is pertinent to organization’s
+                current events, news, or uses the name/email of the targeted
+                user
+              </p>
+              <p>
+                <b>Public News - </b>Content is pertinent to current events in
+                the local area or nation
+              </p>
+            </div>
+            <h2 class="blue-font" style="margin-top: 30px">
+              Behavior (Optional)
+            </h2>
+            <div style="margin-left: 30px">
+              <p>
+                <b>Fear - </b>Scareware or appeals to the emotion of fear within
+                the theme of the email
+              </p>
+              <p>
+                <b>Duty or Obligation - </b>Appeals to the sense of
+                responsibility within the theme of the email
+              </p>
+              <p>
+                <b>Curiosity - </b>Appeals to the desire to learn more within
+                the theme of the email
+              </p>
+              <p>
+                <b>Greed - </b>Appeals to greed and monetary gain within the
+                theme of the email
               </p>
             </div>
           </div>
@@ -546,70 +707,6 @@
                   <td>{{ stat.clicked.ratio * 100 }}%</td>
                 </tr>
                 {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Deception Calculator -->
-    <div class="page">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-12">
-            <hr />
-            <h2 id="pageTitle">Deception Calculator</h2>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-12">
-            <p class="table-title">Deception Calculator</p>
-            <table id="indicator-table">
-              <thead>
-                <tr>
-                  <th>Category</th>
-                  <th>Indicator</th>
-                  <th>Ranking Scale</th>
-                  {% for ts in cycle.stats.template_stats %}
-                  <th class="rotate">
-                    <div><span>{{ ts.template.name }}</span></div>
-                  </th>
-                  {% endfor %}
-                </tr>
-              </thead>
-              <tbody>
-                {% for group, gv in recommendations["indicators"].items() %} {%
-                for indicator, iv in gv.items() %}
-                <tr>
-                  {% if loop.index == 1 %}
-                  <th
-                    rowspan="{{ gv | length }}"
-                    style="vertical-align: middle"
-                  >
-                    {{ group | title }}
-                  </th>
-                  {% endif %}
-                  <td style="width: 75px">{{ iv.name }}</td>
-                  <td style="width: 75px">
-                    {% for value, v in iv["values"].items() %}{% if loop.last
-                    %}{{ value }}={{ v["label"] }}{% else %}{{ value }}={{
-                    v["label"] }}, {% endif %}{% endfor %}
-                  </td>
-
-                  {% for ts in cycle.stats.template_stats %}
-                  <td>{{ ts.template.indicators[group][indicator] }}</td>
-                  {% endfor %}
-                </tr>
-                {% endfor %} {% endfor %}
-                <tr id="indicator-table-total">
-                  <td></td>
-                  <td></td>
-                  <td>Total</td>
-                  {% for ts in cycle.stats.template_stats %}
-                  <td>{{ ts.template.deception_score }}</td>
-                  {% endfor %}
-                </tr>
               </tbody>
             </table>
           </div>
@@ -669,60 +766,202 @@
                 </div>
               </div>
             </div>
-            <div class="row">
-              <div class="col-12">
-                <p>
-                  <b>Key Characteristics: </b>
-                  {% if template.template.deception_score <= 1 %} These poorly
-                  worded or purposefully vague messages are self-filtering. If
-                  someone is curious, greedy, or gullible enough to believe the
-                  sender then they are more likely to follow through with the
-                  request for personal or banking information. {% elif
-                  template.template.deception_score == 2 %} These purposefully
-                  vague messages attempt to short circuit common sense security
-                  training by looking somewhat work related or evoke enough
-                  curiosity click the link to learn more, even though the
-                  message comes from an external sending domain and has unusual
-                  misspellings for a professional or automated email. {% elif
-                  template.template.deception_score == 3 %} Typically
-                  impersonating a legitimate business interaction, these
-                  messages are more focused on their target, but are still
-                  self-filtering for more gullible recipients by using poor
-                  grammar or following unusual business practices.{% elif
-                  template.template.deception_score == 4 %}These messages are
-                  specific to work environments or try to blend in as typical or
-                  expected communications. Goal is usually to harvest
-                  credentials to later gain access to sensitive business
-                  networks since people tend to reuse credentials over several
-                  platforms. Typical phishing techniques include spoofing a
-                  sending address to look like a legitimate group, individually
-                  addressing the recipient, and having a display name and
-                  signature of group typically seen in the workplace. {% elif
-                  template.template.deception_score == 5 %} Second highest level
-                  of deception, these messages typically target specific
-                  organizations or groups that access a common resource. In real
-                  attacks, the goal is to have a recipient to download a
-                  malicious program on their workstation to give the attacker
-                  access to the internal network. Typical advanced phishing
-                  techniques include using all hidden or spoofed links that
-                  require the extra step of hovering over (or long pressing on
-                  mobile) to show the underlying URL and spoofing or mimicking
-                  the target organization’s email domain or signature block. {%
-                  else %} The highest level of deception, these are usually
-                  fine-tuned for sensitive account access or deep-pocket
-                  credential harvesting and rely on customized content to convey
-                  a sense of legitimacy. Typical advanced phishing techniques
-                  include personally addressing the recipient, spoofing or
-                  mimicking the organization’s email domain or signature block,
-                  referencing relevant real world events or data, and writing in
-                  a tone that motivates the recipient is to act.{% endif %}
-                </p>
-              </div>
-            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <p style="margin-left: 10px; text-indent: -10px; margin-top: 20px">
+              <b>Key Characteristics: </b>
+              {% if template.template.deception_score <= 1 %} These poorly
+              worded or purposefully vague messages are self-filtering. If
+              someone is curious, greedy, or gullible enough to believe the
+              sender then they are more likely to follow through with the
+              request for personal or banking information. {% elif
+              template.template.deception_score == 2 %} These purposefully vague
+              messages attempt to short circuit common sense security training
+              by looking somewhat work related or evoke enough curiosity click
+              the link to learn more, even though the message comes from an
+              external sending domain and has unusual misspellings for a
+              professional or automated email. {% elif
+              template.template.deception_score == 3 %} Typically impersonating
+              a legitimate business interaction, these messages are more focused
+              on their target, but are still self-filtering for more gullible
+              recipients by using poor grammar or following unusual business
+              practices.{% elif template.template.deception_score == 4 %}These
+              messages are specific to work environments or try to blend in as
+              typical or expected communications. Goal is usually to harvest
+              credentials to later gain access to sensitive business networks
+              since people tend to reuse credentials over several platforms.
+              Typical phishing techniques include spoofing a sending address to
+              look like a legitimate group, individually addressing the
+              recipient, and having a display name and signature of group
+              typically seen in the workplace. {% elif
+              template.template.deception_score == 5 %} Second highest level of
+              deception, these messages typically target specific organizations
+              or groups that access a common resource. In real attacks, the goal
+              is to have a recipient to download a malicious program on their
+              workstation to give the attacker access to the internal network.
+              Typical advanced phishing techniques include using all hidden or
+              spoofed links that require the extra step of hovering over (or
+              long pressing on mobile) to show the underlying URL and spoofing
+              or mimicking the target organization’s email domain or signature
+              block. {% else %} The highest level of deception, these are
+              usually fine-tuned for sensitive account access or deep-pocket
+              credential harvesting and rely on customized content to convey a
+              sense of legitimacy. Typical advanced phishing techniques include
+              personally addressing the recipient, spoofing or mimicking the
+              organization’s email domain or signature block, referencing
+              relevant real world events or data, and writing in a tone that
+              motivates the recipient is to act.{% endif %}
+            </p>
           </div>
         </div>
       </div>
     </div>
     {% endfor %}
+
+    <!-- Most common phishing techniques -->
+    <div class="page">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <hr />
+            <h2 id="pageTitle">Common Phishing Techniques & Scams</h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <p>
+              In addition to training on the red flags and sophisticated
+              techniques information system users were most susceptible to, CISA
+              recommends anti-phishing training and awareness include the most
+              common phishing techniques and scams used to elicit clicks from
+              target users in real world phishing incidents. A phishing
+              technique is an element within a larger phishing scam.
+            </p>
+            <h2 class="blue-font">Tecniques</h2>
+            <div style="text-indent: -10px; margin-left: 30px">
+              <p>
+                <b>A fake link. </b>The context of the email can be anything,
+                but the key technique is using a link that looks like a real URL
+                (or hyperlinked text) that the target has used and trusted
+                before. Underlying it, however, is the actual URL to a different
+                and potentially malicious site. Hovering over (when on a
+                computer) or a long press (when on a mobile) reveals the true
+                underlying link. Unexpected URLs should not be clicked. Even if
+                it matches expectations, the user should type it directly into
+                their browser.
+              </p>
+              <p>
+                <b>A fake website. </b>Hovering over or long pressing the
+                displayed link will reveal a matching URL. However, closer
+                inspection of the URL would reveal slight differences between
+                the displayed address and real address it’s imitating. Examples
+                of slight differences include replacing a lower case ‘l’ with a
+                ‘1’, adding extra letters, or changing the domain such as from
+                .com to .us. A few seconds’ pause to override autopilot clicking
+                could save a target from being phished.
+              </p>
+              <p>
+                <b>A malicious attachment. </b>Just like the fake website,
+                closer inspection of any attachments sent may reveal
+                discrepancies between what is there versus what is expected.
+                Questions that should be asked with each email attachment
+                include: Was it an expected email? Is the sender known? Does
+                their email address match their display name? Does the
+                attachment have the expected file type? If a target does open
+                the attachment, a document may then show a notice that “editing
+                must be enabled to see content.” If enabled, macros and other
+                malicious code are able to execute on the target’s computer.
+                Organizations should have procedures for ensuring suspicious
+                attachments are safe through use of file checkers or other
+                secure means.
+              </p>
+              <p>
+                <b>Fake contact information. </b>This technique is usually used
+                to circumvent online portals or other established procedures
+                that normally handle change requests. They provide the target
+                with an email or phone numbers out of “generous convenience” so
+                the target doesn’t have to spend time looking up that
+                information. Rather than believing the email, the person should
+                call the number provided to them previously such as the customer
+                service number on the back of their card, office phone number in
+                a directory, or on the organization’s site the person navigates
+                to separately.
+              </p>
+            </div>
+            <h2 class="blue-font">Scams</h2>
+            <div style="text-indent: -10px; margin-left: 30px">
+              <p>
+                <b>Asking for money. </b>Usually long-winded stories of woe or
+                sudden inheritance that only require a small sum of money on
+                target’s part to transfer a huge sum of funds and generally in
+                exchange for the “help,” the attacker promises to provide the
+                target a decent portion of the funds. This scheme is designed to
+                be outlandish because it’s self-filtering. Attackers know only
+                the most trusting or gullible people will fall for this scam.
+                This is intentional because the target is less likely to
+                question further requests as the scam continues.
+              </p>
+              <p>
+                <b>Business Email Compromise (CEO Fraud). </b>This scam has cost
+                organizations nearly $26 billion since coming on the scene in
+                2013 according to FBI reports. A company’s email infrastructure
+                is hacked or spoofed and someone pretending to be the CEO tells
+                their phishing target that they need help doing an urgent wire
+                transfer. Sometimes the target is threatened with job loss or
+                public shaming if they don’t comply. Setting and following
+                established protocols that require a verbal phone call to
+                confirm the transfer or having an additional person to submit
+                the request are two ways to block this type of scam from
+                succeeding.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <hr />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div style="text-indent: -10px; margin-left: 30px">
+              <p>
+                <b>Business Email Compromise (Vender Product Invoice). </b>
+                Similar to the CEO fraud scam, a supplier’s email has been
+                hacked or spoofed and the attacker uses it to send a company a
+                fraudulent invoice. Having clear processes in place to confirm
+                vendor change requests or invoice processing is one way of
+                stopping this scam from working.
+              </p>
+              <p>
+                <b>Stolen/Leaked psswords and extortion. </b>The information
+                used to craft these emails come from the hundreds of millions of
+                exposed online records. The attackers display a paired email and
+                password saying their possession of these credentials is “proof”
+                that the attacker has already hacked the victim’s computer. In
+                exchange for not sharing some type of incriminating,
+                embarrassing, or scandalous content with the target’s email
+                contacts, the attacker asks for a bribe—usually in the form of
+                crypto currency. Even though the hacking claims are false, this
+                type of extortion is a quickly rising scam because people are
+                too embarrassed to report it.
+              </p>
+              <p>
+                <b>Security incident alert with offer to help. </b>This scam
+                uses the fake contact information or fake website techniques in
+                their plot to first get the target to panic and then trust the
+                attacker as the quickest solution to their problem.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
