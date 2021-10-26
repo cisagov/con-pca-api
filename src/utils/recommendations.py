@@ -32,24 +32,3 @@ def get_recommendations():
                 ] = recommendation["recommendation"]
 
     return response
-
-
-def save_recommendations(recommendations):
-    """Save recommendations to db."""
-    for group, gv in recommendations["indicators"].items():
-        for indicator, iv in gv.items():
-            for value, v in iv["values"].items():
-                query = {
-                    "type": "indicator",
-                    "group": group,
-                    "indicator": indicator,
-                    "value": value,
-                }
-                data = dict(query)
-                data["recommendation"] = v["recommendation"]
-                recommendation_manager.upsert(query=query, data=data)
-    for value, v in recommendations["levels"].items():
-        query = {"type": "level", "value": value}
-        data = dict(query)
-        data["recommendation"] = v["recommendation"]
-        recommendation_manager.upsert(query=query, data=data)

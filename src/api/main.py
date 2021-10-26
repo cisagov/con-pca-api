@@ -25,7 +25,7 @@ from api.views.customer_views import CustomersView, CustomerView, SectorIndustry
 from api.views.cycle_views import CycleStatsView, CyclesView, CycleView
 from api.views.landing_page_views import LandingPagesView, LandingPageView
 from api.views.nonhuman_views import NonHumansView
-from api.views.recommendation_views import RecommendationsView
+from api.views.recommendation_views import RecommendationsView, RecommendationView
 from api.views.report_views import (
     AggregateReportView,
     ReportEmailView,
@@ -71,6 +71,7 @@ rules = [
     ("/nonhumans/", NonHumansView),
     # Recommendation Views
     ("/recommendations/", RecommendationsView),
+    ("/recommendation/<recommendation_id>/", RecommendationView),
     # Report Views
     ("/reports/aggregate/", AggregateReportView),
     # Sector/Industry View
