@@ -7,7 +7,7 @@ import statistics
 # cisagov Libraries
 from api.manager import CycleManager, NonHumanManager, TemplateManager
 from api.schemas.stats_schema import CycleStatsSchema
-from utils.recommendations import get_recommendations
+from utils.templates import get_indicators
 
 template_manager = TemplateManager()
 cycle_manager = CycleManager()
@@ -310,7 +310,7 @@ def get_maxmind_stats(cycle):
 def get_indicator_stats(template_stats):
     """Get all indicator stats."""
     indicator_stats = []
-    indicators = get_recommendations()["indicators"]
+    indicators = get_indicators()
     for group, gv in indicators.items():
         for indicator, iv in gv.items():
             for value, v in iv["values"].items():

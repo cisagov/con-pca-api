@@ -19,8 +19,8 @@ from api.manager import (
 )
 from utils import time
 from utils.emails import get_email_context, get_from_address
-from utils.recommendations import get_recommendations
 from utils.stats import get_cycle_stats, get_ratio
+from utils.templates import get_indicators
 
 customer_manager = CustomerManager()
 cycle_manager = CycleManager()
@@ -88,7 +88,7 @@ def get_report(cycle_ids, report_type, nonhuman=False):
         "preview_template": preview_template,
         "preview_from_address": preview_from_address,
         "datetime": datetime,
-        "recommendations": get_recommendations(),
+        "indicators": get_indicators(),
         "json": json,
         "str": str,
     }
