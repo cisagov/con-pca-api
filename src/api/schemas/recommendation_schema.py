@@ -13,8 +13,6 @@ class RecommendationsSchema(BaseSchema):
     This is the schema on how the recommendations are stored in the database.
     """
 
-    type = fields.Str(validate=validate.OneOf(["indicator", "level"]))
-    value = fields.Str()
-    recommendation = fields.Str()
-    group = fields.Str()
-    indicator = fields.Str()
+    title = fields.Str()
+    type = fields.Str(validate=validate.OneOf(["sophisticated", "red_flag"]))
+    description = fields.Str()

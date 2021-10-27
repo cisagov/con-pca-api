@@ -25,7 +25,7 @@
     <div style="display: none">
       <p id="overallStats">{{ json.dumps(cycle.stats.stats) }}</p>
       <p id="indicatorStats">{{ json.dumps(cycle.stats.indicator_stats) }}</p>
-      <p id="recommendations">{{ json.dumps(recommendations) }}</p>
+      <p id="indicators">{{ json.dumps(indicators) }}</p>
       <p id="templateStats">{{ json.dumps(stats.template_stats) }}</p>
       <p id="timeIntervalStats">{{ json.dumps(stats.time_stats) }}</p>
     </div>
@@ -531,8 +531,8 @@
                 </tr>
               </thead>
               <tbody>
-                {% for group, gv in recommendations["indicators"].items() %} {%
-                for indicator, iv in gv.items() %}
+                {% for group, gv in indicators.items() %} {% for indicator, iv
+                in gv.items() %}
                 <tr class="{{ 'indicator-table-top-section' if loop.first }}">
                   {% if loop.index == 1 %}
                   <th

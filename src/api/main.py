@@ -12,7 +12,11 @@ from flask.json import JSONEncoder
 from api.app import app
 from api.commands.load_test_data import load_test_data
 from api.config import EMAIL_MINUTES, TASK_MINUTES, logger
-from api.initialize import initialize_nonhumans, initialize_templates
+from api.initialize import (
+    initialize_nonhumans,
+    initialize_recommendations,
+    initialize_templates,
+)
 from api.phish import emails_job
 from api.tasks import tasks_job
 from api.views.auth_views import (
@@ -25,7 +29,7 @@ from api.views.customer_views import CustomersView, CustomerView, SectorIndustry
 from api.views.cycle_views import CycleStatsView, CyclesView, CycleView
 from api.views.landing_page_views import LandingPagesView, LandingPageView
 from api.views.nonhuman_views import NonHumansView
-from api.views.recommendation_views import RecommendationsView
+from api.views.recommendation_views import RecommendationsView, RecommendationView
 from api.views.report_views import (
     AggregateReportView,
     ReportEmailView,
@@ -71,6 +75,7 @@ rules = [
     ("/nonhumans/", NonHumansView),
     # Recommendation Views
     ("/recommendations/", RecommendationsView),
+    ("/recommendation/<recommendation_id>/", RecommendationView),
     # Report Views
     ("/reports/aggregate/", AggregateReportView),
     # Sector/Industry View
@@ -161,6 +166,7 @@ def api_map():
 @app.before_first_request
 def initialize_db():
     """Initialize database."""
+    initialize_recommendations()
     initialize_templates()
     initialize_nonhumans()
 

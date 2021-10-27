@@ -4,8 +4,9 @@ import json
 import logging
 
 # cisagov Libraries
-from api.manager import NonHumanManager, TemplateManager
+from api.manager import NonHumanManager, RecommendationManager, TemplateManager
 
+recommendation_manager = RecommendationManager()
 template_manager = TemplateManager()
 nonhuman_manager = NonHumanManager()
 
@@ -39,3 +40,15 @@ def initialize_nonhumans():
         logging.info(f"Adding asn org {org}")
         nonhuman_manager.save({"asn_org": org})
     logging.info("ASN Orgs Initialized.")
+
+
+def initialize_recommendations():
+    """Create an initial set of recommendations."""
+    if len(recommendation_manager.all()) > 0:
+        logging.info("Recommendations already initialized")
+        return
+    with open("static/recommendations.json", "r") as f:
+        recommendations = json.load(f)
+        logging.info(f"Found {len(recommendations)} to create.")
+    recommendation_manager.save_many(recommendations)
+    logging.info("Recommendations initialized")
