@@ -198,7 +198,6 @@ There are no required environment variables.
 | `EMAIL_MINUTES` | How often to check for phishing emails to send. | `1` |
 | `TASK_MINUTES` | How often to check for tasks to run. | `1` |
 | `DELAY_MINUTES` | Time to delay between starting a subscription and sending emails. | `1` |
-| `LANDING_SUBDOMAIN` | The subdomain for the sending profile to access landing page. | |
 
 ### Optional ###
 
