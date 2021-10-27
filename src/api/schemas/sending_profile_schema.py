@@ -25,3 +25,4 @@ class SendingProfileSchema(BaseSchema):
     from_address = fields.Str()
     ignore_cert_errors = fields.Bool()
     headers = fields.List(fields.Nested(HeaderSchema))
+    landing_page_domain = fields.Str(required=True)

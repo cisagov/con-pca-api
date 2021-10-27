@@ -10,7 +10,6 @@ from flask import render_template_string
 
 # cisagov Libraries
 from api.app import app
-from api.config import LANDING_SUBDOMAIN
 from api.manager import (
     CustomerManager,
     CycleManager,
@@ -185,10 +184,7 @@ def process_target(sending_profile, target, customer, template, email):
 
 def get_landing_url(sending_profile):
     """Get url for landing page."""
-    sp_domain = (
-        sending_profile["from_address"].split("<")[-1].split("@")[1].replace(">", "")
-    )
-    return f"http://{LANDING_SUBDOMAIN}.{sp_domain}"
+    return f"http://{sending_profile['landing_page_domain']}"
 
 
 def get_tracking_info(sending_profile, cycle_id, target_id):
