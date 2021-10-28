@@ -51,21 +51,26 @@ class Email:
             from_email=from_email,
             html=body,
             to_recipients=[to_email],
+            headers=self.sending_profile.get("headers", []),
         )
         self.server.sendmail(from_email, to_email, message)
 
     def send_mailgun(self, to_email, from_email, subject, body):
         """Send email via mailgun."""
+        data = {
+            "from": from_email,
+            "to": to_email,
+            "subject": subject,
+            "html": body,
+            "text": get_text_from_html(body),
+        }
+        for header in self.sending_profile.get("headers", []):
+            data[f"h:{header['key']}"] = header["value"]
+
         resp = requests.post(
             f"https://api.mailgun.net/v3/{self.sending_profile['mailgun_domain']}/messages",
             auth=("api", self.sending_profile["mailgun_api_key"]),
-            data={
-                "from": from_email,
-                "to": to_email,
-                "subject": subject,
-                "html": body,
-                "text": get_text_from_html(body),
-            },
+            data=data,
         )
         resp.raise_for_status()
         # message = resp.json()
@@ -124,6 +129,7 @@ def build_message(
     to_recipients=[],
     bcc_recipients=[],
     attachments=[],
+    headers=[],
 ):
     """Build raw email for sending."""
     message = MIMEMultipart()
@@ -138,6 +144,9 @@ def build_message(
     message.attach(MIMEText(html, "html"))
     text = get_text_from_html(html)
     message.attach(MIMEText(text, "plain"))
+
+    for header in headers:
+        message[header["key"]] = header["value"]
 
     for filename in attachments:
         with open(filename, "rb") as attachment:
