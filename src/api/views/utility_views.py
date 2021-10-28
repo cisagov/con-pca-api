@@ -43,19 +43,25 @@ class TestEmailView(MethodView):
                 get_from_address(data["smtp"], template["from_address"]), **context
             )
             subject = render_template_string(template["subject"], **context)
-            email.send(
-                to_email=data["email"],
-                from_email=from_address,
-                subject=subject,
-                body=email_body,
-            )
+            try:
+                email.send(
+                    to_email=data["email"],
+                    from_email=from_address,
+                    subject=subject,
+                    body=email_body,
+                )
+            except Exception as e:
+                return jsonify(str(e)), 400
         else:
             context = get_email_context()
             email_body = render_template("emails/test.html", **context)
-            email.send(
-                to_email=data["email"],
-                from_email=data["smtp"]["from_address"],
-                subject="test",
-                body=email_body,
-            )
+            try:
+                email.send(
+                    to_email=data["email"],
+                    from_email=data["smtp"]["from_address"],
+                    subject="test",
+                    body=email_body,
+                )
+            except Exception as e:
+                return jsonify(str(e)), 400
         return jsonify({"success": True}), 200
