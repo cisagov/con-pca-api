@@ -57,6 +57,8 @@ class TemplateSchema(BaseSchema):
     from_address = fields.Str(required=True)
     retired = fields.Bool(missing=False)
     retired_description = fields.Str(default="", allow_none=True)
+    sophisticated = fields.List(fields.Str())
+    red_flag = fields.List(fields.Str())
     subject = fields.Str()
     text = fields.Str()
     html = fields.Str()
