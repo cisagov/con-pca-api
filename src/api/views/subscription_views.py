@@ -12,6 +12,7 @@ from api.manager import (
 )
 from utils.subscriptions import (
     create_subscription_name,
+    get_random_phish_header,
     start_subscription,
     stop_subscription,
 )
@@ -69,6 +70,7 @@ class SubscriptionsView(MethodView):
         customer = customer_manager.get(document_id=subscription["customer_id"])
         subscription["name"] = create_subscription_name(customer)
         subscription["status"] = "created"
+        subscription["phish_header"] = get_random_phish_header()
         response = subscription_manager.save(subscription)
         response["name"] = subscription["name"]
         return jsonify(response)
@@ -118,3 +120,19 @@ class SubscriptionValidView(MethodView):
                 data["cycle_minutes"],
             )
         )
+
+
+class SubscriptionHeaderView(MethodView):
+    """SubscriptionHeaderView."""
+
+    def get(self, subscription_id):
+        """
+        Get.
+
+        Rotate the subscription phishing header.
+        """
+        new_header = get_random_phish_header()
+        subscription_manager.update(
+            document_id=subscription_id, data={"phish_header": new_header}
+        )
+        return jsonify({"phish_header": new_header})

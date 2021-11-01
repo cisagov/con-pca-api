@@ -38,6 +38,7 @@ from api.views.report_views import (
 )
 from api.views.sending_profile_views import SendingProfilesView, SendingProfileView
 from api.views.subscription_views import (
+    SubscriptionHeaderView,
     SubscriptionLaunchView,
     SubscriptionsView,
     SubscriptionValidView,
@@ -88,6 +89,7 @@ rules = [
     ("/subscriptions/valid/", SubscriptionValidView),
     ("/subscription/<subscription_id>/", SubscriptionView),
     ("/subscription/<subscription_id>/launch/", SubscriptionLaunchView),
+    ("/subscription/<subscription_id>/header/", SubscriptionHeaderView),
     # Tag Views
     ("/tags/", TagsView),
     # Template Views

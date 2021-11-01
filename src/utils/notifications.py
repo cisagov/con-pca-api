@@ -99,7 +99,7 @@ class Notification:
         report = self.get_report(self.message_type, context)
 
         attachments = []
-        if self.message_type in ["status_report"]:
+        if self.message_type in ["status_report", "cycle_report"]:
             filename = get_report_pdf(
                 [self.cycle["_id"]],
                 self.message_type.split("_")[0],

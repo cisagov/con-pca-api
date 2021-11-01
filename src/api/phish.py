@@ -106,13 +106,22 @@ def process_subscription_targets(subscription_id, targets):
         fields=["_id", "sending_profile_id", "customer_id"],
     )
 
+    # Get cycle for phish header
+    cycle = cycle_manager.get(
+        filter_data={
+            "subscription_id": subscription_id,
+            "active": True,
+        },
+        fields=["phish_header"],
+    )
+
     # Get sending profile to send emails
     sending_profile = sending_profile_manager.get(
         document_id=subscription["sending_profile_id"]
     )
 
     # Add headers to sending profile
-    add_phish_headers(subscription, sending_profile)
+    add_phish_headers(cycle, sending_profile)
 
     # Get customer for email context
     customer = customer_manager.get(document_id=subscription["customer_id"])
@@ -128,7 +137,7 @@ def process_subscription_targets(subscription_id, targets):
         template_sp = None
         if template.get("sending_profile_id"):
             template_sp = sending_profile_manager.get(template["sending_profile_id"])
-            add_phish_headers(subscription, template_sp)
+            add_phish_headers(cycle, template_sp)
             template_email = Email(sending_profile=template_sp)
 
         for target in targets:
@@ -218,13 +227,13 @@ def decode_tracking_id(s):
     return str(base64.urlsafe_b64decode(s), "utf-8").split("_")
 
 
-def add_phish_headers(subscription, sending_profile):
+def add_phish_headers(cycle, sending_profile):
     """Add Cisa-Phish header to phishing emails."""
     if not sending_profile.get("headers"):
         sending_profile["headers"] = []
     sending_profile["headers"].append(
         {
             "key": "Cisa-Phish",
-            "value": subscription["_id"],
+            "value": cycle["phish_header"],
         }
     )

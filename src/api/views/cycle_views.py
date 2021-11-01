@@ -28,6 +28,7 @@ class CyclesView(MethodView):
                     "send_by_date",
                     "active",
                     "target_count",
+                    "phish_header",
                 ],
             )
         )
