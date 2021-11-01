@@ -188,68 +188,27 @@ def get_time_stats(stats):
     time_stats = {"opened": {}, "clicked": {}}
 
     for event in ["opened", "clicked"]:
+        times = {
+            "one_minutes": 1,
+            "three_minutes": 3,
+            "five_minutes": 5,
+            "thirty_minutes": 30,
+            "sixty_minutes": 60,
+            "two_hours": 120,
+            "three_hours": 180,
+            "four_hours": 240,
+            "one_day": 1440,
+        }
+
         diffs = stats["all"][event]["diffs"]
         total_count = stats["all"][event]["count"]
 
-        count = sum(diff <= timedelta(seconds=60) for diff in diffs)
-        time_stats[event]["one_minutes"] = {
-            "count": count,
-            "ratio": count / total_count,
-        }
-
-        count = sum(diff <= timedelta(minutes=3) for diff in diffs)
-        time_stats[event]["three_minutes"] = {
-            "count": count,
-            "ratio": count / total_count,
-        }
-
-        count = sum(diff <= timedelta(minutes=5) for diff in diffs)
-        time_stats[event]["five_minutes"] = {
-            "count": count,
-            "ratio": count / total_count,
-        }
-
-        count = sum(diff <= timedelta(minutes=15) for diff in diffs)
-        time_stats[event]["fifteen_minutes"] = {
-            "count": count,
-            "ratio": count / total_count,
-        }
-
-        count = sum(diff <= timedelta(minutes=30) for diff in diffs)
-        time_stats[event]["thirty_minutes"] = {
-            "count": count,
-            "ratio": count / total_count,
-        }
-
-        count = sum(diff <= timedelta(minutes=60) for diff in diffs)
-        time_stats[event]["sixty_minutes"] = {
-            "count": count,
-            "ratio": count / total_count,
-        }
-
-        count = sum(diff <= timedelta(hours=2) for diff in diffs)
-        time_stats[event]["two_hours"] = {
-            "count": count,
-            "ratio": count / total_count,
-        }
-
-        count = sum(diff <= timedelta(hours=3) for diff in diffs)
-        time_stats[event]["three_hours"] = {
-            "count": count,
-            "ratio": count / total_count,
-        }
-
-        count = sum(diff <= timedelta(hours=4) for diff in diffs)
-        time_stats[event]["four_hours"] = {
-            "count": count,
-            "ratio": count / total_count,
-        }
-
-        count = sum(diff <= timedelta(hours=24) for diff in diffs)
-        time_stats[event]["one_day"] = {
-            "count": count,
-            "ratio": count / total_count,
-        }
+        for label, minutes in times.items():
+            count = sum(diff <= timedelta(minutes=minutes) for diff in diffs)
+            time_stats[event][label] = {
+                "count": count,
+                "ratio": get_ratio(count, total_count),
+            }
 
     return time_stats
 

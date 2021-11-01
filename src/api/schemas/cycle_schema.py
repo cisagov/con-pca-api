@@ -21,3 +21,4 @@ class CycleSchema(BaseSchema):
     dirty_stats = fields.Bool()
     stats = fields.Nested(CycleStatsSchema)
     nonhuman_stats = fields.Nested(CycleStatsSchema)
+    phish_header = fields.Str()

@@ -2,6 +2,7 @@
 # Standard Python Libraries
 from datetime import datetime, timedelta
 import random
+import string
 from uuid import uuid4
 
 # Third-Party Libraries
@@ -30,6 +31,7 @@ def start_subscription(subscription_id):
     cycle = {}
     cycle.update(calculate_cycle_dates(subscription))
     cycle["subscription_id"] = subscription_id
+    cycle["phish_header"] = subscription["phish_header"]
     cycle["active"] = True
     targets = []
     total_targets = len(subscription["target_email_list"])
@@ -168,3 +170,10 @@ def get_initial_tasks(subscription, cycle):
             }
         )
     return tasks
+
+
+def get_random_phish_header():
+    """Generate a random phish header."""
+    return "".join(
+        random.choice(string.ascii_letters + string.digits) for _ in range(32)  # nosec
+    )
