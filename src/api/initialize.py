@@ -17,6 +17,7 @@ def initialize_templates():
     names = [t["name"] for t in current_templates]
 
     if len(names) > len(set(names)):
+        logging.info("Duplicate templates found, reinitializing.")
         template_manager.delete(params={})
         current_templates = []
 
