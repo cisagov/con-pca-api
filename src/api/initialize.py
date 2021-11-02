@@ -13,7 +13,14 @@ nonhuman_manager = NonHumanManager()
 
 def initialize_templates():
     """Create initial templates."""
-    if len(template_manager.all(fields=["_id"])) > 0:
+    current_templates = template_manager.all(fields=["name"])
+    names = [t["name"] for t in current_templates]
+
+    if len(names) > len(set(names)):
+        template_manager.delete(params={})
+        current_templates = []
+
+    if len(current_templates) > 0:
         logging.info("Templates already initialized.")
         return
 
