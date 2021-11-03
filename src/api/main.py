@@ -131,9 +131,10 @@ sched.add_job(tasks_job, "interval", minutes=TASK_MINUTES)
 sched.start()
 
 # Initialize Database
-initialize_recommendations()
-initialize_templates()
-initialize_nonhumans()
+with app.app_context():
+    initialize_recommendations()
+    initialize_templates()
+    initialize_nonhumans()
 
 
 class CustomJSONEncoder(JSONEncoder):
