@@ -155,7 +155,7 @@ class Manager:
         """Delete item by object id."""
         if document_id:
             return self.db.delete_one(self.document_query(document_id)).raw_result
-        if params:
+        if params or params == {}:
             return self.db.delete_many(params).raw_result
         raise Exception(
             "Either a document id or params must be supplied when deleting."
