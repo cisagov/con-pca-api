@@ -38,6 +38,9 @@ def test_wait_for_ready(main_container):
     assert main_container.is_restarting is False
     assert main_container.exit_code == 0
 
+    # Print logs
+    print(main_container.logs().decode("utf-8"))
+
     # Make a request against landing app
     resp = requests.get("http://localhost:8000")
     assert resp.status_code == 404
