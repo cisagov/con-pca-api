@@ -39,7 +39,13 @@ def initialize_nonhumans():
     """Create initial set of non-human ASN orgs."""
     initial_orgs = ["GOOGLE", "AMAZON-02", "MICROSOFT-CORP-MSN-AS-BLOCK"]
 
-    if len(nonhuman_manager.all()) > 0:
+    current_orgs = [o["asn_org"] for o in nonhuman_manager.all()]
+    if len(current_orgs) > len(set(current_orgs)):
+        logging.info("Duplicate orgs found, reinitializing.")
+        nonhuman_manager.delete(params={})
+        current_orgs = []
+
+    if len(current_orgs) > 0:
         logging.info("Non humans already initialized")
         return
 
@@ -52,9 +58,16 @@ def initialize_nonhumans():
 
 def initialize_recommendations():
     """Create an initial set of recommendations."""
-    if len(recommendation_manager.all()) > 0:
+    current_names = [r["title"] for r in recommendation_manager.all()]
+    if len(current_names) > len(set(current_names)):
+        logging.info("Duplicate recommendations found, reinitializing.")
+        recommendation_manager.delete(params={})
+        current_names = []
+
+    if len(current_names) > 0:
         logging.info("Recommendations already initialized")
         return
+
     with open("static/recommendations.json", "r") as f:
         recommendations = json.load(f)
         logging.info(f"Found {len(recommendations)} to create.")
