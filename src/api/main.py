@@ -124,10 +124,17 @@ for rule in login_rules:
     url = f"{url_prefix}{rule[0]}"
     app.add_url_rule(url, view_func=rule[1].as_view(url))  # type: ignore
 
+# Start Background Jobs
 sched = BackgroundScheduler()
 sched.add_job(emails_job, "interval", minutes=EMAIL_MINUTES, max_instances=3)
 sched.add_job(tasks_job, "interval", minutes=TASK_MINUTES)
 sched.start()
+
+# Initialize Database
+with app.app_context():
+    initialize_recommendations()
+    initialize_templates()
+    initialize_nonhumans()
 
 
 class CustomJSONEncoder(JSONEncoder):
@@ -163,14 +170,6 @@ def api_map():
         if endpoint.rule not in ["/static/<path:filename>", "/"]
     }
     return render_template("index.html", endpoints=endpoints)
-
-
-@app.before_first_request
-def initialize_db():
-    """Initialize database."""
-    initialize_recommendations()
-    initialize_templates()
-    initialize_nonhumans()
 
 
 # management commands
