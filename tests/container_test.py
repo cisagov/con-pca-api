@@ -49,3 +49,9 @@ def test_wait_for_ready(main_container):
     resp = requests.get("http://localhost:5000")
     assert resp.status_code == 200
     assert "Con-PCA" in resp.text
+
+    # Make a request against templates to see if they were initialized properly
+    resp = requests.get("http://localhost:5000/api/templates/")
+    templates = resp.json()
+    template_names = [t["name"] for t in templates]
+    assert len(template_names) == len(set(template_names))
