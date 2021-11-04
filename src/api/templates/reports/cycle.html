@@ -21,6 +21,8 @@
     <script src="{{ url_for('static', filename='js/reports.js') }}"></script>
   </head>
   <body class="mat-typography">
+    <!-- Global Variables Needed -->
+    {% set total_pages = 8 + (stats.template_stats | length) + 2 %}
     <!-- For accessing stats within Javascript -->
     <div style="display: none">
       <p id="overallStats">{{ json.dumps(cycle.stats.stats) }}</p>
@@ -36,7 +38,7 @@
         <div id="blueDateBox">
           <span class="year">{{ datetime.utcnow().strftime("%Y")}}</span><br />
           <span class="dateRange">
-            {{ cycle.start_date.strftime("%Y-%m-%d") }} - {{
+            {{ cycle.start_date.strftime("%Y-%m-%d") }} to {{
             cycle.end_date.strftime("%Y-%m-%d") }}
           </span>
         </div>
@@ -52,10 +54,7 @@
         <div id="whiteBox" class="col-5"></div>
       </div>
       <div class="row">
-        <div id="leftYellowBox"></div>
-      </div>
-      <div class="row">
-        <div id="rightYellowBox"></div>
+        <div id="yellowBox"></div>
       </div>
       <div class="row">
         <div id="blueHacker" class="col-12">
@@ -65,35 +64,32 @@
         </div>
       </div>
       <div class="row">
-        <div class="col">
-          <h2 id="reportTitle">
-            <span class="smallerTitle">Cycle</span><br />Report
-          </h2>
+        <div class="col-8">
+          <h2 id="reportTitle">Cycle Report</h2>
         </div>
         <div class="col">
           <h2 id="reportDate">
-            <br /><span class="smallerTitle"
-              >{{ datetime.utcnow().strftime('%b %d, %Y') }}</span
-            >
+            <br />
+            {{ datetime.utcnow().strftime('%b %d, %Y') }}
           </h2>
         </div>
       </div>
       <div id="coverFooter" class="row mb-2">
         <div id="preparationDetails">
-          Prepared for:<br />
+          <b>Prepared for</b><br />
           {{ customer.name }}<br />
           {{ customer.address_1 }} {{ customer.address_2 }}<br />
           {{ customer.city }}, {{ customer.state }} {{ customer.zip_code }}
         </div>
         <div id="dhsContactDetails">
           <div class="mb-2">
-            Subscription Primary Contact<br />
+            <b>Subscription Primary Contact</b><br />
             {{ subscription.primary_contact.first_name }} {{
             subscription.primary_contact.last_name }}<br />
             {{ subscription.primary_contact.email }}<br />
           </div>
           <div>
-            CISA Contact<br />
+            <b>CISA Contact</b><br />
             vulnerability@cisa.dhs.gov
           </div>
         </div>
@@ -162,6 +158,7 @@
           </div>
         </div>
       </div>
+      <div class="pageNumber">Page | 1 of {{ total_pages }}</div>
     </div>
 
     <!-- Executive Report-->
@@ -207,52 +204,56 @@
         </div>
         <div class="row">
           <div class="col-12">
-            <p class="table-title">Targeted User Measurements</p>
+            <p class="table-title">Table 1: Targeted User Measurements</p>
           </div>
         </div>
         <div class="row">
           <div class="col-12">
-            <table class="report-table w-100 mb-5">
-              <tr>
-                <th>User Activity Metrics</th>
-                <th>Results</th>
-              </tr>
-              <tr>
-                <td>Total users targeted for phishing</td>
-                <td>{{ cycle.target_count }}</td>
-              </tr>
-              <tr>
-                <td># of emails (phishing attempts) sent overall</td>
-                <td>{{ stats.stats.all.sent.count }}</td>
-              </tr>
-              <tr>
-                <td>
-                  # of clicked emails (successful phishing attempts) overall
-                </td>
-                <td>
-                  {{ stats.stats.all.clicked.count }} ({{
-                  stats.stats.all.clicked.ratio * 100 }}% click rate)
-                </td>
-              </tr>
-              <tr>
-                {% set average_click_time =
-                time.convert_seconds(stats.stats.all.clicked.average) %}
-                <td>Average time to first click</td>
-                <td>
-                  {{ average_click_time.hours }} hours, {{
-                  average_click_time.minutes }} minutes, {{
-                  average_click_time.seconds }} seconds
-                </td>
-              </tr>
-              <tr>
-                {% set most_successful_template = stats.template_stats |
-                sort(attribute="clicked.ratio", reverse=True) | first %}
-                <td>Most successful phishing template</td>
-                <td>
-                  Level {{ most_successful_template.template.deception_score }}
-                  "{{ most_successful_template.template.name }}"
-                </td>
-              </tr>
+            <table class="w-100 mb-5">
+              <thead>
+                <tr>
+                  <th>User Activity Metrics</th>
+                  <th>Results</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Total users targeted for phishing</td>
+                  <td>{{ cycle.target_count }}</td>
+                </tr>
+                <tr>
+                  <td># of emails (phishing attempts) sent overall</td>
+                  <td>{{ stats.stats.all.sent.count }}</td>
+                </tr>
+                <tr>
+                  <td>
+                    # of clicked emails (successful phishing attempts) overall
+                  </td>
+                  <td>
+                    {{ stats.stats.all.clicked.count }} ({{
+                    stats.stats.all.clicked.ratio * 100 }}% click rate)
+                  </td>
+                </tr>
+                <tr>
+                  {% set average_click_time =
+                  time.convert_seconds(stats.stats.all.clicked.average) %}
+                  <td>Average time to first click</td>
+                  <td>
+                    {{ average_click_time.hours }} hours, {{
+                    average_click_time.minutes }} minutes, {{
+                    average_click_time.seconds }} seconds
+                  </td>
+                </tr>
+                <tr>
+                  {% set most_successful_template = stats.template_stats |
+                  sort(attribute="clicked.ratio", reverse=True) | first %}
+                  <td>Most successful phishing template</td>
+                  <td>
+                    Level {{ most_successful_template.template.deception_score
+                    }} "{{ most_successful_template.template.name }}"
+                  </td>
+                </tr>
+              </tbody>
             </table>
           </div>
         </div>
@@ -275,9 +276,10 @@
           </div>
         </div>
       </div>
+      <div class="pageNumber">Page | 2 of {{ total_pages }}</div>
     </div>
 
-    <!-- PAGE 5 - Summary -->
+    <!-- Summary -->
     <div class="page">
       <div class="container-fluid">
         <div class="row">
@@ -295,7 +297,7 @@
               If an actual phishing attack is able to bypass technical controls
               and arrive in a user’s inbox, the human target must click on the
               malicious link or attachment for the attack to be successful. In
-              practical exercises, such as this PCA, targeted-user click rates
+              practical exercises, such as this PCA, targeted-user click rates
               will fluctuate depending on the level of email deception used in
               testing. Effective security awareness training, however, should
               result in a noticeable click rate decrease over time and to a
@@ -316,12 +318,12 @@
         <!-- Template Stats Table -->
         <div class="row">
           <div class="col-12">
-            <p class="table-title">Template Stats</p>
+            <p class="table-title">Table 2: Template Stats</p>
           </div>
         </div>
         <div class="row">
           <div class="col-12">
-            <table class="templatesTable">
+            <table>
               <thead>
                 <tr>
                   <th>Rank</th>
@@ -351,7 +353,7 @@
 
         <div class="row" style="margin-top: 25px">
           <div class="col-12">
-            <p class="table-title">Deception Score Stats</p>
+            <p class="table-title">Figure 1: Deception Score Stats</p>
           </div>
         </div>
         <div class="row">
@@ -364,9 +366,11 @@
           </div>
         </div>
       </div>
+
+      <div class="pageNumber">Page | 3 of {{ total_pages }}</div>
     </div>
 
-    <!-- PAGE 6 - SUMMARY CONT. -->
+    <!-- Summary Cont -->
     <div class="page">
       <div class="container-fluid">
         <div class="row">
@@ -378,7 +382,7 @@
           <div class="col-12">
             {% set median_click_time =
             time.convert_seconds(stats.stats.all.clicked.median) %}
-            <p style="text-indent: 30px">
+            <p>
               The figure below shows the percentage of users who clicked during
               certain time intervals in the first 24 hours of being sent a
               phish. Overall, nearly {{
@@ -388,7 +392,7 @@
               {{ median_click_time.minutes }} minutes, and {{
               median_click_time.seconds }} seconds for the entire assessment.
             </p>
-            <p class="table-title">Click Time Interval Chart</p>
+            <p class="table-title">Figure 2: Click Time Interval Chart</p>
           </div>
         </div>
         <div class="row">
@@ -405,6 +409,7 @@
           </div>
         </div>
       </div>
+      <div class="pageNumber">Page | 4 of {{ total_pages }}</div>
     </div>
 
     <!-- Deception Levels -->
@@ -495,6 +500,7 @@
           </div>
         </div>
       </div>
+      <div class="pageNumber">Page | 5 of {{ total_pages }}</div>
     </div>
 
     <!-- Deception Calculator -->
@@ -503,12 +509,12 @@
         <div class="row">
           <div class="col-12">
             <hr />
-            <h2 id="pageTitle">Deception Calculator</h2>
+            <h2 id="pageTitle">Table 3: Deception Calculator</h2>
           </div>
         </div>
         <div class="row">
           <div class="col-12">
-            <p style="text-indent: 20px">
+            <p>
               The following calculator provides the method for determining the
               deception of each template (1 being not deceptive and easy to
               detect and 6 being very deceptive and difficult to detect).
@@ -517,6 +523,7 @@
         </div>
         <div class="row">
           <div class="col-12">
+            <p class="table-title">Deception Calculator</p>
             <table id="indicator-table">
               <thead>
                 <tr>
@@ -542,7 +549,9 @@
                     {{ group | title }}
                   </th>
                   {% endif %}
-                  <td style="width: 75px">{{ iv.name }}</td>
+                  <td style="width: 75px" class="indicator-table-value">
+                    {{ iv.name }}
+                  </td>
                   <td style="width: 75px">
                     {% for value, v in iv["values"].items() %}{% if loop.last
                     %}{{ value }}={{ v["label"] }}{% else %}{{ value }}={{
@@ -569,6 +578,7 @@
           </div>
         </div>
       </div>
+      <div class="pageNumber">Page | 6 of {{ total_pages }}</div>
     </div>
     <div class="page">
       <div class="container-fluid">
@@ -656,6 +666,7 @@
           </div>
         </div>
       </div>
+      <div class="pageNumber">Page | 7 of {{ total_pages }}</div>
     </div>
 
     <!-- Indicators -->
@@ -669,12 +680,12 @@
         </div>
         <div class="row">
           <div class="col-12">
-            <p class="table-title">Indicator Stats</p>
+            <p class="table-title">Table 4: Indicator Stats</p>
           </div>
         </div>
         <div class="row">
           <div class="col-12">
-            <table id="indicatorStatsTable">
+            <table id="indicator-stats-table">
               <thead>
                 <tr>
                   <th>Rank</th>
@@ -704,6 +715,7 @@
           </div>
         </div>
       </div>
+      <div class="pageNumber">Page | 8 of {{ total_pages }}</div>
     </div>
 
     <!-- TEMPLATE PAGES -->
@@ -719,35 +731,33 @@
         <div class="row">
           <div class="col-12">
             <div class="template-stat-header">
-              <table>
-                <tr>
-                  <td>Rank:</td>
-                  <td>{{ loop.index }}</td>
-                </tr>
-                <tr>
-                  <td>Template Name:</td>
-                  <td>{{ template.template.name }}</td>
-                </tr>
-                <tr>
-                  <td>Deception Level:</td>
-                  <td>
-                    {{ template.template.deception_score }} ({{
-                    template.deception_level | title }})
-                  </td>
-                </tr>
-                <tr>
-                  <td>Total Sent:</td>
-                  <td>{{ template.sent.count }}</td>
-                </tr>
-                <tr>
-                  <td>Unique Clicks:</td>
-                  <td>{{ template.clicked.count }}</td>
-                </tr>
-                <tr>
-                  <td>Click Rate:</td>
-                  <td>{{ template.clicked.ratio * 100 }}%</td>
-                </tr>
-              </table>
+              <div class="row">
+                <div class="col-3">Rank:</div>
+                <div class="col">{{loop.index}}</div>
+              </div>
+              <div class="row">
+                <div class="col-3">Template Name:</div>
+                <div class="col">{{ template.template.name }}</div>
+              </div>
+              <div class="row">
+                <div class="col-3">Deception Level:</div>
+                <div class="col">
+                  {{ template.template.deception_score }} ({{
+                  template.deception_level | title }})
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-3">Total Sent:</div>
+                <div class="col">{{loop.index}}</div>
+              </div>
+              <div class="row">
+                <div class="col-3">Unique Clicks:</div>
+                <div class="col">{{ template.clicked.count }}</div>
+              </div>
+              <div class="row">
+                <div class="col-3">Click Rate:</div>
+                <div class="col-3">{{ template.clicked.ratio * 100 }}%</div>
+              </div>
             </div>
             <div class="row" style="margin-bottom: 10px">
               <div class="col-12">
@@ -794,7 +804,7 @@
               recipient, and having a display name and signature of group
               typically seen in the workplace. {% elif
               template.template.deception_score == 5 %} Second highest level of
-              deception, these messages typically target specific organizations
+              deception, these messages typically target specific organizations
               or groups that access a common resource. In real attacks, the goal
               is to have a recipient to download a malicious program on their
               workstation to give the attacker access to the internal network.
@@ -803,7 +813,7 @@
               long pressing on mobile) to show the underlying URL and spoofing
               or mimicking the target organization’s email domain or signature
               block. {% else %} The highest level of deception, these are
-              usually fine-tuned for sensitive account access or deep-pocket
+              usually fine-tuned for sensitive account access or deep-pocket
               credential harvesting and rely on customized content to convey a
               sense of legitimacy. Typical advanced phishing techniques include
               personally addressing the recipient, spoofing or mimicking the
@@ -813,6 +823,9 @@
             </p>
           </div>
         </div>
+      </div>
+      <div class="pageNumber">
+        Page | {{8 + loop.index}} of {{ total_pages }}
       </div>
     </div>
     {% endfor %}
@@ -836,7 +849,7 @@
               target users in real world phishing incidents. A phishing
               technique is an element within a larger phishing scam.
             </p>
-            <h2 class="blue-font">Tecniques</h2>
+            <h2 class="blue-font">Techniques</h2>
             <div style="text-indent: -10px; margin-left: 30px">
               <p>
                 <b>A fake link. </b>The context of the email can be anything,
@@ -906,16 +919,14 @@
                 2013 according to FBI reports. A company’s email infrastructure
                 is hacked or spoofed and someone pretending to be the CEO tells
                 their phishing target that they need help doing an urgent wire
-                transfer. Sometimes the target is threatened with job loss or
-                public shaming if they don’t comply. Setting and following
-                established protocols that require a verbal phone call to
-                confirm the transfer or having an additional person to submit
-                the request are two ways to block this type of scam from
-                succeeding.
+                transfer.
               </p>
             </div>
           </div>
         </div>
+      </div>
+      <div class="pageNumber">
+        Page | {{8 + (stats.template_stats | length) + 1}} of {{ total_pages }}
       </div>
     </div>
     <div class="page">
@@ -927,6 +938,15 @@
         </div>
         <div class="row">
           <div class="col-12">
+            <div style="margin-left: 30px">
+              <p>
+                Sometimes the target is threatened with job loss or public
+                shaming if they don’t comply. Setting and following established
+                protocols that require a verbal phone call to confirm the
+                transfer or having an additional person to submit the request
+                are two ways to block this type of scam from succeeding.
+              </p>
+            </div>
             <div style="text-indent: -10px; margin-left: 30px">
               <p>
                 <b>Business Email Compromise (Vender Product Invoice). </b>
@@ -951,13 +971,16 @@
               </p>
               <p>
                 <b>Security incident alert with offer to help. </b>This scam
-                uses the fake contact information or fake website techniques in
+                uses the fake contact information or fake website techniques in
                 their plot to first get the target to panic and then trust the
                 attacker as the quickest solution to their problem.
               </p>
             </div>
           </div>
         </div>
+      </div>
+      <div class="pageNumber">
+        Page | {{8 + (stats.template_stats | length) + 2}} of {{ total_pages }}
       </div>
     </div>
   </body>
