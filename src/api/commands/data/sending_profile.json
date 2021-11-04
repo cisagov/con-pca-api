@@ -1,6 +1,7 @@
 {
   "from_address": "admin@example.com",
   "interface_type": "SMTP",
+  "landing_page_domain": "test.com",
   "name": "Test Sending Profile",
   "smtp_host": "smtp.mailgun.org:587",
   "smtp_password": "abcdefg12345",

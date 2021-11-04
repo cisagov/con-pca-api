@@ -192,6 +192,7 @@ def get_time_stats(stats):
             "one_minutes": 1,
             "three_minutes": 3,
             "five_minutes": 5,
+            "fifteen_minutes": 15,
             "thirty_minutes": 30,
             "sixty_minutes": 60,
             "two_hours": 120,

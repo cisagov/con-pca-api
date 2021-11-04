@@ -80,7 +80,7 @@ def get_indicators():
         },
         "relevancy": {
             "organization": {
-                "name": "Orginization",
+                "name": "Organization",
                 "values": {"0": {"label": "No"}, "1": {"label": "Yes"}},
             },
             "public_news": {

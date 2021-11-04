@@ -139,13 +139,13 @@ function createStatsByDeceptionChart() {
     datasets: [
       {
         data: sentStats,
-        backgroundColor: "#064875",
+        backgroundColor: "#164a91",
         barThickness: 40,
         label: "Sent",
       },
       {
         data: clickStats,
-        backgroundColor: "#fcbf10",
+        backgroundColor: "#fdc010",
         barThickness: 40,
         label: "Clicked",
       },
@@ -171,7 +171,17 @@ function createStatsByDeceptionChart() {
     scales: {
       y: {
         ticks: {
-          stepSize: 200,
+          maxTicksLimit: 6,
+        },
+        title: {
+          display: true,
+          text: "Number Sent/Clicked",
+        },
+      },
+      x: {
+        title: {
+          display: true,
+          text: "Deception Level",
         },
       },
     },
@@ -220,7 +230,7 @@ function clickRateTimeIntervalChart() {
           clicked.four_hours.ratio * 100,
           clicked.one_day.ratio * 100,
         ],
-        backgroundColor: "#064875",
+        backgroundColor: "#164a91",
         label: "Clicked Percentage",
       },
     ],
@@ -248,7 +258,17 @@ function clickRateTimeIntervalChart() {
     scales: {
       y: {
         ticks: {
-          stepSize: 200,
+          maxTicksLimit: 4,
+        },
+        title: {
+          display: true,
+          text: "% of Unique User Clicks",
+        },
+      },
+      x: {
+        title: {
+          display: true,
+          text: "Time Intervals",
         },
       },
     },
