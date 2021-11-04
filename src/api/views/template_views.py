@@ -2,6 +2,7 @@
 # Third-Party Libraries
 from flask import jsonify, request
 from flask.views import MethodView
+from marshmallow.exceptions import ValidationError
 
 # cisagov Libraries
 from api.manager import CycleManager, SubscriptionManager, TemplateManager
@@ -34,7 +35,10 @@ class TemplatesView(MethodView):
         data = request.json
         if template_manager.exists({"name": data["name"]}):
             return jsonify({"error": "Template with that name already exists."}), 400
-        return jsonify(template_manager.save(data))
+        try:
+            return jsonify(template_manager.save(data))
+        except ValidationError as e:
+            return jsonify(str(e)), 400
 
 
 class TemplateView(MethodView):
@@ -68,8 +72,11 @@ class TemplateView(MethodView):
 
         template = template_manager.get(document_id=template_id)
         template.update(data)
-        template_manager.update(document_id=template_id, data=template)
-        return jsonify({"success": True})
+        try:
+            template_manager.update(document_id=template_id, data=template)
+            return jsonify({"success": True})
+        except ValidationError as e:
+            return jsonify(str(e)), 400
 
     def delete(self, template_id):
         """Delete."""

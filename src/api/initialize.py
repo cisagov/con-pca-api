@@ -3,6 +3,9 @@
 import json
 import logging
 
+# Third-Party Libraries
+from marshmallow.exceptions import ValidationError
+
 # cisagov Libraries
 from api.manager import NonHumanManager, RecommendationManager, TemplateManager
 
@@ -13,7 +16,12 @@ nonhuman_manager = NonHumanManager()
 
 def initialize_templates():
     """Create initial templates."""
-    current_templates = template_manager.all(fields=["name"])
+    try:
+        current_templates = template_manager.all()
+    except ValidationError:  # TODO: Remove this after templates are initialized properly.
+        logging.info("Error validating templates. Resetting.")
+        template_manager.delete(params={})
+        current_templates = []
     names = [t["name"] for t in current_templates]
 
     if len(names) > len(set(names)):

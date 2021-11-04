@@ -1,6 +1,6 @@
 """Template Schemas."""
 # Third-Party Libraries
-from marshmallow import Schema, fields
+from marshmallow import Schema, fields, validate
 
 # cisagov Libraries
 from api.schemas.base_schema import BaseSchema
@@ -53,12 +53,12 @@ class TemplateSchema(BaseSchema):
     name = fields.Str(required=True)
     landing_page_id = fields.Str(required=False, allow_none=True)
     sending_profile_id = fields.Str(required=False, allow_none=True)
-    deception_score = fields.Integer()
+    deception_score = fields.Int(validate=validate.Range(min=1, max=6))
     from_address = fields.Str(required=True)
     retired = fields.Bool(missing=False)
     retired_description = fields.Str(default="", allow_none=True)
-    sophisticated = fields.List(fields.Str())
-    red_flag = fields.List(fields.Str())
+    sophisticated = fields.List(fields.Str(), allow_none=True)
+    red_flag = fields.List(fields.Str(), allow_none=True)
     subject = fields.Str()
     text = fields.Str()
     html = fields.Str()

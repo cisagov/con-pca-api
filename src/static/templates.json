@@ -420,12 +420,12 @@
     "text": "The salary guidelines for your organization have been updated. We request that review any changes that may apply to you. You can navigate to OPM's website and view the updated salary guidance at the following link https://{{customer['identifier']}}.com\n\nOffice of\u00a0{{customer['name']}}\nHuman Relations"
   },
   {
-    "deception_score": 7,
+    "deception_score": 6,
     "from_address": "Internal Notification <donotreply@domain.com>",
     "html": "<p class=\"MsoNormal\" style=\"margin: 0in; font-size: 11pt; font-family: Calibri, sans-serif; caret-color: rgb(0, 0, 0); color: rgb(0, 0, 0); letter-spacing: normal; text-size-adjust: auto;\"><o:p>&nbsp;</o:p></p><p class=\"MsoNormal\" style=\"margin: 0in 0in 12pt; font-size: 11pt; font-family: Calibri, sans-serif; caret-color: rgb(0, 0, 0); color: rgb(0, 0, 0); letter-spacing: normal; text-size-adjust: auto;\">CONFIDENTIAL COMMUNICATION&nbsp;<br><br>It is with regret that we inform all of our&nbsp;employees that we have had a significant breach of our data. Tens of thousands of customers are impacted.<br><br>Our highest concern&nbsp;is to prepare ourselves for the&nbsp;questions and concerns&nbsp;that will be coming our&nbsp;way.&nbsp;Technical teams have been brought in to conduct a full forensic review of the event. Lawyers are currently assisting with the details of the release that will be released over the next few days as public announcements. More details will be provided as we get them.<br><br>The purpose of this email is to prepare you, as best as possible, for interactions with our customers. Please review the attachment or&nbsp;<a href=\"{{url}}\" target=\"_blank\" title=\"https://protected-forms.com/XdXJvsPWh0dHkBzOi8vcHjJvdGVjrsdGVkfLWZvcm1zqLmmNvbS9wYWdlcy9jMzk1kNWIxYzQ4YSZlbWFpbF90ZW1wbGF0ZV9pZD0zNTQ2NDImYWN0aW9uPXByZXZpZXcmdXNlcl9pZD0yMDYyNzYyOA==\" style=\"color: blue; text-decoration-line: underline;\">click here</a>&nbsp;for full response plan.<br><br>Under no circumstance can you release any hint to anyone of this until it is officially released by our lawyers.<br><br>Sincerely,<br><br>Incident Response Officer</p>",
     "indicators": {
       "appearance": {
-        "grammar": 2,
+        "grammar": 1,
         "link_domain": 1,
         "logo_graphics": 1
       },
@@ -450,12 +450,12 @@
     "text": "CONFIDENTIAL COMMUNICATION\u00a0It is with regret that we inform all of our\u00a0employees that we have had a significant breach of our data. Tens of thousands of customers are impacted.Our highest concern\u00a0is to prepare ourselves for the\u00a0questions and concerns\u00a0that will be coming our\u00a0way.\u00a0Technical teams have been brought in to conduct a full forensic review of the event. Lawyers are currently assisting with the details of the release that will be released over the next few days as public announcements. More details will be provided as we get them.The purpose of this email is to prepare you, as best as possible, for interactions with our customers. Please review the attachment or\u00a0click here\u00a0for full response plan.Under no circumstance can you release any hint to anyone of this until it is officially released by our lawyers.Sincerely,Incident Response Officer"
   },
   {
-    "deception_score": 7,
+    "deception_score": 6,
     "from_address": "Internal Notification <IT@domain.com>",
     "html": "Our software provider is pushing a high-priority, out-of-band patch update<br>given the recently discovered critical vulnerability affecting all<br>versions. It is imperitive to go to the following link to ensure your<br>machine has been updated and is secure. There is no time for your IT<br>administrator to update all the machines themselves and they need your<br>help. Thank you for being timely with this request.<br><br>UPDATE NOW <a href=\"{{url}}\">http://www.updatesoftwareversion.org</a><br>",
     "indicators": {
       "appearance": {
-        "grammar": 2,
+        "grammar": 1,
         "link_domain": 1,
         "logo_graphics": 0
       },
@@ -1080,12 +1080,12 @@
     "text": "{{target['email']}}, a\u00a0file has been shared with you from your organization:\n\nGo to\u00a0Weekly Finances Report"
   },
   {
-    "deception_score": 11,
+    "deception_score": 6,
     "from_address": "CISA <safelist-test@domain.com>",
     "html": "<span style=\"letter-spacing: 0.2506px;\">{{target['email']}},</span><div style=\"letter-spacing: 0.2506px;\"><br></div><div style=\"letter-spacing: 0.2506px;\">This is a test to verify your safelisting configuration. Please click the following link. You should see a \"Don't Panic\" Landing Page, or if it's outside of the testing timeline, you should see a generic \"404 page not found\" message.</div><div style=\"letter-spacing: 0.2506px;\"><br></div><div style=\"letter-spacing: 0.2506px;\">{{url}}</div><div style=\"letter-spacing: 0.2506px;\"><br></div><div style=\"letter-spacing: 0.2506px;\">Thanks,</div><div style=\"letter-spacing: 0.2506px;\"><br></div><div style=\"letter-spacing: 0.2506px;\">CISA</div>",
     "indicators": {
       "appearance": {
-        "grammar": 2,
+        "grammar": 1,
         "link_domain": 1,
         "logo_graphics": 1
       },
@@ -1097,12 +1097,12 @@
       },
       "relevancy": {
         "organization": 1,
-        "public_news": 1
+        "public_news": 0
       },
       "sender": {
-        "authoritative": 2,
-        "external": 1,
-        "internal": 2
+        "authoritative": 1,
+        "external": 0,
+        "internal": 1
       }
     },
     "name": "Generic Test Template (High)",
@@ -1170,7 +1170,7 @@
     "text": "Hey!Are you busy?? I talked to {{fake.name_female}} and she said you could help me. I need u toprocess an elctronic payment for me today. Let me know when you are free soI can pay u back later nxt week. ebank.com Thanx! I owe you!!{{fake.first_name}}Sent via mobile"
   },
   {
-    "deception_score": 7,
+    "deception_score": 6,
     "from_address": "Parking Program Resources <parking@domain.com>",
     "html": "{{customer['name']}} would like to encourage employees to reduce<br>their drive alone commuting by offering several different incentives under<br>the Employee Carpool Incentive Program.<br><br>Starting {{time.current_date_long()}}, we are expanding our Free Parking for Ridesharing<br>option to include Reserved Parking. If you commute to work by van pool or<br>carpool with other employees, the pool vehicle is eligible to<br>reserve their parking spot for one month at a time.<br><br>To learn more about the program or to sign up, please visit<br><a href=\"{{url}}\">https://{{customer['identifier']}}.parking.com/enroll</a><br><br>Regards,<div><br><span style=\"letter-spacing: 0.2506px;\">Employee Carpool&nbsp;</span><span style=\"letter-spacing: 0.2506px;\">Incentive Program</span><br>{{customer['name']}}<br></div>",
     "indicators": {
@@ -1192,7 +1192,7 @@
       "sender": {
         "authoritative": 2,
         "external": 1,
-        "internal": 2
+        "internal": 1
       }
     },
     "name": "New Parking Program",
@@ -1800,12 +1800,12 @@
     "text": "*This is an automated message*Hello,\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tYou have been assigned as the lead reviewer for the following externally\nsubmitted resume:\n\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t*APPLICANT NAME: *{{fake.first_name}}\u00a0{{fake.last_name}}\n*RESUME:* {{fake.last_name}}-{{time.current_month_short()}}{{time.current_year_long()}}-Resume.pdf\n\n\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t*Company:*\u00a0{{fake.company}}\n*Published Job Title:* Junior Assistant-100972\n*Experience Requirement:* Two years of experience; Computer experience\nnecessary (Microsoft Word, Excel, and POS systems);\nmust be able to handle routine office procedures efficiently; public\nspeaking skills helpful\n\t\t\t\t\t\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\tTo decline or reassign the reviewer position, please contact\nthe administrator"
   },
   {
-    "deception_score": 7,
+    "deception_score": 6,
     "from_address": "{{customer['identifier']}} <donotreply@domain.com>",
     "html": "<p class=\"MsoNormal\" style=\"margin: 0in; font-size: 11pt; font-family: Calibri, sans-serif; caret-color: rgb(0, 0, 0); color: rgb(0, 0, 0); letter-spacing: normal; text-size-adjust: auto;\"><o:p>&nbsp;</o:p></p><p align=\"center\" style=\"caret-color: rgb(0, 0, 0); color: rgb(0, 0, 0); font-family: -webkit-standard; letter-spacing: normal; text-size-adjust: auto; text-align: center;\"><span style=\"font-size: 7.5pt;\">Please do not respond to this message.<br>This is a system-generated e-mail from an automated mailbox.</span><o:p></o:p></p><div class=\"MsoNormal\" align=\"center\" style=\"margin: 0in; font-size: 11pt; font-family: Calibri, sans-serif; caret-color: rgb(0, 0, 0); color: rgb(0, 0, 0); letter-spacing: normal; text-size-adjust: auto; text-align: center;\"></div><p style=\"caret-color: rgb(0, 0, 0); color: rgb(0, 0, 0); font-family: -webkit-standard; letter-spacing: normal; text-size-adjust: auto;\"><br>{{customer['name']}} requires you to verify your employee payroll information before the cutoff for the pay period ending last week.<br><br>Click the link the following link to go directly to the&nbsp;<a href=\"{{url}}\" target=\"_blank\" style=\"color: blue; text-decoration-line: underline;\">Portal</a>, once logged into the Client&nbsp;Portal, you can the My Information tab to review your information.<o:p></o:p></p><p style=\"caret-color: rgb(0, 0, 0); color: rgb(0, 0, 0); font-family: -webkit-standard; letter-spacing: normal; text-size-adjust: auto;\"><br></p><p style=\"caret-color: rgb(0, 0, 0); color: rgb(0, 0, 0); font-family: -webkit-standard; letter-spacing: normal; text-size-adjust: auto;\">If there is any discrepancy in the included information, please notify your Payroll Manager before your timecard is processed next week or it may cause an interruption to your next scheduled deposit.<br>&nbsp;</p>",
     "indicators": {
       "appearance": {
-        "grammar": 2,
+        "grammar": 1,
         "link_domain": 1,
         "logo_graphics": 1
       },
