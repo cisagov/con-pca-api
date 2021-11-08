@@ -7,8 +7,7 @@ import boto3
 from botocore.exceptions import ClientError
 
 # cisagov Libraries
-from api.config import COGNITO_CLIENT_ID, COGNITO_USER_POOL_ID, SES_ASSUME_ROLE_ARN
-from utils.emails import build_message
+from api.config.environment import COGNITO_CLIENT_ID, COGNITO_USER_POOL_ID
 
 
 class AWS:
@@ -145,30 +144,18 @@ class STS(AWS):
 class SES(AWS):
     """SES."""
 
-    def __init__(self):
+    def __init__(self, assume_role_arn=None):
         """Init."""
-        if SES_ASSUME_ROLE_ARN:
+        if assume_role_arn:
             sts = STS()
-            self.client = sts.assume_role_client("ses", SES_ASSUME_ROLE_ARN)
+            self.client = sts.assume_role_client("ses", assume_role_arn)
         else:
             super().__init__("ses")
 
-    def send_email(
-        self, source: str, to: list, subject: str, html: str, attachments=[]
-    ):
+    def send_email(self, message):
         """Send email via SES."""
         try:
-            message = build_message(
-                subject=subject,
-                from_email=source,
-                bcc_recipients=to,
-                html=html,
-                attachments=attachments,
-            )
-
-            return self.client.send_raw_email(
-                RawMessage={"Data": message},
-            )
+            return self.client.send_raw_email(RawMessage={"Data": message})
         except ClientError as e:
             logging.exception(e)
             return e.response["Error"]

@@ -8,7 +8,7 @@ import cognitojwt
 from flask import abort, g, request
 
 # cisagov Libraries
-from api.config import (
+from api.config.environment import (
     AWS_REGION,
     COGNITO_CLIENT_ID,
     COGNITO_USER_POOL_ID,

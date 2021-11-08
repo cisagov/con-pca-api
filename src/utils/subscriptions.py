@@ -9,7 +9,7 @@ from uuid import uuid4
 import dateutil.parser  # type: ignore
 
 # cisagov Libraries
-from api import config
+from api.config import environment
 from api.manager import (
     CycleManager,
     SubscriptionManager,
@@ -123,7 +123,7 @@ def calculate_cycle_dates(subscription):
     if start_date < now:
         start_date = now
 
-    start_date = start_date + timedelta(minutes=config.DELAY_MINUTES)
+    start_date = start_date + timedelta(minutes=environment.DELAY_MINUTES)
     send_by_date = start_date + timedelta(minutes=subscription["cycle_length_minutes"])
     end_date = send_by_date + timedelta(minutes=subscription["cooldown_minutes"])
     return {
@@ -153,7 +153,7 @@ def get_initial_tasks(subscription, cycle):
     yearly_minutes = get_yearly_minutes()
     task_types = {
         "start_subscription_email": start_date
-        + timedelta(minutes=config.DELAY_MINUTES),
+        + timedelta(minutes=environment.DELAY_MINUTES),
         "status_report": start_date + timedelta(minutes=report_minutes),
         "cycle_report": start_date + timedelta(minutes=cycle_minutes),
         "yearly_report": start_date + timedelta(minutes=yearly_minutes),
