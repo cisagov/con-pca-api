@@ -8,11 +8,12 @@ import os
 from flask import render_template
 
 # cisagov Libraries
-from api.config import SMTP_FROM
+from api.config.application import AppConfig
 from api.manager import SubscriptionManager, TemplateManager
-from utils.aws import SES
+from utils.emails import Email
 from utils.reports import get_report_pdf
 
+app_config = AppConfig()
 template_manager = TemplateManager()
 subscription_manager = SubscriptionManager()
 
@@ -72,18 +73,18 @@ class Notification:
 
     def get_to_addresses(self):
         """Get email addresses to send to."""
-        return [
-            self.subscription["primary_contact"]["email"],
-            self.subscription["admin_email"],
-        ]
+        return {
+            "to": [self.subscription["primary_contact"]["email"]],
+            "bcc": [self.subscription["admin_email"]],
+        }
 
-    def add_notification_history(self, addresses):
+    def add_notification_history(self, addresses, from_address):
         """Add history of notification to subscription."""
         data = {
             "message_type": self.message_type,
             "sent": datetime.now(),
             "email_to": addresses,
-            "email_from": SMTP_FROM,
+            "email_from": from_address,
         }
         subscription_manager.add_to_list(
             document_id=self.subscription["_id"],
@@ -93,7 +94,6 @@ class Notification:
 
     def send(self, nonhuman=False):
         """Send Email."""
-        ses = SES()
         # Set Context
         context = self.set_context()
         report = self.get_report(self.message_type, context)
@@ -112,14 +112,29 @@ class Notification:
 
         logging.info(f"Sending template {self.message_type} to {addresses}")
         try:
-            ses.send_email(
-                source=SMTP_FROM,
-                to=addresses,
+            config = app_config.load()
+            sending_profile = {
+                "interface_type": config["REPORTING_INTERFACE_TYPE"],
+                "smtp_host": config["REPORTING_SMTP_HOST"],
+                "smtp_username": config["REPORTING_SMTP_USERNAME"],
+                "smtp_password": config["REPORTING_SMTP_PASSWORD"],
+                "mailgun_domain": config["REPORTING_MAILGUN_DOMAIN"],
+                "mailgun_api_key": config["REPORTING_MAILGUN_API_KEY"],
+                "ses_role_arn": config["REPORTING_SES_ARN"],
+                "headers": [],
+            }
+            from_address = config["REPORTING_FROM_ADDRESS"]
+            email = Email(sending_profile)
+            email.send(
+                from_email=from_address,
+                to_recipients=addresses["to"],
+                bcc_recipients=addresses["bcc"],
                 subject=report["subject"],
-                html=report["html"],
+                body=report["html"],
                 attachments=attachments,
             )
-            self.add_notification_history(addresses)
+
+            self.add_notification_history(addresses, from_address)
         except Exception as e:
             raise e
         finally:

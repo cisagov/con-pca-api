@@ -168,7 +168,7 @@ def process_subscription_targets(subscription_id, targets):
     )
 
 
-def process_target(sending_profile, target, customer, template, email):
+def process_target(sending_profile, target, customer, template, email: Email):
     """Send email to target."""
     tracking_info = get_tracking_info(
         sending_profile,
@@ -189,7 +189,7 @@ def process_target(sending_profile, target, customer, template, email):
     )
     subject = render_template_string(template["subject"], **context)
     email.send(
-        to_email=target["email"],
+        to_recipients=[target["email"]],
         from_email=from_address,
         subject=subject,
         body=email_body,

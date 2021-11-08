@@ -1,6 +1,6 @@
 """Wsgi."""
 # cisagov Libraries
-from api.config import API_HOST, API_PORT
+from api.config.environment import API_HOST, API_PORT
 from api.main import app
 
 if __name__ == "__main__":
