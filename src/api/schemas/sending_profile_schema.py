@@ -24,6 +24,7 @@ class SendingProfileSchema(BaseSchema):
             [
                 "SMTP",
                 "Mailgun",
+                "SES",
             ]
         ),
     )
@@ -39,5 +40,8 @@ class SendingProfileSchema(BaseSchema):
     # Mailgun
     mailgun_domain = fields.Str()
     mailgun_api_key = fields.Str()
+
+    # SES
+    ses_role_arn = fields.Str()
 
     # TODO: Write up validations based on Type

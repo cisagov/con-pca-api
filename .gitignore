@@ -11,6 +11,7 @@ __pycache__
 .lambda
 .vs
 htmlcov
+local_testing.py
 
 .vscode
 

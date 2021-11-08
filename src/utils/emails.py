@@ -10,13 +10,12 @@ from smtplib import SMTP
 # Third-Party Libraries
 from bs4 import BeautifulSoup
 import requests  # type: ignore
+from requests.exceptions import HTTPError  # type: ignore
 
 # cisagov Libraries
 from utils import time
+from utils.aws import SES
 from utils.fake import Fake
-
-# TODO: Headers
-# h:X-My-Header	h: prefix followed by an arbitrary value allows to append a custom MIME header to the message (X-My-Header in this case). For example, h:Reply-To to specify Reply-To address.
 
 
 class Email:
@@ -34,32 +33,70 @@ class Email:
                 self.sending_profile["smtp_password"],
             )
 
-    def send(self, to_email, from_email, subject, body):
+    def send(
+        self,
+        from_email,
+        subject,
+        body,
+        to_recipients=[],
+        bcc_recipients=[],
+        attachments=[],
+    ):
         """Send email."""
         if self.sending_profile["interface_type"] == "SMTP":
             logging.info("Sending email via SMTP")
-            self.send_smtp(to_email, from_email, subject, body)
+            self.send_smtp(
+                from_email, subject, body, to_recipients, bcc_recipients, attachments
+            )
         elif self.sending_profile["interface_type"] == "Mailgun":
             logging.info("Sending email via Mailgun")
-            self.send_mailgun(to_email, from_email, subject, body)
-        logging.info(f"Sent email to {to_email} from {from_email}.")
+            self.send_mailgun(
+                from_email, subject, body, to_recipients, bcc_recipients, attachments
+            )
+        elif self.sending_profile["interface_type"] == "SES":
+            logging.info("Sending email via SES")
+            self.send_ses(
+                from_email, subject, body, to_recipients, bcc_recipients, attachments
+            )
+        logging.info(
+            f"Sent email to {to_recipients}, {bcc_recipients} from {from_email}."
+        )
 
-    def send_smtp(self, to_email, from_email, subject, body):
+    def send_smtp(
+        self,
+        from_email,
+        subject,
+        body,
+        to_recipients=[],
+        bcc_recipients=[],
+        attachments=[],
+    ):
         """Send email via SMTP."""
         message = build_message(
             subject=subject,
             from_email=from_email,
             html=body,
-            to_recipients=[to_email],
+            to_recipients=to_recipients,
+            bcc_recipients=bcc_recipients,
             headers=self.sending_profile.get("headers", []),
+            attachments=attachments,
         )
-        self.server.sendmail(from_email, to_email, message)
+        self.server.sendmail(from_email, to_recipients, message)
 
-    def send_mailgun(self, to_email, from_email, subject, body):
+    def send_mailgun(
+        self,
+        from_email,
+        subject,
+        body,
+        to_recipients=[],
+        bcc_recipients=[],
+        attachments=[],
+    ):
         """Send email via mailgun."""
         data = {
             "from": from_email,
-            "to": to_email,
+            "to": to_recipients,
+            "bcc": bcc_recipients,
             "subject": subject,
             "html": body,
             "text": get_text_from_html(body),
@@ -71,12 +108,43 @@ class Email:
             f"https://api.mailgun.net/v3/{self.sending_profile['mailgun_domain']}/messages",
             auth=("api", self.sending_profile["mailgun_api_key"]),
             data=data,
+            files=[
+                ("attachment", ("report.pdf", open(a, "rb").read()))
+                for a in attachments
+            ],
         )
-        resp.raise_for_status()
+        try:
+            resp.raise_for_status()
+        except HTTPError as e:
+            logging.exception(e)
+            logging.error(resp.text)
+            raise e
         # message = resp.json()
         # The message id that comes back looks like <20211027170419.1.8E418A15D17BB7E3@example.com>
         # This removes < and > that surround the message id for filtering
         # message_id = message["id"][1:-1]
+
+    def send_ses(
+        self,
+        from_email,
+        subject,
+        body,
+        to_recipients=[],
+        bcc_recipients=[],
+        attachments=[],
+    ):
+        """Send email via SES."""
+        ses = SES(self.sending_profile["ses_role_arn"])
+        message = build_message(
+            subject=subject,
+            from_email=from_email,
+            html=body,
+            to_recipients=to_recipients,
+            bcc_recipients=bcc_recipients,
+            headers=self.sending_profile.get("headers", []),
+            attachments=attachments,
+        )
+        ses.send_email(message)
 
     def __del__(self):
         """On deconstruct, quit server."""

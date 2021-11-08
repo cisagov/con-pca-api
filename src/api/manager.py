@@ -8,7 +8,8 @@ from flask import g
 import pymongo
 
 # cisagov Libraries
-from api.config import DB
+from api.config.environment import DB
+from api.schemas.config_schema import ConfigSchema
 from api.schemas.customer_schema import CustomerSchema
 from api.schemas.cycle_schema import CycleSchema
 from api.schemas.landing_page_schema import LandingPageSchema
@@ -243,6 +244,17 @@ class Manager:
             {"$set": self.load_data(data, partial=True)},
             return_document=pymongo.ReturnDocument.AFTER,
             projection=self.convert_fields(fields),
+        )
+
+
+class ConfigManager(Manager):
+    """ConfigManager."""
+
+    def __init__(self):
+        """Super."""
+        return super().__init__(
+            collection="config",
+            schema=ConfigSchema,
         )
 
 
