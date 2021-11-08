@@ -1,6 +1,7 @@
 """Domain manager."""
 # Standard Python Libraries
 from datetime import date
+import logging
 from types import FunctionType, MethodType
 
 # Third-Party Libraries
@@ -11,7 +12,7 @@ from flask.json import JSONEncoder
 # cisagov Libraries
 from api.app import app
 from api.commands.load_test_data import load_test_data
-from api.config import EMAIL_MINUTES, TASK_MINUTES, logger
+from api.config.environment import EMAIL_MINUTES, TASK_MINUTES
 from api.initialize import (
     initialize_nonhumans,
     initialize_recommendations,
@@ -25,6 +26,7 @@ from api.views.auth_views import (
     RegisterView,
     ResetPasswordView,
 )
+from api.views.config_views import ConfigView
 from api.views.customer_views import CustomersView, CustomerView, SectorIndustryView
 from api.views.cycle_views import CycleStatsView, CyclesView, CycleView
 from api.views.landing_page_views import LandingPagesView, LandingPageView
@@ -59,6 +61,8 @@ from utils.decorators.auth import auth_required
 url_prefix = "/api"
 
 rules = [
+    # Config Views
+    ("/config/", ConfigView),
     # Customer Views
     ("/customers/", CustomersView),
     ("/customer/<customer_id>/", CustomerView),
@@ -124,6 +128,8 @@ for rule in login_rules:
     url = f"{url_prefix}{rule[0]}"
     app.add_url_rule(url, view_func=rule[1].as_view(url))  # type: ignore
 
+logging.basicConfig(level=logging.INFO)
+
 # Start Background Jobs
 sched = BackgroundScheduler()
 sched.add_job(emails_job, "interval", minutes=EMAIL_MINUTES, max_instances=3)
@@ -163,7 +169,7 @@ app.json_encoder = CustomJSONEncoder
 @app.route("/")
 def api_map():
     """List endpoints for api."""
-    logger.info("API is up and running.")
+    logging.info("API is up and running.")
     endpoints = {
         endpoint.rule: endpoint.methods
         for endpoint in app.url_map.__dict__["_rules"]
@@ -178,4 +184,4 @@ def load_dummy_data():
     """Load test data to db."""
     initialize_templates()
     load_test_data()
-    logger.info("Success.")
+    logging.info("Success.")
