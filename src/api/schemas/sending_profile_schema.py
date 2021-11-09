@@ -31,6 +31,7 @@ class SendingProfileSchema(BaseSchema):
     from_address = fields.Str()
     headers = fields.List(fields.Nested(HeaderSchema))
     landing_page_domain = fields.Str(required=True)
+    sending_ips = fields.Str()
 
     # SMTP
     smtp_username = fields.Str()
