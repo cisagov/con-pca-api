@@ -8,6 +8,7 @@ from types import FunctionType, MethodType
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import render_template
 from flask.json import JSONEncoder
+from marshmallow.exceptions import ValidationError
 
 # cisagov Libraries
 from api.app import app
@@ -164,6 +165,13 @@ class CustomJSONEncoder(JSONEncoder):
 
 
 app.json_encoder = CustomJSONEncoder
+
+
+@app.errorhandler(ValidationError)
+def handle_validation_error(e):
+    """Handle a validation error from marshmallow."""
+    logging.error(e)
+    return str(e), 400
 
 
 @app.route("/")
