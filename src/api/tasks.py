@@ -157,8 +157,8 @@ def yearly_report(subscription, cycle):
 def end_cycle(subscription, cycle):
     """End cycle by stopping or continuing new cycle."""
     if subscription.get("continuous_subscription"):
-        stop_subscription(subscription["_id"])
-        start_subscription(subscription["_id"])
+        stop_subscription(str(subscription["_id"]))
+        start_subscription(str(subscription["_id"]))
     else:
-        stop_subscription(subscription["_id"])
+        stop_subscription(str(subscription["_id"]))
         Notification("subscription_stopped", subscription, cycle).send()
