@@ -33,7 +33,7 @@
     </div>
 
     <!-- Cover Page -->
-    <div class="page">
+    <div id="cover-page">
       <img
         id="cover-image"
         src="{{ url_for('static', filename='image/cycle_cover.jpg') }}"
@@ -70,6 +70,50 @@
           Requests to use the CISA logo or DHS seal should be directed to
           branding@cisa.dhs.gov, copying vulnerability_info@cisa.dhs.gov
         </p>
+      </div>
+    </div>
+
+    <!-- Table of Contents -->
+    <div class="page">
+      <img
+        id="toc-image"
+        src="{{ url_for('static', filename='image/cycle_toc.jpg') }}"
+      />
+      <p id="toc-assessment">Phishing Campaign Assessment</p>
+      <p id="toc-report">Cycle Report</p>
+      <p id="toc-cycle">Unique-Id</p>
+      <p id="toc-date">{{ datetime.utcnow().strftime('%b %d, %Y') }}</p>
+
+      <h2 id="toc-header">Table of Contents</h2>
+      <div id="toc-section">
+        <dl>
+          <dt><span>1.</span> HOW TO USE THIS REPORT</dt>
+          <dd>3</dd>
+        </dl>
+        <dl>
+          <dt><span>2.</span> REPORT CARD</dt>
+          <dd>4</dd>
+        </dl>
+        <dl>
+          <dt><span>3.</span> FRAMEWORK</dt>
+          <dd>5</dd>
+        </dl>
+        <dl>
+          <dt><span>4.</span> RED FLAGS AND SOPHISTICATED TECHNIQUES</dt>
+          <dd>6</dd>
+        </dl>
+        <dl>
+          <dt><span>5.</span> PERFORMANCE OVER TIME</dt>
+          <dd>7</dd>
+        </dl>
+        <dl>
+          <dt><span>6.</span> PHISHING TEMPLATES FOR THIS CYCLE</dt>
+          <dd>8</dd>
+        </dl>
+        <dl>
+          <dt><span>7.</span> ATTACHMENTS</dt>
+          <dd>{{ 8 + (stats.template_stats | length) }}</dd>
+        </dl>
       </div>
     </div>
   </body>
