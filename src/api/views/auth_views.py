@@ -38,8 +38,7 @@ class LoginView(MethodView):
         try:
             response = cognito.authenticate(data["username"], data["password"])
         except botocore.exceptions.ClientError as e:
-            logging.exception(e)
-            return e.response["Error"]["Message"], 400
+            return e.response["Error"]["Message"], 403
         return jsonify(
             {
                 "id_token": response["AuthenticationResult"]["IdToken"],
@@ -57,7 +56,10 @@ class RefreshTokenView(MethodView):
     def post(self):
         """Refresh token."""
         data = request.json
-        response = cognito.refresh(data["refreshToken"])
+        try:
+            response = cognito.refresh(data["refreshToken"])
+        except botocore.exceptions.ClientError as e:
+            return e.response["Error"]["Message"], 403
         return jsonify(
             {
                 "id_token": response["AuthenticationResult"]["IdToken"],
