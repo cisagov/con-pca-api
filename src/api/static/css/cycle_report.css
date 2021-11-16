@@ -15,7 +15,7 @@ body {
   -webkit-print-color-adjust: exact !important;
   font-size: 16px;
   background: white;
-  font-family: Arial, sans-serif;
+  font-family: Franklin Gothic, sans-serif;
 }
 
 ol {
@@ -75,262 +75,93 @@ tbody > tr:nth-child(even) {
   background: white;
   display: block;
   position: relative;
-  padding: 0.25in;
+
+  /* Page Padding */
+  padding-top: 0.25in;
+  padding-left: 0.18in;
+  padding-right: 0.17in;
+  padding-bottom: 0in;
+
   page-break-after: always;
   /* Size = Letter */
   width: 8.5in;
   height: 11in;
+
+  /* Border for testing purposes */
+  border: 2px solid black;
 }
 
-#pageTitle {
-  font-size: 1.5em;
-  color: #015596 !important;
-  letter-spacing: 1px;
-  line-height: 0.8em;
-  margin-bottom: 20px;
-  text-transform: uppercase;
+/* Cover Page */
+#cover-image {
+  margin-left: 0.32in;
+  width: 7.22in;
 }
 
-.blue-font {
-  color: #015596;
+#cover-assessment {
+  color: white;
+  position: absolute;
+  top: 140px;
+  left: 90px;
 }
 
-.pageNumber {
+#cover-report {
+  color: white;
+  position: absolute;
+  top: 162px;
+  left: 90px;
+}
+
+#cover-cycle {
+  color: white;
+  position: absolute;
+  top: 480px;
+  right: 145px;
+}
+
+#cover-date {
+  color: white;
+  position: absolute;
+  top: 505px;
+  right: 145px;
+}
+
+#cover-customer {
+  color: #005288;
+  font-size: 24.5pt;
+  margin-left: 0.5in;
+  margin-top: 0.25in;
+}
+
+#cover-identifier {
+  font-size: 0.6em;
+}
+
+#cover-bottom {
   position: absolute;
   bottom: 0.25in;
-  left: 40px;
+  left: 0.32in;
+  margin-right: 0.18in;
 }
 
-/* Cover */
-
-#blueDateBox {
-  background-color: #164a91 !important;
-  color: hsl(0, 0%, 100%) !important;
-  padding: 90px 30px 400px 100px;
-  text-align: right;
-  z-index: 0;
+#cover-logo {
+  width: 1.09in;
+  margin-left: 0.25in;
 }
 
-.year {
-  font-size: 4.7em;
-  letter-spacing: 5px;
-  line-height: 1em;
-  padding-top: 150px;
-  color: #fff !important;
+#cover-box {
+  margin-top: 0.4in;
+  font-size: 11pt;
+  border: 1px solid black;
+  padding: 5px;
 }
 
-.dateRange {
-  font-size: 1em;
-  letter-spacing: 1px;
-  padding-right: 10px;
-  color: #fff !important;
+#cover-divider {
+  border-top: 1px solid black;
+  width: 3.2in;
+  margin-top: 0.25in;
 }
 
-#bluePhishLogo {
-  margin: -512px -100px 0 -25px;
-  text-align: right;
-}
-
-#whiteBox {
-  background-color: #fff !important;
-  height: 400px;
-  margin: -385px 0 0 82px;
-}
-
-#blueHacker {
-  position: absolute;
-  transform: scale(0.8);
-  z-index: 10;
-  top: 145px;
-  /* margin-top: -730px;
-  margin-left: -50px;
-  transform: scale(0.8); */
-}
-
-#yellowBox {
-  border: 2px solid #fdc010;
-  border-left: none;
-  height: 160px;
-  margin: -25px 0 0 50px;
-  width: 745px;
-}
-
-#reportTitle {
-  font-size: 3.5em;
-  color: #015596 !important;
-  letter-spacing: 2px;
-  margin: -55px 0 30px 100px;
-  text-transform: uppercase;
-}
-
-#reportDate {
-  font-size: 2em;
-  color: #015596 !important;
-  letter-spacing: 2px;
-  margin: -75px 35px 0px 0px;
-  text-transform: uppercase;
-}
-
-#coverFooter {
-  align-items: flex-start;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-evenly;
-}
-
-.smallerTitle {
-  font-size: 0.5em;
-  color: #015596 !important;
-  letter-spacing: 1px;
-  padding-left: 5px;
-}
-
-/* Details Table */
-
-.detailsTable {
-  border-collapse: collapse;
-  width: 75%;
-}
-
-.detailsTable td,
-.detailsTable th {
-  border: 1px solid #ddd;
-  padding: 8px;
-}
-
-.detailsTable td {
-  text-align: left;
-}
-
-.detailsTable thead {
-  background-color: #164a91;
-  color: white;
-  text-align: center;
-}
-
-.detailsTable tr:nth-child(even) {
-  background-color: #f2f2f2;
-}
-
-/* Report Instructions */
-
-#reportInstructions {
-  margin-bottom: 500px;
-}
-
-/* Executive Report */
-
-#executiveReportTitle {
-  font-size: 3em;
-  color: #015596 !important;
-  letter-spacing: 2px;
-  line-height: 0.8em;
-  margin-bottom: 30px;
-  text-transform: uppercase;
-}
-
-#executiveReportDetails:last-child {
-  margin-bottom: 0;
-}
-
-/* Template Pages */
-
-.template-container {
-  border: 2px solid #dddddd;
-  border-radius: 1rem;
-  margin-bottom: 2rem;
-  display: grid;
-}
-
-.template-stat-header {
-  border-radius: 1rem 1rem 0 0;
-  background-color: #b8cfe0;
-  padding: 1rem;
-}
-
-.template-stat-header > .row {
-  margin-left: 0;
-}
-
-.template-stat-header > .row > .col,
-.template-stat-header > .row > .col-3 {
-  padding: 0.2rem;
-  padding-right: 2rem;
-}
-
-.template-body {
-  border-left: 2px solid #eeeeee;
-  border-right: 2px solid #eeeeee;
-  border-bottom: 2px solid #eeeeee;
-  border-radius: 0 0 1rem 1rem;
-  padding: 1rem;
-}
-
-.template-html > .page {
-  width: 100%;
-  height: 100%;
-}
-
-/* Indicator Stats Table */
-#indicator-stats-table > tbody > tr > td:first-child,
-#indicator-stats-table > tbody > tr > td:nth-child(5),
-#indicator-stats-table > tbody > tr > td:nth-child(6),
-#indicator-stats-table > tbody > tr > td:nth-child(7) {
-  text-align: right;
-}
-
-/* Deception Calculator Indicators Table */
-
-#indicator-table {
-  border-collapse: collapse;
-}
-
-#indicator-table td,
-#indicator-table th {
-  padding: 3px;
-}
-
-#indicator-table thead {
-  border: 2px solid #ddd;
-  text-align: center;
-}
-
-#indicator-table tbody th {
-  border: 2px solid #ddd;
-  background-color: white;
-  color: black;
-}
-
-#indicator-table-total td {
-  background-color: white;
-  border: 2px solid #ddd;
-}
-
-.indicator-table-top-section {
-  border-top: 2px solid #ddd;
-}
-
-.indicator-table-value {
-  border-left: 2px solid #ddd;
-  border-right: 2px solid #ddd;
-}
-
-th.rotate {
-  height: 240px;
-  white-space: nowrap;
-  vertical-align: bottom;
-  text-align: left;
-}
-
-th.rotate > div {
-  transform: translate(2px, 0px) rotate(270deg);
-  width: 30px;
-}
-
-th.rotate > div > span {
-  padding: 5px 10px;
-  width: 220px;
-  display: inline-block;
-  overflow: hidden;
-  text-overflow: ellipsis;
+#cover-use {
+  font-size: 9pt;
+  text-indent: 0.1in;
 }
