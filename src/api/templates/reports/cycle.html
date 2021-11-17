@@ -22,7 +22,7 @@
   </head>
   <body class="mat-typography">
     <!-- Global Variables Needed -->
-    {% set total_pages = 8 + (stats.template_stats | length) + 2 %}
+    {% set total_pages = 8 + (stats.template_stats | length) %}
     <!-- For accessing stats within Javascript -->
     <div style="display: none">
       <p id="overallStats">{{ json.dumps(cycle.stats.stats) }}</p>
@@ -112,9 +112,337 @@
         </dl>
         <dl>
           <dt><span>7.</span> ATTACHMENTS</dt>
-          <dd>{{ 8 + (stats.template_stats | length) }}</dd>
+          <dd>{{ total_pages }}</dd>
         </dl>
       </div>
+    </div>
+
+    <!-- How to Use Report -->
+    <div class="page">
+      <p class="page-header">1. How to Use This Report</p>
+      <p class="indent">
+        Welcome to your Phishing Campaign Assessment (PCA) cycle report. This
+        document provides the results of the most recently completed email
+        phishing campaign of {{ customer.name }} ({{ customer.identifier }})’s
+        targeted users.
+      </p>
+      <p class="indent">
+        You may wonder what you’re supposed to do with all this information.
+        While it’s not the Cybersecurity and Infrastructure Security Agency’s
+        (CISA) intent to prescribe a particular process for modifying or
+        conducting your security training program, we hope you’ll use this
+        report to strengthen your security posture. Here’s a basic flow:
+      </p>
+      <ol style="margin-left: 0.18in">
+        <li>
+          <b>Look at the summary report card. </b>The report card contains high
+          level results for this cycle and a quick comparison to the previous
+          cycles. If this is your first report, you should note that the report
+          card will initially lack historical data to make comparisons against,
+          though that data will exist in your next report.
+        </li>
+        <li>
+          <b>Read the framework in which to understand results.</b>PCAs
+          concentrate on how phishing email deception affects target user click
+          behavior. CISA expects that a more deceptive phishing email has a
+          higher likelihood of being clicked and a lower deception email has a
+          lower likelihood of being clicked. CISA does not expect click rates
+          for all deception levels to reach and sustain zero percent.
+        </li>
+        <li>
+          <b
+            >Review the red flags and the sophisticated techniques ordered by
+            click rate.</b
+          >The indicators with click rates above your organization’s average
+          click rate are representative of the phishing elements that your
+          targeted users are potentially less aware of and may benefit
+          additional training on.
+        </li>
+        <li>
+          <b>See how performance has changed over time. </b>You should expect
+          click rates and click times to fluctuate based on the deception level
+          of the email templates used. Effective security awareness training,
+          however, should result in a noticeable click rate decrease over time
+          and to a level deemed acceptable based on your organization’s risk
+          management posture.
+        </li>
+        <li>
+          <b>Review the details of each campaign. </b>See examples of each
+          phishing campaign used for this cycle and their click rate results to
+          understand the context in which the red flags and sophisticated
+          techniques were used.
+        </li>
+        <li>
+          <b>Compare click results to user reports of phishing. </b>If you have
+          an established process for collecting reports of phishing, the
+          attachments section provides Comma-Separated Values (CSV) files with
+          the per-campaign click results you can use to compare to your internal
+          statistics on user reports. A good initial goal for report rates is
+          having two persons reporting the phishing attempts for every person
+          that clicks in case the person who clicks the link does not report or
+          does not realize they have been phished.
+        </li>
+        <li>
+          <b>Send an updated target list. </b>If you’ve experienced personnel
+          changes since the start of this last cycle, send an updated email
+          target list to vulnerability@cisa.dhs.gov prior to the start of your
+          next phishing cycle on NEXT_CYCLE_START_DATE
+        </li>
+      </ol>
+      <p>
+        If you have any questions about this report or feedback on how to
+        improve the PCA service, email vulnerability@cisa.dhs.gov.
+      </p>
+      <p class="page-number">Page | 3 of {{ total_pages }}</p>
+    </div>
+
+    <!-- REPORT CARD -->
+    <div class="page">
+      <p class="page-header">2. Report Card</p>
+      <p>This page is currently a work in progress.</p>
+      <p class="page-number">Page | 4 of {{ total_pages }}</p>
+    </div>
+
+    <!-- Framework -->
+    <div class="page">
+      <p class="page-header">3. Framework</p>
+      <p class="indent">
+        This section provides the framework in which to understand how email
+        deception level may influence your email users’ susceptibility to
+        phishing attacks. At a high level, email phishing is a form of social
+        engineering. In a social engineering attack, an attacker uses human
+        interaction to obtain or compromise information about an organization or
+        its computer systems. Phishing attacks use emails or malicious websites
+        to solicit personal information or to get you to download malicious
+        software by posing as a trustworthy entity.
+      </p>
+      <p class="indent">
+        The phishing emails in PCAs are modeled on real world phishing examples
+        that contain links for targeted users to click. CISA expects that the
+        more deceptive the email, the higher likelihood of being clicked. All
+        PCA emails are coded with specific phishing indicators to determine the
+        overall deception level:
+      </p>
+      <ul>
+        <li>
+          <b>Sophisticated techniques </b>are indicators used to increase the
+          deception level by making an email appear normal, expected, and
+          relevant to fool email recipients into acting before questioning or
+          investigating the email’s legitimacy.
+        </li>
+        <li>
+          <b>Red flags </b>are indicators used to lower an email’s deception
+          level by undermining its legitimacy and arousing user suspicion by
+          appearing unusual, out of place, or unfamiliar.
+        </li>
+      </ul>
+      <p>Deception levels range from low to high:</p>
+      <ul>
+        <li>
+          <b>Low deception </b>emails are typically the easiest to detect and
+          contain more red flags than sophisticated techniques.
+        </li>
+        <li>
+          <b>Moderate deception </b>emails may initially appear legitimate due
+          to sophisticated techniques but a similar number of red flags may
+          arouse enough suspicion for the email recipient to reject the email as
+          legitimate.
+        </li>
+        <li>
+          <b>High deception </b>emails are typically the hardest to detect and
+          contain more sophisticated techniques than red flags.
+        </li>
+      </ul>
+      <p>
+        CISA does not expect click rates for all deception levels to reach and
+        sustain zero percent. Effective security awareness training, however,
+        should result in a noticeable click rate decrease over time and to a
+        level deemed acceptable based on your organization’s risk management
+        posture.
+      </p>
+      <p>
+        CISA expects regular awareness training to be part of a multi-layered,
+        anti-phishing strategy that at least also includes:
+      </p>
+      <ul>
+        <li>
+          <b>Established reporting processes. </b>Providing email users a simple
+          means of reporting suspected phishing attacks decreases the window of
+          opportunity for the attacker and increases the time your security team
+          has to detect and respond to a potential breach.
+        </li>
+        <li>
+          <b>Long and strong passwords. </b>Allowing network users to have a
+          password manager to ensure they have unique, long, and strong
+          passwords for each account.
+        </li>
+        <li>
+          <b>Using multi-factor authentication (MFA). </b>Enabling MFA can help
+          prevent adversaries from gaining access to your systems even if your
+          password is compromised.
+        </li>
+        <li>
+          <b>Installing and updating antivirus software. </b>Ensuring all your
+          network connected devices are equipped with regularly updated
+          antivirus software, firewalls, email filters, and antispyware to stop
+          malicious activity when an email user does click a bad link.
+        </li>
+      </ul>
+      <p class="page-number">Page | 5 of {{ total_pages }}</p>
+    </div>
+
+    <!-- Red Flags and Sophisticated Techniques -->
+    <div class="page">
+      <p class="page-header">4. Red Flags and Sophisticated Techniques</p>
+      <p class="indent">
+        In general, CISA recommends that {{ customer.identifier }} educate email
+        users to be suspicious of any unsolicited or unexpected emails requiring
+        the recipient to click on links, open attachments, or provide
+        information for any reason. Adopting a baseline security posture for all
+        emails meeting these conditions diminishes the click-inducing power of
+        sophisticated phishing techniques and gives the email recipient more
+        reason to scrutinize the email for potential red flags.
+      </p>
+      <p class="indent">
+        Specifically, CISA recommends that {{ customer.identifier }} include in
+        anti-phishing training and awareness efforts the red flags and the
+        sophisticated techniques outlined in the table below. Special attention
+        should be paid to the indicators with click rates above this cycle’s
+        average click rate ({{ stats.stats.all.clicked.ratio * 100 }}%) because
+        they are representative of the phishing elements that {{
+        customer.identifier }}targeted users are potentially least aware of and
+        may benefit additional training on.
+      </p>
+      <!-- TODO: Work on this table -->
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Indicator Name</th>
+            <th>Description</th>
+            <th>Current Click Rate</th>
+            <th>Previous Click Rate</th>
+            <th>Templates with this Indicator</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <p class="page-number">Page | 6 of {{ total_pages }}</p>
+    </div>
+
+    <!-- Performance Over Time -->
+    <div class="page">
+      <p class="page-header">5. Performance Over Time</p>
+      <p>Work In Progress</p>
+      <p>
+        Click rate over time for high, moderate, low deception emails (three
+        charts or tables, include number of people in tested population
+        somewhere)
+      </p>
+      <p>
+        Click times over time for high, moderate, low deception emails (three
+        charts or tables, include number of people in tested population
+        somewhere)
+      </p>
+      <p class="page-number">Page | 7 of {{ total_pages }}</p>
+    </div>
+
+    <!-- Templates -->
+    {% for template in stats.template_stats | sort(attribute="clicked.ratio",
+    reverse=True) %}
+    <div class="page">
+      {% if loop.index == 1 %}
+      <p class="page-header">6. Phishing Templates for this Cycle</p>
+      {% endif %}
+      <div class="template-stat-header">
+        <div class="row">
+          <div class="template-label">Rank:</div>
+          <div class="template-value">{{loop.index}}</div>
+        </div>
+        <div class="row">
+          <div class="template-label">Template Name:</div>
+          <div class="template-value">{{ template.template.name }}</div>
+        </div>
+        <div class="row">
+          <div class="template-label">Deception Level:</div>
+          <div class="template-value">
+            {{ template.template.deception_score }} ({{ template.deception_level
+            | title }})
+          </div>
+        </div>
+        <div class="row">
+          <div class="template-label">Total Sent:</div>
+          <div class="template-value">{{loop.index}}</div>
+        </div>
+        <div class="row">
+          <div class="template-label">Unique Clicks:</div>
+          <div class="template-value">{{ template.clicked.count }}</div>
+        </div>
+        <div class="row">
+          <div class="template-label">Click Rate:</div>
+          <div class="template-value">{{ template.clicked.ratio * 100 }}%</div>
+        </div>
+        <div class="row">
+          <div class="template-label">Previous Cycle Click Rate for level:</div>
+          <div class="template-value">TBD</div>
+        </div>
+        <div class="row">
+          <div class="template-label">CISA average click rate for level:</div>
+          <div class="template-value">TBD</div>
+        </div>
+        <div class="row">
+          <div class="template-label">CISA average report rate for level:</div>
+          <div class="template-value">TBD</div>
+        </div>
+      </div>
+      <div class="row" style="margin-bottom: 10px">
+        <div class="col-12">
+          <div class="template-body">
+            <b>Subject:</b>
+            {{ preview_template(template.template.subject, customer) }}<br />
+            <b style="margin-bottom: 1rem">From:</b>
+            {{ preview_from_address(template.template, subscription, customer)
+            }}<br />
+            <div class="template-html">{{ template.template.html | safe }}</div>
+          </div>
+        </div>
+      </div>
+      <!-- TODO: Build out table -->
+      <table>
+        <thead>
+          <tr>
+            <th>Indicator Type</th>
+            <th>Indicator Name</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <p class="page-number">
+        Page | {{ 7 + loop.index }} of {{ total_pages }}
+      </p>
+    </div>
+    {% endfor %}
+
+    <!-- Attachments -->
+    <div class="page">
+      <p class="page-header">7. Attachments</p>
+      <p>Work in Progress</p>
+      <p>
+        Generally anything we mention in this report should be available as a
+        CSV
+      </p>
+      <ul>
+        <li>
+          CSV of per campaign click (rate and time) results for this cycle
+        </li>
+        <li>CSV of per indicator click rate results</li>
+        <li>CSV of all previously used senders, subjects, campaign dates</li>
+        <li>
+          CSV template of preferred headers for sending an updated target list
+        </li>
+      </ul>
+      <p class="page-number">Page | {{ total_pages }} of {{ total_pages }}</p>
     </div>
   </body>
 </html>
