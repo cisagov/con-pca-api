@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Cycle Report</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/cycle_report.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/styles.css') }}"
+    />
+    <link
+      rel="shortcut icon"
+      href="{{ url_for('static', filename='image/favicon.ico') }}"
+    />
+    <script src="{{ url_for('static', filename='js/chart.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/chartjs-plugin-datalabels.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/reports.js') }}"></script>
+  </head>
+  <body class="mat-typography">
+    <!-- Global Variables Needed -->
+    {% set total_pages = 8 + (stats.template_stats | length) + 2 %}
+    <!-- For accessing stats within Javascript -->
+    <div style="display: none">
+      <p id="overallStats">{{ json.dumps(cycle.stats.stats) }}</p>
+      <p id="indicatorStats">{{ json.dumps(cycle.stats.indicator_stats) }}</p>
+      <p id="indicators">{{ json.dumps(indicators) }}</p>
+      <p id="templateStats">{{ json.dumps(stats.template_stats) }}</p>
+      <p id="timeIntervalStats">{{ json.dumps(stats.time_stats) }}</p>
+    </div>
+
+    <!-- Cover Page -->
+    <div class="page" style="padding: 0">
+      <div class="row">
+        <div id="blueDateBox">
+          <span class="year">{{ datetime.utcnow().strftime("%Y")}}</span><br />
+          <span class="dateRange">
+            {{ cycle.start_date.strftime("%Y-%m-%d") }} to {{
+            cycle.end_date.strftime("%Y-%m-%d") }}
+          </span>
+        </div>
+      </div>
+      <div class="row">
+        <div id="bluePhishLogo" class="col-12">
+          <img
+            src="{{ url_for('static', filename='image/blue_phishlogo.png') }}"
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div id="whiteBox" class="col-5"></div>
+      </div>
+      <div class="row">
+        <div id="yellowBox"></div>
+      </div>
+      <div class="row">
+        <div id="blueHacker" class="col-12">
+          <img
+            src="{{ url_for('static', filename='image/blue_hacker.png') }}"
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-8">
+          <h2 id="reportTitle">Cycle Report</h2>
+        </div>
+        <div class="col">
+          <h2 id="reportDate">
+            <br />
+            {{ datetime.utcnow().strftime('%b %d, %Y') }}
+          </h2>
+        </div>
+      </div>
+      <div id="coverFooter" class="row mb-2">
+        <div id="preparationDetails">
+          <b>Prepared for</b><br />
+          {{ customer.name }}<br />
+          {{ customer.address_1 }} {{ customer.address_2 }}<br />
+          {{ customer.city }}, {{ customer.state }} {{ customer.zip_code }}
+        </div>
+        <div id="dhsContactDetails">
+          <div class="mb-2">
+            <b>Subscription Primary Contact</b><br />
+            {{ subscription.primary_contact.first_name }} {{
+            subscription.primary_contact.last_name }}<br />
+            {{ subscription.primary_contact.email }}<br />
+          </div>
+          <div>
+            <b>CISA Contact</b><br />
+            vulnerability@cisa.dhs.gov
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Assessment Details -->
+    <div class="page">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <hr />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <table class="detailsTable">
+              <thead>
+                <tr>
+                  <th colspan="2">
+                    Continuous Phishing Campaign Assessment Details
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>Customer Name:</th>
+                  <td>{{ customer.name }}</td>
+                </tr>
+                <tr>
+                  <th>Customer POC:</th>
+                  <td>
+                    {{ subscription.primary_contact.first_name }} {{
+                    subscription.primary_contact.last_name }}
+                  </td>
+                </tr>
+                <tr>
+                  <th>Vulnerability Management:</th>
+                  <td>vulnerability@cisa.dhs.gov</td>
+                </tr>
+                <tr>
+                  <th>Dates:</th>
+                  <td>
+                    {{ cycle.start_date.strftime("%b %d, %Y") }} - {{
+                    cycle.end_date.strftime("%b %d, %Y") }}
+                  </td>
+                </tr>
+                <tr>
+                  <th>Test Location:</th>
+                  <td>CISA/VM Lab</td>
+                </tr>
+                <tr>
+                  <th>Service:</th>
+                  <td>Continuous Phishing Assessment</td>
+                </tr>
+                <tr>
+                  <th>Scope:</th>
+                  <td>
+                    {{ cycle.target_count }} users within the following
+                    domain[s]:<br />
+                    {{ subscription.target_domain }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="pageNumber">Page | 1 of {{ total_pages }}</div>
+    </div>
+
+    <!-- Executive Report-->
+    <div class="page">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <hr />
+            <h2 id="pageTitle">Executive Report</h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="executiveReportDetails">
+              <p>
+                This report provides the results for the CISA National
+                Cybersecurity Assessments and Technical Services -
+                (Vulnerability Management) led Continuous Phishing Campaign
+                Assessment (CON-PCA) for {{ customer.name }}. The CON-PCA is a
+                practical exercise intended to support and measure the
+                effectiveness of security awareness training for information
+                system users. The results of this CON-PCA show the
+                susceptibility of {{ customer.identifier }} personnel to social
+                engineering attacks—specifically email phishing attacks—in which
+                an adversary tricks an email user into clicking a malicious link
+                to gain unauthorized network access. In the scenario that this
+                CON-PCA tested, the phishing attack bypassed technical controls
+                that would normally detect and/or block malicious emails and
+                links. The CON-PCA, therefore, measured {{ customer.name }}’s
+                level of vulnerability to a successful phishing attack by
+                targeted user click rates, click times, response rates, and
+                response times, as shown in the "Targeted User Measurements"
+                table.
+              </p>
+
+              <p>
+                This report aims to enhance {{ customer.name }}'s understanding
+                of their information system users’ cybersecurity behavior and to
+                promote a more secure and resilient workforce.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <p class="table-title">Table 1: Targeted User Measurements</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <table class="w-100 mb-5">
+              <thead>
+                <tr>
+                  <th>User Activity Metrics</th>
+                  <th>Results</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Total users targeted for phishing</td>
+                  <td>{{ cycle.target_count }}</td>
+                </tr>
+                <tr>
+                  <td># of emails (phishing attempts) sent overall</td>
+                  <td>{{ stats.stats.all.sent.count }}</td>
+                </tr>
+                <tr>
+                  <td>
+                    # of clicked emails (successful phishing attempts) overall
+                  </td>
+                  <td>
+                    {{ stats.stats.all.clicked.count }} ({{
+                    stats.stats.all.clicked.ratio * 100 }}% click rate)
+                  </td>
+                </tr>
+                <tr>
+                  {% set average_click_time =
+                  time.convert_seconds(stats.stats.all.clicked.average) %}
+                  <td>Average time to first click</td>
+                  <td>
+                    {{ average_click_time.hours }} hours, {{
+                    average_click_time.minutes }} minutes, {{
+                    average_click_time.seconds }} seconds
+                  </td>
+                </tr>
+                <tr>
+                  {% set most_successful_template = stats.template_stats |
+                  sort(attribute="clicked.ratio", reverse=True) | first %}
+                  <td>Most successful phishing template</td>
+                  <td>
+                    Level {{ most_successful_template.template.deception_score
+                    }} "{{ most_successful_template.template.name }}"
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <p>
+              Vulnerability Management has provided this CON-PCA to {{
+              customer.name }} at no cost and coordinated all
+              activities—including planning and testing–with {{ customer.name
+              }}'s point of contact. {{ customer.name }} maintained control over
+              the testing, including providing target email addresses, approving
+              phishing email templates, approving testing timeframes, and
+              adjusting mail security setting to ensure inbox access. This
+              CON-PCA was not intended to, and did not, test technical controls
+              or electronic protections designed to block phishing attempts.
+              This CON-PCA spanned a six-week period and aimed to capture
+              behavior-based metrics of {{ customer.name }} information system
+              users’ reaction to phishing emails of multiple complexity levels.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="pageNumber">Page | 2 of {{ total_pages }}</div>
+    </div>
+
+    <!-- Summary -->
+    <div class="page">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <hr />
+            <h2 id="pageTitle">Summary</h2>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12">
+            <p>
+              One of the most common measures of an organization’s
+              susceptibility to phishing attacks is targeted-user click rates.
+              If an actual phishing attack is able to bypass technical controls
+              and arrive in a user’s inbox, the human target must click on the
+              malicious link or attachment for the attack to be successful. In
+              practical exercises, such as this PCA, targeted-user click rates
+              will fluctuate depending on the level of email deception used in
+              testing. Effective security awareness training, however, should
+              result in a noticeable click rate decrease over time and to a
+              level deemed acceptable based on the organization’s risk
+              management posture.
+            </p>
+            <p>
+              In this report, the percentages shown by the user click rate
+              represent the percentage of targeted people who have clicked at
+              least once on a “malicious” link. The number of unique clicks
+              correlates to the number of end user devices potentially
+              compromised in each campaign. The following table and graph
+              summarizes click rates.
+            </p>
+          </div>
+        </div>
+
+        <!-- Template Stats Table -->
+        <div class="row">
+          <div class="col-12">
+            <p class="table-title">Table 2: Template Stats</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <table>
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Level</th>
+                  <th>Template Subject</th>
+                  <th>Emails Sent</th>
+                  <th>Unique Clicks</th>
+                  <th>Click Rate</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for t in cycle.stats.template_stats |
+                sort(attribute="clicked.ratio") %}
+                <tr>
+                  <td>{{ loop.index }}</td>
+                  <td>{{ t.template.deception_score }}</td>
+                  <td>{{ t.template.subject }}</td>
+                  <td>{{ t.sent.count }}</td>
+                  <td>{{ t.clicked.count }}</td>
+                  <td>{{ t.clicked.ratio * 100 }}%</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top: 25px">
+          <div class="col-12">
+            <p class="table-title">Figure 1: Deception Score Stats</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <canvas id="bar-stats-by-deception" class="d-flex report-chart">
+              <script>
+                createStatsByDeceptionChart();
+              </script>
+            </canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="pageNumber">Page | 3 of {{ total_pages }}</div>
+    </div>
+
+    <!-- Summary Cont -->
+    <div class="page">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <hr />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            {% set median_click_time =
+            time.convert_seconds(stats.stats.all.clicked.median) %}
+            <p>
+              The figure below shows the percentage of users who clicked during
+              certain time intervals in the first 24 hours of being sent a
+              phish. Overall, nearly {{
+              stats.time_stats.clicked.sixty_minutes.ratio * 100 }} percent of
+              all clicks occurred within one hour of receiving a phishing email.
+              The median time to click was {{ median_click_time.hours }} hours,
+              {{ median_click_time.minutes }} minutes, and {{
+              median_click_time.seconds }} seconds for the entire assessment.
+            </p>
+            <p class="table-title">Figure 2: Click Time Interval Chart</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <canvas
+              id="click-rate-time-interval"
+              class="d-flex report-chart"
+              style="height: 15rem"
+            >
+              <script>
+                clickRateTimeIntervalChart();
+              </script>
+            </canvas>
+          </div>
+        </div>
+      </div>
+      <div class="pageNumber">Page | 4 of {{ total_pages }}</div>
+    </div>
+
+    <!-- Deception Levels -->
+    <div class="page">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <hr />
+            <h2 id="pageTitle">Deception Levels</h2>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12">
+            <p>
+              The phishing templates used throughout this service include six
+              levels of varying deception. Each level is based on a calculation
+              of the factors designed to entice users to click on a malicious
+              link. An explanation of the four factors used when determining an
+              email’s level of deception can be found in "Deception Calculator”.
+              The following defines key differences between each level:
+            </p>
+
+            <div style="text-indent: -10px; margin-left: 30px">
+              <p>
+                <b>Level 1 - </b>This level will be the easiest to detect and
+                features common scams that are easily identified. Templates will
+                usually include low deception indicators such as bad grammar,
+                fake domains, and unknown external senders. Commonly the emails
+                will appeal to emotions of greed, monetary gain, or guilt to
+                elicit a user’s response.
+              </p>
+              <p>
+                <b>Level 2 - </b>These email templates also use low deception
+                indicators in that they typically appear to be from an external,
+                unauthoritative sender. The templates use one higher deception
+                indicator such as decent or proper grammar and are written in a
+                tone of urgency to help the email appear genuine. They also
+                commonly appeal to emotions of greed, monetary gain, or guilt.
+              </p>
+              <p>
+                <b>Level 3 -</b>These are email scams that usually use two
+                higher deception indicators such as appearing to be from a
+                legitimate external organization or spoofing a known internal
+                office or job title, but the link is usually fake and not
+                associated with the content. Templates typically will include
+                low deception indicators such as bad grammar or display fake
+                domains. The theme of the templates can appeal to emotions or
+                guilt and cause a sense of urgency if the request is not
+                followed quickly.
+              </p>
+              <p>
+                <b>Level 4 -</b>The email templates use more high deception
+                indicators than low deception and frequently appear to come from
+                a commonly found internal department, such as “IT Support” or
+                “Human Resources”. The templates will request actions or
+                information that real world departments would be trained not to
+                ask users over email such as their passwords, private
+                information, or financial accounts. The email templates will
+                normally have decent grammar, but will be sent by a generic
+                account internal with fake domains. The template can appeal to
+                sense of urgency and fear of disciplinary action to elicit a
+                user’s click.
+              </p>
+              <p>
+                <b>Level 5 -</b>This level includes seemingly common emails that
+                might be sent from the respective organization and uses
+                information gathered from publicly available sources to seem
+                genuine. The templates usually come from internal and
+                authoritative senders (high deception indicators) but with fake
+                domains or generic information (lower deception indicators). The
+                templates can appeal to a sense of fear and the need to comply
+                with authority to elicit a user’s response.
+              </p>
+              <p>
+                <b>Level 6 -</b> This level’s templates will be the hardest to
+                detect and will typically have the highest click rate. These
+                templates can appear to be from an internal office, personally
+                address the recipient, and include themes such as negative
+                policy changes and responses to internal and external news that
+                may negatively affect employees. This level uses information
+                gathered from public sources to develop the templates such as
+                names of organizational individuals or departments, any relevant
+                news, or information about specific organizational processes or
+                tools.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pageNumber">Page | 5 of {{ total_pages }}</div>
+    </div>
+
+    <!-- Deception Calculator -->
+    <div class="page">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <hr />
+            <h2 id="pageTitle">Table 3: Deception Calculator</h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <p>
+              The following calculator provides the method for determining the
+              deception of each template (1 being not deceptive and easy to
+              detect and 6 being very deceptive and difficult to detect).
+            </p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <p class="table-title">Deception Calculator</p>
+            <table id="indicator-table">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Indicator</th>
+                  <th>Ranking Scale</th>
+                  {% for ts in cycle.stats.template_stats %}
+                  <th class="rotate">
+                    <div><span>{{ ts.template.name }}</span></div>
+                  </th>
+                  {% endfor %}
+                </tr>
+              </thead>
+              <tbody>
+                {% for group, gv in indicators.items() %} {% for indicator, iv
+                in gv.items() %}
+                <tr class="{{ 'indicator-table-top-section' if loop.first }}">
+                  {% if loop.index == 1 %}
+                  <th
+                    rowspan="{{ gv | length }}"
+                    style="vertical-align: middle"
+                  >
+                    {{ group | title }}
+                  </th>
+                  {% endif %}
+                  <td style="width: 75px" class="indicator-table-value">
+                    {{ iv.name }}
+                  </td>
+                  <td style="width: 75px">
+                    {% for value, v in iv["values"].items() %}{% if loop.last
+                    %}{{ value }}={{ v["label"] }}{% else %}{{ value }}={{
+                    v["label"] }}, {% endif %}{% endfor %}
+                  </td>
+
+                  {% for ts in cycle.stats.template_stats %}
+                  <td class="indicator-table-value">
+                    {{ ts.template.indicators[group][indicator] }}
+                  </td>
+                  {% endfor %}
+                </tr>
+                {% endfor %} {% endfor %}
+                <tr id="indicator-table-total">
+                  <td></td>
+                  <td></td>
+                  <td><b>Total</b></td>
+                  {% for ts in cycle.stats.template_stats %}
+                  <td>{{ ts.template.deception_score }}</td>
+                  {% endfor %}
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="pageNumber">Page | 6 of {{ total_pages }}</div>
+    </div>
+    <div class="page">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <hr />
+            <h2 class="blue-font">Appearance</h2>
+            <div style="margin-left: 30px">
+              <p><b>Grammar - </b>Writing level of the content in the email</p>
+              <ul style="margin-left: 10px">
+                <li>
+                  Poor indicates several misspellings and awkward use of the
+                  English language
+                </li>
+                <li>
+                  Decent indicates few misspellings and few grammatical errors
+                  or is relatively short in length
+                </li>
+                <li>
+                  Proper indicates one or no misspellings or grammatical errors
+                  and the email is longer/more formal than the usual email
+                </li>
+              </ul>
+              <p>
+                <b>Link Domain - </b>Embedded link can be clearly fake or
+                attempt to impersonate a real domain
+              </p>
+              <p>
+                <b>Logo/Graphics - </b>Images can be either clearly fake or
+                close impostors
+              </p>
+            </div>
+            <h2 class="blue-font" style="margin-top: 30px">Sender</h2>
+            <div style="margin-left: 30px">
+              <p>
+                <b>External - </b>Sender and email domain are external to the
+                users organization, but are clearly fake or look like real
+                external entities
+              </p>
+              <p>
+                <b>Internal - </b>Sender and email domain appear to come from
+                user’s organization, but are clearly fake or spoof internal
+                senders
+              </p>
+              <p>
+                <b>Authoritative (Corporate/Local or Federal/State) - </b>Sender
+                making a request or demand and speaks from a position of power
+                that could be associated with a Corporate/Local office or
+                Federal/State office
+              </p>
+            </div>
+            <h2 class="blue-font" style="margin-top: 30px">Relevancy</h2>
+            <div style="margin-left: 30px">
+              <p>
+                <b>Organization - </b>Content is pertinent to organization’s
+                current events, news, or uses the name/email of the targeted
+                user
+              </p>
+              <p>
+                <b>Public News - </b>Content is pertinent to current events in
+                the local area or nation
+              </p>
+            </div>
+            <h2 class="blue-font" style="margin-top: 30px">
+              Behavior (Optional)
+            </h2>
+            <div style="margin-left: 30px">
+              <p>
+                <b>Fear - </b>Scareware or appeals to the emotion of fear within
+                the theme of the email
+              </p>
+              <p>
+                <b>Duty or Obligation - </b>Appeals to the sense of
+                responsibility within the theme of the email
+              </p>
+              <p>
+                <b>Curiosity - </b>Appeals to the desire to learn more within
+                the theme of the email
+              </p>
+              <p>
+                <b>Greed - </b>Appeals to greed and monetary gain within the
+                theme of the email
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pageNumber">Page | 7 of {{ total_pages }}</div>
+    </div>
+
+    <!-- Indicators -->
+    <div class="page">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <hr />
+            <h2 id="pageTitle">Indicators</h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <p class="table-title">Table 4: Indicator Stats</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <table id="indicator-stats-table">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Group</th>
+                  <th>Indicator</th>
+                  <th>Value</th>
+                  <th>Sent</th>
+                  <th>Clicked</th>
+                  <th>Percent</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for stat in cycle.stats.indicator_stats |
+                sort(attribute="clicked.ratio", reverse=True) %}
+                <tr>
+                  <td>{{ loop.index }}</td>
+                  <td>{{ stat.group | title }}</td>
+                  <td>{{ stat.indicator | title }}</td>
+                  <td>{{ stat.value }} ({{ stat.label }})</td>
+                  <td>{{ stat.sent.count }}</td>
+                  <td>{{ stat.clicked.count }}</td>
+                  <td>{{ stat.clicked.ratio * 100 }}%</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="pageNumber">Page | 8 of {{ total_pages }}</div>
+    </div>
+
+    <!-- TEMPLATE PAGES -->
+    {% for template in stats.template_stats | sort(attribute="clicked.ratio",
+    reverse=True) %}
+    <div class="page">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <hr />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="template-stat-header">
+              <div class="row">
+                <div class="col-3">Rank:</div>
+                <div class="col">{{loop.index}}</div>
+              </div>
+              <div class="row">
+                <div class="col-3">Template Name:</div>
+                <div class="col">{{ template.template.name }}</div>
+              </div>
+              <div class="row">
+                <div class="col-3">Deception Level:</div>
+                <div class="col">
+                  {{ template.template.deception_score }} ({{
+                  template.deception_level | title }})
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-3">Total Sent:</div>
+                <div class="col">{{loop.index}}</div>
+              </div>
+              <div class="row">
+                <div class="col-3">Unique Clicks:</div>
+                <div class="col">{{ template.clicked.count }}</div>
+              </div>
+              <div class="row">
+                <div class="col-3">Click Rate:</div>
+                <div class="col-3">{{ template.clicked.ratio * 100 }}%</div>
+              </div>
+            </div>
+            <div class="row" style="margin-bottom: 10px">
+              <div class="col-12">
+                <div class="template-body">
+                  <b>Subject:</b>
+                  {{ preview_template(template.template.subject, customer) }}<br />
+                  <b style="margin-bottom: 1rem">From:</b>
+                  {{ preview_from_address(template.template, subscription,
+                  customer) }}<br />
+                  <div class="template-html">
+                    {{ template.template.html | safe }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <p style="margin-left: 10px; text-indent: -10px; margin-top: 20px">
+              <b>Key Characteristics: </b>
+              {% if template.template.deception_score <= 1 %} These poorly
+              worded or purposefully vague messages are self-filtering. If
+              someone is curious, greedy, or gullible enough to believe the
+              sender then they are more likely to follow through with the
+              request for personal or banking information. {% elif
+              template.template.deception_score == 2 %} These purposefully vague
+              messages attempt to short circuit common sense security training
+              by looking somewhat work related or evoke enough curiosity click
+              the link to learn more, even though the message comes from an
+              external sending domain and has unusual misspellings for a
+              professional or automated email. {% elif
+              template.template.deception_score == 3 %} Typically impersonating
+              a legitimate business interaction, these messages are more focused
+              on their target, but are still self-filtering for more gullible
+              recipients by using poor grammar or following unusual business
+              practices.{% elif template.template.deception_score == 4 %}These
+              messages are specific to work environments or try to blend in as
+              typical or expected communications. Goal is usually to harvest
+              credentials to later gain access to sensitive business networks
+              since people tend to reuse credentials over several platforms.
+              Typical phishing techniques include spoofing a sending address to
+              look like a legitimate group, individually addressing the
+              recipient, and having a display name and signature of group
+              typically seen in the workplace. {% elif
+              template.template.deception_score == 5 %} Second highest level of
+              deception, these messages typically target specific organizations
+              or groups that access a common resource. In real attacks, the goal
+              is to have a recipient to download a malicious program on their
+              workstation to give the attacker access to the internal network.
+              Typical advanced phishing techniques include using all hidden or
+              spoofed links that require the extra step of hovering over (or
+              long pressing on mobile) to show the underlying URL and spoofing
+              or mimicking the target organization’s email domain or signature
+              block. {% else %} The highest level of deception, these are
+              usually fine-tuned for sensitive account access or deep-pocket
+              credential harvesting and rely on customized content to convey a
+              sense of legitimacy. Typical advanced phishing techniques include
+              personally addressing the recipient, spoofing or mimicking the
+              organization’s email domain or signature block, referencing
+              relevant real world events or data, and writing in a tone that
+              motivates the recipient is to act.{% endif %}
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="pageNumber">
+        Page | {{8 + loop.index}} of {{ total_pages }}
+      </div>
+    </div>
+    {% endfor %}
+
+    <!-- Most common phishing techniques -->
+    <div class="page">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <hr />
+            <h2 id="pageTitle">Common Phishing Techniques & Scams</h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <p>
+              In addition to training on the red flags and sophisticated
+              techniques information system users were most susceptible to, CISA
+              recommends anti-phishing training and awareness include the most
+              common phishing techniques and scams used to elicit clicks from
+              target users in real world phishing incidents. A phishing
+              technique is an element within a larger phishing scam.
+            </p>
+            <h2 class="blue-font">Techniques</h2>
+            <div style="text-indent: -10px; margin-left: 30px">
+              <p>
+                <b>A fake link. </b>The context of the email can be anything,
+                but the key technique is using a link that looks like a real URL
+                (or hyperlinked text) that the target has used and trusted
+                before. Underlying it, however, is the actual URL to a different
+                and potentially malicious site. Hovering over (when on a
+                computer) or a long press (when on a mobile) reveals the true
+                underlying link. Unexpected URLs should not be clicked. Even if
+                it matches expectations, the user should type it directly into
+                their browser.
+              </p>
+              <p>
+                <b>A fake website. </b>Hovering over or long pressing the
+                displayed link will reveal a matching URL. However, closer
+                inspection of the URL would reveal slight differences between
+                the displayed address and real address it’s imitating. Examples
+                of slight differences include replacing a lower case ‘l’ with a
+                ‘1’, adding extra letters, or changing the domain such as from
+                .com to .us. A few seconds’ pause to override autopilot clicking
+                could save a target from being phished.
+              </p>
+              <p>
+                <b>A malicious attachment. </b>Just like the fake website,
+                closer inspection of any attachments sent may reveal
+                discrepancies between what is there versus what is expected.
+                Questions that should be asked with each email attachment
+                include: Was it an expected email? Is the sender known? Does
+                their email address match their display name? Does the
+                attachment have the expected file type? If a target does open
+                the attachment, a document may then show a notice that “editing
+                must be enabled to see content.” If enabled, macros and other
+                malicious code are able to execute on the target’s computer.
+                Organizations should have procedures for ensuring suspicious
+                attachments are safe through use of file checkers or other
+                secure means.
+              </p>
+              <p>
+                <b>Fake contact information. </b>This technique is usually used
+                to circumvent online portals or other established procedures
+                that normally handle change requests. They provide the target
+                with an email or phone numbers out of “generous convenience” so
+                the target doesn’t have to spend time looking up that
+                information. Rather than believing the email, the person should
+                call the number provided to them previously such as the customer
+                service number on the back of their card, office phone number in
+                a directory, or on the organization’s site the person navigates
+                to separately.
+              </p>
+            </div>
+            <h2 class="blue-font">Scams</h2>
+            <div style="text-indent: -10px; margin-left: 30px">
+              <p>
+                <b>Asking for money. </b>Usually long-winded stories of woe or
+                sudden inheritance that only require a small sum of money on
+                target’s part to transfer a huge sum of funds and generally in
+                exchange for the “help,” the attacker promises to provide the
+                target a decent portion of the funds. This scheme is designed to
+                be outlandish because it’s self-filtering. Attackers know only
+                the most trusting or gullible people will fall for this scam.
+                This is intentional because the target is less likely to
+                question further requests as the scam continues.
+              </p>
+              <p>
+                <b>Business Email Compromise (CEO Fraud). </b>This scam has cost
+                organizations nearly $26 billion since coming on the scene in
+                2013 according to FBI reports. A company’s email infrastructure
+                is hacked or spoofed and someone pretending to be the CEO tells
+                their phishing target that they need help doing an urgent wire
+                transfer.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pageNumber">
+        Page | {{8 + (stats.template_stats | length) + 1}} of {{ total_pages }}
+      </div>
+    </div>
+    <div class="page">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <hr />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div style="margin-left: 30px">
+              <p>
+                Sometimes the target is threatened with job loss or public
+                shaming if they don’t comply. Setting and following established
+                protocols that require a verbal phone call to confirm the
+                transfer or having an additional person to submit the request
+                are two ways to block this type of scam from succeeding.
+              </p>
+            </div>
+            <div style="text-indent: -10px; margin-left: 30px">
+              <p>
+                <b>Business Email Compromise (Vender Product Invoice). </b>
+                Similar to the CEO fraud scam, a supplier’s email has been
+                hacked or spoofed and the attacker uses it to send a company a
+                fraudulent invoice. Having clear processes in place to confirm
+                vendor change requests or invoice processing is one way of
+                stopping this scam from working.
+              </p>
+              <p>
+                <b>Stolen/Leaked psswords and extortion. </b>The information
+                used to craft these emails come from the hundreds of millions of
+                exposed online records. The attackers display a paired email and
+                password saying their possession of these credentials is “proof”
+                that the attacker has already hacked the victim’s computer. In
+                exchange for not sharing some type of incriminating,
+                embarrassing, or scandalous content with the target’s email
+                contacts, the attacker asks for a bribe—usually in the form of
+                crypto currency. Even though the hacking claims are false, this
+                type of extortion is a quickly rising scam because people are
+                too embarrassed to report it.
+              </p>
+              <p>
+                <b>Security incident alert with offer to help. </b>This scam
+                uses the fake contact information or fake website techniques in
+                their plot to first get the target to panic and then trust the
+                attacker as the quickest solution to their problem.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pageNumber">
+        Page | {{8 + (stats.template_stats | length) + 2}} of {{ total_pages }}
+      </div>
+    </div>
+  </body>
+</html>
