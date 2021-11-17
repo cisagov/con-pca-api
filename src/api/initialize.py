@@ -66,7 +66,7 @@ def initialize_nonhumans():
 
 def initialize_recommendations():
     """Create an initial set of recommendations."""
-    current_names = [r["title"] for r in recommendation_manager.all()]
+    current_names = [f"{r['title']}-{r['type']}" for r in recommendation_manager.all()]
     if len(current_names) > len(set(current_names)):
         logging.info("Duplicate recommendations found, reinitializing.")
         recommendation_manager.delete(params={})
