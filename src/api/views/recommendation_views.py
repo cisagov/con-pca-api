@@ -18,7 +18,15 @@ class RecommendationsView(MethodView):
 
     def post(self):
         """Create a new recommendation."""
-        recommendation_manager.save(request.json)
+        data = request.json
+        if recommendation_manager.exists(
+            {"title": data["title"], "description": data["description"]}
+        ):
+            return (
+                jsonify({"error": "Recommendation with that name already exists."}),
+                400,
+            )
+        recommendation_manager.save(data)
         return jsonify({"success": True}), 200
 
 
