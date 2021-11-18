@@ -41,11 +41,20 @@ class ReportPdfView(MethodView):
 
     def get(self, report_type):
         """Get."""
-        data = request.args.get("cycles").split(",")
+        cycle_ids = request.args.get("cycles").split(",")
         nonhuman = False
         if request.args.get("nonhuman", "") == "true":
             nonhuman = True
-        filepath = get_report_pdf(data, report_type, nonhuman)
+        cycle = cycle_manager.get(document_id=cycle_ids[0], fields=["subscription_id"])
+        subscription = subscription_manager.get(
+            document_id=cycle["subscription_id"], fields=["reporting_password"]
+        )
+        filepath = get_report_pdf(
+            cycle_ids,
+            report_type,
+            reporting_password=subscription.get("reporting_password"),
+            nonhuman=nonhuman,
+        )
         try:
             logging.info(f"Sending file {filepath}")
             return send_file(

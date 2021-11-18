@@ -79,3 +79,4 @@ class SubscriptionSchema(BaseSchema):
     archived = fields.Bool()
     notification_history = fields.List(fields.Nested(SubscriptionNotificationSchema))
     phish_header = fields.Str()
+    reporting_password = fields.Str()
