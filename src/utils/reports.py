@@ -2,10 +2,12 @@
 # Standard Python Libraries
 from datetime import datetime
 import json
+import os
 import os.path
 import subprocess  # nosec
 
 # Third-Party Libraries
+from PyPDF2 import PdfFileReader, PdfFileWriter
 from faker import Faker
 from flask import render_template
 from flask.templating import render_template_string
@@ -95,7 +97,7 @@ def get_report(cycle_ids, report_type, nonhuman=False):
     return render_template(f"reports/{report_type}.html", **context)
 
 
-def get_report_pdf(cycle_ids, report_type, nonhuman=False):
+def get_report_pdf(cycle_ids, report_type, reporting_password=None, nonhuman=False):
     """Get report pdf."""
     filename = f"{cycle_ids[0]}_report.pdf"
     args = [
@@ -108,10 +110,25 @@ def get_report_pdf(cycle_ids, report_type, nonhuman=False):
     ]
     subprocess.run(args)  # nosec
 
-    if not os.path.exists(f"/var/www/{filename}"):
+    filepath = f"/var/www/{filename}"
+    new_filepath = f"/var/www/new-{filename}"
+
+    if not os.path.exists(filepath):
         raise Exception("Reporting Exception - Check Logs")
 
-    return f"/var/www/{filename}"
+    writer = PdfFileWriter()
+    reader = PdfFileReader(open(filepath, "rb"))
+    for i in range(0, reader.getNumPages()):
+        writer.addPage(reader.getPage(i))
+    if reporting_password:
+        writer.encrypt(reporting_password, use_128bit=True)
+
+    output = open(new_filepath, "wb")
+    writer.write(output)
+    output.close()
+    os.remove(filepath)
+
+    return new_filepath
 
 
 def get_reports_sent():

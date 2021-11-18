@@ -103,7 +103,8 @@ class Notification:
             filename = get_report_pdf(
                 [self.cycle["_id"]],
                 self.message_type.split("_")[0],
-                nonhuman,
+                reporting_password=self.subscription.get("reporting_password"),
+                nonhuman=nonhuman,
             )
             logging.info(f"Attaching {filename} to notification.")
             attachments.append(filename)
