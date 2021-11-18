@@ -150,15 +150,18 @@ tbody > tr:nth-child(even) {
 #cover-cycle {
   color: white;
   position: absolute;
-  top: 480px;
-  left: 590px;
+  top: 478px;
+  left: 555px;
+  background-color: #6589a9;
+  font-size: 8pt;
 }
 
 #cover-date {
   color: white;
   position: absolute;
   top: 505px;
-  left: 590px;
+  left: 555px;
+  font-size: 8pt;
 }
 
 #cover-customer {
@@ -228,6 +231,8 @@ tbody > tr:nth-child(even) {
   position: absolute;
   top: 190px;
   left: 590px;
+  background-color: #6892bc;
+  font-size: 8pt;
 }
 
 #toc-date {
@@ -235,6 +240,7 @@ tbody > tr:nth-child(even) {
   position: absolute;
   top: 220px;
   left: 590px;
+  font-size: 8pt;
 }
 
 #toc-header {

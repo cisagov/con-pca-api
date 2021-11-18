@@ -40,7 +40,7 @@
       />
       <p id="cover-assessment">Phishing Campaign Assessment</p>
       <p id="cover-report">Cycle Report</p>
-      <p id="cover-cycle">Unique-Id</p>
+      <p id="cover-cycle">PCA{{ cycle._id | upper }}</p>
       <p id="cover-date">{{ datetime.utcnow().strftime('%b %d, %Y') }}</p>
       <h2 id="cover-customer">
         {{ customer.name }}
@@ -81,7 +81,7 @@
       />
       <p id="toc-assessment">Phishing Campaign Assessment</p>
       <p id="toc-report">Cycle Report</p>
-      <p id="toc-cycle">Unique-Id</p>
+      <p id="toc-cycle">PCA{{ cycle._id | upper }}</p>
       <p id="toc-date">{{ datetime.utcnow().strftime('%b %d, %Y') }}</p>
 
       <h2 id="toc-header">Table of Contents</h2>
