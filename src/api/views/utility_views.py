@@ -1,4 +1,5 @@
 """Utility views."""
+
 # Third-Party Libraries
 from flask import jsonify, render_template, render_template_string, request
 from flask.views import MethodView
@@ -7,6 +8,7 @@ from flask.views import MethodView
 from api.manager import CustomerManager
 from api.phish import get_tracking_info
 from utils.emails import Email, get_email_context, get_from_address
+from utils.images import base64_encode_image, reduce_image_size
 
 customer_manager = CustomerManager()
 
@@ -65,3 +67,22 @@ class TestEmailView(MethodView):
             except Exception as e:
                 return jsonify(str(e)), 400
         return jsonify({"success": True}), 200
+
+
+class ImageEncodeView(MethodView):
+    """ImageEncodeView."""
+
+    def post(self):
+        """Return base64 encode of an image file."""
+        # Get file from request
+        file = request.files["file"]
+
+        # Decrease image size
+        img = reduce_image_size(file.stream, file.content_type)
+
+        # Base 64 encode and return image
+        base64_encode = base64_encode_image(img)
+
+        # Return result
+        result = {"imageUrl": f"data:image/jpeg;base64,{base64_encode.decode()}"}
+        return jsonify(result), 200
