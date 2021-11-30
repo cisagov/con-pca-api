@@ -55,7 +55,7 @@ from api.views.template_views import (
     TemplateView,
 )
 from api.views.user_views import UserConfirmView, UsersView, UserView
-from api.views.utility_views import TestEmailView
+from api.views.utility_views import ImageEncodeView, TestEmailView
 from utils.decorators.auth import auth_required
 
 # register apps
@@ -108,6 +108,7 @@ rules = [
     ("/user/<username>/confirm/", UserConfirmView),
     # Utility Views
     ("/util/send_test_email/", TestEmailView),
+    ("/util/imageencode/", ImageEncodeView),
 ]
 
 # Auth Views
