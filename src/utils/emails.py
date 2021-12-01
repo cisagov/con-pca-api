@@ -228,13 +228,32 @@ def build_message(
 def get_text_from_html(html):
     """Convert html to text for email."""
     soup = BeautifulSoup(html, "html.parser")
-    for script in soup(["script", "style"]):
-        script.extract()
-    text = soup.get_text()
-    lines = (line.strip() for line in text.splitlines())
-    chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
-    text = "\n".join(chunk for chunk in chunks if chunk)
-    return text
+
+    for line_break in soup.find_all("br"):
+        line_break.replace_with("\n")
+
+    text = soup.find_all(text=True)
+    output = ""
+    blacklist = [
+        "[document]",
+        "noscript",
+        "header",
+        "html",
+        "meta",
+        "head",
+        "input",
+        "script",
+    ]
+    for t in text:
+        if t.parent.name == "a":
+            href = t.parent.get("href")
+            output += f"{t} ({href}) "
+        elif t == "\n":
+            output += f"{t}"
+        elif t.parent.name not in blacklist:
+            output += f"{t} "
+
+    return output.strip()
 
 
 def convert_html_links(html):
