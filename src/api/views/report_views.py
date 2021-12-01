@@ -27,30 +27,28 @@ customer_manager = CustomerManager()
 class ReportHtmlView(MethodView):
     """Status report view."""
 
-    def get(self, report_type):
+    def get(self, cycle_id, report_type):
         """Post."""
-        data = request.args.get("cycles").split(",")
         nonhuman = False
         if request.args.get("nonhuman", "") == "true":
             nonhuman = True
-        return get_report(data, report_type, nonhuman), 200
+        return get_report(cycle_id, report_type, nonhuman), 200
 
 
 class ReportPdfView(MethodView):
     """ReportPdfView."""
 
-    def get(self, report_type):
+    def get(self, cycle_id, report_type):
         """Get."""
-        cycle_ids = request.args.get("cycles").split(",")
         nonhuman = False
         if request.args.get("nonhuman", "") == "true":
             nonhuman = True
-        cycle = cycle_manager.get(document_id=cycle_ids[0], fields=["subscription_id"])
+        cycle = cycle_manager.get(document_id=cycle_id, fields=["subscription_id"])
         subscription = subscription_manager.get(
             document_id=cycle["subscription_id"], fields=["reporting_password"]
         )
         filepath = get_report_pdf(
-            cycle_ids,
+            cycle_id,
             report_type,
             reporting_password=subscription.get("reporting_password"),
             nonhuman=nonhuman,
@@ -70,13 +68,12 @@ class ReportPdfView(MethodView):
 class ReportEmailView(MethodView):
     """ReportEmailView."""
 
-    def get(self, report_type):
+    def get(self, cycle_id, report_type):
         """Get."""
-        data = request.args.get("cycles").split(",")
         nonhuman = False
         if request.args.get("nonhuman", "") == "true":
             nonhuman = True
-        cycle = cycle_manager.get(document_id=data[0])
+        cycle = cycle_manager.get(document_id=cycle_id)
         subscription = subscription_manager.get(document_id=cycle["subscription_id"])
         Notification(f"{report_type}_report", subscription, cycle).send(nonhuman)
         return jsonify({"success": True}), 200

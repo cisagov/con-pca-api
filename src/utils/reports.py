@@ -30,40 +30,9 @@ sending_profile_manager = SendingProfileManager()
 subscription_manager = SubscriptionManager()
 
 
-def get_cycles(cycle_ids):
-    """Individually get each cycle so they contain targets."""
-    cycles = []
-    for cycle_id in cycle_ids:
-        cycles.append(cycle_manager.get(document_id=cycle_id))
-    return cycles
-
-
-def merge_cycles(cycles):
-    """Merge cycles."""
-    if len(cycles) == 1:
-        return cycles[0]
-    cycles = sorted(cycles, key=lambda x: x["start_date"])
-
-    cycle_set = {
-        "start_date": cycles[0]["start_date"],
-        "end_date": cycles[-1]["end_date"],
-        "subscription_id": cycles[0]["subscription_id"],
-        "template_ids": [],
-        "target_count": 0,
-        "targets": [],
-    }
-    for cycle in cycles:
-        cycle_set["template_ids"].extend(cycle["template_ids"])
-        cycle_set["targets"].extend(cycle["targets"])
-        cycle_set["target_count"] += cycle["target_count"]
-
-    return cycle_set
-
-
-def get_report(cycle_ids, report_type, nonhuman=False):
+def get_report(cycle_id, report_type, nonhuman=False):
     """Get report by type and cycle."""
-    cycles = get_cycles(cycle_ids)
-    cycle = merge_cycles(cycles)
+    cycle = cycle_manager.get(document_id=cycle_id)
     subscription = subscription_manager.get(
         document_id=cycle["subscription_id"],
         fields=[
@@ -97,14 +66,14 @@ def get_report(cycle_ids, report_type, nonhuman=False):
     return render_template(f"reports/{report_type}.html", **context)
 
 
-def get_report_pdf(cycle_ids, report_type, reporting_password=None, nonhuman=False):
+def get_report_pdf(cycle_id, report_type, reporting_password=None, nonhuman=False):
     """Get report pdf."""
-    filename = f"{cycle_ids[0]}_report.pdf"
+    filename = f"{cycle_id}_report.pdf"
     args = [
         "node",
         "report.js",
         filename,
-        ",".join(cycle_ids),
+        cycle_id,
         report_type,
         str(nonhuman),
     ]
