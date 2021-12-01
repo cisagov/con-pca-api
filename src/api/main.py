@@ -71,9 +71,9 @@ rules = [
     ("/cycles/", CyclesView),
     ("/cycle/<cycle_id>/", CycleView),
     ("/cycle/<cycle_id>/stats/", CycleStatsView),
-    ("/cycle/reports/<report_type>/", ReportHtmlView),
-    ("/cycle/reports/<report_type>/pdf/", ReportPdfView),
-    ("/cycle/reports/<report_type>/email/", ReportEmailView),
+    ("/cycle/<cycle_id>/reports/<report_type>/", ReportHtmlView),
+    ("/cycle/<cycle_id>/reports/<report_type>/pdf/", ReportPdfView),
+    ("/cycle/<cycle_id>/reports/<report_type>/email/", ReportEmailView),
     # Landing Page Views
     ("/landingpages/", LandingPagesView),
     ("/landingpage/<landing_page_id>/", LandingPageView),
