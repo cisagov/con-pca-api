@@ -3,6 +3,7 @@
 from marshmallow import Schema, fields
 
 # cisagov Libraries
+from api.schemas.recommendation_schema import RecommendationsSchema
 from api.schemas.template_schema import TemplateSchema
 
 
@@ -85,6 +86,13 @@ class TimeStatsTypeSchema(Schema):
     clicked = fields.Nested(TimeStatsSchema)
 
 
+class RecommendationStatsSchema(CycleStatsEventsSchema):
+    """RecommendationStatsSchema."""
+
+    recommendation = fields.Nested(RecommendationsSchema)
+    templates = fields.List(fields.Nested(TemplateSchema))
+
+
 class CycleStatsSchema(Schema):
     """CycleStats."""
 
@@ -92,4 +100,5 @@ class CycleStatsSchema(Schema):
     template_stats = fields.List(fields.Nested(TemplateStatsSchema))
     maxmind_stats = fields.List(fields.Nested(MaxmindStatsSchema))
     indicator_stats = fields.List(fields.Nested(IndicatorStatsSchema))
+    recommendation_stats = fields.List(fields.Nested(RecommendationStatsSchema))
     time_stats = fields.Nested(TimeStatsTypeSchema)
