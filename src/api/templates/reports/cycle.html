@@ -22,7 +22,9 @@
   </head>
   <body class="mat-typography">
     <!-- Global Variables Needed -->
-    {% set total_pages = 8 + (stats.template_stats | length) %}
+    {% set recommendation_pages = (2 if stats.recommendation_stats | length > 2
+    else 1) %} {% set total_pages = 7 + (stats.template_stats | length) +
+    recommendation_pages %}
     <!-- For accessing stats within Javascript -->
     <div style="display: none">
       <p id="overallStats">{{ json.dumps(cycle.stats.stats) }}</p>
@@ -310,25 +312,81 @@
         should be paid to the indicators with click rates above this cycle’s
         average click rate ({{ stats.stats.all.clicked.ratio * 100 }}%) because
         they are representative of the phishing elements that {{
-        customer.identifier }}targeted users are potentially least aware of and
+        customer.identifier }} targeted users are potentially least aware of and
         may benefit additional training on.
       </p>
       <!-- TODO: Work on this table -->
-      <table>
+      <table class="recommendation-table">
         <thead>
           <tr>
             <th>Rank</th>
             <th>Indicator Name</th>
+            <th>Indicator Type</th>
             <th>Description</th>
             <th>Current Click Rate</th>
             <th>Previous Click Rate</th>
             <th>Templates with this Indicator</th>
           </tr>
         </thead>
-        <tbody></tbody>
+        <tbody>
+          {% for r in stats.recommendation_stats |
+          sort(attribute="clicked.ratio", reverse=True) %} {% if loop.index <= 2
+          %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ r.recommendation.title }}</td>
+            <td>
+              {% if r.recommendation.type == "red_flag" %}Red Flag{% else
+              %}Sophisticated{% endif %}
+            </td>
+            <td>{{ r.recommendation.description }}</td>
+            <td>{{ r.clicked.ratio * 100 }}%</td>
+            <td>
+              {% if previous_cycles %} {% set pr =
+              previous_cycles[0].stats.recommendation_stats |
+              selectattr("recommendation._id", "equalto", r.recommendation._id)
+              | list %} {% if pr | length > 0 %} {{ (pr | first).clicked.ratio *
+              100 }}% {% else %}N/A {% endif %}{% else %} N/A {% endif %}
+            </td>
+            <td>{{ r.templates | map(attribute="subject") | join (", ") }}</td>
+          </tr>
+          {% endif %} {% endfor %}
+        </tbody>
       </table>
       <p class="page-number">Page | 6 of {{ total_pages }}</p>
     </div>
+
+    {% if (stats.recommendation_stats | length) > 2 %}
+    <div class="page">
+      <table class="recommendation-table">
+        <tbody>
+          {% for r in stats.recommendation_stats |
+          sort(attribute="clicked.ratio", reverse=True) %} {% if loop.index > 2
+          and loop.index <= 7 %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ r.recommendation.title }}</td>
+            <td>
+              {% if r.recommendation.type == "red_flag" %}Red Flag{% else
+              %}Sophisticated{% endif %}
+            </td>
+            <td>{{ r.recommendation.description }}</td>
+            <td>{{ r.clicked.ratio * 100 }}%</td>
+            <td>
+              {% if previous_cycles %} {% set pr =
+              previous_cycles[0].stats.recommendation_stats |
+              selectattr("recommendation._id", "equalto", r.recommendation._id)
+              | list %} {% if pr | length > 0 %} {{ (pr | first).clicked.ratio *
+              100 }}% {% else %}N/A {% endif %}{% else %} N/A {% endif %}
+            </td>
+            <td>{{ r.templates | map(attribute="subject") | join (", ") }}</td>
+          </tr>
+          {% endif %}{% endfor %}
+        </tbody>
+      </table>
+      <p class="page-number">Page | 7 of {{ total_pages }}</p>
+    </div>
+    {% endif %}
 
     <!-- Performance Over Time -->
     <div class="page">
@@ -344,7 +402,9 @@
         charts or tables, include number of people in tested population
         somewhere)
       </p>
-      <p class="page-number">Page | 7 of {{ total_pages }}</p>
+      <p class="page-number">
+        Page | {{ 6 + recommendation_pages }} of {{ total_pages }}
+      </p>
     </div>
 
     <!-- Templates -->
@@ -384,7 +444,11 @@
         </div>
         <div class="row">
           <div class="template-label">Previous Cycle Click Rate for level:</div>
-          <div class="template-value">TBD</div>
+          <div class="template-value">
+            {% if previous_cycles %} {{
+            previous_cycles[0]["stats"]["stats"][template.deception_level]["clicked"]["ratio"]
+            * 100 }}% {% else %} N/A {% endif %}
+          </div>
         </div>
         <div class="row">
           <div class="template-label">CISA average click rate for level:</div>
@@ -419,7 +483,7 @@
         <tbody></tbody>
       </table>
       <p class="page-number">
-        Page | {{ 7 + loop.index }} of {{ total_pages }}
+        Page | {{ 6 + recommendation_pages + loop.index }} of {{ total_pages }}
       </p>
     </div>
     {% endfor %}

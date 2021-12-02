@@ -5,21 +5,30 @@ from itertools import groupby
 import statistics
 
 # cisagov Libraries
-from api.manager import CycleManager, NonHumanManager, TemplateManager
+from api.manager import (
+    CycleManager,
+    NonHumanManager,
+    RecommendationManager,
+    TargetManager,
+    TemplateManager,
+)
 from api.schemas.stats_schema import CycleStatsSchema
 from utils.templates import get_indicators
 
 template_manager = TemplateManager()
 cycle_manager = CycleManager()
 nonhuman_manager = NonHumanManager()
+recommendation_manager = RecommendationManager()
+target_manager = TargetManager()
 
 
 def get_cycle_stats(cycle):
     """Get stats for cycle."""
     if cycle.get("dirty_stats", True):
+        targets = target_manager.all(params={"cycle_id": cycle["_id"]})
         data = {
-            "stats": generate_cycle_stats(cycle, nonhuman=False),
-            "nonhuman_stats": generate_cycle_stats(cycle, nonhuman=True),
+            "stats": generate_cycle_stats(cycle, targets, nonhuman=False),
+            "nonhuman_stats": generate_cycle_stats(cycle, targets, nonhuman=True),
             "dirty_stats": False,
         }
         cycle.update(data)
@@ -30,7 +39,7 @@ def get_cycle_stats(cycle):
             )
 
 
-def generate_cycle_stats(cycle, nonhuman=False):
+def generate_cycle_stats(cycle, targets, nonhuman=False):
     """Get stats for cycle."""
     stats = {
         "high": {
@@ -56,7 +65,7 @@ def generate_cycle_stats(cycle, nonhuman=False):
     }
     template_stats = {}
     nonhuman_orgs = get_nonhuman_orgs()
-    for target in cycle["targets"]:
+    for target in targets:
         if target["template_id"] not in template_stats:
             template_stats[target["template_id"]] = {
                 "sent": {"count": 0},
@@ -73,6 +82,8 @@ def generate_cycle_stats(cycle, nonhuman=False):
                         "html",
                         "from_address",
                         "deception_score",
+                        "sophisticated",
+                        "red_flag",
                     ],
                 ),
                 "deception_level": target["deception_level"],
@@ -117,9 +128,10 @@ def generate_cycle_stats(cycle, nonhuman=False):
     process_ratios(template_stats)
     rank_templates(template_stats)
 
-    maxmind_stats = get_maxmind_stats(cycle)
+    maxmind_stats = get_maxmind_stats(cycle, targets)
     template_stats = template_stats.values()
     indicator_stats = get_indicator_stats(template_stats)
+    recommendation_stats = get_recommendation_stats(template_stats)
     time_stats = get_time_stats(stats)
 
     return CycleStatsSchema().dump(
@@ -129,6 +141,7 @@ def generate_cycle_stats(cycle, nonhuman=False):
             "maxmind_stats": maxmind_stats,
             "indicator_stats": indicator_stats,
             "time_stats": time_stats,
+            "recommendation_stats": recommendation_stats,
         }
     )
 
@@ -235,11 +248,11 @@ def event_asn_org(event):
     return asn_org
 
 
-def get_maxmind_stats(cycle):
+def get_maxmind_stats(cycle, targets):
     """Get stats from maxmind details."""
     timeline = []
     response = []
-    for target in cycle["targets"]:
+    for target in targets:
         timeline.extend(target.get("timeline", []))
 
     sorted_timeline = sorted(timeline, key=lambda x: event_asn_org(x))
@@ -309,3 +322,43 @@ def get_stats_from_indicator(group, indicator, value, label, template_stats):
             response["clicked"]["count"] += ts["clicked"]["count"]
     process_ratios({"stats": response})
     return response
+
+
+def get_recommendation_stats(template_stats):
+    """Get recommendation stats."""
+    recommendation_ids = []
+    for t in template_stats:
+        recommendation_ids.extend(t["template"].get("sophisticated", []))
+        recommendation_ids.extend(t["template"].get("red_flag", []))
+
+    recommendations = recommendation_manager.all(
+        params={"_id": {"$in": recommendation_ids}},
+        fields=["title", "type", "description"],
+    )
+    print(len(set(recommendation_ids)))
+    print(len(recommendations))
+
+    recommendation_stats = []
+    for recommendation in recommendations:
+        # Get all templates with recommendation
+        ts = list(
+            filter(
+                lambda t: recommendation["_id"] in t["template"]["sophisticated"]
+                or recommendation["_id"] in t["template"]["red_flag"],
+                template_stats,
+            )
+        )
+        stats = {
+            "templates": [x["template"] for x in ts],
+            "recommendation": recommendation,
+            "sent": {"count": 0},
+            "opened": {"count": 0},
+            "clicked": {"count": 0},
+        }
+        for t in ts:
+            stats["sent"]["count"] += t["sent"]["count"]
+            stats["opened"]["count"] += t["opened"]["count"]
+            stats["clicked"]["count"] += t["clicked"]["count"]
+        process_ratios({"stats": stats})
+        recommendation_stats.append(stats)
+    return recommendation_stats

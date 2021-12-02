@@ -49,12 +49,14 @@ def get_report(cycle_id, report_type, nonhuman=False):
     )
     customer = customer_manager.get(document_id=subscription["customer_id"])
     get_cycle_stats(cycle)
+    previous_cycles = get_previous_cycles(cycle)
 
     context = {
         "stats": cycle["nonhuman_stats"] if nonhuman else cycle["stats"],
         "cycle": cycle,
         "subscription": subscription,
         "customer": customer,
+        "previous_cycles": previous_cycles,
         "time": time,
         "preview_template": preview_template,
         "preview_from_address": preview_from_address,
@@ -162,6 +164,23 @@ def get_all_customer_stats():
             0 if len(averages) == 0 else sum(averages) / len(averages)
         ),
     }
+
+
+def get_previous_cycles(current_cycle):
+    """Get previous cycles for report."""
+    cycles = cycle_manager.all(
+        params={"subscription_id": current_cycle["subscription_id"]}
+    )
+    cycles = list(filter(lambda x: x["_id"] != current_cycle["_id"], cycles))
+
+    # Sort timeline so most recent is first
+    cycles = sorted(cycles, key=lambda x: x["start_date"], reverse=True)
+
+    # Update stats for each cycle
+    for cycle in cycles:
+        get_cycle_stats(cycle)
+
+    return cycles
 
 
 def preview_from_address(template, subscription, customer):

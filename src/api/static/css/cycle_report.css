@@ -279,6 +279,37 @@ tbody > tr:nth-child(even) {
   content: " ................................................................................................................... ";
 }
 
+/* Recommendations */
+.recommendation-table {
+  font-size: 10pt;
+}
+
+.recommendation-table td,
+.recommendation-table th {
+  padding: 4px;
+}
+
+.recommendation-table > tbody > tr > td:nth-child(1) {
+  width: 0.4in;
+}
+
+.recommendation-table > tbody > tr > td:nth-child(2) {
+  width: 0.7in;
+}
+
+.recommendation-table > tbody > tr > td:nth-child(3) {
+  width: 0.85in;
+}
+.recommendation-table > tbody > tr > td:nth-child(4) {
+  width: 3in;
+}
+.recommendation-table > tbody > tr > td:nth-child(5) {
+  width: 0.6in;
+}
+.recommendation-table > tbody > tr > td:nth-child(6) {
+  width: 0.6in;
+}
+
 /* Templates */
 .template-container {
   border: 2px solid #dddddd;

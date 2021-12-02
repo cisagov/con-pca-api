@@ -279,27 +279,6 @@ class CycleManager(Manager):
             schema=CycleSchema,
         )
 
-    def get(self, document_id=None, filter_data=None, fields=None):
-        """Get a cycle."""
-        if document_id:
-            cycle = self.read_data(
-                self.db.find_one(
-                    self.document_query(document_id),
-                    self.convert_fields(fields),
-                )
-            )
-        else:
-            cycle = self.read_data(
-                self.db.find_one(
-                    filter_data,
-                    self.convert_fields(fields),
-                )
-            )
-        if (fields is None or "targets" in fields) and document_id is not None:
-            target_manager = TargetManager()
-            cycle["targets"] = target_manager.all(params={"cycle_id": document_id})
-        return cycle
-
 
 class LandingPageManager(Manager):
     """LandingPageManager."""
