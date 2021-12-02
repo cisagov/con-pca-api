@@ -1,7 +1,7 @@
 const puppeteer = require("puppeteer");
 
 async function getReport(filename, cycleId, reportType, nonhuman) {
-  const browser = await launch({
+  const browser = await puppeteer.launch({
     headless: true,
     executablePath: "/usr/bin/chromium",
     args: ["--no-sandbox"],
