@@ -335,8 +335,6 @@ def get_recommendation_stats(template_stats):
         params={"_id": {"$in": recommendation_ids}},
         fields=["title", "type", "description"],
     )
-    print(len(set(recommendation_ids)))
-    print(len(recommendations))
 
     recommendation_stats = []
     for recommendation in recommendations:
