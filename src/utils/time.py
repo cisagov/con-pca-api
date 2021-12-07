@@ -71,5 +71,11 @@ def convert_seconds(seconds):
     seconds %= 3600
     minutes = seconds // 60
     seconds %= 60
-    d = {"hours": hour, "minutes": minutes, "seconds": seconds}
+    d = {
+        "hours": hour,
+        "minutes": minutes,
+        "seconds": seconds,
+        "long": f"{hour} hours, {minutes} minutes, {seconds} seconds",
+        "short": f"{str(hour).zfill(2)}:{str(minutes).zfill(2)}:{str(seconds).zfill(2)}",
+    }
     return SimpleNamespace(**d)

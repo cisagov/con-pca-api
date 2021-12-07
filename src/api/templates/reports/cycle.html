@@ -18,7 +18,7 @@
     />
     <script src="{{ url_for('static', filename='js/chart.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/chartjs-plugin-datalabels.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/reports.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/cycle.js') }}"></script>
   </head>
   <body class="mat-typography">
     <!-- Global Variables Needed -->
@@ -27,11 +27,11 @@
     recommendation_pages %}
     <!-- For accessing stats within Javascript -->
     <div style="display: none">
-      <p id="overallStats">{{ json.dumps(cycle.stats.stats) }}</p>
-      <p id="indicatorStats">{{ json.dumps(cycle.stats.indicator_stats) }}</p>
       <p id="indicators">{{ json.dumps(indicators) }}</p>
       <p id="templateStats">{{ json.dumps(stats.template_stats) }}</p>
       <p id="timeIntervalStats">{{ json.dumps(stats.time_stats) }}</p>
+      <p id="previousCycles">{{ json.dumps(previous_cycles, default=str) }}</p>
+      <p id="currentCycle">{{ json.dumps(cycle, default=str) }}</p>
     </div>
 
     <!-- Cover Page -->
@@ -391,17 +391,60 @@
     <!-- Performance Over Time -->
     <div class="page">
       <p class="page-header">5. Performance Over Time</p>
-      <p>Work In Progress</p>
-      <p>
-        Click rate over time for high, moderate, low deception emails (three
-        charts or tables, include number of people in tested population
-        somewhere)
+      <p class="indent">
+        The following table shows up to the previous 5 cycles and their
+        corresponding start date, end date, target count, overall click rate,
+        and overall time to first click. This can indicate whether overall
+        trends are positive or negative.
       </p>
-      <p>
-        Click times over time for high, moderate, low deception emails (three
-        charts or tables, include number of people in tested population
-        somewhere)
+      <table class="performance-table">
+        <thead>
+          <tr>
+            <th>Cycle</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Targets</th>
+            <th>Click Rate</th>
+            <th>Click Time (HH:MM:SS)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Report Cycle</td>
+            <td>{{ cycle.start_date.strftime('%b %d, %Y') }}</td>
+            <td>{{ cycle.end_date.strftime('%b %d, %Y') }}</td>
+            <td>{{ cycle.target_count }}</td>
+            <td>{{ cycle.stats.stats.all.clicked.ratio * 100 }}%</td>
+            {% set avg_click =
+            time.convert_seconds(cycle.stats.stats.all.clicked.average) %}
+            <td>{{ avg_click.short }}</td>
+          </tr>
+          {% if previous_cycles %} {% for c in previous_cycles %} {% if
+          loop.index <= 5 %}
+          <tr>
+            <td>Cycle #{{ loop.index + 1 }}</td>
+            <td>{{ c.start_date.strftime('%b %d, %Y') }}</td>
+            <td>{{ c.end_date.strftime('%b %d, %Y') }}</td>
+            <td>{{ c.target_count }}</td>
+            <td>{{ c.stats.stats.all.clicked.ratio * 100 }}%</td>
+            {% set avg_click =
+            time.convert_seconds(c.stats.stats.all.clicked.average) %}
+            <td>{{ avg_click.short }}</td>
+          </tr>
+          {% endif %} {% endfor %} {% endif %}
+        </tbody>
+      </table>
+      <p class="indent">
+        Up to the previous 3 cycles are shown in the graph below. This graph
+        represents the average click rate across the three different deception
+        levels (low, moderate, high). This is a good indication to see how click
+        rates are improving based on the quality of the sent template.
       </p>
+      <canvas id="click-rate-over-time">
+        <script>
+          createClickRateOverTime();
+        </script>
+      </canvas>
       <p class="page-number">
         Page | {{ 6 + recommendation_pages }} of {{ total_pages }}
       </p>
