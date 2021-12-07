@@ -175,7 +175,13 @@ def get_previous_cycles(current_cycle):
     cycles = cycle_manager.all(
         params={"subscription_id": current_cycle["subscription_id"]}
     )
-    cycles = list(filter(lambda x: x["_id"] != current_cycle["_id"], cycles))
+    cycles = list(
+        filter(
+            lambda x: x["_id"] != current_cycle["_id"]
+            and x["start_date"] < current_cycle["start_date"],
+            cycles,
+        )
+    )
 
     # Sort timeline so most recent is first
     cycles = sorted(cycles, key=lambda x: x["start_date"], reverse=True)
