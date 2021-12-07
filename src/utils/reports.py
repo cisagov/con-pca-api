@@ -16,6 +16,7 @@ from flask.templating import render_template_string
 from api.manager import (
     CustomerManager,
     CycleManager,
+    RecommendationManager,
     SendingProfileManager,
     SubscriptionManager,
 )
@@ -26,6 +27,7 @@ from utils.templates import get_indicators
 
 customer_manager = CustomerManager()
 cycle_manager = CycleManager()
+recommendation_manager = RecommendationManager()
 sending_profile_manager = SendingProfileManager()
 subscription_manager = SubscriptionManager()
 
@@ -50,6 +52,7 @@ def get_report(cycle_id, report_type, nonhuman=False):
     customer = customer_manager.get(document_id=subscription["customer_id"])
     get_cycle_stats(cycle)
     previous_cycles = get_previous_cycles(cycle)
+    recommendations = recommendation_manager.all()
 
     context = {
         "stats": cycle["nonhuman_stats"] if nonhuman else cycle["stats"],
@@ -57,6 +60,7 @@ def get_report(cycle_id, report_type, nonhuman=False):
         "subscription": subscription,
         "customer": customer,
         "previous_cycles": previous_cycles,
+        "recommendations": recommendations,
         "time": time,
         "preview_template": preview_template,
         "preview_from_address": preview_from_address,
