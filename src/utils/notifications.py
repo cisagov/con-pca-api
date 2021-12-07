@@ -125,17 +125,18 @@ class Notification:
                 "headers": [],
             }
             from_address = config["REPORTING_FROM_ADDRESS"]
-            email = Email(sending_profile)
-            email.send(
-                from_email=from_address,
-                to_recipients=addresses["to"],
-                bcc_recipients=addresses["bcc"],
-                subject=report["subject"],
-                body=report["html"],
-                attachments=attachments,
-            )
+            if from_address:
+                email = Email(sending_profile)
+                email.send(
+                    from_email=from_address,
+                    to_recipients=addresses["to"],
+                    bcc_recipients=addresses["bcc"],
+                    subject=report["subject"],
+                    body=report["html"],
+                    attachments=attachments,
+                )
 
-            self.add_notification_history(addresses, from_address)
+                self.add_notification_history(addresses, from_address)
         except Exception as e:
             raise e
         finally:
