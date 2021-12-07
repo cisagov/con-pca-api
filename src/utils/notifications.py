@@ -101,7 +101,7 @@ class Notification:
         attachments = []
         if self.message_type in ["status_report", "cycle_report"]:
             filename = get_report_pdf(
-                [self.cycle["_id"]],
+                self.cycle["_id"],
                 self.message_type.split("_")[0],
                 reporting_password=self.subscription.get("reporting_password"),
                 nonhuman=nonhuman,
