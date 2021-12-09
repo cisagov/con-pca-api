@@ -61,13 +61,14 @@ def get_report(cycle_id, report_type, nonhuman=False):
         "customer": customer,
         "previous_cycles": previous_cycles,
         "recommendations": recommendations,
-        "time": time,
+        "percent": percent,
         "preview_template": preview_template,
         "preview_from_address": preview_from_address,
-        "datetime": datetime,
         "indicators": get_indicators(),
+        "datetime": datetime,
         "json": json,
         "str": str,
+        "time": time,
     }
     return render_template(f"reports/{report_type}.html", **context)
 
@@ -218,3 +219,8 @@ def preview_template(data, customer):
     }
     context = get_email_context(customer=customer, target=target)
     return render_template_string(data, **context)
+
+
+def percent(ratio):
+    """Get percentage from ratio."""
+    return round(ratio * 100)
