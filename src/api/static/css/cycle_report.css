@@ -88,7 +88,7 @@ tbody > tr:nth-child(even) {
   height: 11in;
 
   /* Border for testing purposes */
-  border: 2px solid black;
+  /* border: 2px solid black; */
 }
 
 .page-header {
