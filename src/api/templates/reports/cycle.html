@@ -310,8 +310,8 @@
         anti-phishing training and awareness efforts the red flags and the
         sophisticated techniques outlined in the table below. Special attention
         should be paid to the indicators with click rates above this cycle’s
-        average click rate ({{ stats.stats.all.clicked.ratio * 100 }}%) because
-        they are representative of the phishing elements that {{
+        average click rate ({{ percent(stats.stats.all.clicked.ratio) }}%)
+        because they are representative of the phishing elements that {{
         customer.identifier }} targeted users are potentially least aware of and
         may benefit additional training on.
       </p>
@@ -340,13 +340,14 @@
               %}Sophisticated{% endif %}
             </td>
             <td>{{ r.recommendation.description }}</td>
-            <td>{{ r.clicked.ratio * 100 }}%</td>
+            <td>{{ percent(r.clicked.ratio) }}%</td>
             <td>
               {% if previous_cycles %} {% set pr =
               previous_cycles[0].stats.recommendation_stats |
               selectattr("recommendation._id", "equalto", r.recommendation._id)
-              | list %} {% if pr | length > 0 %} {{ (pr | first).clicked.ratio *
-              100 }}% {% else %}N/A {% endif %}{% else %} N/A {% endif %}
+              | list %} {% if pr | length > 0 %} {{ percent((pr |
+              first).clicked.ratio) }}% {% else %}N/A {% endif %}{% else %} N/A
+              {% endif %}
             </td>
             <td>{{ r.templates | map(attribute="subject") | join (", ") }}</td>
           </tr>
@@ -371,13 +372,14 @@
               %}Sophisticated{% endif %}
             </td>
             <td>{{ r.recommendation.description }}</td>
-            <td>{{ r.clicked.ratio * 100 }}%</td>
+            <td>{{ percent(r.clicked.ratio) }}%</td>
             <td>
               {% if previous_cycles %} {% set pr =
               previous_cycles[0].stats.recommendation_stats |
               selectattr("recommendation._id", "equalto", r.recommendation._id)
-              | list %} {% if pr | length > 0 %} {{ (pr | first).clicked.ratio *
-              100 }}% {% else %}N/A {% endif %}{% else %} N/A {% endif %}
+              | list %} {% if pr | length > 0 %} {{ percent((pr |
+              first).clicked.ratio) }}% {% else %}N/A {% endif %}{% else %} N/A
+              {% endif %}
             </td>
             <td>{{ r.templates | map(attribute="subject") | join (", ") }}</td>
           </tr>
@@ -414,7 +416,7 @@
             <td>{{ cycle.start_date.strftime('%b %d, %Y') }}</td>
             <td>{{ cycle.end_date.strftime('%b %d, %Y') }}</td>
             <td>{{ cycle.target_count }}</td>
-            <td>{{ cycle.stats.stats.all.clicked.ratio * 100 }}%</td>
+            <td>{{ percent(cycle.stats.stats.all.clicked.ratio) }}%</td>
             {% set avg_click =
             time.convert_seconds(cycle.stats.stats.all.clicked.average) %}
             <td>{{ avg_click.short }}</td>
@@ -426,7 +428,7 @@
             <td>{{ c.start_date.strftime('%b %d, %Y') }}</td>
             <td>{{ c.end_date.strftime('%b %d, %Y') }}</td>
             <td>{{ c.target_count }}</td>
-            <td>{{ c.stats.stats.all.clicked.ratio * 100 }}%</td>
+            <td>{{ percent(c.stats.stats.all.clicked.ratio) }}%</td>
             {% set avg_click =
             time.convert_seconds(c.stats.stats.all.clicked.average) %}
             <td>{{ avg_click.short }}</td>
@@ -483,14 +485,14 @@
           </tr>
           <tr>
             <td>Click Rate</td>
-            <td>{{ template.clicked.ratio * 100 }}%</td>
+            <td>{{ percent(template.clicked.ratio) }}%</td>
           </tr>
           <tr>
             <td>Previous Cycle Click Rate for Level</td>
             <td>
               {% if previous_cycles %} {{
-              previous_cycles[0]["stats"]["stats"][template.deception_level]["clicked"]["ratio"]
-              * 100 }}% {% else %} N/A {% endif %}
+              percent(previous_cycles[0]["stats"]["stats"][template.deception_level]["clicked"]["ratio"])
+              }}% {% else %} N/A {% endif %}
             </td>
           </tr>
           <tr>
