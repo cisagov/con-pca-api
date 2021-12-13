@@ -61,6 +61,7 @@ def get_report(cycle_id, report_type, nonhuman=False):
         "customer": customer,
         "previous_cycles": previous_cycles,
         "recommendations": recommendations,
+        "compare_svg": compare_svg,
         "percent": percent,
         "preview_template": preview_template,
         "preview_from_address": preview_from_address,
@@ -224,3 +225,62 @@ def preview_template(data, customer):
 def percent(ratio):
     """Get percentage from ratio."""
     return round(ratio * 100)
+
+
+def compare_svg(current, previous):
+    """Compare current and previous value and return an SVG based on the result."""
+    height = "0.1.75in"
+    width = "0.175in"
+    up_svg = f"""
+        <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="{width}"
+                height="{height}"
+                fill="#5e9732"
+                class="bi bi-caret-up-fill"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"
+                />
+              </svg>
+    """
+
+    down_svg = f"""
+        <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="{width}"
+                height="{height}"
+                fill="#c41230"
+                class="bi bi-caret-down-fill"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"
+                />
+              </svg>
+    """
+
+    neutral_svg = f"""
+        <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="{width}"
+                height="{height}"
+                fill="#006c9c"
+                class="bi bi-caret-right-fill"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"
+                />
+              </svg>
+    """
+
+    if not previous:
+        return neutral_svg
+    if current > previous:
+        return up_svg
+    if current < previous:
+        return down_svg
+    if current == previous:
+        return neutral_svg
