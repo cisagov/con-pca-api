@@ -91,10 +91,6 @@ h6 {
   margin-top: 0;
   margin-bottom: 0.5rem;
 }
-p {
-  margin-top: 0;
-  margin-bottom: 1rem;
-}
 abbr[data-original-title],
 abbr[title] {
   text-decoration: underline;
@@ -12392,11 +12388,7 @@ a.text-dark:hover {
   font: 400 14px/20px Roboto;
   letter-spacing: 0.0179em;
 }
-.mat-body-1 p,
-.mat-body p,
-.mat-typography p {
-  margin: 0 0 12px;
-}
+
 .mat-caption,
 .mat-small {
   font: 400 12px/20px Roboto;

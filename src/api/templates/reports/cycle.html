@@ -23,9 +23,7 @@
   <body class="mat-typography">
     <!-- Global Variables Needed -->
     <!-- Set total pages -->
-    {% set recommendation_pages = (2 if stats.recommendation_stats | length > 2
-    else 1) %} {% set total_pages = 7 + (stats.template_stats | length * 2) +
-    recommendation_pages %}
+    {% set total_pages = 10 + (stats.template_stats | length) %}
     <!-- Set previous cycle -->
     {% if previous_cycles %} {% set previous_cycle = previous_cycles[0] %} {%
     else %} {% set previous_cycle = None %} {% endif %}
@@ -118,6 +116,18 @@
         </dl>
         <dl>
           <dt><span>7.</span> ATTACHMENTS</dt>
+          <dd>{{ total_pages - 3 }}</dd>
+        </dl>
+        <dl>
+          <dt><span>Appendix A:</span> Red Flag Indicators</dt>
+          <dd>{{ total_pages - 2 }}</dd>
+        </dl>
+        <dl>
+          <dt><span>Appendix B:</span> Sophisticated Techniques</dt>
+          <dd>{{ total_pages - 1 }}</dd>
+        </dl>
+        <dl>
+          <dt><span>Appendix C:</span> Binding Operational Directive</dt>
           <dd>{{ total_pages }}</dd>
         </dl>
       </div>
@@ -652,7 +662,6 @@
             <th>Rank</th>
             <th>Indicator Name</th>
             <th>Indicator Type</th>
-            <th>Description</th>
             <th>Current Click Rate</th>
             <th>Previous Click Rate</th>
             <th>Templates with this Indicator</th>
@@ -660,7 +669,7 @@
         </thead>
         <tbody>
           {% for r in stats.recommendation_stats |
-          sort(attribute="clicked.ratio", reverse=True) %} {% if loop.index <= 2
+          sort(attribute="clicked.ratio", reverse=True) %} {% if loop.index <= 5
           %}
           <tr>
             <td>{{ loop.index }}</td>
@@ -669,7 +678,6 @@
               {% if r.recommendation.type == "red_flag" %}Red Flag{% else
               %}Sophisticated{% endif %}
             </td>
-            <td>{{ r.recommendation.description }}</td>
             <td>{{ percent(r.clicked.ratio) }}%</td>
             <td>
               {% if previous_cycles %} {% set pr =
@@ -686,39 +694,6 @@
       </table>
       <p class="page-number">Page | 6 of {{ total_pages }}</p>
     </div>
-
-    {% if (stats.recommendation_stats | length) > 2 %}
-    <div class="page">
-      <table class="recommendation-table">
-        <tbody>
-          {% for r in stats.recommendation_stats |
-          sort(attribute="clicked.ratio", reverse=True) %} {% if loop.index > 2
-          and loop.index <= 7 %}
-          <tr>
-            <td>{{ loop.index }}</td>
-            <td>{{ r.recommendation.title }}</td>
-            <td>
-              {% if r.recommendation.type == "red_flag" %}Red Flag{% else
-              %}Sophisticated{% endif %}
-            </td>
-            <td>{{ r.recommendation.description }}</td>
-            <td>{{ percent(r.clicked.ratio) }}%</td>
-            <td>
-              {% if previous_cycles %} {% set pr =
-              previous_cycles[0].stats.recommendation_stats |
-              selectattr("recommendation._id", "equalto", r.recommendation._id)
-              | list %} {% if pr | length > 0 %} {{ percent((pr |
-              first).clicked.ratio) }}% {% else %}N/A {% endif %}{% else %} N/A
-              {% endif %}
-            </td>
-            <td>{{ r.templates | map(attribute="subject") | join (", ") }}</td>
-          </tr>
-          {% endif %}{% endfor %}
-        </tbody>
-      </table>
-      <p class="page-number">Page | 7 of {{ total_pages }}</p>
-    </div>
-    {% endif %}
 
     <!-- Performance Over Time -->
     <div class="page">
@@ -780,9 +755,7 @@
           createClickRateOverTime();
         </script>
       </canvas>
-      <p class="page-number">
-        Page | {{ 6 + recommendation_pages }} of {{ total_pages }}
-      </p>
+      <p class="page-number">Page | 7 of {{ total_pages }}</p>
     </div>
 
     <!-- Templates -->
@@ -792,6 +765,7 @@
       {% if loop.index == 1 %}
       <p class="page-header">6. Phishing Templates for this Cycle</p>
       {% endif %}
+
       <table class="template-table" style="margin-left: 0">
         <thead>
           <tr>
@@ -838,11 +812,18 @@
           </tr>
         </tbody>
       </table>
+      <div class="template-body">
+        <b>Subject:</b>
+        {{ preview_template(template.template.subject, customer) }}<br />
+        <b style="margin-bottom: 1rem">From:</b>
+        {{ preview_from_address(template.template, subscription, customer) }}<br /><br />
+        <div class="template-html">{{ template.template.html | safe }}</div>
+      </div>
       <p>The following are the <b>Red Flag</b> indicators for the template.</p>
       <ul>
         {% for rec in recommendations %}{% if rec._id in
         template.template.red_flag %}
-        <li><b>{{ rec.title }} -</b> {{ rec.description }}</li>
+        <li>{{ rec.title }}</li>
         {% endif %}{% endfor %}
       </ul>
       <p>
@@ -852,29 +833,11 @@
       <ul>
         {% for rec in recommendations %}{% if rec._id in
         template.template.sophisticated %}
-        <li><b>{{ rec.title }} -</b> {{ rec.description }}</li>
+        <li>{{ rec.title }}</li>
         {% endif %}{% endfor %}
       </ul>
       <p class="page-number">
-        Page | {{ 6 + recommendation_pages + (loop.index * 2 - 1) }} of {{
-        total_pages }}
-      </p>
-    </div>
-
-    <div class="page">
-      <div class="col-12">
-        <div class="template-body">
-          <b>Subject:</b>
-          {{ preview_template(template.template.subject, customer) }}<br />
-          <b style="margin-bottom: 1rem">From:</b>
-          {{ preview_from_address(template.template, subscription, customer)
-          }}<br /><br />
-          <div class="template-html">{{ template.template.html | safe }}</div>
-        </div>
-      </div>
-      <p class="page-number">
-        Page | {{ 6 + recommendation_pages + (loop.index * 2) }} of {{
-        total_pages }}
+        Page | {{ 7 + loop.index }} of {{ total_pages }}
       </p>
     </div>
     {% endfor %}
@@ -897,7 +860,105 @@
           CSV template of preferred headers for sending an updated target list
         </li>
       </ul>
-      <p class="page-number">Page | {{ total_pages }} of {{ total_pages }}</p>
+      <p class="page-number">
+        Page | {{ total_pages - 2 }} of {{ total_pages }}
+      </p>
+    </div>
+
+    <!-- Appendix A: Red Flag Indicators -->
+    <div class="page">
+      <div class="page-header">Appendix A: Red Flag Indicators</div>
+      <p style="margin-top: 0.25in">
+        The following are definitions for <b>Red Flag</b> indicators.
+      </p>
+      <ul>
+        {% for rec in recommendations | sort(attribute="title") %} {% if
+        rec.type == 'red_flag' %}
+        <li><b>{{ rec.title }} -</b> {{ rec.description }}</li>
+        {% endif %} {% endfor %}
+      </ul>
+
+      <div class="page-number">
+        Page | {{ total_pages - 2 }} of {{ total_pages }}
+      </div>
+    </div>
+
+    <!-- Appendix B: Sophisticated Techniques -->
+    <div class="page">
+      <div class="page-header">Appendix B: Sophisticated Techniques</div>
+      <p style="margin-top: 0.25in">
+        The following are definitions for <b>Sophisticated Techniques</b>.
+      </p>
+      <ul>
+        {% for rec in recommendations | sort(attribute="title") %} {% if
+        rec.type == 'sophisticated' %}
+        <li><b>{{ rec.title }} -</b> {{ rec.description }}</li>
+        {% endif %} {% endfor %}
+      </ul>
+      <div class="page-number">
+        Page | {{ total_pages - 1 }} of {{ total_pages }}
+      </div>
+    </div>
+
+    <!-- Appendix B: BOD -->
+    <div class="page">
+      <div class="page-header">Appendix C: Binding Operational Directive</div>
+      <div
+        style="
+          width: 100%;
+          text-align: center;
+          margin-top: 0.25in;
+          margin-bottom: 0.25in;
+        "
+      >
+        <p>Note to Customers on Binding Operational Directive (BOD) 22-01</p>
+        <p>November 3, 2021</p>
+        <p>Reducing the Significant Risk of Known Exploited Vulnerabilities</p>
+      </div>
+      <p>
+        Pursuant to BOD 22-01 published on November 3rd, 2021, the Cybersecurity
+        and Infrastructure Security Agency has developed and published a catalog
+        of known exploited vulnerabilities.
+      </p>
+      <p>
+        While the BOD only requires action from federal civilian agencies, the
+        catalog is provided for your awareness. CISA strongly recommends that
+        private businesses and state, local, tribal, and territorial (SLTT)
+        governments review and monitor the catalog and remediate the listed
+        vulnerabilities to strengthen their security and resilience posture.
+        Building collective resilience requires action across all stakeholders.
+      </p>
+      <p>Thresholds and conditions for catalog updates:</p>
+      <p>
+        CISA will update this catalog with additional exploited vulnerabilities
+        as they become known, subject to an executive level CISA review and when
+        they satisfy the following thresholds:
+      </p>
+      <ul style="margin-left: 0.18in">
+        <li>
+          The vulnerability has an assigned Common Vulnerabilities and Exposures
+          (CVE) ID.
+        </li>
+        <li>
+          There is reliable evidence that the vulnerability has been actively
+          exploited in the wild.
+        </li>
+        <li>
+          There is a clear remediation action for the vulnerability, such as a
+          vendor provided update.
+        </li>
+      </ul>
+      <p>
+        To report newly exploited vulnerabilities that are not in this catalog
+        please email CISA Central at central@cisa.dhs.gov
+      </p>
+      <p>
+        For more information on this BOD please see cyber.dhs.gov - Binding
+        Operational Directive 22-01 (https://cyber.dhs.gov/bod/22-01/)
+      </p>
+      <div class="page-number">
+        Page | {{ total_pages }} of {{ total_pages }}
+      </div>
     </div>
   </body>
 </html>
