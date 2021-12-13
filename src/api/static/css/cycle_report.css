@@ -1,4 +1,12 @@
 @charset "UTF-8";
+
+@font-face {
+  font-family: "franklin-gothic-book";
+  src: url("fonts/Franklin Gothic Book Regular.ttf") format("trutetype");
+  font-weight: 600;
+  font-style: normal;
+}
+
 @page {
   margin: 0;
   size: Letter;
@@ -105,6 +113,14 @@ tbody > tr:nth-child(even) {
 
 .indent {
   text-indent: 0.18in;
+}
+
+.dhs-blue {
+  color: #005288;
+}
+
+.book-font {
+  font-family: "franklin-gothic-book";
 }
 
 /* Cover Page */
@@ -277,6 +293,79 @@ tbody > tr:nth-child(even) {
 
 #toc-section > dl > dt::after {
   content: " ................................................................................................................... ";
+}
+
+/* Report Card */
+#report-card-page {
+  background: white;
+  display: block;
+  position: relative;
+  page-break-after: always;
+
+  /* Size = Letter */
+  width: 8.5in;
+  height: 11in;
+}
+
+#report-card-box {
+  background-color: #005288;
+  width: 8.5in;
+  height: 1.875in;
+}
+
+#report-card-logo {
+  position: absolute;
+  width: 1.25in;
+  top: 0.3125in;
+  left: 0.5in;
+}
+
+#report-card-customer {
+  position: absolute;
+  right: 0.5in;
+  top: 0.3125in;
+  color: white;
+  text-align: end;
+  font-size: 14pt;
+}
+
+#report-card-bottom {
+  padding-left: 0.5in;
+  padding-right: 0.5in;
+  padding-top: 0.25in;
+}
+
+#report-card-horizontal-divider {
+  width: 100%;
+  border-top: 4px solid #005288;
+}
+
+#report-card-vertical-divider {
+  height: 2.5in;
+  border-right: 4px solid #005288;
+  margin-right: 0.2in;
+}
+
+#report-card-top-box {
+  margin-top: 35px;
+  border-top: 4px solid black;
+  border-left: 4px solid black;
+  border-bottom: 4px solid black;
+  height: 1.25in;
+  width: 0.3in;
+}
+
+#report-card-bottom-box {
+  border-left: 4px solid black;
+  border-bottom: 4px solid black;
+  height: 1.25in;
+  width: 0.3in;
+}
+
+.report-card-circle {
+  width: 0.75in;
+  height: 0.75in;
+  border-radius: 50%;
 }
 
 /* Performance over time */
