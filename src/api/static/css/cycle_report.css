@@ -372,6 +372,12 @@ tbody > tr:nth-child(even) {
   border-radius: 50%;
 }
 
+.report-card-changes-text {
+  font-size: 12pt;
+  margin-top: 0.175in;
+  height: 12pt;
+}
+
 /* Performance over time */
 .performance-table {
   width: 100%;
