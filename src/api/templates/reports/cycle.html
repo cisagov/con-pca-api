@@ -202,7 +202,7 @@
           <b>Send an updated target list. </b>If you’ve experienced personnel
           changes since the start of this last cycle, send an updated email
           target list to vulnerability@cisa.dhs.gov prior to the start of your
-          next phishing cycle on NEXT_CYCLE_START_DATE
+          next phishing cycle on {{ cycle.end_date.strftime('%B %d, %Y') }}.
         </li>
       </ol>
       <p>
