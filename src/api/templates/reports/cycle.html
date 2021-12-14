@@ -289,22 +289,25 @@
               <b>Ended,</b> {{ cycle.end_date.strftime('%b, %d, %Y') }}
             </div>
             <div class="report-card-changes-text">
-              {{ compare_svg(cycle.target_count, previous_cycle.target_count ) |
-              safe }}
+              {% if previous_cycle %} {{ compare_svg(cycle.target_count,
+              previous_cycle.target_count ) | safe }}{% endif %}
               <b>{{ cycle.target_count }} </b>
               targets
             </div>
             <div class="report-card-changes-text">
-              {{ compare_svg(percent(cycle.stats.stats.all.clicked.ratio),
+              {% if previous_cycle %} {{
+              compare_svg(percent(cycle.stats.stats.all.clicked.ratio),
               percent(previous_cycle.stats.stats.all.clicked.ratio),
               up_color="bad", down_color="good", neutral_color="neutral") | safe
-              }}
+              }} {% endif %}
               <b>{{ percent(cycle.stats.stats.all.clicked.ratio) }}%</b> Click
               Rate
             </div>
             <div class="report-card-changes-text">
-              {{ compare_svg(cycle.stats.stats.all.clicked.average,
-              previous_cycle.stats.stats.all.clicked.average ) | safe }}
+              {% if previous_cycle %} {{
+              compare_svg(cycle.stats.stats.all.clicked.average,
+              previous_cycle.stats.stats.all.clicked.average ) | safe }} {%
+              endif %}
               <b
                 >{{
                 time.convert_seconds(cycle.stats.stats.all.clicked.average).short
@@ -313,8 +316,9 @@
               Click Time
             </div>
             <div class="report-card-changes-text">
-              {{ compare_svg((cycle.stats.template_stats | length),
-              (previous_cycle.stats.template_stats | length) ) | safe }}
+              {% if previous_cycle %} {{ compare_svg((cycle.stats.template_stats
+              | length), (previous_cycle.stats.template_stats | length) ) | safe
+              }} {% endif %}
               <b>{{ cycle.stats.template_stats | length }} </b> Templates Used
             </div>
           </div>
@@ -326,46 +330,41 @@
             <div style="font-size: 14pt; margin-top: 0.125in">
               <b>Previous Cycle</b>
             </div>
+            {% if previous_cycle %}
             <div class="report-card-changes-text">
-              <b>Started,</b> {% if previous_cycle %}{{
-              previous_cycle.start_date.strftime('%B %d, %Y') }}{% else %}N/A{%
-              endif %}
+              <b>Started,</b> {{ previous_cycle.start_date.strftime('%B %d, %Y')
+              }}
             </div>
             <div class="report-card-changes-text" style="margin-top: 0">
-              <b>Ended,</b> {% if previous_cycle %}{{
-              previous_cycle.end_date.strftime('%B %d, %Y') }}{% else %}N/A{%
-              endif %}
+              <b>Ended,</b> {{ previous_cycle.end_date.strftime('%B %d, %Y') }}
             </div>
             <div class="report-card-changes-text">
-              <b
-                >{% if previous_cycle %}{{ previous_cycle.target_count }}{% else
-                %}N/A{% endif %}</b
-              >
+              <b>{{ previous_cycle.target_count }}</b>
               Targets
             </div>
             <div class="report-card-changes-text">
               <b
-                >{% if previous_cycle %}{{
-                percent(previous_cycle.stats.stats.all.clicked.ratio) }}%{% else
-                %}N/A{% endif %}</b
+                >{{ percent(previous_cycle.stats.stats.all.clicked.ratio) }}%</b
               >
               Click Rate
             </div>
             <div class="report-card-changes-text">
               <b
-                >{% if previous_cycle %}{{
+                >{{
                 time.convert_seconds(previous_cycle.stats.stats.all.clicked.average).short
-                }}{% else %}N/A{% endif %}</b
+                }}</b
               >
               Click Time
             </div>
             <div class="report-card-changes-text">
-              <b
-                >{% if previous_cycle %}{{ previous_cycle.stats.template_stats |
-                length }}{% else %}N/A{% endif %}</b
-              >
+              <b>{{ previous_cycle.stats.template_stats | length }}</b>
               Templates Used
             </div>
+            {% else %}
+            <p style="width: 160px" class="report-card-changes-text">
+              Participate in additional cycles for trending statistics.
+            </p>
+            {% endif %}
           </div>
 
           <div id="report-card-vertical-divider"></div>
