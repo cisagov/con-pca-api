@@ -62,6 +62,7 @@ def get_report(cycle_id, report_type, nonhuman=False):
         "previous_cycles": previous_cycles,
         "recommendations": recommendations,
         "compare_svg": compare_svg,
+        "percent_svg": percent_svg,
         "percent": percent,
         "preview_template": preview_template,
         "preview_from_address": preview_from_address,
@@ -227,53 +228,77 @@ def percent(ratio):
     return round(ratio * 100)
 
 
-def compare_svg(current, previous):
+def compare_svg(
+    current,
+    previous,
+    up_color="default",
+    down_color="default",
+    neutral_color="default",
+):
     """Compare current and previous value and return an SVG based on the result."""
-    height = "0.1.75in"
-    width = "0.175in"
+    colors = {
+        "good": "#5e9732",
+        "bad": "#c41230",
+        "neutral": "#fdc010",
+        "default": "#006c9c",
+    }
     up_svg = f"""
-        <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="{width}"
-                height="{height}"
-                fill="#5e9732"
-                class="bi bi-caret-up-fill"
-                viewBox="0 0 16 16"
-              >
-                <path
-                  d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 22" style="width: 0.25in">
+            <g id="Layer_2" data-name="Layer 2">
+                <g id="Layer_1-2" data-name="Layer 1">
+                <polygon
+                    style="
+                        fill: {colors.get(up_color)};
+                        stroke: {colors.get(up_color)};
+                        stroke-linecap: round;
+                        stroke-linejoin: round;
+                        stroke-width: 2px;
+                    "
+                    points="31 14.78 23.5 7.89 16 1 8.5 7.89 1 14.78 6.66 14.78 6.66 21 10.32 21 22.04 21 25.42 21 25.42 14.78 31 14.78"
                 />
-              </svg>
+                </g>
+            </g>
+        </svg>
     """
 
     down_svg = f"""
-        <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="{width}"
-                height="{height}"
-                fill="#c41230"
-                class="bi bi-caret-down-fill"
-                viewBox="0 0 16 16"
-              >
-                <path
-                  d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 22" style="width: 0.25in; height: 0.25in">
+            <g id="Layer_2" data-name="Layer 2">
+                <g id="Layer_1-2" data-name="Layer 1">
+                <polygon
+                    style="
+                        fill: {colors.get(down_color)};
+                        stroke: {colors.get(down_color)};
+                        stroke-linecap: round;
+                        stroke-linejoin: round;
+                        stroke-width: 2px;
+                        width: .25in;
+                    "
+                    points="1 7.22 8.5 14.11 16 21 23.5 14.11 31 7.22 25.34 7.22 25.34 1 21.68 1 9.96 1 6.58 1 6.58 7.22 1 7.22"
                 />
-              </svg>
+                </g>
+            </g>
+        </svg>
     """
 
     neutral_svg = f"""
-        <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="{width}"
-                height="{height}"
-                fill="#006c9c"
-                class="bi bi-caret-right-fill"
-                viewBox="0 0 16 16"
-              >
-                <path
-                  d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 22" style="width: 0.25in; height: 0.25in;">
+            <g id="Layer_2" data-name="Layer 2">
+                <g id="Layer_1-2" data-name="Layer 1">
+                <polygon
+                    style="
+                        fill: {colors.get(neutral_color)};
+                        stroke: {colors.get(neutral_color)};
+                        stroke-linecap: round;
+                        stroke-linejoin: round;
+                        stroke-width: 2px;
+                    "
+                    points="31 14.78 23.5 7.89 16 1 8.5 7.89 1 14.78 6.66 14.78 6.66 21 10.32 21 22.04 21 25.42 21 25.42 14.78 31 14.78"
+                    transform="rotate(90, 17, 11)"
                 />
-              </svg>
+                </g>
+            </g>
+        </svg>
     """
 
     if not previous:
@@ -283,4 +308,82 @@ def compare_svg(current, previous):
     if current < previous:
         return down_svg
     if current == previous:
+        return neutral_svg
+
+
+def percent_change(current_percent, previous_percent):
+    """Get percent change."""
+    return round((current_percent - previous_percent) / abs(previous_percent) * 100, 2)
+
+
+def percent_svg(current_percent, previous_percent):
+    """Get an increase/decrease svg with a percentage."""
+    change = percent_change(current_percent, previous_percent)
+    up_svg = f"""
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 22" style="width: 50px; height: 40px">
+            <g id="Layer_2" data-name="Layer 2">
+                <g id="Layer_1-2" data-name="Layer 1">
+                <polygon
+                    style="
+                        fill: #C41230;
+                        stroke: #C41230;
+                        stroke-linecap: round;
+                        stroke-linejoin: round;
+                        stroke-width: 2px;
+                    "
+                    points="31 14.78 23.5 7.89 16 1 8.5 7.89 1 14.78 6.66 14.78 6.66 21 10.32 21 22.04 21 25.42 21 25.42 14.78 31 14.78"
+                />
+                </g>
+            </g>
+        </svg>
+        <p style="color: #C41230; margin: 0 0 0">+{change}%</p>
+    """
+
+    down_svg = f"""
+        <p style="color: #5E9732; margin: 0 0 0">{change}%</p>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 22" style="width: 50px; height: 40px">
+            <g id="Layer_2" data-name="Layer 2">
+                <g id="Layer_1-2" data-name="Layer 1">
+                <polygon
+                    style="
+                        fill: #5E9732;
+                        stroke: #5E9732;
+                        stroke-linecap: round;
+                        stroke-linejoin: round;
+                        stroke-width: 2px;
+                        width: .25in;
+                    "
+                    points="1 7.22 8.5 14.11 16 21 23.5 14.11 31 7.22 25.34 7.22 25.34 1 21.68 1 9.96 1 6.58 1 6.58 7.22 1 7.22"
+                />
+                </g>
+            </g>
+        </svg>
+    """
+
+    neutral_svg = f"""
+        <p style="color: white; margin: 0 0 0">{change}</p>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 22" style="width: 50px; height: 40px">
+            <g id="Layer_2" data-name="Layer 2">
+                <g id="Layer_1-2" data-name="Layer 1">
+                <polygon
+                    style="
+                        fill: #006c9c;
+                        stroke: #006c9c;
+                        stroke-linecap: round;
+                        stroke-linejoin: round;
+                        stroke-width: 2px;
+                    "
+                    points="31 14.78 23.5 7.89 16 1 8.5 7.89 1 14.78 6.66 14.78 6.66 21 10.32 21 22.04 21 25.42 21 25.42 14.78 31 14.78"
+                    transform="rotate(90, 17, 11)"
+                />
+                </g>
+            </g>
+        </svg>
+    """
+
+    if current_percent > previous_percent:
+        return up_svg
+    if current_percent < previous_percent:
+        return down_svg
+    if current_percent == previous_percent:
         return neutral_svg
