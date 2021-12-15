@@ -128,6 +128,9 @@ def process_task(task, subscription, cycle):
         "cycle_report": cycle_report,
         "yearly_report": yearly_report,
         "end_cycle": end_cycle,
+        "thirty_day_reminder": thirty_day_reminder,
+        "fifteen_day_reminder": fifteen_day_reminder,
+        "five_day_reminder": five_day_reminder,
     }
     return task_types[task["task_type"]](subscription, cycle)
 
@@ -151,6 +154,24 @@ def yearly_report(subscription, cycle):
     """Send yearly report."""
     # Notification("yearly_report", subscription, cycle).send()
     return
+
+
+def thirty_day_reminder(subscription, cycle):
+    """Send thirty day reminder."""
+    if subscription.get("continuous_subscription"):
+        Notification("thirty_day_reminder", subscription, cycle).send()
+
+
+def fifteen_day_reminder(subscription, cycle):
+    """Send fifteen day reminder."""
+    if subscription.get("continuous_subscription"):
+        Notification("fifteen_day_reminder", subscription, cycle).send()
+
+
+def five_day_reminder(subscription, cycle):
+    """Send five day reminder."""
+    if subscription.get("continuous_subscription"):
+        Notification("five_day_reminder", subscription, cycle).send()
 
 
 def end_cycle(subscription, cycle):
