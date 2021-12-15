@@ -1,0 +1,32 @@
+<mjml>
+  <mj-head>
+    <mj-style> ul li { background: #cce5ff; margin: 10px; } </mj-style>
+  </mj-head>
+  <mj-body>
+    <mj-section>
+      <mj-column>
+        <mj-text font-size="20px" color="#1B2352" font-family="helvetica">
+          Dear CISA Admin,
+        </mj-text>
+        <mj-text font-size="20px" color="#1B2352" font-family="helvetica">
+          A new cycle is due to begin for SUBSCRIPTION_NAME in the next 5 days.
+          Please update the subscription with any of the necessary changes.
+          <ul>
+            <li>Selected templates.</li>
+            <li>Target list.</li>
+            <li>"Cisa-Phish" header rotation.</li>
+            <li>Subscription primary contact.</li>
+            <li>Reporting password.</li>
+          </ul>
+        </mj-text>
+
+        <mj-text font-size="20px" color="#1B2352" font-family="helvetica">
+          Sincerely,
+        </mj-text>
+        <mj-text font-size="20px" color="#1B2352" font-family="helvetica">
+          CISA Continuous Phishing Program Administrator
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

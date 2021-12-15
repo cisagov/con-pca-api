@@ -54,29 +54,66 @@ class Notification:
         report = {
             "status_report": {
                 "subject": "Con-PCA Phishing Subscription Status Report",
+                "to": "primary_contact",
+                "bcc": "admin",
             },
             "cycle_report": {
                 "subject": "Con-PCA Phishing Subscription Cycle Report",
+                "to": "primary_contact",
+                "bcc": "admin",
             },
             "yearly_report": {
                 "subject": "Con-PCA Phishing Subscription Yearly Report",
+                "to": "primary_contact",
+                "bcc": "admin",
             },
             "subscription_started": {
                 "subject": "Con-PCA Phishing Subscription Started",
+                "to": "primary_contact",
+                "bcc": "admin",
             },
             "subscription_stopped": {
                 "subject": "Con-PCA Phishing Subscription Stopped",
+                "to": "primary_contact",
+                "bcc": "admin",
+            },
+            "thirty_day_reminder": {
+                "subject": "Con-PCA Phish Subscription 30-Day Reminder",
+                "to": "primary_contact",
+                "bcc": "admin",
+            },
+            "fifteen_day_reminder": {
+                "subject": "Con-PCA Phish Subscription 15-Day Reminder",
+                "to": "primary_contact",
+                "bcc": "admin",
+            },
+            "five_day_reminder": {
+                "subject": "Con-PCA Phish Subscription 5-Day Reminder",
+                "to": "admin",
             },
         }.get(message_type, {})
         report["html"] = render_template(f"emails/{message_type}.html", **context)
         return report
 
-    def get_to_addresses(self):
+    def get_to_addresses(self, report):
         """Get email addresses to send to."""
-        return {
-            "to": [self.subscription["primary_contact"]["email"]],
-            "bcc": [self.subscription["admin_email"]],
-        }
+
+        def get_email(t):
+            """Get email based on report type."""
+            if t == "primary_contact":
+                return self.subscription["primary_contact"]["email"]
+            elif t == "admin":
+                return self.subscription["admin_email"]
+
+        addresses = {}
+        if report.get("to"):
+            addresses["to"] = [get_email(report["to"])]
+        if report.get("bcc"):
+            addresses["bcc"] = [get_email(report["bcc"])]
+        if report.get("cc"):
+            addresses["cc"] = [get_email(report["cc"])]
+
+        return addresses
 
     def add_notification_history(self, addresses, from_address):
         """Add history of notification to subscription."""
@@ -109,7 +146,7 @@ class Notification:
             logging.info(f"Attaching {filename} to notification.")
             attachments.append(filename)
 
-        addresses = self.get_to_addresses()
+        addresses = self.get_to_addresses(report)
 
         logging.info(f"Sending template {self.message_type} to {addresses}")
         try:
@@ -129,8 +166,8 @@ class Notification:
                 email = Email(sending_profile)
                 email.send(
                     from_email=from_address,
-                    to_recipients=addresses["to"],
-                    bcc_recipients=addresses["bcc"],
+                    to_recipients=addresses.get("to"),
+                    bcc_recipients=addresses.get("bcc"),
                     subject=report["subject"],
                     body=report["html"],
                     attachments=attachments,

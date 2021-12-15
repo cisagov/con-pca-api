@@ -45,6 +45,9 @@ class SubscriptionTasksSchema(Schema):
                 "status_report",
                 "cycle_report",
                 "yearly_report",
+                "thirty_day_reminder",
+                "fifteen_day_reminder",
+                "five_day_reminder",
                 "end_cycle",
             ]
         )
