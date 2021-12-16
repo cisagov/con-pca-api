@@ -47,6 +47,7 @@ class Notification:
             "target_count": self.cycle["target_count"],
             "admin_email": self.subscription["admin_email"],
             "subscription_id": self.subscription["_id"],
+            "subscription": self.subscription,
         }
 
     def get_report(self, message_type: str, context: dict):
