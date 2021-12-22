@@ -21,7 +21,8 @@ function createClickRateOverTime() {
   ];
 
   var colors = ["#fcbf10", "#007bc1"];
-  if (previousCycles) {
+
+  if (previousCycles.length > 0) {
     for (var i = 0; i <= previousCycles.length; i++) {
       if (i < 2) {
         datasets.push({

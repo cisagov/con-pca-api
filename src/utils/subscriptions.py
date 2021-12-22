@@ -146,6 +146,7 @@ def get_target_send_date(
 def get_initial_tasks(subscription, cycle):
     """Get initial tasks for a subscription."""
     start_date = cycle["start_date"]
+    end_date = cycle["end_date"]
     report_minutes = subscription["report_frequency_minutes"]
     cycle_minutes = (
         subscription["cycle_length_minutes"] + subscription["cooldown_minutes"]
@@ -158,6 +159,15 @@ def get_initial_tasks(subscription, cycle):
         "yearly_report": start_date + timedelta(minutes=yearly_minutes),
         "end_cycle": start_date + timedelta(minutes=cycle_minutes),
     }
+
+    cycle_days = cycle_minutes / 60 / 24
+    if cycle_days >= 30:
+        task_types["thirty_day_reminder"] = end_date - timedelta(days=30)
+    if cycle_days >= 15:
+        task_types["fifteen_day_reminder"] = end_date - timedelta(days=15)
+    if cycle_days >= 5:
+        task_types["five_day_reminder"] = end_date - timedelta(days=5)
+
     tasks = []
     for task_type, scheduled_date in task_types.items():
         tasks.append(

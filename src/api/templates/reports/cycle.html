@@ -202,7 +202,7 @@
           <b>Send an updated target list. </b>If you’ve experienced personnel
           changes since the start of this last cycle, send an updated email
           target list to vulnerability@cisa.dhs.gov prior to the start of your
-          next phishing cycle on NEXT_CYCLE_START_DATE
+          next phishing cycle on {{ cycle.end_date.strftime('%B %d, %Y') }}.
         </li>
       </ol>
       <p>
@@ -266,7 +266,7 @@
             <div style="font-size: 18pt; color: white" class="dhs-blue">
               Cycle
             </div>
-            <div style="font-size: 14pt; margin-top: 0.25in"><b>Ends</b></div>
+            <div style="font-size: 14pt; margin-top: 0.25in"><b>Ended</b></div>
             <div style="font-size: 12pt">
               {{ cycle.end_date.strftime('%B %d, %Y') }}
             </div>
@@ -280,47 +280,46 @@
           <div class="d-flex flex-column">
             <div style="font-size: 18pt" class="dhs-blue">Changes</div>
             <div style="font-size: 14pt; margin-top: 0.125in">
-              <b>Previous Cycle</b>
+              <b>Current Cycle</b>
             </div>
-            <div style="font-size: 12pt; margin-top: 0.125in">
-              <b>Started,</b> {% if previous_cycle %}{{
-              previous_cycle.start_date.strftime('%B %d, %Y') }}{% else %}N/A{%
+            <div class="report-card-changes-text">
+              <b>Started,</b> {{ cycle.start_date.strftime('%b, %d, %Y') }}
+            </div>
+            <div class="report-card-changes-text" style="margin-top: 0">
+              <b>Ended,</b> {{ cycle.end_date.strftime('%b, %d, %Y') }}
+            </div>
+            <div class="report-card-changes-text">
+              {% if previous_cycle %} {{ compare_svg(cycle.target_count,
+              previous_cycle.target_count ) | safe }}{% endif %}
+              <b>{{ cycle.target_count }} </b>
+              targets
+            </div>
+            <div class="report-card-changes-text">
+              {% if previous_cycle %} {{
+              compare_svg(percent(cycle.stats.stats.all.clicked.ratio),
+              percent(previous_cycle.stats.stats.all.clicked.ratio),
+              up_color="bad", down_color="good", neutral_color="neutral") | safe
+              }} {% endif %}
+              <b>{{ percent(cycle.stats.stats.all.clicked.ratio) }}%</b> Click
+              Rate
+            </div>
+            <div class="report-card-changes-text">
+              {% if previous_cycle %} {{
+              compare_svg(cycle.stats.stats.all.clicked.average,
+              previous_cycle.stats.stats.all.clicked.average ) | safe }} {%
               endif %}
-            </div>
-            <div style="font-size: 12pt">
-              <b>Ends,</b> {% if previous_cycle %}{{
-              previous_cycle.end_date.strftime('%B %d, %Y') }}{% else %}N/A{%
-              endif %}
-            </div>
-            <div style="font-size: 12pt; margin-top: 0.125in">
               <b
-                >{% if previous_cycle %}{{ previous_cycle.target_count }}{% else
-                %}N/A{% endif %}</b
-              >
-              Targets
-            </div>
-            <div style="font-size: 12pt; margin-top: 0.125in">
-              <b
-                >{% if previous_cycle %}{{
-                percent(previous_cycle.stats.stats.all.clicked.ratio) }}%{% else
-                %}N/A{% endif %}</b
-              >
-              Click Rate
-            </div>
-            <div style="font-size: 12pt; margin-top: 0.125in">
-              <b
-                >{% if previous_cycle %}{{
-                time.convert_seconds(previous_cycle.stats.stats.all.clicked.average).short
-                }}{% else %}N/A{% endif %}</b
+                >{{
+                time.convert_seconds(cycle.stats.stats.all.clicked.average).short
+                }}</b
               >
               Click Time
             </div>
-            <div style="font-size: 12pt; margin-top: 0.125in">
-              <b
-                >{% if previous_cycle %}{{ previous_cycle.stats.template_stats |
-                length }}{% else %}N/A{% endif %}</b
-              >
-              Templates Used
+            <div class="report-card-changes-text">
+              {% if previous_cycle %} {{ compare_svg((cycle.stats.template_stats
+              | length), (previous_cycle.stats.template_stats | length) ) | safe
+              }} {% endif %}
+              <b>{{ cycle.stats.template_stats | length }} </b> Templates Used
             </div>
           </div>
           <div
@@ -329,42 +328,45 @@
           >
             <div style="font-size: 18pt; color: white">Changes</div>
             <div style="font-size: 14pt; margin-top: 0.125in">
-              <b>Current Cycle</b>
+              <b>Previous Cycle</b>
             </div>
-            <div style="font-size: 12pt; margin-top: 0.125in">
-              Starts, {{ cycle.start_date.strftime('%b, %d, %Y') }}
+            {% if previous_cycle %}
+            <div class="report-card-changes-text">
+              <b>Started,</b> {{ previous_cycle.start_date.strftime('%B %d, %Y')
+              }}
             </div>
-            <div style="font-size: 12pt">
-              Ends, {{ cycle.end_date.strftime('%b, %d, %Y') }}
+            <div class="report-card-changes-text" style="margin-top: 0">
+              <b>Ended,</b> {{ previous_cycle.end_date.strftime('%B %d, %Y') }}
             </div>
-            <div style="font-size: 12pt; margin-top: 0.125in">
-              {{ compare_svg(cycle.target_count, previous_cycle.target_count ) |
-              safe }}
-              <b>{{ cycle.target_count }} </b>
-              targets
+            <div class="report-card-changes-text">
+              <b>{{ previous_cycle.target_count }}</b>
+              Targets
             </div>
-            <div style="font-size: 12pt; margin-top: 0.125in">
-              {{ compare_svg(percent(cycle.stats.stats.all.clicked.ratio),
-              percent(previous_cycle.stats.stats.all.clicked.ratio) ) | safe }}
-              <b>{{ percent(cycle.stats.stats.all.clicked.ratio) }}%</b> Click
-              Rate
+            <div class="report-card-changes-text">
+              <b
+                >{{ percent(previous_cycle.stats.stats.all.clicked.ratio) }}%</b
+              >
+              Click Rate
             </div>
-            <div style="font-size: 12pt; margin-top: 0.125in">
-              {{ compare_svg(cycle.stats.stats.all.clicked.average,
-              previous_cycle.stats.stats.all.clicked.average ) | safe }}
+            <div class="report-card-changes-text">
               <b
                 >{{
-                time.convert_seconds(cycle.stats.stats.all.clicked.average).short
+                time.convert_seconds(previous_cycle.stats.stats.all.clicked.average).short
                 }}</b
               >
               Click Time
             </div>
-            <div style="font-size: 12pt; margin-top: 0.125in">
-              {{ compare_svg((cycle.stats.template_stats | length),
-              (previous_cycle.stats.template_stats | length) ) | safe }}
-              <b>{{ cycle.stats.template_stats | length }} </b> Templates Used
+            <div class="report-card-changes-text">
+              <b>{{ previous_cycle.stats.template_stats | length }}</b>
+              Templates Used
             </div>
+            {% else %}
+            <p style="width: 160px" class="report-card-changes-text">
+              Participate in additional cycles for trending statistics.
+            </p>
+            {% endif %}
           </div>
+
           <div id="report-card-vertical-divider"></div>
           <div class="d-flex flex-column flex-fill" style="align-items: center">
             <div style="font-size: 18pt" class="dhs-blue">AVERAGE TIME</div>
@@ -447,7 +449,7 @@
           </div>
           <div class="d-flex flex-column" style="margin-left: 0.125in">
             <!-- Low Mail Icon -->
-            <div class="report-card-circle" style="background-color: #006c9c">
+            <div class="report-card-circle" style="background-color: #3d98c1">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="0.5in"
@@ -465,7 +467,7 @@
             <!-- Moderate Mail Icon -->
             <div
               class="report-card-circle"
-              style="background-color: #5e9732; margin-top: 0.5in"
+              style="background-color: #0078ae; margin-top: 0.5in"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -484,7 +486,7 @@
             <!-- High Mail Icon -->
             <div
               class="report-card-circle"
-              style="background-color: #c41230; margin-top: 0.5in"
+              style="background-color: #005b84; margin-top: 0.5in"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -505,21 +507,21 @@
             class="d-flex flex-column"
             style="font-size: 14pt; margin-left: 0.25in"
           >
-            <div style="color: #006c9c">LOW</div>
+            <div style="color: #3d98c1">LOW</div>
             <div class="book-font">
               Emails Sent {{ stats.stats.low.sent.count }}
             </div>
             <div class="book-font">
               Unique Clicks {{ stats.stats.low.clicked.count }}
             </div>
-            <div style="color: #5e9732; margin-top: 0.625in">MODERATE</div>
+            <div style="color: #0078ae; margin-top: 0.625in">MODERATE</div>
             <div class="book-font">
               Emails Sent {{ stats.stats.moderate.sent.count }}
             </div>
             <div class="book-font">
               Unique Clicks {{ stats.stats.moderate.clicked.count }}
             </div>
-            <div style="color: #c41230; margin-top: 0.625in">HIGH</div>
+            <div style="color: #005b84; margin-top: 0.625in">HIGH</div>
             <div class="book-font">
               Emails Sent {{ stats.stats.high.sent.count }}
             </div>
@@ -531,16 +533,32 @@
             class="d-flex flex-column"
             style="font-size: 34pt; margin-left: 0.375in"
           >
-            <div style="color: #006c9c">
+            <div style="color: #3d98c1; margin-top: 16px">
               {{ percent(stats.stats.low.clicked.ratio) }}%
             </div>
-            <div style="color: #5e9732; margin-top: 1.125in">
+            <div style="color: #0078ae; margin-top: 100px">
               {{ percent(stats.stats.moderate.clicked.ratio) }}%
             </div>
-            <div style="color: #c41230; margin-top: 1.125in">
+            <div style="color: #005b84; margin-top: 100px">
               {{ percent(stats.stats.high.clicked.ratio) }}%
             </div>
           </div>
+          {% if previous_cycle %}
+          <div class="d-flex flex-column" style="margin-left: 16px">
+            <div>
+              {{ percent_svg(cycle.stats.stats.low.clicked.ratio,
+              previous_cycle.stats.stats.low.clicked.ratio) | safe }}
+            </div>
+            <div style="margin-top: 58px">
+              {{ percent_svg(cycle.stats.stats.moderate.clicked.ratio,
+              previous_cycle.stats.stats.moderate.clicked.ratio) | safe }}
+            </div>
+            <div style="margin-top: 60px">
+              {{ percent_svg(cycle.stats.stats.high.clicked.ratio,
+              previous_cycle.stats.stats.high.clicked.ratio) | safe }}
+            </div>
+          </div>
+          {% endif %}
         </div>
       </div>
     </div>

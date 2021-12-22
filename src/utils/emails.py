@@ -99,7 +99,8 @@ class Email:
             "bcc": bcc_recipients,
             "subject": subject,
             "html": body,
-            "text": get_text_from_html(body),
+            # Disabling for now until we figure out some issues with the text body of the email.
+            # "text": get_text_from_html(body),
         }
         for header in self.sending_profile.get("headers", []):
             data[f"h:{header['key']}"] = header["value"]
@@ -210,8 +211,11 @@ def build_message(
         message["Bcc"] = ",".join(bcc_recipients)
 
     message.attach(MIMEText(html, "html"))
-    text = get_text_from_html(html)
-    message.attach(MIMEText(text, "plain"))
+
+    # Disabling temporarily until we have a fix for some bugs
+    # associated with the text version of the emails.
+    # text = get_text_from_html(html)
+    # message.attach(MIMEText(text, "plain"))
 
     for header in headers:
         message[header["key"]] = header["value"]

@@ -328,8 +328,10 @@ def get_recommendation_stats(template_stats):
     """Get recommendation stats."""
     recommendation_ids = []
     for t in template_stats:
-        recommendation_ids.extend(t["template"].get("sophisticated", []))
-        recommendation_ids.extend(t["template"].get("red_flag", []))
+        if t["template"].get("sophisticated"):
+            recommendation_ids.extend(t["template"]["sophisticated"])
+        if t["template"].get("red_flag"):
+            recommendation_ids.extend(t["template"]["red_flag"])
 
     recommendations = recommendation_manager.all(
         params={"_id": {"$in": recommendation_ids}},
@@ -339,13 +341,15 @@ def get_recommendation_stats(template_stats):
     recommendation_stats = []
     for recommendation in recommendations:
         # Get all templates with recommendation
-        ts = list(
-            filter(
-                lambda t: recommendation["_id"] in t["template"]["sophisticated"]
-                or recommendation["_id"] in t["template"]["red_flag"],
-                template_stats,
-            )
-        )
+        ts = []
+        for s in template_stats:
+            if t["template"].get("sophisticated"):
+                if recommendation["_id"] in t["template"]["sophisticated"]:
+                    ts.append(s)
+            if t["template"].get("red_flag"):
+                if recommendation["_id"] in t["template"]["red_flag"]:
+                    ts.append(s)
+
         stats = {
             "templates": [x["template"] for x in ts],
             "recommendation": recommendation,
