@@ -69,7 +69,7 @@ class SubscriptionTestSchema(Schema):
     first_name = fields.Str()
     last_name = fields.Str()
     sent = fields.Bool()
-    sent_date = fields.DateTime()
+    sent_date = DateTimeField()
     opened = fields.Bool()
     clicked = fields.Bool()
     timeline = fields.List(fields.Nested(TargetTimelineSchema))
