@@ -6,6 +6,8 @@ from marshmallow import Schema, fields, validate
 from api.schemas.base_schema import BaseSchema
 from api.schemas.customer_schema import CustomerContactSchema
 from api.schemas.fields import DateTimeField
+from api.schemas.target_schema import TargetTimelineSchema
+from api.schemas.template_schema import TemplateSchema
 
 
 class SubscriptionNotificationSchema(Schema):
@@ -58,6 +60,22 @@ class SubscriptionTasksSchema(Schema):
     error = fields.Str(required=False, allow_none=True)
 
 
+class SubscriptionTestSchema(Schema):
+    """SubscriptionTestSchema."""
+
+    test_uuid = fields.Str()
+    email = fields.Str()
+    template = fields.Nested(TemplateSchema)
+    first_name = fields.Str()
+    last_name = fields.Str()
+    sent = fields.Bool()
+    sent_date = fields.DateTime()
+    opened = fields.Bool()
+    clicked = fields.Bool()
+    timeline = fields.List(fields.Nested(TargetTimelineSchema))
+    error = fields.Str(required=False, allow_none=True)
+
+
 class SubscriptionSchema(BaseSchema):
     """SubscripionSchema."""
 
@@ -83,3 +101,4 @@ class SubscriptionSchema(BaseSchema):
     notification_history = fields.List(fields.Nested(SubscriptionNotificationSchema))
     phish_header = fields.Str()
     reporting_password = fields.Str()
+    test_results = fields.List(fields.Nested(SubscriptionTestSchema))

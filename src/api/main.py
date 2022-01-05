@@ -44,6 +44,7 @@ from api.views.subscription_views import (
     SubscriptionHeaderView,
     SubscriptionLaunchView,
     SubscriptionsView,
+    SubscriptionTestView,
     SubscriptionValidView,
     SubscriptionView,
 )
@@ -94,6 +95,7 @@ rules = [
     ("/subscriptions/valid/", SubscriptionValidView),
     ("/subscription/<subscription_id>/", SubscriptionView),
     ("/subscription/<subscription_id>/launch/", SubscriptionLaunchView),
+    ("/subscription/<subscription_id>/test/", SubscriptionTestView),
     ("/subscription/<subscription_id>/header/", SubscriptionHeaderView),
     # Tag Views
     ("/tags/", TagsView),
