@@ -11,6 +11,7 @@ import dateutil.parser  # type: ignore
 # cisagov Libraries
 from api.config import environment
 from api.manager import (
+    CustomerManager,
     CycleManager,
     SubscriptionManager,
     TargetManager,
@@ -19,8 +20,9 @@ from api.manager import (
 from utils.templates import get_deception_level
 from utils.time import get_yearly_minutes
 
-subscription_manager = SubscriptionManager()
+customer_manager = CustomerManager()
 cycle_manager = CycleManager()
+subscription_manager = SubscriptionManager()
 target_manager = TargetManager()
 template_manager = TemplateManager()
 

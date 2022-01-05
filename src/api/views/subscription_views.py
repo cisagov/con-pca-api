@@ -10,6 +10,7 @@ from api.manager import (
     SubscriptionManager,
     TargetManager,
 )
+from utils.safelist_testing import test_subscription
 from utils.subscriptions import (
     create_subscription_name,
     get_random_phish_header,
@@ -106,6 +107,22 @@ class SubscriptionLaunchView(MethodView):
     def delete(self, subscription_id):
         """Stop a subscription."""
         return jsonify(stop_subscription(subscription_id))
+
+
+class SubscriptionTestView(MethodView):
+    """SubscriptionTestView."""
+
+    def get(self, subscription_id):
+        """Get test results for a subscription."""
+        return jsonify(
+            subscription_manager.get(
+                document_id=subscription_id, fields=["test_results"]
+            ).get("test_results", [])
+        )
+
+    def post(self, subscription_id):
+        """Launch a test for the subscription."""
+        return jsonify(test_subscription(subscription_id))
 
 
 class SubscriptionValidView(MethodView):

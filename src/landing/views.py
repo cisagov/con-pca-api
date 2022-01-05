@@ -1,10 +1,7 @@
 """Landing application views."""
-# Standard Python Libraries
-from datetime import datetime
-
 # Third-Party Libraries
-from flask import request, send_file
-from flask.templating import render_template_string
+from flask import send_file
+from flask.templating import render_template, render_template_string
 from flask.views import MethodView
 
 # cisagov Libraries
@@ -18,8 +15,8 @@ from api.manager import (
 )
 from api.phish import decode_tracking_id
 from utils.emails import get_email_context
-from utils.maxmind import get_asn_org, get_city_country
-from utils.request import get_request_ip
+from utils.request import get_timeline_entry
+from utils.safelist_testing import process_click_test, process_open_test
 
 cycle_manager = CycleManager()
 template_manager = TemplateManager()
@@ -34,7 +31,14 @@ class ClickView(MethodView):
 
     def get(self, tracking_id):
         """Get."""
-        cycle_id, target_id = decode_tracking_id(tracking_id)
+        decoded = decode_tracking_id(tracking_id)
+        if len(decoded) > 2:
+            if decoded[0] == "test":
+                process_click_test(decoded[1], decoded[2])
+                return render_template("test.html")
+            else:
+                return
+        cycle_id, target_id = decoded
         cycle = cycle_manager.get(
             document_id=cycle_id, fields=["_id", "subscription_id"]
         )
@@ -59,24 +63,10 @@ class ClickView(MethodView):
             filter(lambda x: x["message"] == "clicked", target.get("timeline", []))
         )
         if len(click_events) < 10:
-            ip = get_request_ip()
-            city, country = get_city_country(ip)
-            asn_org = get_asn_org(ip)
-
             target_manager.add_to_list(
                 document_id=target["_id"],
                 field="timeline",
-                data={
-                    "time": datetime.utcnow(),
-                    "message": "clicked",
-                    "details": {
-                        "user_agent": request.user_agent.string,
-                        "ip": ip,
-                        "asn_org": asn_org,
-                        "city": city,
-                        "country": country,
-                    },
-                },
+                data=get_timeline_entry("clicked"),
             )
             cycle_manager.update(document_id=cycle["_id"], data={"dirty_stats": True})
 
@@ -94,7 +84,14 @@ class OpenView(MethodView):
 
     def get(self, tracking_id):
         """Get."""
-        cycle_id, target_id = decode_tracking_id(tracking_id)
+        decoded = decode_tracking_id(tracking_id)
+        if len(decoded) > 2:
+            if decoded[0] == "test":
+                process_open_test(decoded[1], decoded[2])
+                return send_file("static/pixel.gif", mimetype="image/gif")
+            else:
+                return
+        cycle_id, target_id = decoded
         cycle = cycle_manager.get(
             document_id=cycle_id, fields=["_id", "subscription_id"]
         )
@@ -106,23 +103,10 @@ class OpenView(MethodView):
             filter(lambda x: x["message"] == "opened", target.get("timeline", []))
         )
         if len(open_events) < 10:
-            ip = get_request_ip()
-            city, country = get_city_country(ip)
-            asn_org = get_asn_org(ip)
             target_manager.add_to_list(
                 document_id=target["_id"],
                 field="timeline",
-                data={
-                    "time": datetime.utcnow(),
-                    "message": "opened",
-                    "details": {
-                        "user_agent": request.user_agent.string,
-                        "ip": ip,
-                        "asn_org": asn_org,
-                        "city": city,
-                        "country": country,
-                    },
-                },
+                data=get_timeline_entry("opened"),
             )
             cycle_manager.update(document_id=cycle["_id"], data={"dirty_stats": True})
         return send_file("static/pixel.gif", mimetype="image/gif")
