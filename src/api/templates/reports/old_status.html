@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Status Report</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/old_status_report.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/styles.css') }}"
+    />
+    <link
+      rel="shortcut icon"
+      href="{{ url_for('static', filename='image/favicon.ico') }}"
+    />
+    <script src="{{ url_for('static', filename='js/chart.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/chartjs-plugin-datalabels.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/reports.js') }}"></script>
+  </head>
+
+  <body class="mat-typography">
+    <!-- For accessing stats within Javascript -->
+    <div style="display: none">
+      <p id="overallStats">{{ json.dumps(cycle.stats.stats) }}</p>
+      <p id="indicatorStats">{{ json.dumps(cycle.stats.indicator_stats) }}</p>
+      <p id="indicators">{{ json.dumps(indicators) }}</p>
+      <p id="templateStats">{{ json.dumps(stats.template_stats) }}</p>
+      <p id="timeIntervalStats">{{ json.dumps(stats.time_stats) }}</p>
+    </div>
+    <div style="min-width: 8.5in; min-height: 11in" class="p-0">
+      <article>
+        <!-- Top blue banner -->
+        <header>
+          <div class="topBanner">
+            <div class="container-fluid">
+              <div class="topBannerRow">
+                <div class="col-12">
+                  <div id="bluePhishLogo">
+                    <img
+                      src="{{ url_for('static', filename='image/Con-PCA_logo.svg') }}"
+                      alt="Continuous Phishing Campaign Assessment Logo"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
+        <main>
+          <div class="container-fluid">
+            <div class="row">
+              <!-- Left side bar -->
+              <aside style="min-height: 1225px; position: relative">
+                <div id="reportDate">
+                  <h3>{{ datetime.utcnow().strftime('%b %d, %Y')}}</h3>
+                </div>
+                <div id="gonePhishingImage">
+                  <img
+                    src="{{ url_for('static', filename='image/gone_phishing.jpg') }}"
+                    alt="Gone Phishing"
+                  />
+                </div>
+
+                <div id="numbersTitle" style="margin-top: 70px">
+                  <h2>Primary Contact Information</h2>
+                </div>
+                <div id="primaryContact">
+                  {{ subscription.primary_contact.first_name }} {{
+                  subscription.primary_contact.last_name }} <br />
+                  {{ customer.address_1 }} <br />
+                  {{ customer.city }}, {{ customer.state }} {{ customer.zip_code
+                  }} USA <br />
+                  {{ subscription.primary_contact.email }}
+                </div>
+
+                <div id="numbersTitle" style="margin-top: 30px">
+                  <h2>Admin Contact Information</h2>
+                </div>
+                <div id="primaryContact">{{ subscription.admin_email }}</div>
+
+                <div id="numbersTitle" style="margin-top: 30px">
+                  <h2>Overall Campaign Numbers</h2>
+                </div>
+                <div id="campaignNumbers">
+                  Total Targets: {{ cycle.target_count }} <br />
+                  Total Emails Sent: {{ stats.stats.all.sent.count }} <br />
+                  Email Click Rate: {{ stats.stats.all.clicked.ratio * 100 }}%
+                  <br />
+                </div>
+
+                <div id="numbersTitle" style="margin-top: 30px">
+                  <h2>Campaign Timeline</h2>
+                </div>
+                <div id="campaignNumbers">
+                  Cycle Start: {{ cycle.start_date.strftime('%b %d, %Y') }}
+                  <br />
+                  Emails Delivered By: {{ cycle.send_by_date.strftime('%b %d,
+                  %Y') }}
+                  <br />
+                  Cycle End: {{ cycle.end_date.strftime('%b %d, %Y') }}
+                  <br />
+                </div>
+
+                <div
+                  style="
+                    color: #add8e6;
+                    margin-bottom: 15px;
+                    margin-left: 40px;
+                    position: absolute;
+                    bottom: 0;
+                  "
+                >
+                  Prepared for <br />
+                  <span style="font-size: 1.375em; line-height: 1em"
+                    >{{ customer.name }}</span
+                  >
+                </div>
+              </aside>
+
+              <!-- Right 2/3 of the screen -->
+              <div class="main-content">
+                <div id="title">
+                  <svg width="582px" height="92px" viewBox="0 0 582 70">
+                    <text x="0" y="20" fill="#174a91" font-size="50">
+                      <tspan
+                        font-family="Arial, sans-serif"
+                        textLength="598px"
+                        x="0"
+                        y="27"
+                        font-weight="bold"
+                      >
+                        SUBSCRIPTION STATUS
+                      </tspan>
+                      <tspan
+                        x="0"
+                        dx="0"
+                        dy="45"
+                        textLength="578px"
+                        font-weight="530"
+                        font-family="Arial Narrow, Arial, sans-serif"
+                      >
+                        REPORT
+                      </tspan>
+                    </text>
+                  </svg>
+                </div>
+                <!-- Donut Charts -->
+                <div class="row">
+                  <div class="col-12">
+                    <div id="donut-charts">
+                      <div class="col-3">
+                        <div>
+                          <canvas id="doughnut-sent">
+                            <script>
+                              createDoughnut(
+                                "doughnut-sent",
+                                "{{ stats.stats.all.sent.count }}",
+                                "{{ cycle.target_count }}"
+                              );
+                            </script>
+                          </canvas>
+                        </div>
+                        <p class="donut-caption" style="margin-top: 25px">
+                          Emails Sent of Total Targets
+                        </p>
+                      </div>
+
+                      <div class="col-3">
+                        <div>
+                          <canvas id="doughnut-clicked">
+                            <script>
+                              createDoughnut(
+                                "doughnut-clicked",
+                                "{{ stats.stats.all.clicked.count }}",
+                                "{{ stats.stats.all.sent.count }}"
+                              );
+                            </script>
+                          </canvas>
+                        </div>
+                        <p class="donut-caption" style="margin-top: 25px">
+                          Emails Clicked of Sent
+                        </p>
+                      </div>
+
+                      <div class="col-3">
+                        <div id="averageClickTime">
+                          {% set average_click_time =
+                          time.convert_seconds(stats.stats.all.clicked.average)
+                          %}
+                          <span>{{ average_click_time.hours }} hours</span
+                          ><br />
+                          <span>{{ average_click_time.minutes }} minutes</span
+                          ><br />
+                          <span>{{ average_click_time.seconds }} seconds</span>
+                        </div>
+                        <p class="donut-caption" style="margin-top: 8px">
+                          Average Time to First Click
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="data-report">
+                  <!-- Template Stats -->
+                  <div class="flex flex-row">
+                    <div class="col-10">
+                      <div class="template-preview">
+                        <h2>Top Templates</h2>
+                        {% for t in stats.template_stats |
+                        sort(attribute="clicked.ratio", reverse=True) %} {% if
+                        loop.index <= 3 %}
+                        <div class="row">
+                          <div class="col-1">
+                            <h3 style="margin-left: 8px">
+                              #{{ t.clicked.rank }}
+                            </h3>
+                          </div>
+                          <div class="col">
+                            <b>Subject:</b> {{
+                            preview_template(t.template.subject, customer) }}<br />
+                            <b>From:</b> {{ preview_from_address(t.template,
+                            subscription, customer) }}<br />
+                            <b>Deception: </b> {{ t.template.deception_score }}
+                            ({{ t.deception_level }})
+
+                            <ul>
+                              <li>Sent - {{ t.sent.count }}</li>
+                              <li>Clicks - {{ t.clicked.count }}</li>
+                              <li>Click Rate - {{ t.clicked.ratio * 100 }}%</li>
+                            </ul>
+                          </div>
+                        </div>
+                        {% endif %} {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Bar Chart -->
+                  <div class="row mt-2">
+                    <div class="col container-fluid" style="margin-left: 25px">
+                      <div class="bar-chart m-2">
+                        <h2>STATISTICS BY LEVEL</h2>
+                        <div>
+                          <canvas
+                            id="bar-stats-by-level"
+                            class="d-flex report-chart"
+                            style="height: 15rem"
+                          >
+                            <script>
+                              createStatsByLevelChart();
+                            </script>
+                          </canvas>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </article>
+    </div>
+  </body>
+</html>

@@ -4,7 +4,13 @@ async function getReport(filename, cycleId, reportType, nonhuman) {
   const browser = await puppeteer.launch({
     headless: true,
     executablePath: "/usr/bin/chromium",
-    args: ["--no-sandbox"],
+    args: [
+      "--no-sandbox",
+      "--disable-web-security",
+      "--disable-gpu",
+      "--hide-scrollbars",
+      "--disable-setuid-sandbox",
+    ],
   });
   const page = await browser.newPage();
   let url = `http://localhost:5000/api/cycle/${cycleId}/reports/${reportType}/`;
@@ -29,6 +35,8 @@ async function getReport(filename, cycleId, reportType, nonhuman) {
     await browser.close();
     return;
   }
+
+  await page.evaluateHandle("document.fonts.ready");
   if (reportType == "status") {
     pdfContent = await page.pdf({
       format: "letter",

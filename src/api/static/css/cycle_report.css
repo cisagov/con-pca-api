@@ -7,6 +7,16 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: "franklin-gothic";
+  src: url("fonts/Franklin Gothic.ttf") format("trutetype");
+}
+
+@font-face {
+  font-family: "franklin-gothic-bold";
+  src: url("fonts/Franklin Gothic Bold.ttf") format("trutetype");
+}
+
 @page {
   margin: 0;
   size: Letter;
@@ -23,7 +33,7 @@ body {
   -webkit-print-color-adjust: exact !important;
   font-size: 11pt !important;
   background: white;
-  font-family: Franklin Gothic, sans-serif !important;
+  font-family: "franklin-gothic", sans-serif !important;
 }
 
 ol {
@@ -46,6 +56,10 @@ ul {
 
 p {
   margin: 0 0 10px;
+}
+
+b {
+  font-family: "franklin-gothic-bold", sans-serif !important;
 }
 
 /* Table Styling */
@@ -124,7 +138,7 @@ tbody > tr:nth-child(even) {
 }
 
 .book-font {
-  font-family: "franklin-gothic-book";
+  font-family: "franklin-gothic-book", sans-serif !important;
 }
 
 /* Cover Page */

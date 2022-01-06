@@ -1,265 +1,203 @@
 @charset "UTF-8";
-@import url("https://fonts.googleapis.com/css2?family=Orbitron&display=swap");
+
+@font-face {
+  font-family: "franklin-gothic-book";
+  src: url("fonts/Franklin Gothic Book Regular.ttf") format("trutetype");
+}
+
+@font-face {
+  font-family: "franklin-gothic";
+  src: url("fonts/Franklin Gothic.ttf") format("trutetype");
+}
+
+@font-face {
+  font-family: "franklin-gothic-bold";
+  src: url("fonts/Franklin Gothic Bold.ttf") format("trutetype");
+}
+
 @page {
   margin: 0;
   size: Letter;
 }
-.topBannerRow {
-  margin-right: 0;
-}
-body {
-  -webkit-print-color-adjust: exact !important;
-  font-size: 16px;
-  max-width: 1076px;
-}
-aside,
-body,
+
+/* Tag Styling */
+
 html {
-  height: 100%;
-}
-main .container-fluid {
-  background-color: #fff;
-}
-.topBanner {
-  background-color: #1b2352;
-  height: 170px;
-  width: 1076px;
-}
-.topBanner .col-12 {
-  align-items: center;
-  display: flex;
-  flex-flow: row nowrap;
-  height: 170px;
-  justify-content: space-between;
-  padding: 0 0 10px 20px;
-}
-#cisaLogo img {
-  transform: scale(0.7);
-}
-aside {
-  background-color: #1b2352;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  line-height: 2em;
-  margin: 0;
-  overflow-x: hidden;
-  padding: 0 0 40px;
-  width: 35%;
-}
-#reportDate {
-  background: #fff;
-  color: #000;
-  height: 50px;
-  margin-top: 0;
-}
-#reportDate h3 {
-  font-size: 1.25em;
-  font-weight: 400;
-  padding: 10px 0 0 40px;
-}
-#gonePhishingImage {
-  margin: 55px 0 0 82px;
-  transform: scale(1.5, 1.4);
-}
-#gonePhishingImage img {
-  margin-left: -20px;
-}
-#campaignNumbers,
-#cisaContact,
-#numbersTitle,
-#primaryContact {
-  padding-left: 40px;
-}
-#primaryContact {
-  font-size: 1.125em;
-  line-height: 1.5em;
-}
-#numbersTitle h2,
-#primaryContact h2 {
-  font-size: 1.25em;
-  margin-bottom: 5px;
-}
-#primaryContact span {
-  line-height: 3em;
-}
-#campaignNumbers {
-  border: 1px solid #fdc010;
-  color: #fff;
-  font-size: 0.925em;
-  line-height: 2em;
-  margin-left: 40px;
-  padding: 10px 10px 20px 15px;
-  text-align: left;
-  width: 70%;
-}
-main > .row:first-of-type {
-  background-color: #1b2352;
-}
-.main-content {
-  border-left: 15px solid #1b2352;
-  border-top: 3px solid #1b2352;
-  border-top-left-radius: 25% 100px;
-  margin: -2px -20px 0 -23px;
-  width: 67%;
-}
-.main-content .row:nth-of-type(-n + 3) {
   display: flex;
   flex-direction: row;
-  justify-content: center;
-  align-items: flex-start;
-}
-#title {
-  font-family: Franklin Gothic, Arial Narrow, Arial, sans-serif;
-  color: #174a91;
-  margin-left: 70px;
-  margin-top: 35px;
 }
 
-#reportTitle img {
-  margin: 35px 0 0;
+body {
+  -webkit-print-color-adjust: exact !important;
+  font-size: 11pt !important;
+  background: white;
+  font-family: "franklin-gothic", sans-serif !important;
+}
+
+ol {
+  padding-left: 20px;
+}
+
+h3 {
+  font-weight: bold;
+}
+
+hr {
+  background-color: #fdc010 !important;
+  color: #fdc010 !important;
+  margin-bottom: 30px !important;
+}
+
+ul {
+  padding-left: 20px;
+}
+
+p {
+  margin: 0 0 10px;
+}
+
+b {
+  font-family: "franklin-gothic-bold", sans-serif !important;
+}
+
+.dhs-blue {
+  color: #005288;
+}
+
+.book-font {
+  font-family: "franklin-gothic-book", sans-serif !important;
+}
+
+/* Report Card */
+#report-card-page {
+  background: white;
+  display: block;
   position: relative;
-  transform: scale(0.8);
+  page-break-after: always;
+
+  /* Size = Letter */
+  width: 8.5in;
+  height: 11in;
 }
-h1 strong {
-  font-family: Franklin Gothic Medium, Arial Narrow, Arial, sans-serif;
-  font-size: 1em;
-  font-stretch: extra-condensed;
-  left: 75px;
-  letter-spacing: 0;
-  position: relative;
-  top: 35px;
+
+#report-card-box {
+  background-color: #005288;
+  width: 8.5in;
+  height: 1.875in;
 }
-#reportTitle span,
-h1 strong {
-  color: #164a91;
-  line-height: 1em;
+
+#report-card-logo {
+  position: absolute;
+  width: 1.25in;
+  top: 0.3125in;
+  left: 0.5in;
 }
-#reportTitle span {
-  font-family: Lucida Sans, Lucida Sans Regular, Lucida Grande,
-    Lucida Sans Unicode, Geneva, Verdana, sans-serif;
-  font-size: 3em;
-  letter-spacing: 65px;
-  margin-left: 75px;
+
+#report-card-customer {
+  position: absolute;
+  right: 0.5in;
+  top: 0.3125in;
+  color: white;
+  text-align: end;
+  font-size: 14pt;
 }
-.data-report {
-  position: relative;
+
+#report-card-bottom {
+  padding-left: 0.5in;
+  padding-right: 0.5in;
+  padding-top: 0.25in;
 }
-#averageClickTitle h3,
-#averageReportTitle h3 {
-  color: #174a91;
-  font-size: 1.65em;
-  font-weight: 400;
-  margin-top: 40px;
+
+#report-card-horizontal-divider {
+  width: 100%;
+  border-top: 4px solid #005288;
+}
+
+#report-card-vertical-divider {
+  height: 2.5in;
+  border-right: 4px solid #005288;
+  margin-right: 0.2in;
+}
+
+#report-card-top-box {
+  margin-top: 35px;
+  border-top: 4px solid black;
+  border-left: 4px solid black;
+  border-bottom: 4px solid black;
+  height: 1.25in;
+  width: 0.3in;
+}
+
+#report-card-bottom-box {
+  border-left: 4px solid black;
+  border-bottom: 4px solid black;
+  height: 1.25in;
+  width: 0.3in;
+}
+
+.report-card-circle {
+  width: 0.75in;
+  height: 0.75in;
+  border-radius: 50%;
+}
+
+.report-card-changes-text {
+  font-size: 12pt;
+  margin-top: 0.175in;
+  height: 12pt;
+}
+
+.report-card-stat-label {
+  color: #0078ae;
   text-align: center;
+  font-size: 14pt;
+  margin-top: 15px;
 }
-#averageClickTime {
-  color: #174a91;
-  font-size: 1em;
-  line-height: 0.9em;
-  height: 130px;
-  padding-top: 50px;
-  margin-left: 10px;
+
+.report-card-doughnut-percent {
+  color: #0078ae;
+  text-align: center;
+  font-size: 20pt;
+  position: absolute;
+  top: 74px;
+  left: 36px;
+  width: 95px;
+}
+
+.report-card-templates-outer-circle {
   width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background-color: #0078ae;
+  position: relative;
+  margin-top: 25px;
+  margin-bottom: 15px;
 }
-#averageClickTime span {
-  font-family: Orbitron, sans-serif;
-  font-size: 1.125em;
-  font-weight: 700;
-  line-height: 1em;
+
+.report-card-templates-inner-circle {
+  width: 65%;
+  height: 65%;
+  border-radius: 50%;
+  background-color: white;
+
+  /* Center vertically and horizontally */
+  margin: 0;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  -ms-transform: translateY(-50%) translateX(-50%);
+  transform: translateY(-50%) translateX(-50%);
 }
-.yellow-circle-container {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-}
-.circles {
-  text-align: center;
-  transform: scale(0.8);
-}
-.circles img {
-  filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, 0.3));
-}
-#donut-charts {
-  align-items: flex-start;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: center;
-}
-.donut-caption {
-  color: #164a91;
-  text-align: center;
-}
-.caption,
-.legend-caption {
-  fill: #164a91;
-  color: #164a91;
-}
-.legend-caption {
-  font-size: 0.75em;
-}
-.blue-bar {
-  fill: #1979a7;
-}
-.dark-blue-bar {
-  fill: #164a91;
-}
-.yellow-bar {
-  fill: #fdc010;
-}
-.bar-chart {
-  border: 1px solid #fdc010;
-  border-radius: 10px;
-  color: #164a91;
-  height: auto;
-  margin: 20px auto 0;
-  text-align: center;
-  width: 600px;
-  padding: 15px;
-}
-.bar-chart h2 {
-  font-size: 1.25em;
-  font-weight: 400;
-  margin: 10px;
-}
-.template-preview {
-  border: 1px solid #fdc010;
-  border-radius: 10px;
-  color: #164a91;
-  height: auto;
-  margin: 20px auto 0;
-  width: 600px;
-  margin-left: 15px;
-  padding: 7px;
-}
-.template-preview h2 {
-  font-size: 1.25em;
-  font-weight: 400;
-  margin: 10px;
-  text-align: center;
-}
-.legend {
-  color: #000;
-  list-style-type: square;
-}
-.legend li {
-  display: inline-block;
-  padding: 0 10px;
-}
-.legend li:after {
-  content: "■";
-  margin-left: 5px;
-  font-size: x-large;
-  vertical-align: middle;
-}
-.legend li:first-of-type:after {
-  color: #164a91;
-}
-.legend li:nth-of-type(2):after {
-  color: #fdc010;
-}
-.legend li:nth-of-type(3):after {
-  color: #1979a7;
+
+.report-card-templates {
+  color: #0078ae;
+  font-size: 34pt;
+
+  /* Center vertically and horizontally */
+  margin: 0;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  -ms-transform: translateY(-50%) translateX(-50%);
+  transform: translateY(-50%) translateX(-50%);
 }
