@@ -1,6 +1,7 @@
 """Email utils."""
 # Standard Python Libraries
 from datetime import datetime
+from email.charset import QP, Charset
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -99,8 +100,7 @@ class Email:
             "bcc": bcc_recipients,
             "subject": subject,
             "html": body,
-            # Disabling for now until we figure out some issues with the text body of the email.
-            # "text": get_text_from_html(body),
+            "text": get_text_from_html(body),
         }
         for header in self.sending_profile.get("headers", []):
             data[f"h:{header['key']}"] = header["value"]
@@ -201,7 +201,10 @@ def build_message(
     headers=[],
 ):
     """Build raw email for sending."""
-    message = MIMEMultipart()
+    message = MIMEMultipart("alternative")
+    cs = Charset("utf-8")
+    cs.body_encoding = QP
+
     message["Subject"] = subject
     message["From"] = from_email
 
@@ -210,12 +213,12 @@ def build_message(
     if bcc_recipients:
         message["Bcc"] = ",".join(bcc_recipients)
 
-    message.attach(MIMEText(html, "html"))
+    text = get_text_from_html(html)
+    plain_text = MIMEText(text, "plain", cs)
+    message.attach(plain_text)
 
-    # Disabling temporarily until we have a fix for some bugs
-    # associated with the text version of the emails.
-    # text = get_text_from_html(html)
-    # message.attach(MIMEText(text, "plain"))
+    html_text = MIMEText(html, "html", cs)
+    message.attach(html_text)
 
     for header in headers:
         message[header["key"]] = header["value"]
