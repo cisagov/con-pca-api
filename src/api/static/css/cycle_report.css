@@ -384,12 +384,50 @@ tbody > tr:nth-child(even) {
   width: 0.75in;
   height: 0.75in;
   border-radius: 50%;
+  margin-left: 0.125in;
 }
 
 .report-card-changes-text {
   font-size: 12pt;
   margin-top: 0.175in;
   height: 12pt;
+}
+
+.report-card-deception {
+  margin-left: 0.125in;
+  /* margin-left: 0.25in; */
+}
+
+.report-card-deception-text {
+  font-size: 14pt;
+  margin-left: 0.25in;
+}
+
+.report-card-deception-percent {
+  font-size: 34pt;
+  color: #0078ae;
+  margin-left: 0.375in;
+}
+
+.report-card-deception-trend {
+  margin-left: 0.175in;
+}
+
+.report-card-deception-high {
+  position: relative;
+  margin-top: 0.5in;
+  height: 0.75in;
+}
+
+.report-card-deception-moderate {
+  position: relative;
+  margin-top: 0.5in;
+  height: 0.75in;
+}
+
+.report-card-deception-low {
+  position: relative;
+  height: 0.75in;
 }
 
 /* Performance over time */

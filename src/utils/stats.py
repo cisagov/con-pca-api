@@ -342,13 +342,13 @@ def get_recommendation_stats(template_stats):
     for recommendation in recommendations:
         # Get all templates with recommendation
         ts = []
-        for s in template_stats:
+        for t in template_stats:
             if t["template"].get("sophisticated"):
                 if recommendation["_id"] in t["template"]["sophisticated"]:
-                    ts.append(s)
+                    ts.append(t)
             if t["template"].get("red_flag"):
                 if recommendation["_id"] in t["template"]["red_flag"]:
-                    ts.append(s)
+                    ts.append(t)
 
         stats = {
             "templates": [x["template"] for x in ts],
