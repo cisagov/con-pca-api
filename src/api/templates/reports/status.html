@@ -18,7 +18,7 @@
     />
     <script src="{{ url_for('static', filename='js/chart.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/chartjs-plugin-datalabels.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/cycle.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/status.js') }}"></script>
   </head>
 
   <body class="mat-typography">
@@ -79,7 +79,7 @@
             </svg>
           </div>
           <div class="d-flex flex-column">
-            <div style="font-size: 18pt" class="dhs-blue">Cycle</div>
+            <div style="font-size: 18pt" class="dhs-blue">Cycle Status</div>
             <div style="font-size: 14pt; margin-top: 0.35in">
               <b>Started</b>
             </div>
@@ -105,58 +105,50 @@
           style="margin-top: 0.175in; margin-bottom: 0.25in"
         ></div>
         <div class="d-flex">
-          <div class="d-flex flex-column">
-            <div style="font-size: 18pt" class="dhs-blue">STATISTICS</div>
-            <div style="font-size: 14pt; margin-top: 0.125in">
-              <b>Current Cycle</b>
+          <div class="d-flex flex-column" style="margin-right: 0.1875in">
+            <div class="report-card-templates-outer-circle">
+              <div class="report-card-templates-inner-circle">
+                <div class="report-card-templates">
+                  {{ cycle.stats.template_stats | length }}
+                </div>
+              </div>
             </div>
-            <div class="report-card-changes-text">
-              <b>Started,</b> {{ cycle.start_date.strftime('%b, %d, %Y') }}
-            </div>
-            <div class="report-card-changes-text" style="margin-top: 0.1in">
-              <b>Ending,</b> {{ cycle.end_date.strftime('%b, %d, %Y') }}
+            <p class="report-card-stat-label">Templates Used</p>
+          </div>
+          <div
+            class="d-flex flex-column"
+            style="position: relative; margin-right: 0.1875in"
+          >
+            <canvas id="doughnut-sent">
+              <script>
+                createDoughnut(
+                  "doughnut-sent",
+                  "{{ stats.stats.all.sent.count }}",
+                  "{{ cycle.target_count }}"
+                );
+              </script>
+            </canvas>
+            <p class="report-card-stat-label">Emails Sent of Total Targets</p>
+            <div class="report-card-doughnut-percent">
+              {{ percent(stats.stats.all.sent.count / cycle.target_count) }}%
             </div>
           </div>
           <div
             class="d-flex flex-column"
-            style="margin-left: 0.65in; margin-right: 0.65in"
+            style="position: relative; margin-right: 0.1875in"
           >
-            <div style="font-size: 18pt; color: white">Changes</div>
-            <div style="font-size: 14pt; margin-top: 0.125in">
-              <b>Statistics</b>
-            </div>
-            <div class="report-card-changes-text">
-              {% if previous_cycle %} {{ compare_svg(cycle.target_count,
-              previous_cycle.target_count ) | safe }}{% endif %}
-              <b>{{ cycle.target_count }} </b>
-              targets
-            </div>
-            <div class="report-card-changes-text">
-              {% if previous_cycle %} {{
-              compare_svg(percent(cycle.stats.stats.all.clicked.ratio),
-              percent(previous_cycle.stats.stats.all.clicked.ratio),
-              up_color="bad", down_color="good", neutral_color="neutral") | safe
-              }} {% endif %}
-              <b>{{ percent(cycle.stats.stats.all.clicked.ratio) }}%</b> Click
-              Rate
-            </div>
-            <div class="report-card-changes-text">
-              {% if previous_cycle %} {{
-              compare_svg(cycle.stats.stats.all.clicked.average,
-              previous_cycle.stats.stats.all.clicked.average ) | safe }} {%
-              endif %}
-              <b
-                >{{
-                time.convert_seconds(cycle.stats.stats.all.clicked.average).short
-                }}</b
-              >
-              Click Time
-            </div>
-            <div class="report-card-changes-text">
-              {% if previous_cycle %} {{ compare_svg((cycle.stats.template_stats
-              | length), (previous_cycle.stats.template_stats | length) ) | safe
-              }} {% endif %}
-              <b>{{ cycle.stats.template_stats | length }} </b> Templates Used
+            <canvas id="doughnut-clicked">
+              <script>
+                createDoughnut(
+                  "doughnut-clicked",
+                  "{{ stats.stats.all.clicked.count }}",
+                  "{{ stats.stats.all.sent.count }}"
+                );
+              </script>
+            </canvas>
+            <p class="report-card-stat-label">Emails Clicked of Sent</p>
+            <div class="report-card-doughnut-percent">
+              {{ percent(stats.stats.all.clicked.ratio) }}%
             </div>
           </div>
 
@@ -225,11 +217,13 @@
                 </svg>
               </div>
             </div>
-            <div style="font-size: 18pt; margin-top: 0.25in">Top Templates</div>
+            <div style="font-size: 18pt; margin-top: 0.25in">
+              Top Template Subjects
+            </div>
             {% for t in stats.template_stats | sort(attribute="clicked.ratio",
             reverse=True) %} {% if loop.index <= 3 %}
             <div style="font-size: 14pt; margin-top: 0.25in" class="book-font">
-              <b>#{{ t.clicked.rank }} Subject:</b> {{
+              <b>#{{ t.clicked.rank }}:</b> {{
               preview_template(t.template.subject, customer) }}
             </div>
             {% endif %} {% endfor %}
@@ -296,7 +290,7 @@
           </div>
           <div
             class="d-flex flex-column"
-            style="font-size: 14pt; margin-left: 0.25in"
+            style="font-size: 14pt; margin-left: 0.1875in"
           >
             <div style="color: #3d98c1">LOW</div>
             <div class="book-font">

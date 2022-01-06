@@ -48,257 +48,6 @@ p {
   margin: 0 0 10px;
 }
 
-/* Table Styling */
-table {
-  border-collapse: collapse;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-td,
-th {
-  border: 1px solid #ddd;
-  padding: 7px;
-}
-
-td {
-  text-align: left;
-}
-
-thead {
-  background-color: #4472c4;
-  color: white;
-  text-align: left;
-}
-
-tbody > tr:nth-child(even) {
-  background-color: #d9e2f3;
-}
-
-.table-title {
-  color: #015596;
-  font-size: 1em;
-  text-align: center;
-}
-
-/* Global */
-
-.page {
-  background: white;
-  display: block;
-  position: relative;
-
-  /* Page Padding */
-  padding-top: 1in;
-  padding-left: 1in;
-  padding-right: 1in;
-  padding-bottom: 1in;
-
-  page-break-after: always;
-  /* Size = Letter */
-  width: 8.5in;
-  height: 11in;
-
-  /* Border for testing purposes */
-  /* border: 2px solid black; */
-}
-
-.page-header {
-  color: #2f5496;
-  font-size: 12pt;
-  font-weight: bold;
-}
-
-.page-number {
-  position: absolute;
-  bottom: 0.25in;
-  left: 40px;
-}
-
-.indent {
-  text-indent: 0.18in;
-}
-
-.dhs-blue {
-  color: #005288;
-}
-
-.book-font {
-  font-family: "franklin-gothic-book";
-}
-
-/* Cover Page */
-#cover-page {
-  background: white;
-  display: block;
-  position: relative;
-
-  /* Page Padding */
-  padding-top: 0.25in;
-  padding-left: 0.18in;
-  padding-right: 0.17in;
-  padding-bottom: 0in;
-
-  page-break-after: always;
-  /* Size = Letter */
-  width: 8.5in;
-  height: 11in;
-
-  /* Border for testing purposes */
-  /* border: 2px solid black; */
-}
-
-#cover-image {
-  margin-left: 0.32in;
-  width: 7.22in;
-}
-
-#cover-assessment {
-  color: white;
-  position: absolute;
-  top: 140px;
-  left: 90px;
-}
-
-#cover-report {
-  color: white;
-  position: absolute;
-  top: 162px;
-  left: 90px;
-}
-
-#cover-cycle {
-  color: white;
-  position: absolute;
-  top: 478px;
-  left: 555px;
-  background-color: #6589a9;
-  font-size: 8pt;
-}
-
-#cover-date {
-  color: white;
-  position: absolute;
-  top: 505px;
-  left: 555px;
-  font-size: 8pt;
-}
-
-#cover-customer {
-  color: #005288;
-  font-size: 24.5pt;
-  margin-left: 0.5in;
-  margin-top: 0.25in;
-}
-
-#cover-identifier {
-  font-size: 0.6em;
-}
-
-#cover-bottom {
-  position: absolute;
-  bottom: 0.25in;
-  left: 0.32in;
-  margin-right: 0.18in;
-}
-
-#cover-logo {
-  width: 1.09in;
-  margin-left: 0.25in;
-}
-
-#cover-box {
-  margin-top: 0.4in;
-  font-size: 11pt;
-  border: 1px solid black;
-  padding: 5px;
-}
-
-#cover-divider {
-  border-top: 1px solid black;
-  width: 3.2in;
-  margin-top: 0.25in;
-}
-
-#cover-use {
-  font-size: 9pt;
-  text-indent: 0.1in;
-}
-
-/* Table of Contents */
-
-#toc-image {
-  width: 7.68in;
-  margin-left: -0.5in;
-}
-
-#toc-assessment {
-  color: white;
-  position: absolute;
-  top: 220px;
-  left: 60px;
-}
-
-#toc-report {
-  color: white;
-  position: absolute;
-  top: 243px;
-  left: 60px;
-}
-
-#toc-cycle {
-  color: white;
-  position: absolute;
-  top: 190px;
-  left: 590px;
-  background-color: #6892bc;
-  font-size: 8pt;
-}
-
-#toc-date {
-  color: white;
-  position: absolute;
-  top: 220px;
-  left: 590px;
-  font-size: 8pt;
-}
-
-#toc-header {
-  margin-top: 0.4in;
-  color: #2f5496;
-  font-size: 14pt;
-}
-
-#toc-section > dl {
-  width: 100%;
-  font-size: 12pt;
-  font-weight: normal;
-}
-
-#toc-section > dl > dt > span:first-child {
-  margin-right: 0.12in;
-}
-
-#toc-section > dl > dt {
-  float: left;
-  width: 595px;
-  overflow: hidden;
-  white-space: nowrap;
-  font-weight: normal;
-  margin-top: 0.25in;
-}
-
-#toc-section > dl > dd {
-  float: left;
-  overflow: hidden;
-  margin-left: 5px;
-  margin-top: 0.25in;
-}
-
-#toc-section > dl > dt::after {
-  content: " ................................................................................................................... ";
-}
-
 /* Report Card */
 #report-card-page {
   background: white;
@@ -378,78 +127,57 @@ tbody > tr:nth-child(even) {
   height: 12pt;
 }
 
-/* Performance over time */
-.performance-table {
-  width: 100%;
-  margin-bottom: 1em;
+.report-card-stat-label {
+  color: #0078ae;
+  text-align: center;
+  font-size: 14pt;
+  margin-top: 15px;
 }
 
-.performance-table > tbody > tr > td:nth-child(1) {
-  width: 100px;
+.report-card-doughnut-percent {
+  color: #0078ae;
+  text-align: center;
+  font-size: 20pt;
+  position: absolute;
+  top: 74px;
+  left: 36px;
+  width: 95px;
 }
 
-/* Recommendations */
-.recommendation-table {
-  font-size: 10pt;
+.report-card-templates-outer-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background-color: #0078ae;
+  position: relative;
+  margin-top: 25px;
+  margin-bottom: 15px;
 }
 
-.recommendation-table td,
-.recommendation-table th {
-  padding: 4px;
+.report-card-templates-inner-circle {
+  width: 65%;
+  height: 65%;
+  border-radius: 50%;
+  background-color: white;
+
+  /* Center vertically and horizontally */
+  margin: 0;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  -ms-transform: translateY(-50%) translateX(-50%);
+  transform: translateY(-50%) translateX(-50%);
 }
 
-/* Templates */
-.template-table {
-  width: 100%;
-  margin-bottom: 2em;
-}
+.report-card-templates {
+  color: #0078ae;
+  font-size: 34pt;
 
-.template-table > tbody > tr > td:nth-child(1) {
-  text-align: right;
-  width: 265px;
-}
-
-.template-table > tbody > tr > td:nth-child(1)::after {
-  content: ":";
-}
-
-.template-container {
-  border: 2px solid #dddddd;
-  border-radius: 1rem;
-  margin-bottom: 2rem;
-  display: grid;
-}
-
-.template-stat-header {
-  border-radius: 1rem 1rem 0 0;
-  background-color: #b8cfe0;
-  padding: 1rem;
-}
-
-.template-stat-header > .row {
-  margin-left: 0;
-}
-
-.template-stat-header > .row > .col,
-.template-stat-header > .row > .col-5 {
-  padding: 0.2rem;
-  padding-right: 2rem;
-}
-
-.template-body {
-  border: 2px solid #eeeeee;
-  border-radius: 1rem 1rem 1rem 1rem;
-  padding: 1rem;
-  margin-bottom: 0.25in;
-}
-
-.template-html > * {
-  width: 100%;
-  height: 100%;
-  page-break-after: auto;
-  padding: 0;
-}
-
-.template-label {
-  width: 250px;
+  /* Center vertically and horizontally */
+  margin: 0;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  -ms-transform: translateY(-50%) translateX(-50%);
+  transform: translateY(-50%) translateX(-50%);
 }
