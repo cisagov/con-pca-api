@@ -38,6 +38,15 @@ services:
     env_file:
       - .env
 
+# This can be enabled and disabled for testing reporting pdf generation
+# browserless:
+#   image: browserless/chrome:latest
+#   container_name: pca-browserless
+#   environment:
+#     - "MAX_CONCURRENT_SESSIONS=10"
+#   ports:
+#     - "3000:3000"
+
 # Host volumes used to store code.
 volumes:
   mongodb:

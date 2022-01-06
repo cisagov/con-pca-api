@@ -94,7 +94,7 @@
             <div style="font-size: 12pt">
               {{ cycle.send_by_date.strftime('%B %d, %Y') }}
             </div>
-            <div style="font-size: 14pt; margin-top: 0.1in"><b>Ending</b></div>
+            <div style="font-size: 14pt; margin-top: 0.1in"><b>Ends</b></div>
             <div style="font-size: 12pt">
               {{ cycle.end_date.strftime('%B %d, %Y') }}
             </div>
@@ -223,8 +223,8 @@
             {% for t in stats.template_stats | sort(attribute="clicked.ratio",
             reverse=True) %} {% if loop.index <= 3 %}
             <div style="font-size: 14pt; margin-top: 0.25in" class="book-font">
-              <b>#{{ t.clicked.rank }}:</b> {{
-              preview_template(t.template.subject, customer) }}
+              <b>#{{ loop.index }}:</b> {{ preview_template(t.template.subject,
+              customer) }}
             </div>
             {% endif %} {% endfor %}
           </div>

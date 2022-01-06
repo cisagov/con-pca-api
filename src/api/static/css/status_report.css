@@ -3,8 +3,16 @@
 @font-face {
   font-family: "franklin-gothic-book";
   src: url("fonts/Franklin Gothic Book Regular.ttf") format("trutetype");
-  font-weight: 600;
-  font-style: normal;
+}
+
+@font-face {
+  font-family: "franklin-gothic";
+  src: url("fonts/Franklin Gothic.ttf") format("trutetype");
+}
+
+@font-face {
+  font-family: "franklin-gothic-bold";
+  src: url("fonts/Franklin Gothic Bold.ttf") format("trutetype");
 }
 
 @page {
@@ -23,7 +31,7 @@ body {
   -webkit-print-color-adjust: exact !important;
   font-size: 11pt !important;
   background: white;
-  font-family: Franklin Gothic, sans-serif !important;
+  font-family: "franklin-gothic", sans-serif !important;
 }
 
 ol {
@@ -46,6 +54,18 @@ ul {
 
 p {
   margin: 0 0 10px;
+}
+
+b {
+  font-family: "franklin-gothic-bold", sans-serif !important;
+}
+
+.dhs-blue {
+  color: #005288;
+}
+
+.book-font {
+  font-family: "franklin-gothic-book", sans-serif !important;
 }
 
 /* Report Card */
