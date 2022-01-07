@@ -3,9 +3,6 @@
 import json
 import logging
 
-# Third-Party Libraries
-from marshmallow.exceptions import ValidationError
-
 # cisagov Libraries
 from api.manager import NonHumanManager, RecommendationManager, TemplateManager
 
@@ -16,18 +13,12 @@ nonhuman_manager = NonHumanManager()
 
 def initialize_templates():
     """Create initial templates."""
-    try:
-        current_templates = template_manager.all()
-    except ValidationError:  # TODO: Remove this after templates are initialized properly.
-        logging.info("Error validating templates. Resetting.")
-        template_manager.delete(params={})
-        current_templates = []
+    current_templates = template_manager.all()
     names = [t["name"] for t in current_templates]
 
     if len(names) > len(set(names)):
-        logging.info("Duplicate templates found, reinitializing.")
-        template_manager.delete(params={})
-        current_templates = []
+        logging.error("Duplicate templates found, check database.")
+        return
 
     if len(current_templates) > 0:
         logging.info("Templates already initialized.")
@@ -49,9 +40,8 @@ def initialize_nonhumans():
 
     current_orgs = [o["asn_org"] for o in nonhuman_manager.all()]
     if len(current_orgs) > len(set(current_orgs)):
-        logging.info("Duplicate orgs found, reinitializing.")
-        nonhuman_manager.delete(params={})
-        current_orgs = []
+        logging.error("Duplicate orgs found, check database.")
+        return
 
     if len(current_orgs) > 0:
         logging.info("Non humans already initialized")
@@ -68,9 +58,8 @@ def initialize_recommendations():
     """Create an initial set of recommendations."""
     current_names = [f"{r['title']}-{r['type']}" for r in recommendation_manager.all()]
     if len(current_names) > len(set(current_names)):
-        logging.info("Duplicate recommendations found, reinitializing.")
-        recommendation_manager.delete(params={})
-        current_names = []
+        logging.error("Duplicate recommendations found, check database.")
+        return
 
     if len(current_names) > 0:
         logging.info("Recommendations already initialized")
