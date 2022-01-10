@@ -768,22 +768,10 @@
           </tr>
         </thead>
         <tbody>
+          {% if previous_cycles %} {% for c in previous_cycles | reverse %} {%
+          if loop.index > (loop.length - 5) %}
           <tr>
-            <td>Report Cycle</td>
-            <td>{{ cycle.start_date.strftime('%b %d, %Y') }}</td>
-            <td>{{ cycle.end_date.strftime('%b %d, %Y') }}</td>
-            <td>{{ cycle.target_count }}</td>
-            <td>{{ percent(cycle.stats.stats.all.clicked.ratio) }}%</td>
-            <td>
-              {{
-              time.convert_seconds(cycle.stats.stats.all.clicked.average).short
-              }}
-            </td>
-          </tr>
-          {% if previous_cycles %} {% for c in previous_cycles %} {% if
-          loop.index <= 5 %}
-          <tr>
-            <td>Cycle #{{ loop.index + 1 }}</td>
+            <td>Cycle #{{ loop.index }}</td>
             <td>{{ c.start_date.strftime('%b %d, %Y') }}</td>
             <td>{{ c.end_date.strftime('%b %d, %Y') }}</td>
             <td>{{ c.target_count }}</td>
@@ -794,6 +782,18 @@
             </td>
           </tr>
           {% endif %} {% endfor %} {% endif %}
+          <tr>
+            <td>Cycle #{{ previous_cycles | length + 1 }}</td>
+            <td>{{ cycle.start_date.strftime('%b %d, %Y') }}</td>
+            <td>{{ cycle.end_date.strftime('%b %d, %Y') }}</td>
+            <td>{{ cycle.target_count }}</td>
+            <td>{{ percent(cycle.stats.stats.all.clicked.ratio) }}%</td>
+            <td>
+              {{
+              time.convert_seconds(cycle.stats.stats.all.clicked.average).short
+              }}
+            </td>
+          </tr>
         </tbody>
       </table>
       <p class="indent">
