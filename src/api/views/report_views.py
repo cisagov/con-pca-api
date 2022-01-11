@@ -43,12 +43,12 @@ class ReportPdfView(MethodView):
         nonhuman = False
         if request.args.get("nonhuman", "") == "true":
             nonhuman = True
-        cycle = cycle_manager.get(document_id=cycle_id, fields=["subscription_id"])
+        cycle = cycle_manager.get(document_id=cycle_id)
         subscription = subscription_manager.get(
             document_id=cycle["subscription_id"], fields=["reporting_password"]
         )
         filepath = get_report_pdf(
-            cycle_id,
+            cycle,
             report_type,
             reporting_password=subscription.get("reporting_password"),
             nonhuman=nonhuman,

@@ -47,6 +47,10 @@ redeploy: down build up
 shell:
 	docker exec -it pca-api python3
 
+# target: bash - bash into docker container
+bash:
+	docker exec -it pca-api bash
+
 # target: build_emails: build mjml emails - requires: npm install -g mjml
 build_emails:
 	mjml src/api/templates/emails/mjml/* -o src/api/templates/emails/

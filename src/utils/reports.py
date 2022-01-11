@@ -1,6 +1,8 @@
 """Report utils."""
 # Standard Python Libraries
+import csv
 from datetime import datetime
+from io import StringIO
 import json
 import os
 import os.path
@@ -22,6 +24,7 @@ from api.manager import (
 )
 from utils import time
 from utils.emails import get_email_context, get_from_address
+from utils.pdf import append_attachment
 from utils.stats import get_cycle_stats, get_ratio
 from utils.templates import get_indicators
 
@@ -32,7 +35,7 @@ sending_profile_manager = SendingProfileManager()
 subscription_manager = SubscriptionManager()
 
 
-def get_report(cycle_id, report_type, nonhuman=False):
+def get_report(cycle_id: str, report_type: str, nonhuman: bool = False):
     """Get report by type and cycle."""
     cycle = cycle_manager.get(document_id=cycle_id)
     subscription = subscription_manager.get(
@@ -75,8 +78,14 @@ def get_report(cycle_id, report_type, nonhuman=False):
     return render_template(f"reports/{report_type}.html", **context)
 
 
-def get_report_pdf(cycle_id, report_type, reporting_password=None, nonhuman=False):
+def get_report_pdf(
+    cycle: dict,
+    report_type: str,
+    reporting_password: str = None,
+    nonhuman: bool = False,
+):
     """Get report pdf."""
+    cycle_id = cycle["_id"]
     filename = f"{cycle_id}_report.pdf"
     args = [
         "node",
@@ -101,12 +110,207 @@ def get_report_pdf(cycle_id, report_type, reporting_password=None, nonhuman=Fals
     if reporting_password:
         writer.encrypt(reporting_password, use_128bit=True)
 
+    if report_type == "cycle":
+        # add csv pages
+        _add_csv_attachments(writer=writer, stats=cycle["stats"])
+
     output = open(new_filepath, "wb")
     writer.write(output)
     output.close()
     os.remove(filepath)
 
     return new_filepath
+
+
+def _add_csv_attachments(writer: PdfFileWriter, stats: dict):
+    """Add CSV attachments to PDF."""
+    csv_data = [_add_overall_stats_csv, _add_template_stats_csv, _add_time_stats_csv]
+
+    for func in csv_data:
+        filename, headers, data = func(stats=stats)
+        csv_file = StringIO()
+        csv_writer = csv.DictWriter(csv_file, fieldnames=headers)
+        csv_writer.writeheader()
+
+        if isinstance(data, list):
+            csv_writer.writerows(data)
+        else:
+            csv_writer.writerow(data)
+
+        append_attachment(writer, filename, csv_file.getvalue().encode())
+        csv_file.close()
+
+
+def _add_overall_stats_csv(stats: dict):
+    """Add Top Level Stats CSV attachment to PDF."""
+    headers = [
+        "low__opened",
+        "low__sent",
+        "low__clicked",
+        "medium__opened",
+        "medium__sent",
+        "medium__clicked",
+        "high__opened",
+        "high__sent",
+        "high__clicked",
+        "all__opened",
+        "all__sent",
+        "all__clicked",
+    ]
+    data = {
+        "low__opened": stats["stats"]["low"]["opened"]["count"],
+        "low__sent": stats["stats"]["low"]["sent"]["count"],
+        "low__clicked": stats["stats"]["low"]["clicked"]["count"],
+        "medium__opened": stats["stats"]["low"]["opened"]["count"],
+        "medium__sent": stats["stats"]["low"]["sent"]["count"],
+        "medium__clicked": stats["stats"]["low"]["clicked"]["count"],
+        "high__opened": stats["stats"]["low"]["opened"]["count"],
+        "high__sent": stats["stats"]["low"]["sent"]["count"],
+        "high__clicked": stats["stats"]["low"]["clicked"]["count"],
+        "all__opened": stats["stats"]["low"]["opened"]["count"],
+        "all__sent": stats["stats"]["low"]["sent"]["count"],
+        "all__clicked": stats["stats"]["low"]["clicked"]["count"],
+    }
+
+    return "overall_stats.csv", headers, data
+
+
+def _add_time_stats_csv(stats: dict):
+    """Add Time Stats CSV attachment to PDF."""
+    headers = [
+        "opened__one_minutes",
+        "opened__three_minutes",
+        "opened__five_minutes",
+        "opened__fifteen_minutes",
+        "opened__thirty_minutes",
+        "opened__sixty_minutes",
+        "opened__two_hours",
+        "opened__three_hours",
+        "opened__four_hours",
+        "opened__one_day",
+        "clicked__one_minutes",
+        "clicked__three_minutes",
+        "clicked__five_minutes",
+        "clicked__fifteen_minutes",
+        "clicked__thirty_minutes",
+        "clicked__sixty_minutes",
+        "clicked__two_hours",
+        "clicked__three_hours",
+        "clicked__four_hours",
+        "clicked__one_day",
+    ]
+    data = {
+        "opened__one_minutes": stats["time_stats"]["opened"]["one_minutes"]["count"],
+        "opened__three_minutes": stats["time_stats"]["opened"]["three_minutes"][
+            "count"
+        ],
+        "opened__five_minutes": stats["time_stats"]["opened"]["five_minutes"]["count"],
+        "opened__fifteen_minutes": stats["time_stats"]["opened"]["fifteen_minutes"][
+            "count"
+        ],
+        "opened__thirty_minutes": stats["time_stats"]["opened"]["thirty_minutes"][
+            "count"
+        ],
+        "opened__sixty_minutes": stats["time_stats"]["opened"]["sixty_minutes"][
+            "count"
+        ],
+        "opened__two_hours": stats["time_stats"]["opened"]["two_hours"]["count"],
+        "opened__three_hours": stats["time_stats"]["opened"]["three_hours"]["count"],
+        "opened__four_hours": stats["time_stats"]["opened"]["four_hours"],
+        "opened__one_day": stats["time_stats"]["opened"]["one_day"]["count"],
+        "clicked__one_minutes": stats["time_stats"]["clicked"]["one_minutes"]["count"],
+        "clicked__three_minutes": stats["time_stats"]["clicked"]["three_minutes"][
+            "count"
+        ],
+        "clicked__five_minutes": stats["time_stats"]["clicked"]["five_minutes"][
+            "count"
+        ],
+        "clicked__fifteen_minutes": stats["time_stats"]["clicked"]["fifteen_minutes"][
+            "count"
+        ],
+        "clicked__thirty_minutes": stats["time_stats"]["clicked"]["thirty_minutes"][
+            "count"
+        ],
+        "clicked__sixty_minutes": stats["time_stats"]["clicked"]["sixty_minutes"][
+            "count"
+        ],
+        "clicked__two_hours": stats["time_stats"]["clicked"]["two_hours"]["count"],
+        "clicked__three_hours": stats["time_stats"]["clicked"]["three_hours"]["count"],
+        "clicked__four_hours": stats["time_stats"]["clicked"]["four_hours"]["count"],
+        "clicked__one_day": stats["time_stats"]["clicked"]["one_day"]["count"],
+    }
+
+    return "time_stats.csv", headers, data
+
+
+def _add_template_stats_csv(stats: dict):
+    """Add Template Stats CSV attachment to PDF."""
+    headers = [
+        "sent",
+        "opened",
+        "clicked",
+        "deception_level",
+        "subject",
+        "html",
+        "from_address",
+        "deception_score",
+        "relevancy__public_news",
+        "relevancy__organization",
+        "behavior__fear",
+        "behavior__greed",
+        "behavior__curiosity",
+        "behavior__duty_obligation",
+        "appearance__grammar",
+        "appearance__logo_graphics",
+        "appearance__link_domain",
+        "sender__internal",
+        "sender__authoritative",
+        "sender__external",
+    ]
+
+    data = [
+        {
+            "sent": stat["sent"]["count"],
+            "opened": stat["opened"]["count"],
+            "clicked": stat["clicked"]["count"],
+            "deception_level": stat["deception_level"],
+            "subject": stat["template"]["subject"],
+            "html": stat["template"]["html"],
+            "from_address": stat["template"]["from_address"],
+            "deception_score": stat["template"]["deception_score"],
+            "relevancy__public_news": stat["template"]["indicators"]["relevancy"][
+                "public_news"
+            ],
+            "relevancy__organization": stat["template"]["indicators"]["relevancy"][
+                "organization"
+            ],
+            "behavior__fear": stat["template"]["indicators"]["behavior"]["fear"],
+            "behavior__greed": stat["template"]["indicators"]["behavior"]["greed"],
+            "behavior__curiosity": stat["template"]["indicators"]["behavior"][
+                "curiosity"
+            ],
+            "behavior__duty_obligation": stat["template"]["indicators"]["behavior"][
+                "duty_obligation"
+            ],
+            "appearance__grammar": stat["template"]["indicators"]["appearance"][
+                "grammar"
+            ],
+            "appearance__logo_graphics": stat["template"]["indicators"]["appearance"][
+                "logo_graphics"
+            ],
+            "appearance__link_domain": stat["template"]["indicators"]["appearance"][
+                "link_domain"
+            ],
+            "sender__internal": stat["template"]["indicators"]["sender"]["internal"],
+            "sender__authoritative": stat["template"]["indicators"]["sender"][
+                "authoritative"
+            ],
+            "sender__external": stat["template"]["indicators"]["sender"]["external"],
+        }
+        for stat in stats["template_stats"]
+    ]
+
+    return "template_stats.csv", headers, data
 
 
 def get_reports_sent():
