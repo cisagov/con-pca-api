@@ -23,7 +23,7 @@
   <body class="mat-typography">
     <!-- Global Variables Needed -->
     <!-- Set total pages -->
-    {% set total_pages = 10 + (stats.template_stats | length) %}
+    {% set total_pages = 12 + (stats.template_stats | length) %}
     <!-- Set previous cycle -->
     {% if previous_cycles %} {% set previous_cycle = previous_cycles[0] %} {%
     else %} {% set previous_cycle = None %} {% endif %}
@@ -116,18 +116,22 @@
         </dl>
         <dl>
           <dt><span>7.</span> ATTACHMENTS</dt>
+          <dd>{{ total_pages - 4 }}</dd>
+        </dl>
+        <dl>
+          <dt><span>Appendix A:</span> Definitions</dt>
           <dd>{{ total_pages - 3 }}</dd>
         </dl>
         <dl>
-          <dt><span>Appendix A:</span> Red Flag Indicators</dt>
+          <dt><span>Appendix B:</span> Red Flag Indicators</dt>
           <dd>{{ total_pages - 2 }}</dd>
         </dl>
         <dl>
-          <dt><span>Appendix B:</span> Sophisticated Techniques</dt>
+          <dt><span>Appendix C:</span> Sophisticated Techniques</dt>
           <dd>{{ total_pages - 1 }}</dd>
         </dl>
         <dl>
-          <dt><span>Appendix C:</span> Binding Operational Directive</dt>
+          <dt><span>Appendix D:</span> Binding Operational Directive</dt>
           <dd>{{ total_pages }}</dd>
         </dl>
       </div>
@@ -915,13 +919,47 @@
         </li>
       </ul>
       <p class="page-number">
-        Page | {{ total_pages - 2 }} of {{ total_pages }}
+        Page | {{ total_pages - 4 }} of {{ total_pages }}
       </p>
     </div>
 
-    <!-- Appendix A: Red Flag Indicators -->
+    <!-- Appendix A: Definitions -->
     <div class="page">
-      <div class="page-header">Appendix A: Red Flag Indicators</div>
+      <div class="page-header">Appendix A: Definitions</div>
+      <p style="margin-top: 0.25in">
+        The following are definitions for terms found within the report.
+      </p>
+      <ul>
+        <li>
+          <b>Click Rate</b> is the total number of emails with "malicious" links
+          that targets clicked at least once, divided by the total numbers of
+          emails sent. Of the {{ cycle.stats.stats.all.sent.count }} emails
+          sent, {{ cycle.stats.stats.all.clicked.count }} users clicked the link
+          at least once, an average click rate of {{
+          percent(cycle.stats.stats.all.clicked.ratio) }}%.
+        </li>
+        <li>
+          <b>Report Rate</b> is the total number of user reports that were sent
+          to the helpdesk, divided by the total phishing emails sent.
+        </li>
+        <li>
+          <b>Click Time</b> is the time CISA sent the phishing email minus the
+          time the user clicked the link within the eail.
+        </li>
+        <li>
+          <b>Average time to first click</b> is the average click time of the
+          click time for each target that clicked a "malicious" link.
+        </li>
+      </ul>
+
+      <div class="page-number">
+        Page | {{ total_pages - 3 }} of {{ total_pages }}
+      </div>
+    </div>
+
+    <!-- Appendix B: Red Flag Indicators -->
+    <div class="page">
+      <div class="page-header">Appendix B: Red Flag Indicators</div>
       <p style="margin-top: 0.25in">
         The following are definitions for <b>Red Flag</b> indicators.
       </p>
@@ -937,9 +975,9 @@
       </div>
     </div>
 
-    <!-- Appendix B: Sophisticated Techniques -->
+    <!-- Appendix C: Sophisticated Techniques -->
     <div class="page">
-      <div class="page-header">Appendix B: Sophisticated Techniques</div>
+      <div class="page-header">Appendix C: Sophisticated Techniques</div>
       <p style="margin-top: 0.25in">
         The following are definitions for <b>Sophisticated Techniques</b>.
       </p>
