@@ -35,7 +35,7 @@ sending_profile_manager = SendingProfileManager()
 subscription_manager = SubscriptionManager()
 
 
-def get_report(cycle_id, report_type, nonhuman=False):
+def get_report(cycle_id: str, report_type: str, nonhuman: bool = False):
     """Get report by type and cycle."""
     cycle = cycle_manager.get(document_id=cycle_id)
     subscription = subscription_manager.get(
@@ -112,9 +112,7 @@ def get_report_pdf(
 
     if report_type == "cycle":
         # add csv pages
-        _add_overall_stats_csv(writer=writer, stats=cycle["stats"])
-        _add_template_stats_csv(writer=writer, stats=cycle["stats"])
-        _add_time_stats_csv(writer=writer, stats=cycle["stats"])
+        _add_csv_attachments(writer=writer, stats=cycle["stats"])
 
     output = open(new_filepath, "wb")
     writer.write(output)
@@ -124,7 +122,26 @@ def get_report_pdf(
     return new_filepath
 
 
-def _add_overall_stats_csv(writer: PdfFileWriter, stats: dict):
+def _add_csv_attachments(writer: PdfFileWriter, stats: dict):
+    """Add CSV attachments to PDF."""
+    csv_data = [_add_overall_stats_csv, _add_template_stats_csv, _add_time_stats_csv]
+
+    for func in csv_data:
+        filename, headers, data = func(stats=stats)
+        csv_file = StringIO()
+        csv_writer = csv.DictWriter(csv_file, fieldnames=headers)
+        csv_writer.writeheader()
+
+        if isinstance(data, list):
+            csv_writer.writerows(data)
+        else:
+            csv_writer.writerow(data)
+
+        append_attachment(writer, filename, csv_file.getvalue().encode())
+        csv_file.close()
+
+
+def _add_overall_stats_csv(stats: dict):
     """Add Top Level Stats CSV attachment to PDF."""
     headers = [
         "low__opened",
@@ -155,16 +172,10 @@ def _add_overall_stats_csv(writer: PdfFileWriter, stats: dict):
         "all__clicked": stats["stats"]["low"]["clicked"]["count"],
     }
 
-    csv_file = StringIO()
-    csv_writer = csv.DictWriter(csv_file, fieldnames=headers)
-    csv_writer.writeheader()
-    csv_writer.writerow(data)
-
-    append_attachment(writer, "top_level_stats.csv", csv_file.getvalue().encode())
-    csv_file.close()
+    return "overall_stats.csv", headers, data
 
 
-def _add_time_stats_csv(writer: PdfFileWriter, stats: dict):
+def _add_time_stats_csv(stats: dict):
     """Add Time Stats CSV attachment to PDF."""
     headers = [
         "opened__one_minutes",
@@ -229,16 +240,10 @@ def _add_time_stats_csv(writer: PdfFileWriter, stats: dict):
         "clicked__one_day": stats["time_stats"]["clicked"]["one_day"]["count"],
     }
 
-    csv_file = StringIO()
-    csv_writer = csv.DictWriter(csv_file, fieldnames=headers)
-    csv_writer.writeheader()
-    csv_writer.writerow(data)
-
-    append_attachment(writer, "time_stats.csv", csv_file.getvalue().encode())
-    csv_file.close()
+    return "time_stats.csv", headers, data
 
 
-def _add_template_stats_csv(writer: PdfFileWriter, stats: dict):
+def _add_template_stats_csv(stats: dict):
     """Add Template Stats CSV attachment to PDF."""
     headers = [
         "sent",
@@ -305,12 +310,7 @@ def _add_template_stats_csv(writer: PdfFileWriter, stats: dict):
         for stat in stats["template_stats"]
     ]
 
-    csv_file = StringIO()
-    csv_writer = csv.DictWriter(csv_file, fieldnames=headers)
-    csv_writer.writeheader()
-    csv_writer.writerows(data)
-    append_attachment(writer, "template_stats.csv", csv_file.getvalue().encode())
-    csv_file.close()
+    return "template_stats.csv", headers, data
 
 
 def get_reports_sent():
