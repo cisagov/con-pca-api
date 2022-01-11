@@ -24,6 +24,7 @@ from api.manager import (
 )
 from utils import time
 from utils.emails import get_email_context, get_from_address
+from utils.pdf import append_attachment
 from utils.stats import get_cycle_stats, get_ratio
 from utils.templates import get_indicators
 
@@ -111,6 +112,7 @@ def get_report_pdf(
 
     if report_type == "cycle":
         # add csv pages
+        _add_overall_stats_csv(writer=writer, stats=cycle["stats"])
         _add_template_stats_csv(writer=writer, stats=cycle["stats"])
 
     output = open(new_filepath, "wb")
@@ -121,8 +123,48 @@ def get_report_pdf(
     return new_filepath
 
 
+def _add_overall_stats_csv(writer: PdfFileWriter, stats: dict):
+    """Add Top Level Stats CSV attachment to PDF."""
+    headers = [
+        "low__opened",
+        "low__sent",
+        "low__clicked",
+        "medium__opened",
+        "medium__sent",
+        "medium__clicked",
+        "high__opened",
+        "high__sent",
+        "high__clicked",
+        "all__opened",
+        "all__sent",
+        "all__clicked",
+    ]
+    data = {
+        "low__opened": stats["stats"]["low"]["opened"]["count"],
+        "low__sent": stats["stats"]["low"]["sent"]["count"],
+        "low__clicked": stats["stats"]["low"]["clicked"]["count"],
+        "medium__opened": stats["stats"]["low"]["opened"]["count"],
+        "medium__sent": stats["stats"]["low"]["sent"]["count"],
+        "medium__clicked": stats["stats"]["low"]["clicked"]["count"],
+        "high__opened": stats["stats"]["low"]["opened"]["count"],
+        "high__sent": stats["stats"]["low"]["sent"]["count"],
+        "high__clicked": stats["stats"]["low"]["clicked"]["count"],
+        "all__opened": stats["stats"]["low"]["opened"]["count"],
+        "all__sent": stats["stats"]["low"]["sent"]["count"],
+        "all__clicked": stats["stats"]["low"]["clicked"]["count"],
+    }
+
+    csv_file = StringIO()
+    csv_writer = csv.DictWriter(csv_file, fieldnames=headers)
+    csv_writer.writeheader()
+    csv_writer.writerow(data)
+
+    append_attachment(writer, "top_level_stats.csv", csv_file.getvalue().encode())
+    csv_file.close()
+
+
 def _add_template_stats_csv(writer: PdfFileWriter, stats: dict):
-    """Add Template Stats CSV attachments to PDF."""
+    """Add Template Stats CSV attachment to PDF."""
     headers = [
         "sent",
         "opened",
@@ -192,7 +234,7 @@ def _add_template_stats_csv(writer: PdfFileWriter, stats: dict):
     csv_writer = csv.DictWriter(csv_file, fieldnames=headers)
     csv_writer.writeheader()
     csv_writer.writerows(data)
-    writer.addAttachment("template_stats.csv", csv_file.getvalue().encode())
+    append_attachment(writer, "template_stats.csv", csv_file.getvalue().encode())
     csv_file.close()
 
 
