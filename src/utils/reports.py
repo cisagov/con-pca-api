@@ -114,6 +114,7 @@ def get_report_pdf(
         # add csv pages
         _add_overall_stats_csv(writer=writer, stats=cycle["stats"])
         _add_template_stats_csv(writer=writer, stats=cycle["stats"])
+        _add_time_stats_csv(writer=writer, stats=cycle["stats"])
 
     output = open(new_filepath, "wb")
     writer.write(output)
@@ -160,6 +161,80 @@ def _add_overall_stats_csv(writer: PdfFileWriter, stats: dict):
     csv_writer.writerow(data)
 
     append_attachment(writer, "top_level_stats.csv", csv_file.getvalue().encode())
+    csv_file.close()
+
+
+def _add_time_stats_csv(writer: PdfFileWriter, stats: dict):
+    """Add Time Stats CSV attachment to PDF."""
+    headers = [
+        "opened__one_minutes",
+        "opened__three_minutes",
+        "opened__five_minutes",
+        "opened__fifteen_minutes",
+        "opened__thirty_minutes",
+        "opened__sixty_minutes",
+        "opened__two_hours",
+        "opened__three_hours",
+        "opened__four_hours",
+        "opened__one_day",
+        "clicked__one_minutes",
+        "clicked__three_minutes",
+        "clicked__five_minutes",
+        "clicked__fifteen_minutes",
+        "clicked__thirty_minutes",
+        "clicked__sixty_minutes",
+        "clicked__two_hours",
+        "clicked__three_hours",
+        "clicked__four_hours",
+        "clicked__one_day",
+    ]
+    data = {
+        "opened__one_minutes": stats["time_stats"]["opened"]["one_minutes"]["count"],
+        "opened__three_minutes": stats["time_stats"]["opened"]["three_minutes"][
+            "count"
+        ],
+        "opened__five_minutes": stats["time_stats"]["opened"]["five_minutes"]["count"],
+        "opened__fifteen_minutes": stats["time_stats"]["opened"]["fifteen_minutes"][
+            "count"
+        ],
+        "opened__thirty_minutes": stats["time_stats"]["opened"]["thirty_minutes"][
+            "count"
+        ],
+        "opened__sixty_minutes": stats["time_stats"]["opened"]["sixty_minutes"][
+            "count"
+        ],
+        "opened__two_hours": stats["time_stats"]["opened"]["two_hours"]["count"],
+        "opened__three_hours": stats["time_stats"]["opened"]["three_hours"]["count"],
+        "opened__four_hours": stats["time_stats"]["opened"]["four_hours"],
+        "opened__one_day": stats["time_stats"]["opened"]["one_day"]["count"],
+        "clicked__one_minutes": stats["time_stats"]["clicked"]["one_minutes"]["count"],
+        "clicked__three_minutes": stats["time_stats"]["clicked"]["three_minutes"][
+            "count"
+        ],
+        "clicked__five_minutes": stats["time_stats"]["clicked"]["five_minutes"][
+            "count"
+        ],
+        "clicked__fifteen_minutes": stats["time_stats"]["clicked"]["fifteen_minutes"][
+            "count"
+        ],
+        "clicked__thirty_minutes": stats["time_stats"]["clicked"]["thirty_minutes"][
+            "count"
+        ],
+        "clicked__sixty_minutes": stats["time_stats"]["clicked"]["sixty_minutes"][
+            "count"
+        ],
+        "clicked__two_hours": stats["time_stats"]["clicked"]["two_hours"]["count"],
+        "clicked__three_hours": stats["time_stats"]["clicked"]["three_hours"]["count"],
+        "clicked__four_hours": stats["time_stats"]["clicked"]["four_hours"]["count"],
+        "clicked__one_day": stats["time_stats"]["clicked"]["one_day"]["count"],
+    }
+
+    csv_file = StringIO()
+    csv_writer = csv.DictWriter(csv_file, fieldnames=headers)
+    csv_writer.writeheader()
+    csv_writer.writerow(data)
+
+    append_attachment(writer, "time_stats.csv", csv_file.getvalue().encode())
     csv_file.close()
 
 
