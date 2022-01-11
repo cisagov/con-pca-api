@@ -23,7 +23,7 @@
   <body class="mat-typography">
     <!-- Global Variables Needed -->
     <!-- Set total pages -->
-    {% set total_pages = 10 + (stats.template_stats | length) %}
+    {% set total_pages = 12 + (stats.template_stats | length) %}
     <!-- Set previous cycle -->
     {% if previous_cycles %} {% set previous_cycle = previous_cycles[0] %} {%
     else %} {% set previous_cycle = None %} {% endif %}
@@ -116,18 +116,22 @@
         </dl>
         <dl>
           <dt><span>7.</span> ATTACHMENTS</dt>
+          <dd>{{ total_pages - 4 }}</dd>
+        </dl>
+        <dl>
+          <dt><span>Appendix A:</span> Definitions</dt>
           <dd>{{ total_pages - 3 }}</dd>
         </dl>
         <dl>
-          <dt><span>Appendix A:</span> Red Flag Indicators</dt>
+          <dt><span>Appendix B:</span> Red Flag Indicators</dt>
           <dd>{{ total_pages - 2 }}</dd>
         </dl>
         <dl>
-          <dt><span>Appendix B:</span> Sophisticated Techniques</dt>
+          <dt><span>Appendix C:</span> Sophisticated Techniques</dt>
           <dd>{{ total_pages - 1 }}</dd>
         </dl>
         <dl>
-          <dt><span>Appendix C:</span> Binding Operational Directive</dt>
+          <dt><span>Appendix D:</span> Binding Operational Directive</dt>
           <dd>{{ total_pages }}</dd>
         </dl>
       </div>
@@ -151,14 +155,14 @@
       </p>
       <ol style="margin-left: 0.18in">
         <li>
-          <b>Look at the summary report card. </b>The report card contains high
+          <b>Look at the summary report card.</b> The report card contains high
           level results for this cycle and a quick comparison to the previous
           cycles. If this is your first report, you should note that the report
           card will initially lack historical data to make comparisons against,
           though that data will exist in your next report.
         </li>
         <li>
-          <b>Read the framework in which to understand results.</b>PCAs
+          <b>Read the framework in which to understand results.</b> PCAs
           concentrate on how phishing email deception affects target user click
           behavior. CISA expects that a more deceptive phishing email has a
           higher likelihood of being clicked and a lower deception email has a
@@ -169,13 +173,14 @@
           <b
             >Review the red flags and the sophisticated techniques ordered by
             click rate.</b
-          >The indicators with click rates above your organization’s average
+          >
+          The indicators with click rates above your organization’s average
           click rate are representative of the phishing elements that your
           targeted users are potentially less aware of and may benefit
           additional training on.
         </li>
         <li>
-          <b>See how performance has changed over time. </b>You should expect
+          <b>See how performance has changed over time.</b> You should expect
           click rates and click times to fluctuate based on the deception level
           of the email templates used. Effective security awareness training,
           however, should result in a noticeable click rate decrease over time
@@ -183,13 +188,13 @@
           management posture.
         </li>
         <li>
-          <b>Review the details of each campaign. </b>See examples of each
+          <b>Review the details of each campaign.</b> See examples of each
           phishing campaign used for this cycle and their click rate results to
           understand the context in which the red flags and sophisticated
           techniques were used.
         </li>
         <li>
-          <b>Compare click results to user reports of phishing. </b>If you have
+          <b>Compare click results to user reports of phishing.</b> If you have
           an established process for collecting reports of phishing, the
           attachments section provides Comma-Separated Values (CSV) files with
           the per-campaign click results you can use to compare to your internal
@@ -199,7 +204,7 @@
           does not realize they have been phished.
         </li>
         <li>
-          <b>Send an updated target list. </b>If you’ve experienced personnel
+          <b>Send an updated target list.</b> If you’ve experienced personnel
           changes since the start of this last cycle, send an updated email
           target list to vulnerability@cisa.dhs.gov prior to the start of your
           next phishing cycle on {{ cycle.end_date.strftime('%B %d, %Y') }}.
@@ -369,12 +374,14 @@
 
           <div id="report-card-vertical-divider"></div>
           <div class="d-flex flex-column flex-fill" style="align-items: center">
-            <div style="font-size: 18pt" class="dhs-blue">AVERAGE TIME</div>
+            <div style="font-size: 18pt; text-align: center" class="dhs-blue">
+              AVERAGE<br />CLICK TIME
+            </div>
             <div style="margin-top: 0.125in">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="1.25in"
-                height="1.25in"
+                width="1in"
+                height="1in"
                 fill="currentColor"
                 class="bi bi-alarm"
                 viewBox="0 0 16 16"
@@ -765,22 +772,10 @@
           </tr>
         </thead>
         <tbody>
+          {% if previous_cycles %} {% for c in previous_cycles | reverse %} {%
+          if loop.index > (loop.length - 5) %}
           <tr>
-            <td>Report Cycle</td>
-            <td>{{ cycle.start_date.strftime('%b %d, %Y') }}</td>
-            <td>{{ cycle.end_date.strftime('%b %d, %Y') }}</td>
-            <td>{{ cycle.target_count }}</td>
-            <td>{{ percent(cycle.stats.stats.all.clicked.ratio) }}%</td>
-            <td>
-              {{
-              time.convert_seconds(cycle.stats.stats.all.clicked.average).short
-              }}
-            </td>
-          </tr>
-          {% if previous_cycles %} {% for c in previous_cycles %} {% if
-          loop.index <= 5 %}
-          <tr>
-            <td>Cycle #{{ loop.index + 1 }}</td>
+            <td>Cycle #{{ loop.index }}</td>
             <td>{{ c.start_date.strftime('%b %d, %Y') }}</td>
             <td>{{ c.end_date.strftime('%b %d, %Y') }}</td>
             <td>{{ c.target_count }}</td>
@@ -791,17 +786,29 @@
             </td>
           </tr>
           {% endif %} {% endfor %} {% endif %}
+          <tr>
+            <td>Cycle #{{ previous_cycles | length + 1 }}</td>
+            <td>{{ cycle.start_date.strftime('%b %d, %Y') }}</td>
+            <td>{{ cycle.end_date.strftime('%b %d, %Y') }}</td>
+            <td>{{ cycle.target_count }}</td>
+            <td>{{ percent(cycle.stats.stats.all.clicked.ratio) }}%</td>
+            <td>
+              {{
+              time.convert_seconds(cycle.stats.stats.all.clicked.average).short
+              }}
+            </td>
+          </tr>
         </tbody>
       </table>
       <p class="indent">
-        Up to the previous 3 cycles are shown in the graph below. This graph
-        represents the average click rate across the three different deception
-        levels (low, moderate, high). This is a good indication to see how click
-        rates are improving based on the quality of the sent template.
+        The following chart represents the average click rate across the three
+        different deception levels (low, moderate, high). This is a good
+        indication to see how click rates are improving based on the quality of
+        the sent template.
       </p>
       <canvas id="click-rate-over-time">
         <script>
-          createClickRateOverTime();
+          createClickRateLineGraph();
         </script>
       </canvas>
       <p class="page-number">Page | 7 of {{ total_pages }}</p>
@@ -912,13 +919,47 @@
         </li>
       </ul>
       <p class="page-number">
-        Page | {{ total_pages - 2 }} of {{ total_pages }}
+        Page | {{ total_pages - 4 }} of {{ total_pages }}
       </p>
     </div>
 
-    <!-- Appendix A: Red Flag Indicators -->
+    <!-- Appendix A: Definitions -->
     <div class="page">
-      <div class="page-header">Appendix A: Red Flag Indicators</div>
+      <div class="page-header">Appendix A: Definitions</div>
+      <p style="margin-top: 0.25in">
+        The following are definitions for terms found within the report.
+      </p>
+      <ul>
+        <li>
+          <b>Click Rate</b> is the total number of emails with "malicious" links
+          that targets clicked at least once, divided by the total numbers of
+          emails sent. Of the {{ cycle.stats.stats.all.sent.count }} emails
+          sent, {{ cycle.stats.stats.all.clicked.count }} users clicked the link
+          at least once, an average click rate of {{
+          percent(cycle.stats.stats.all.clicked.ratio) }}%.
+        </li>
+        <li>
+          <b>Report Rate</b> is the total number of user reports that were sent
+          to the helpdesk, divided by the total phishing emails sent.
+        </li>
+        <li>
+          <b>Click Time</b> is the time CISA sent the phishing email minus the
+          time the user clicked the link within the eail.
+        </li>
+        <li>
+          <b>Average time to first click</b> is the average click time of the
+          click time for each target that clicked a "malicious" link.
+        </li>
+      </ul>
+
+      <div class="page-number">
+        Page | {{ total_pages - 3 }} of {{ total_pages }}
+      </div>
+    </div>
+
+    <!-- Appendix B: Red Flag Indicators -->
+    <div class="page">
+      <div class="page-header">Appendix B: Red Flag Indicators</div>
       <p style="margin-top: 0.25in">
         The following are definitions for <b>Red Flag</b> indicators.
       </p>
@@ -934,9 +975,9 @@
       </div>
     </div>
 
-    <!-- Appendix B: Sophisticated Techniques -->
+    <!-- Appendix C: Sophisticated Techniques -->
     <div class="page">
-      <div class="page-header">Appendix B: Sophisticated Techniques</div>
+      <div class="page-header">Appendix C: Sophisticated Techniques</div>
       <p style="margin-top: 0.25in">
         The following are definitions for <b>Sophisticated Techniques</b>.
       </p>

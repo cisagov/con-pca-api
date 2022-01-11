@@ -1,8 +1,8 @@
 APScheduler==3.8.1
 beautifulsoup4==4.10.0
-boto3==1.20.26
+boto3==1.20.31
 cognitojwt==1.4.1
-Faker==11.1.0
+Faker==11.3.0
 Flask==2.0.2
 Flask-Cors==3.0.10
 geoip2==4.5.0
@@ -12,4 +12,4 @@ mongomock==3.23.0
 Pillow==9.0.0
 pymongo~=3.12.1
 PyPDF2==1.26.0
-requests==2.26.0
+requests==2.27.1
