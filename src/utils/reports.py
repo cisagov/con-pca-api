@@ -1,6 +1,8 @@
 """Report utils."""
 # Standard Python Libraries
+import csv
 from datetime import datetime
+from io import StringIO
 import json
 import os
 import os.path
@@ -75,8 +77,14 @@ def get_report(cycle_id, report_type, nonhuman=False):
     return render_template(f"reports/{report_type}.html", **context)
 
 
-def get_report_pdf(cycle_id, report_type, reporting_password=None, nonhuman=False):
+def get_report_pdf(
+    cycle: dict,
+    report_type: str,
+    reporting_password: str = None,
+    nonhuman: bool = False,
+):
     """Get report pdf."""
+    cycle_id = cycle["_id"]
     filename = f"{cycle_id}_report.pdf"
     args = [
         "node",
@@ -101,12 +109,32 @@ def get_report_pdf(cycle_id, report_type, reporting_password=None, nonhuman=Fals
     if reporting_password:
         writer.encrypt(reporting_password, use_128bit=True)
 
+    if report_type == "cycle":
+        # add csv pages
+        _add_csv_attachments(writer=writer, cycle=cycle)
+
     output = open(new_filepath, "wb")
     writer.write(output)
     output.close()
     os.remove(filepath)
 
     return new_filepath
+
+
+def _add_csv_attachments(writer: PdfFileWriter, cycle: dict):
+    """Add CSV attachments to PDF."""
+    for stat_key, stat_values in cycle["stats"].items():
+        if isinstance(stat_values, list):
+            headers = [value.keys() for value in stat_values][0]
+            data = [value.values() for value in stat_values]
+        else:
+            headers = stat_values.keys()
+            data = stat_values.values()
+        csv_file = StringIO()
+        csv_writer = csv.DictWriter(csv_file, fieldnames=headers)
+        csv_writer.writeheader()
+        csv_writer.writerows(data)
+        writer.addAttachment(f"{stat_key}.csv", csv_file.getvalue().encode())
 
 
 def get_reports_sent():
