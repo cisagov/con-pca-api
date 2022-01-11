@@ -11,7 +11,7 @@
         <mj-text font-size="20px" color="#1B2352" font-family="helvetica">
           Thank you for participating in CISA Continuous Phishing (Con-PCA).
           This email is to inform you that your current cycle will end and a new
-          will begin within the next 15 days.
+          cycle will begin in 15 days.
         </mj-text>
 
         <mj-text font-size="20px" color="#1B2352" font-family="helvetica">
@@ -19,17 +19,17 @@
           any of the following information. If you have already submitted this
           information to your CISA contact, please disregard this email.
           <ul>
-            <li>Updates to your targets list.</li>
+            <li>Updates to your targets list</li>
             <li>
-              Whether you would like the "Cisa-Phish" phishing header rotated.
+              Whether you would like the "Cisa-Phish" phishing header rotated
             </li>
-            <li>Any changes to your primary contact.</li>
-            <li>If you want the password used for reporting updated.</li>
+            <li>Any changes to your primary contact</li>
+            <li>If you want the password used for reporting updated</li>
           </ul>
         </mj-text>
         <mj-text font-size="20px" color="#1B2352" font-family="helvetica">
-          In the interests of security and efficiency, please respond to your
-          CISA contact directly with any questions or concerns you may have.
+          As this email address is unmonitored, please respond to your CISA
+          contact directly with any questions or concerns you may have.
         </mj-text>
         <mj-text font-size="20px" color="#1B2352" font-family="helvetica">
           Respectfully,
