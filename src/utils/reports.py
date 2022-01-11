@@ -111,7 +111,7 @@ def get_report_pdf(
 
     if report_type == "cycle":
         # add csv pages
-        _add_csv_attachments(writer=writer, cycle=cycle)
+        _add_template_stats_csv(writer=writer, stats=cycle["stats"])
 
     output = open(new_filepath, "wb")
     writer.write(output)
@@ -121,20 +121,79 @@ def get_report_pdf(
     return new_filepath
 
 
-def _add_csv_attachments(writer: PdfFileWriter, cycle: dict):
-    """Add CSV attachments to PDF."""
-    for stat_key, stat_values in cycle["stats"].items():
-        if isinstance(stat_values, list):
-            headers = [value.keys() for value in stat_values][0]
-            data = [value.values() for value in stat_values]
-        else:
-            headers = stat_values.keys()
-            data = stat_values.values()
-        csv_file = StringIO()
-        csv_writer = csv.DictWriter(csv_file, fieldnames=headers)
-        csv_writer.writeheader()
-        csv_writer.writerows(data)
-        writer.addAttachment(f"{stat_key}.csv", csv_file.getvalue().encode())
+def _add_template_stats_csv(writer: PdfFileWriter, stats: dict):
+    """Add Template Stats CSV attachments to PDF."""
+    headers = [
+        "sent",
+        "opened",
+        "clicked",
+        "deception_level",
+        "subject",
+        "html",
+        "from_address",
+        "deception_score",
+        "relevancy__public_news",
+        "relevancy__organization",
+        "behavior__fear",
+        "behavior__greed",
+        "behavior__curiosity",
+        "behavior__duty_obligation",
+        "appearance__grammar",
+        "appearance__logo_graphics",
+        "appearance__link_domain",
+        "sender__internal",
+        "sender__authoritative",
+        "sender__external",
+    ]
+
+    data = [
+        {
+            "sent": stat["sent"]["count"],
+            "opened": stat["opened"]["count"],
+            "clicked": stat["clicked"]["count"],
+            "deception_level": stat["deception_level"],
+            "subject": stat["template"]["subject"],
+            "html": stat["template"]["html"],
+            "from_address": stat["template"]["from_address"],
+            "deception_score": stat["template"]["deception_score"],
+            "relevancy__public_news": stat["template"]["indicators"]["relevancy"][
+                "public_news"
+            ],
+            "relevancy__organization": stat["template"]["indicators"]["relevancy"][
+                "organization"
+            ],
+            "behavior__fear": stat["template"]["indicators"]["behavior"]["fear"],
+            "behavior__greed": stat["template"]["indicators"]["behavior"]["greed"],
+            "behavior__curiosity": stat["template"]["indicators"]["behavior"][
+                "curiosity"
+            ],
+            "behavior__duty_obligation": stat["template"]["indicators"]["behavior"][
+                "duty_obligation"
+            ],
+            "appearance__grammar": stat["template"]["indicators"]["appearance"][
+                "grammar"
+            ],
+            "appearance__logo_graphics": stat["template"]["indicators"]["appearance"][
+                "logo_graphics"
+            ],
+            "appearance__link_domain": stat["template"]["indicators"]["appearance"][
+                "link_domain"
+            ],
+            "sender__internal": stat["template"]["indicators"]["sender"]["internal"],
+            "sender__authoritative": stat["template"]["indicators"]["sender"][
+                "authoritative"
+            ],
+            "sender__external": stat["template"]["indicators"]["sender"]["external"],
+        }
+        for stat in stats["template_stats"]
+    ]
+
+    csv_file = StringIO()
+    csv_writer = csv.DictWriter(csv_file, fieldnames=headers)
+    csv_writer.writeheader()
+    csv_writer.writerows(data)
+    writer.addAttachment("template_stats.csv", csv_file.getvalue().encode())
+    csv_file.close()
 
 
 def get_reports_sent():
