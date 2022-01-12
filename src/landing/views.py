@@ -1,7 +1,7 @@
 """Landing application views."""
 # Third-Party Libraries
 from flask import send_file
-from flask.templating import render_template, render_template_string
+from flask.templating import render_template_string
 from flask.views import MethodView
 
 # cisagov Libraries
@@ -35,7 +35,6 @@ class ClickView(MethodView):
         if len(decoded) > 2:
             if decoded[0] == "test":
                 return process_click_test(decoded[1], decoded[2])
-                return render_template("test.html")
             else:
                 return
         cycle_id, target_id = decoded
