@@ -10,15 +10,17 @@ from flask.templating import render_template_string
 # cisagov Libraries
 from api.manager import (
     CustomerManager,
+    LandingPageManager,
     SendingProfileManager,
     SubscriptionManager,
     TemplateManager,
 )
 from api.phish import add_phish_headers, get_tracking_info
 from utils.emails import Email, get_email_context, get_from_address
-from utils.request import get_timeline_entry
+from utils.request import get_landing_page, get_timeline_entry
 
 customer_manager = CustomerManager()
+landing_page_manager = LandingPageManager()
 sending_profile_manager = SendingProfileManager()
 subscription_manager = SubscriptionManager()
 template_manager = TemplateManager()
@@ -166,7 +168,7 @@ def process_contact(
 def process_click_test(subscription_id, contact_id):
     """Process a click from the landing page."""
     subscription = subscription_manager.get(
-        document_id=subscription_id, fields=["test_results"]
+        document_id=subscription_id, fields=["test_results", "customer_id"]
     )
     contact = next(
         filter(lambda x: x["test_uuid"] == contact_id, subscription["test_results"])
@@ -182,6 +184,17 @@ def process_click_test(subscription_id, contact_id):
         data=contact,
         params={"test_results.test_uuid": contact_id},
     )
+
+    # Get landing page
+    landing_page = get_landing_page(contact["template"]["_id"])
+
+    # Get customer
+    customer = customer_manager.get(document_id=subscription["customer_id"])
+
+    # Get Jinja template context
+    context = get_email_context(target=contact, customer=customer)
+
+    return render_template_string(landing_page["html"], **context)
 
 
 def process_open_test(subscription_id, contact_id):
