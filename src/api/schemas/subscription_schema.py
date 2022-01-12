@@ -14,7 +14,7 @@ class SubscriptionNotificationSchema(Schema):
     """SubscriptionNotificationSchema."""
 
     message_type = fields.Str()
-    sent = fields.DateTime()
+    sent = DateTimeField()
     email_to = fields.List(fields.Str())
     email_from = fields.Str()
 
