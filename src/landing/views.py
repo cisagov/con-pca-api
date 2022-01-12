@@ -15,7 +15,7 @@ from api.manager import (
 )
 from api.phish import decode_tracking_id
 from utils.emails import get_email_context
-from utils.request import get_timeline_entry
+from utils.request import get_landing_page, get_timeline_entry
 from utils.safelist_testing import process_click_test, process_open_test
 
 cycle_manager = CycleManager()
@@ -34,7 +34,7 @@ class ClickView(MethodView):
         decoded = decode_tracking_id(tracking_id)
         if len(decoded) > 2:
             if decoded[0] == "test":
-                process_click_test(decoded[1], decoded[2])
+                return process_click_test(decoded[1], decoded[2])
                 return render_template("test.html")
             else:
                 return
@@ -45,19 +45,8 @@ class ClickView(MethodView):
         target = target_manager.get(document_id=target_id)
         if not cycle or not target:
             return render_template_string("404 Not Found"), 404
-        template = template_manager.get(
-            document_id=target["template_id"], fields=["landing_page_id"]
-        )
-        if template.get("landing_page_id"):
-            landing_page = landing_page_manager.get(
-                document_id=template["landing_page_id"]
-            )
-        else:
-            landing_page = landing_page_manager.get(
-                filter_data={"is_default_template": True}
-            )
-        if not landing_page:
-            landing_page = landing_page_manager.get(filter_data={})
+
+        landing_page = get_landing_page(target["template_id"])
 
         click_events = list(
             filter(lambda x: x["message"] == "clicked", target.get("timeline", []))
