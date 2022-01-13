@@ -81,4 +81,5 @@ class LandingPageView(MethodView):
                 ),
                 400,
             )
-        return jsonify(landing_page_manager.delete(document_id=landing_page_id))
+        landing_page_manager.delete(document_id=landing_page_id)
+        return jsonify({"success": True})

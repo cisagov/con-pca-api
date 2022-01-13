@@ -112,7 +112,8 @@ class TemplateView(MethodView):
                 400,
             )
 
-        return jsonify(template_manager.delete(document_id=template_id))
+        template_manager.delete(document_id=template_id)
+        return jsonify({"success": True})
 
 
 class TemplateImportView(MethodView):
