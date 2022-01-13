@@ -155,9 +155,11 @@ class Manager:
     def delete(self, document_id=None, params=None):
         """Delete item by object id."""
         if document_id:
-            return self.db.delete_one(self.document_query(document_id)).raw_result
+            self.db.delete_one(self.document_query(document_id))
+            return
         if params or params == {}:
-            return self.db.delete_many(params).raw_result
+            self.db.delete_many(params)
+            return
         raise Exception(
             "Either a document id or params must be supplied when deleting."
         )
@@ -169,7 +171,7 @@ class Manager:
         self.db.update_one(
             self.document_query(document_id),
             {"$set": self.load_data(data, partial=True)},
-        ).raw_result
+        )
 
     def update_many(self, params, data):
         """Update many items with params."""
@@ -200,19 +202,19 @@ class Manager:
         """Add item to list in document."""
         return self.db.update_one(
             self.document_query(document_id), {"$push": {field: data}}
-        ).raw_result
+        )
 
     def delete_from_list(self, document_id, field, data):
         """Delete item from list in document."""
         return self.db.update_one(
             self.document_query(document_id), {"$pull": {field: data}}
-        ).raw_result
+        )
 
     def update_in_list(self, document_id, field, data, params):
         """Update item in list from document."""
         query = self.document_query(document_id)
         query.update(params)
-        return self.db.update_one(query, {"$set": {field: data}}).raw_result
+        self.db.update_one(query, {"$set": {field: data}})
 
     def upsert(self, query, data):
         """Upsert documents into the database."""

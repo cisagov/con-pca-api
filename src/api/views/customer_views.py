@@ -59,7 +59,8 @@ class CustomerView(MethodView):
                 ),
                 400,
             )
-        return jsonify(customer_manager.delete(document_id=customer_id))
+        customer_manager.delete(document_id=customer_id)
+        return jsonify({"success": True})
 
 
 class SectorIndustryView(MethodView):
