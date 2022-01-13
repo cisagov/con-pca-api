@@ -75,4 +75,6 @@ class SendingProfileView(MethodView):
                 ),
                 400,
             )
-        return jsonify(sending_profile_manager.delete(document_id=sending_profile_id))
+        resp = sending_profile_manager.delete(document_id=sending_profile_id)
+        print(resp)
+        return jsonify(resp)
