@@ -164,7 +164,13 @@ class CustomJSONEncoder(JSONEncoder):
             pass
         else:
             return list(iterable)
-        return JSONEncoder.default(self, obj)
+
+        try:
+            return JSONEncoder.default(self, obj)
+        except Exception as e:
+            logging.error(type(obj))
+            logging.error(obj)
+            raise e
 
 
 app.json_encoder = CustomJSONEncoder
@@ -180,7 +186,6 @@ def handle_validation_error(e):
 @app.route("/")
 def api_map():
     """List endpoints for api."""
-    logging.info("API is up and running.")
     endpoints = {
         endpoint.rule: endpoint.methods
         for endpoint in app.url_map.__dict__["_rules"]
