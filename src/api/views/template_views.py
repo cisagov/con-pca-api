@@ -137,3 +137,13 @@ class TemplatesSelectView(MethodView):
         """Get."""
         templates = template_manager.all({"retired": False})
         return jsonify(select_templates(templates))
+
+
+class TemplateDuplicateView(MethodView):
+    """Duplicate an existing Template."""
+
+    def get(self, template_id):
+        """Get."""
+        template_data = template_manager.get(document_id=template_id)
+        template_data["name"] = f"{template_data['name']} COPY"
+        return jsonify(template_manager.save(template_data))
