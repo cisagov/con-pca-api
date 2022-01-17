@@ -806,53 +806,9 @@
       {% if loop.index == 1 %}
       <p class="page-header">6. Phishing Templates for this Cycle</p>
       {% endif %}
-
-      <table class="template-table" style="margin-left: 0">
-        <thead>
-          <tr>
-            <th colspan="2" style="text-align: center">
-              Template #{{ loop.index }} - {{ template.template.name }}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Deception Level</td>
-            <td>
-              {{ template.template.deception_score }} ({{
-              template.deception_level | title }})
-            </td>
-          </tr>
-          <tr>
-            <td>Total Sent</td>
-            <td>{{ template.sent.count }}</td>
-          </tr>
-          <tr>
-            <td>Unique Clicks</td>
-            <td>{{ template.clicked.count }}</td>
-          </tr>
-          <tr>
-            <td>Click Rate</td>
-            <td>{{ percent(template.clicked.ratio) }}%</td>
-          </tr>
-          <tr>
-            <td>Previous Cycle Click Rate for Level</td>
-            <td>
-              {% if previous_cycles %} {{
-              percent(previous_cycles[0]["stats"]["stats"][template.deception_level]["clicked"]["ratio"])
-              }}% {% else %} N/A {% endif %}
-            </td>
-          </tr>
-          <tr>
-            <td>CISA average click rate for level</td>
-            <td>TBD</td>
-          </tr>
-          <tr>
-            <td>CISA average report rate for level</td>
-            <td>TBD</td>
-          </tr>
-        </tbody>
-      </table>
+      <div>
+        <b>Template #{{ loop.index }} - {{ template.template.name }}</b>
+      </div>
       <div class="template-body">
         <b>Subject:</b>
         {{ preview_template(template.template.subject, customer) }}<br />
@@ -860,25 +816,64 @@
         {{ preview_from_address(template.template, subscription, customer) }}<br /><br />
         <div class="template-html">{{ template.template.html | safe }}</div>
       </div>
-      {% if recommendations and template.template.red_flag %}
-      <p>The following are the <b>Red Flag</b> indicators for the template.</p>
-      <ul>
-        {% for rec in recommendations %}{% if rec._id in
-        template.template.red_flag %}
-        <li>{{ rec.title }}</li>
-        {% endif %}{% endfor %}{% endif %}
-      </ul>
-      {% if recommendations and template.template.sophisticated %}
-      <p>
-        The following are the <b>Sophisticated Techniques</b> used by the
-        template.
-      </p>
-      <ul>
-        {% for rec in recommendations %}{% if rec._id in
-        template.template.sophisticated %}
-        <li>{{ rec.title }}</li>
-        {% endif %}{% endfor %}{% endif %}
-      </ul>
+
+      {% if recommendations %} {% if template.template.red_flag %}
+      <div>
+        <b>Red Flag Indicators: </b>
+        {{ recommendations | selectattr("_id", "in", template.template.red_flag)
+        | map(attribute="title") | join(", ")}}
+      </div>
+      {% endif %} {% if template.template.sophisticated %}
+      <div>
+        <b>Sophisticated Techniques: </b>
+        {{ recommendations | selectattr("_id", "in",
+        template.template.sophisticated) | map(attribute="title") | join(', ')
+        }}
+      </div>
+      {% endif %} {% endif %}
+      <div style="margin-top: 0.1875in">
+        <div class="d-flex flex-row">
+          <div class="template-stats-label"><b>Deception Level:</b></div>
+          <div>
+            {{ template.template.deception_score }} ({{ template.deception_level
+            | title }})
+          </div>
+        </div>
+        <div class="d-flex flex-row">
+          <div class="template-stats-label"><b>Total Sent:</b></div>
+          <div>{{ template.sent.count }}</div>
+        </div>
+        <div class="d-flex flex-row">
+          <div class="template-stats-label"><b>Unique Clicks:</b></div>
+          <div>{{ template.clicked.count }}</div>
+        </div>
+        <div class="d-flex flex-row">
+          <div class="template-stats-label"><b>Click Rate:</b></div>
+          <div>{{ percent(template.clicked.ratio) }}%</div>
+        </div>
+        <div class="d-flex flex-row">
+          <div class="template-stats-label">
+            <b>Previous Cycle Click Rate for Level:</b>
+          </div>
+          <div>
+            {% if previous_cycles %} {{
+            percent(previous_cycles[0]["stats"]["stats"][template.deception_level]["clicked"]["ratio"])
+            }}% {% else %} N/A {% endif %}
+          </div>
+        </div>
+        <div class="d-flex flex-row">
+          <div class="template-stats-label">
+            <b>CISA average click rate for level:</b>
+          </div>
+          <div>TBD</div>
+        </div>
+        <div class="d-flex flex-row">
+          <div class="template-stats-label">
+            <b>CISA average report rate for level:</b>
+          </div>
+          <div>TBD</div>
+        </div>
+      </div>
       <p class="page-number">
         Page | {{ 7 + loop.index }} of {{ total_pages }}
       </p>

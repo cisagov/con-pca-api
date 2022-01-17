@@ -451,48 +451,12 @@ tbody > tr:nth-child(even) {
 }
 
 /* Templates */
-.template-table {
-  width: 100%;
-  margin-bottom: 2em;
-}
-
-.template-table > tbody > tr > td:nth-child(1) {
-  text-align: right;
-  width: 265px;
-}
-
-.template-table > tbody > tr > td:nth-child(1)::after {
-  content: ":";
-}
-
-.template-container {
-  border: 2px solid #dddddd;
-  border-radius: 1rem;
-  margin-bottom: 2rem;
-  display: grid;
-}
-
-.template-stat-header {
-  border-radius: 1rem 1rem 0 0;
-  background-color: #b8cfe0;
-  padding: 1rem;
-}
-
-.template-stat-header > .row {
-  margin-left: 0;
-}
-
-.template-stat-header > .row > .col,
-.template-stat-header > .row > .col-5 {
-  padding: 0.2rem;
-  padding-right: 2rem;
-}
-
 .template-body {
   border: 2px solid #eeeeee;
   border-radius: 1rem 1rem 1rem 1rem;
   padding: 1rem;
   margin-bottom: 0.25in;
+  margin-top: 0.1875in;
 }
 
 .template-html > * {
@@ -504,4 +468,8 @@ tbody > tr:nth-child(even) {
 
 .template-label {
   width: 250px;
+}
+
+.template-stats-label {
+  width: 275px;
 }
