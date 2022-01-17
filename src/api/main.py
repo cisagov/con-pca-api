@@ -50,6 +50,7 @@ from api.views.subscription_views import (
 )
 from api.views.tag_views import TagsView
 from api.views.template_views import (
+    TemplateDuplicateView,
     TemplateImportView,
     TemplatesSelectView,
     TemplatesView,
@@ -104,6 +105,7 @@ rules = [
     ("/templates/import/", TemplateImportView),
     ("/templates/select/", TemplatesSelectView),
     ("/template/<template_id>/", TemplateView),
+    ("/template/<template_id>/duplicate/", TemplateDuplicateView),
     # User Views
     ("/users/", UsersView),
     ("/user/<username>/", UserView),

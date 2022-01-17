@@ -137,3 +137,17 @@ class TemplatesSelectView(MethodView):
         """Get."""
         templates = template_manager.all({"retired": False})
         return jsonify(select_templates(templates))
+
+
+class TemplateDuplicateView(MethodView):
+    """Duplicate an existing Template."""
+
+    def get(self, template_id):
+        """Get."""
+        template = template_manager.get(document_id=template_id)
+        template["name"] = f"{template['name']} COPY"
+
+        if template_manager.exists({"name": template["name"]}):
+            return f"'{template['name']}' already exists", 400
+
+        return jsonify(template_manager.save(template))
