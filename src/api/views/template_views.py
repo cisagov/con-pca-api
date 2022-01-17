@@ -144,16 +144,10 @@ class TemplateDuplicateView(MethodView):
 
     def get(self, template_id):
         """Get."""
-        templates = template_manager.all()
+        template = template_manager.get(document_id=template_id)
+        template["name"] = f"{template['name']} COPY"
 
-        template_data = [
-            template for template in templates if template["_id"] == template_id
-        ][0]
-        template_name = f"{template_data['name']} COPY"
+        if template_manager.exists({"name": template["name"]}):
+            return f"'{template['name']}' already exists", 400
 
-        if template_name in [template["name"] for template in templates]:
-            return f"'{template_name}' already exists", 400
-
-        template_data["name"] = template_name
-
-        return jsonify(template_manager.save(template_data))
+        return jsonify(template_manager.save(template))
