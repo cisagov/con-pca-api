@@ -63,6 +63,9 @@ class CycleManualReportsView(MethodView):
         """Update manual reports."""
         cycle_manager.update(
             document_id=cycle_id,
-            data={"manual_reports": request.json["manual_reports"]},
+            data={
+                "manual_reports": request.json["manual_reports"],
+                "dirty_stats": True,
+            },
         )
         return jsonify({"success": True})

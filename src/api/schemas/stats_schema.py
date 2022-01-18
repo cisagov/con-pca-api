@@ -25,6 +25,7 @@ class CycleStatsEventsSchema(Schema):
     sent = fields.Nested(CycleStatsEventMetricsSchema)
     opened = fields.Nested(CycleStatsEventMetricsSchema)
     clicked = fields.Nested(CycleStatsEventMetricsSchema)
+    reported = fields.Nested(CycleStatsEventMetricsSchema)
 
 
 class CycleStatsLevelSchema(Schema):
