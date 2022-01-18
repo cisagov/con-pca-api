@@ -8,6 +8,13 @@ from api.schemas.fields import DateTimeField
 from api.schemas.stats_schema import CycleStatsSchema
 
 
+class CycleManualReportsSchema(BaseSchema):
+    """CycleReportsSchema."""
+
+    email = fields.Str()
+    report_date = DateTimeField()
+
+
 class CycleSchema(BaseSchema):
     """CycleSchema."""
 
@@ -22,3 +29,4 @@ class CycleSchema(BaseSchema):
     stats = fields.Nested(CycleStatsSchema)
     nonhuman_stats = fields.Nested(CycleStatsSchema)
     phish_header = fields.Str()
+    manual_reports = fields.List(fields.Nested(CycleManualReportsSchema))

@@ -29,7 +29,12 @@ from api.views.auth_views import (
 )
 from api.views.config_views import ConfigView
 from api.views.customer_views import CustomersView, CustomerView, SectorIndustryView
-from api.views.cycle_views import CycleStatsView, CyclesView, CycleView
+from api.views.cycle_views import (
+    CycleManualReportsView,
+    CycleStatsView,
+    CyclesView,
+    CycleView,
+)
 from api.views.landing_page_views import LandingPagesView, LandingPageView
 from api.views.nonhuman_views import NonHumansView
 from api.views.recommendation_views import RecommendationsView, RecommendationView
@@ -72,6 +77,7 @@ rules = [
     # Cycle Views
     ("/cycles/", CyclesView),
     ("/cycle/<cycle_id>/", CycleView),
+    ("/cycle/<cycle_id>/manual_reports/", CycleManualReportsView),
     ("/cycle/<cycle_id>/stats/", CycleStatsView),
     ("/cycle/<cycle_id>/reports/<report_type>/", ReportHtmlView),
     ("/cycle/<cycle_id>/reports/<report_type>/pdf/", ReportPdfView),

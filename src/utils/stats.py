@@ -46,21 +46,25 @@ def generate_cycle_stats(cycle, targets, nonhuman=False):
             "sent": {"count": 0},
             "opened": {"count": 0, "diffs": []},
             "clicked": {"count": 0, "diffs": []},
+            "reported": {"count": 0, "diffs": []},
         },
         "moderate": {
             "sent": {"count": 0},
             "opened": {"count": 0, "diffs": []},
             "clicked": {"count": 0, "diffs": []},
+            "reported": {"count": 0, "diffs": []},
         },
         "low": {
             "sent": {"count": 0},
             "opened": {"count": 0, "diffs": []},
             "clicked": {"count": 0, "diffs": []},
+            "reported": {"count": 0, "diffs": []},
         },
         "all": {
             "sent": {"count": 0},
             "opened": {"count": 0, "diffs": []},
             "clicked": {"count": 0, "diffs": []},
+            "reported": {"count": 0, "diffs": []},
         },
     }
     template_stats = {}
@@ -71,6 +75,7 @@ def generate_cycle_stats(cycle, targets, nonhuman=False):
                 "sent": {"count": 0},
                 "opened": {"count": 0},
                 "clicked": {"count": 0},
+                "reported": {"count": 0},
                 "template_id": target["template_id"],
                 "template": template_manager.get(
                     document_id=target["template_id"],
@@ -100,6 +105,9 @@ def generate_cycle_stats(cycle, targets, nonhuman=False):
         sent_time = target.get("send_date")
         opened = get_event(timeline, "opened")
         clicked = get_event(timeline, "clicked")
+        reported, reported_time = get_reported_event(
+            target["email"], cycle.get("manual_reports", [])
+        )
 
         if clicked and not opened:
             opened = clicked
@@ -122,6 +130,14 @@ def generate_cycle_stats(cycle, targets, nonhuman=False):
             stats["all"]["clicked"]["diffs"].append(diff)
             stats[target["deception_level"]]["clicked"]["diffs"].append(diff)
             template_stats[target["template_id"]]["clicked"]["count"] += 1
+        if reported:
+            stats["all"]["reported"]["count"] += 1
+            stats[target["deception_level"]]["reported"]["count"] += 1
+            if reported_time:
+                diff = reported_time - sent_time
+                stats["all"]["reported"]["diffs"].append(diff)
+            stats[target["deception_level"]]["reported"]["diffs"].append(diff)
+            template_stats[target["template_id"]]["reported"]["count"] += 1
 
     process_time_stats(stats)
     process_ratios(stats)
@@ -149,7 +165,7 @@ def generate_cycle_stats(cycle, targets, nonhuman=False):
 def rank_templates(template_stats: dict):
     """Rank templates by opened and clicked counts."""
     stats = list(template_stats.values())
-    for event in ["opened", "clicked"]:
+    for event in ["opened", "clicked", "reported"]:
         stats.sort(reverse=True, key=lambda x: x[event]["ratio"])
         rank = 1
         for index, stat in enumerate(stats):
@@ -165,7 +181,7 @@ def process_ratios(stats: dict):
     """Get event to sent ratios."""
     for v in stats.values():
         sent = v["sent"]["count"]
-        for event in ["opened", "clicked"]:
+        for event in ["opened", "clicked", "reported"]:
             v[event]["ratio"] = get_ratio(v[event]["count"], sent)
 
 
@@ -179,7 +195,7 @@ def get_ratio(numerator, denominator):
 def process_time_stats(stats: dict):
     """Process timedetla stats."""
     for key in stats.keys():
-        for event in ["opened", "clicked"]:
+        for event in ["opened", "clicked", "reported"]:
             count = stats[key][event]["count"]
             diffs = stats[key][event]["diffs"]
             if len(diffs) > 0:
@@ -198,9 +214,13 @@ def process_time_stats(stats: dict):
 
 def get_time_stats(stats):
     """Get time stats."""
-    time_stats = {"opened": {}, "clicked": {}}
+    time_stats = {
+        "opened": {},
+        "clicked": {},
+        "reported": {},
+    }
 
-    for event in ["opened", "clicked"]:
+    for event in ["opened", "clicked", "reported"]:
         times = {
             "one_minutes": 1,
             "three_minutes": 3,
@@ -225,6 +245,14 @@ def get_time_stats(stats):
             }
 
     return time_stats
+
+
+def get_reported_event(email, manual_reports):
+    """Get reported event."""
+    for r in manual_reports:
+        if email == r["email"]:
+            return True, r.get("report_date")
+    return False, None
 
 
 def get_event(timeline, event):
@@ -313,6 +341,9 @@ def get_stats_from_indicator(group, indicator, value, label, template_stats):
         "clicked": {
             "count": 0,
         },
+        "reported": {
+            "count": 0,
+        },
     }
     for ts in template_stats:
         template = ts["template"]
@@ -320,6 +351,7 @@ def get_stats_from_indicator(group, indicator, value, label, template_stats):
             response["sent"]["count"] += ts["sent"]["count"]
             response["opened"]["count"] += ts["opened"]["count"]
             response["clicked"]["count"] += ts["clicked"]["count"]
+            response["reported"]["count"] += ts["reported"]["count"]
     process_ratios({"stats": response})
     return response
 
@@ -356,11 +388,13 @@ def get_recommendation_stats(template_stats):
             "sent": {"count": 0},
             "opened": {"count": 0},
             "clicked": {"count": 0},
+            "reported": {"count": 0},
         }
         for t in ts:
             stats["sent"]["count"] += t["sent"]["count"]
             stats["opened"]["count"] += t["opened"]["count"]
             stats["clicked"]["count"] += t["clicked"]["count"]
+            stats["reported"]["count"] += t["reported"]["count"]
         process_ratios({"stats": stats})
         recommendation_stats.append(stats)
     return recommendation_stats

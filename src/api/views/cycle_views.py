@@ -29,6 +29,7 @@ class CyclesView(MethodView):
                     "active",
                     "target_count",
                     "phish_header",
+                    "manual_reports",
                 ],
             )
         )
@@ -53,3 +54,18 @@ class CycleStatsView(MethodView):
         cycle = cycle_manager.get(document_id=cycle_id)
         get_cycle_stats(cycle)
         return jsonify(cycle["nonhuman_stats"] if nonhuman else cycle["stats"])
+
+
+class CycleManualReportsView(MethodView):
+    """CycleReportsView."""
+
+    def post(self, cycle_id):
+        """Update manual reports."""
+        cycle_manager.update(
+            document_id=cycle_id,
+            data={
+                "manual_reports": request.json["manual_reports"],
+                "dirty_stats": True,
+            },
+        )
+        return jsonify({"success": True})
