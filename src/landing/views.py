@@ -1,6 +1,6 @@
 """Landing application views."""
 # Third-Party Libraries
-from flask import send_file
+from flask import redirect, send_file
 from flask.templating import render_template_string
 from flask.views import MethodView
 
@@ -45,8 +45,6 @@ class ClickView(MethodView):
         if not cycle or not target:
             return render_template_string("404 Not Found"), 404
 
-        landing_page = get_landing_page(target["template_id"])
-
         click_events = list(
             filter(lambda x: x["message"] == "clicked", target.get("timeline", []))
         )
@@ -58,10 +56,17 @@ class ClickView(MethodView):
             )
             cycle_manager.update(document_id=cycle["_id"], data={"dirty_stats": True})
 
+        # If a landing page url exists for the subscription, redirect to it after click has been tracked
         subscription = subscription_manager.get(
-            document_id=cycle["subscription_id"], fields=["customer_id"]
+            document_id=cycle["subscription_id"],
+            fields=["customer_id", "landing_page_url"],
         )
+
+        if subscription.get("landing_page_url"):
+            return redirect(subscription["landing_page_url"], 302)
+
         customer = customer_manager.get(document_id=subscription["customer_id"])
+        landing_page = get_landing_page(target["template_id"])
 
         context = get_email_context(target=target, customer=customer)
         return render_template_string(landing_page["html"], **context)
