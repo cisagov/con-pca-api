@@ -102,3 +102,4 @@ class SubscriptionSchema(BaseSchema):
     phish_header = fields.Str()
     reporting_password = fields.Str()
     test_results = fields.List(fields.Nested(SubscriptionTestSchema))
+    landing_page_url = fields.Str()

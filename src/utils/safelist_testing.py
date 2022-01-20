@@ -5,6 +5,7 @@ import logging
 from uuid import uuid4
 
 # Third-Party Libraries
+from flask import redirect
 from flask.templating import render_template_string
 
 # cisagov Libraries
@@ -168,7 +169,8 @@ def process_contact(
 def process_click_test(subscription_id, contact_id):
     """Process a click from the landing page."""
     subscription = subscription_manager.get(
-        document_id=subscription_id, fields=["test_results", "customer_id"]
+        document_id=subscription_id,
+        fields=["test_results", "customer_id", "landing_page_url"],
     )
     contact = next(
         filter(lambda x: x["test_uuid"] == contact_id, subscription["test_results"])
@@ -184,6 +186,10 @@ def process_click_test(subscription_id, contact_id):
         data=contact,
         params={"test_results.test_uuid": contact_id},
     )
+
+    # If a landing page url exists for the subscription, redirect to it after click has been tracked
+    if subscription.get("landing_page_url"):
+        return redirect(subscription["landing_page_url"], 302)
 
     # Get landing page
     landing_page = get_landing_page(contact["template"]["_id"])
