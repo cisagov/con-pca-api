@@ -466,6 +466,13 @@ tbody > tr:nth-child(even) {
   padding: 0;
 }
 
+.template-html .page {
+  width: 100%;
+  height: 100%;
+  page-break-after: auto;
+  padding: 0;
+}
+
 .template-label {
   width: 250px;
 }
