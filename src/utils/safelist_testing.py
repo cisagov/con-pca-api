@@ -27,7 +27,7 @@ subscription_manager = SubscriptionManager()
 template_manager = TemplateManager()
 
 
-def test_subscription(subscription_id):
+def test_subscription(subscription_id, contacts):
     """Test a subscription for safelisting."""
     # Get subscription for sending profile, customer and templates
     subscription = subscription_manager.get(
@@ -41,11 +41,8 @@ def test_subscription(subscription_id):
         ],
     )
 
-    # Get customer for contacts to send to
-    customer = customer_manager.get(
-        document_id=subscription["customer_id"],
-        fields=["contact_list"],
-    )
+    # Get subscription customer for emails
+    customer = customer_manager.get(document_id=subscription["customer_id"])
 
     # Get templates for subscription
     templates = template_manager.all(
@@ -85,7 +82,7 @@ def test_subscription(subscription_id):
             add_phish_headers(subscription, template_sp)
             template_email = Email(sending_profile=template_sp)
 
-        for contact in customer["contact_list"]:
+        for contact in contacts:
             print(f"Sending {contact['email']} template {template['name']}")
             test_uuid = str(uuid4())
             contact["test_uuid"] = test_uuid

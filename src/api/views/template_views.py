@@ -70,6 +70,9 @@ class TemplateView(MethodView):
         template = template_manager.get(document_id=template_id)
         template.update(data)
         template_manager.update(document_id=template_id, data=template)
+        cycle_manager.update_many(
+            params={"template_ids": template_id}, data={"dirty_stats": True}
+        )
         return jsonify({"success": True})
 
     def delete(self, template_id):
