@@ -74,8 +74,7 @@ def process_subscription(subscription):
         logging.info(f"Executed task {task}")
 
     subscription_manager.update(
-        document_id=subscription["_id"],
-        data={"processing": False},
+        document_id=subscription["_id"], data={"processing": False}, update=False
     )
 
 

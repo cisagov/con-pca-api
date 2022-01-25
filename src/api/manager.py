@@ -164,10 +164,11 @@ class Manager:
             "Either a document id or params must be supplied when deleting."
         )
 
-    def update(self, document_id, data):
+    def update(self, document_id, data, update=True):
         """Update item by id."""
         data = self.clean_data(data)
-        data = self.add_updated(data)
+        if update:
+            data = self.add_updated(data)
         self.db.update_one(
             self.document_query(document_id),
             {"$set": self.load_data(data, partial=True)},
