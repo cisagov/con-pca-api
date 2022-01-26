@@ -27,6 +27,7 @@ repos:
       - id: pretty-format-json
         args:
           - --autofix
+        exclude: src/package-lock.json
       - id: requirements-txt-fixer
       - id: trailing-whitespace
 
