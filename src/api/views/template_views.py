@@ -1,4 +1,7 @@
 """Template Views."""
+# Standard Python Libraries
+import re
+
 # Third-Party Libraries
 from flask import jsonify, request
 from flask.views import MethodView
@@ -32,7 +35,14 @@ class TemplatesView(MethodView):
     def post(self):
         """Post."""
         data = request.json
-        if template_manager.exists({"name": data["name"]}):
+        if template_manager.exists(
+            {
+                "name": {
+                    "$regex": f"^{re.escape(data['name']).strip()}$",
+                    "$options": "i",
+                }
+            }
+        ):
             return jsonify({"error": "Template with that name already exists."}), 400
 
         return jsonify(template_manager.save(data))
