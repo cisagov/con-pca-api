@@ -27,6 +27,13 @@ class SendingProfilesView(MethodView):
 
     def post(self):
         """Post."""
+        data = request.json
+
+        if sending_profile_manager.exists(
+            {"name": {"$regex": f"^{data['name']}", "$options": "i"}}
+        ):
+            return jsonify({"error": "Sending profile exists with that name."})
+
         return jsonify(sending_profile_manager.save(request.json))
 
 
