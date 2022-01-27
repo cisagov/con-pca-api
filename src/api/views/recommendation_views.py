@@ -1,4 +1,7 @@
 """Recommendation Views."""
+# Standard Python Libraries
+import re
+
 # Third-Party Libraries
 from flask import jsonify, request
 from flask.views import MethodView
@@ -21,7 +24,13 @@ class RecommendationsView(MethodView):
         """Create a new recommendation."""
         data = request.json
         if recommendation_manager.exists(
-            {"title": data["title"], "description": data["description"]}
+            {
+                "title": {
+                    "$regex": f"^{re.escape(data['title'].strip())}$",
+                    "$options": "i",
+                },
+                "type": data["type"],
+            }
         ):
             return (
                 jsonify({"error": "Recommendation with that name already exists."}),
