@@ -29,6 +29,8 @@ RUN tar -xzf geoipupdate_4.6.0_linux_amd64.tar.gz
 RUN cp geoipupdate_4.6.0_linux_amd64/geoipupdate /usr/local/bin
 COPY etc/GeoIP.conf /usr/local/etc/GeoIP.conf
 
+RUN chmod a+x /var/www/msoffice-crypt.exe
+
 # Entrypoint
 COPY ./etc/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod a+x /usr/local/bin/entrypoint.sh
