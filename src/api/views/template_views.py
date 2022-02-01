@@ -8,7 +8,7 @@ from flask.views import MethodView
 
 # cisagov Libraries
 from api.manager import CycleManager, SubscriptionManager, TemplateManager
-from utils.emails import convert_html_links, get_text_from_html
+from utils.emails import parse_email
 from utils.templates import select_templates
 
 template_manager = TemplateManager()
@@ -135,12 +135,10 @@ class TemplateImportView(MethodView):
     def post(self):
         """Post."""
         # TODO: Support email files
-        #   Return subject of email
-        html = request.json["content"]
+        payload = request.json["content"]
         # TODO: Convert html links only if specified.
-        html = convert_html_links(html)
-        text = get_text_from_html(html)
-        return jsonify({"text": text, "html": html})
+        subject, html, text = parse_email(payload)
+        return jsonify({"subject": subject, "html": html, "text": text})
 
 
 class TemplatesSelectView(MethodView):

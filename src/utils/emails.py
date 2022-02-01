@@ -1,15 +1,16 @@
 """Email utils."""
 # Standard Python Libraries
 from datetime import datetime
+import email
 from email.charset import QP, Charset
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import logging
+import re
 from smtplib import SMTP
 
 # Third-Party Libraries
-from bs4 import BeautifulSoup
 import requests  # type: ignore
 from requests.exceptions import HTTPError  # type: ignore
 
@@ -94,13 +95,14 @@ class Email:
         attachments=[],
     ):
         """Send email via mailgun."""
+        _, html, text = parse_email(body)
         data = {
             "from": from_email,
             "to": to_recipients,
             "bcc": bcc_recipients,
             "subject": subject,
-            "html": body,
-            "text": get_text_from_html(body),
+            "html": html,
+            "text": text,
         }
         for header in self.sending_profile.get("headers", []):
             data[f"h:{header['key']}"] = header["value"]
@@ -213,7 +215,7 @@ def build_message(
     if bcc_recipients:
         message["Bcc"] = ",".join(bcc_recipients)
 
-    text = get_text_from_html(html)
+    _, _, text = parse_email(html)
     plain_text = MIMEText(text, "plain", cs)
     message.attach(plain_text)
 
@@ -232,40 +234,22 @@ def build_message(
     return message.as_string()
 
 
-def get_text_from_html(html):
+def parse_email(html):
     """Convert html to text for email."""
-    soup = BeautifulSoup(html, "html.parser")
+    message = email.message_from_string(html.strip())
 
-    for line_break in soup.find_all("br"):
-        line_break.replace_with("\n")
+    text_html = None
+    text_plain = None
 
-    text = soup.find_all(text=True)
-    output = ""
-    blacklist = [
-        "[document]",
-        "noscript",
-        "header",
-        "html",
-        "meta",
-        "head",
-        "input",
-        "script",
-    ]
-    for t in text:
-        if t.parent.name == "a":
-            href = t.parent.get("href")
-            output += f"{t} ({href}) "
-        elif t == "\n":
-            output += f"{t}"
-        elif t.parent.name not in blacklist:
-            output += f"{t} "
+    for part in message.walk():
+        if part.get_content_type() == "text/plain" and text_plain is None:
+            text_plain = part.get_payload()
+        if part.get_content_type() == "text/html" and text_html is None:
+            text_html = part.get_payload()
 
-    return output.strip()
+    subject = message.get("Subject")
 
+    text_html = re.sub(r'"https?:///?\S+"', "{{url}}", text_html, flags=re.MULTILINE)
+    text_plain = re.sub(r"https?:///?\S+", "{{url}}", text_plain, flags=re.MULTILINE)
 
-def convert_html_links(html):
-    """Convert all html links to url tag."""
-    soup = BeautifulSoup(html, "html.parser")
-    for link in soup.find_all("a"):
-        link["href"] = "{{ url }}"
-    return soup.prettify()
+    return subject, text_html, text_plain

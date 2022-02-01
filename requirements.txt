@@ -1,5 +1,4 @@
 APScheduler==3.8.1
-beautifulsoup4==4.10.0
 boto3==1.20.46
 cognitojwt==1.4.1
 Faker==11.3.0
