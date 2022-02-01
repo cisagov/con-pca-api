@@ -234,7 +234,7 @@ def build_message(
     return message.as_string()
 
 
-def parse_email(html):
+def parse_email(html, convert_links=True):
     """Convert html to text for email."""
     message = email.message_from_string(html.strip())
 
@@ -250,7 +250,12 @@ def parse_email(html):
     subject = message.get("Subject")
 
     # Convert html links
-    text_html = re.sub(r'"https?:///?\S+"', "{{url}}", text_html, flags=re.MULTILINE)
-    text_plain = re.sub(r"https?:///?\S+", "{{url}}", text_plain, flags=re.MULTILINE)
+    if convert_links:
+        text_html = re.sub(
+            r'"https?:///?\S+"', "{{url}}", text_html, flags=re.MULTILINE
+        )
+        text_plain = re.sub(
+            r"https?:///?\S+", "{{url}}", text_plain, flags=re.MULTILINE
+        )
 
     return subject, text_html, text_plain
