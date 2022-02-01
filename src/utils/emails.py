@@ -234,9 +234,9 @@ def build_message(
     return message.as_string()
 
 
-def parse_email(html, convert_links=True):
+def parse_email(payload, convert_links=False):
     """Convert html to text for email."""
-    message = email.message_from_string(html.strip())
+    message = email.message_from_string(payload.strip())
 
     text_html = None
     text_plain = None

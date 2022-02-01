@@ -136,8 +136,8 @@ class TemplateImportView(MethodView):
         """Post."""
         # TODO: Support email files
         payload = request.json["content"]
-        # TODO: Convert html links only if specified.
-        subject, html, text = parse_email(payload)
+        convert_links = request.json["convert_link"]
+        subject, html, text = parse_email(payload, convert_links)
         return jsonify({"subject": subject, "html": html, "text": text})
 
 
