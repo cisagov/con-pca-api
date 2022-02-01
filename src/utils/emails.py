@@ -249,6 +249,7 @@ def parse_email(html):
 
     subject = message.get("Subject")
 
+    # Convert html links
     text_html = re.sub(r'"https?:///?\S+"', "{{url}}", text_html, flags=re.MULTILINE)
     text_plain = re.sub(r"https?:///?\S+", "{{url}}", text_plain, flags=re.MULTILINE)
 
