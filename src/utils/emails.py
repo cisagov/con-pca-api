@@ -1,11 +1,13 @@
 """Email utils."""
 # Standard Python Libraries
 from datetime import datetime
+import email
 from email.charset import QP, Charset
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import logging
+import re
 from smtplib import SMTP
 
 # Third-Party Libraries
@@ -88,7 +90,7 @@ class Email:
         self,
         from_email,
         subject,
-        body,
+        html,
         to_recipients=[],
         bcc_recipients=[],
         attachments=[],
@@ -99,8 +101,8 @@ class Email:
             "to": to_recipients,
             "bcc": bcc_recipients,
             "subject": subject,
-            "html": body,
-            "text": get_text_from_html(body),
+            "html": html,
+            "text": get_text_from_html(html),
         }
         for header in self.sending_profile.get("headers", []):
             data[f"h:{header['key']}"] = header["value"]
@@ -232,6 +234,33 @@ def build_message(
     return message.as_string()
 
 
+def parse_email(payload, convert_links=False):
+    """Convert html to text for email."""
+    message = email.message_from_string(payload.strip())
+
+    text_html = None
+    text_plain = None
+
+    for part in message.walk():
+        if part.get_content_type() == "text/plain" and text_plain is None:
+            text_plain = part.get_payload()
+        if part.get_content_type() == "text/html" and text_html is None:
+            text_html = part.get_payload()
+
+    subject = message.get("Subject")
+
+    # Convert html links
+    if convert_links:
+        text_html = re.sub(
+            r'"https?:///?\S+"', "{{url}}", text_html, flags=re.MULTILINE
+        )
+        text_plain = re.sub(
+            r"https?:///?\S+", "{{url}}", text_plain, flags=re.MULTILINE
+        )
+
+    return subject, text_html, text_plain
+
+
 def get_text_from_html(html):
     """Convert html to text for email."""
     soup = BeautifulSoup(html, "html.parser")
@@ -261,11 +290,3 @@ def get_text_from_html(html):
             output += f"{t} "
 
     return output.strip()
-
-
-def convert_html_links(html):
-    """Convert all html links to url tag."""
-    soup = BeautifulSoup(html, "html.parser")
-    for link in soup.find_all("a"):
-        link["href"] = "{{ url }}"
-    return soup.prettify()
