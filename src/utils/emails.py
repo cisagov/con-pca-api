@@ -11,6 +11,7 @@ import re
 from smtplib import SMTP
 
 # Third-Party Libraries
+from bs4 import BeautifulSoup
 import requests  # type: ignore
 from requests.exceptions import HTTPError  # type: ignore
 
@@ -259,3 +260,34 @@ def parse_email(payload, convert_links=False):
         )
 
     return subject, text_html, text_plain
+
+
+def get_text_from_html(html):
+    """Convert html to text for email."""
+    soup = BeautifulSoup(html, "html.parser")
+
+    for line_break in soup.find_all("br"):
+        line_break.replace_with("\n")
+
+    text = soup.find_all(text=True)
+    output = ""
+    blacklist = [
+        "[document]",
+        "noscript",
+        "header",
+        "html",
+        "meta",
+        "head",
+        "input",
+        "script",
+    ]
+    for t in text:
+        if t.parent.name == "a":
+            href = t.parent.get("href")
+            output += f"{t} ({href}) "
+        elif t == "\n":
+            output += f"{t}"
+        elif t.parent.name not in blacklist:
+            output += f"{t} "
+
+    return output.strip()
