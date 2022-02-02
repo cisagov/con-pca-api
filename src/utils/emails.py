@@ -90,20 +90,19 @@ class Email:
         self,
         from_email,
         subject,
-        body,
+        html,
         to_recipients=[],
         bcc_recipients=[],
         attachments=[],
     ):
         """Send email via mailgun."""
-        _, html, text = parse_email(body)
         data = {
             "from": from_email,
             "to": to_recipients,
             "bcc": bcc_recipients,
             "subject": subject,
             "html": html,
-            "text": text,
+            "text": get_text_from_html(html),
         }
         for header in self.sending_profile.get("headers", []):
             data[f"h:{header['key']}"] = header["value"]
