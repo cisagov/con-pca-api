@@ -215,7 +215,7 @@ def build_message(
     if bcc_recipients:
         message["Bcc"] = ",".join(bcc_recipients)
 
-    _, _, text = parse_email(html)
+    text = get_text_from_html(html)
     plain_text = MIMEText(text, "plain", cs)
     message.attach(plain_text)
 
