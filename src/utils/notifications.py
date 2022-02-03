@@ -35,7 +35,7 @@ class Notification:
             end_date = self.cycle["end_date"]
 
         templates = template_manager.all(
-            params={"template_id": {"$in": self.cycle["template_ids"]}}
+            params={"_id": {"$in": self.cycle["template_ids"]}}
         )
 
         return {
