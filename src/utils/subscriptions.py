@@ -87,7 +87,7 @@ def start_subscription(subscription_id):
     )
     cycle_manager.update(document_id=cycle_id, data=cycle)
     target_manager.save_many(targets)
-    return resp
+    return resp, 200
 
 
 def stop_subscription(subscription_id):

@@ -115,7 +115,8 @@ class SubscriptionLaunchView(MethodView):
 
     def get(self, subscription_id):
         """Launch a subscription."""
-        return jsonify(start_subscription(subscription_id))
+        resp, status_code = start_subscription(subscription_id)
+        return jsonify(resp), status_code
 
     def delete(self, subscription_id):
         """Stop a subscription."""
