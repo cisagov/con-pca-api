@@ -30,13 +30,20 @@ template_manager = TemplateManager()
 def start_subscription(subscription_id):
     """Launch a subscription."""
     subscription = subscription_manager.get(document_id=subscription_id)
+
+    total_targets = len(subscription["target_email_list"])
+
+    if total_targets == 0:
+        return {
+            "error": "Target recipients not specified. Please add target emails."
+        }, 400
+
     cycle = {}
     cycle.update(calculate_cycle_dates(subscription))
     cycle["subscription_id"] = subscription_id
     cycle["phish_header"] = subscription["phish_header"]
     cycle["active"] = True
     targets = []
-    total_targets = len(subscription["target_email_list"])
     cycle["target_count"] = total_targets
     cycle["template_ids"] = set()
     resp = cycle_manager.save(cycle)
@@ -80,7 +87,7 @@ def start_subscription(subscription_id):
     )
     cycle_manager.update(document_id=cycle_id, data=cycle)
     target_manager.save_many(targets)
-    return resp
+    return resp, 200
 
 
 def stop_subscription(subscription_id):

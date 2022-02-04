@@ -99,6 +99,18 @@ class SubscriptionView(MethodView):
 
     def put(self, subscription_id):
         """Put."""
+        if "target_email_list" in request.json:
+            if not request.json["target_email_list"]:
+                subscription = subscription_manager.get(
+                    document_id=subscription_id, fields=["status"]
+                )
+                if subscription["status"] in ["queued", "running"]:
+                    return (
+                        jsonify(
+                            {"error": "Subscription started, target list required."}
+                        ),
+                        400,
+                    )
         subscription_manager.update(document_id=subscription_id, data=request.json)
         return jsonify({"success": True})
 
@@ -115,7 +127,8 @@ class SubscriptionLaunchView(MethodView):
 
     def get(self, subscription_id):
         """Launch a subscription."""
-        return jsonify(start_subscription(subscription_id))
+        resp, status_code = start_subscription(subscription_id)
+        return jsonify(resp), status_code
 
     def delete(self, subscription_id):
         """Stop a subscription."""
