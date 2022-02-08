@@ -20,6 +20,8 @@ class AggregateReportsSchema(Schema):
     status_reports_sent = fields.Integer()
     cycle_reports_sent = fields.Integer()
     yearly_reports_sent = fields.Integer()
+    new_subscriptions = fields.Integer()
+    ongoing_subscriptions = fields.Integer()
     federal_stats = fields.Nested(SectorIndustryReportSchema())
     state_stats = fields.Nested(SectorIndustryReportSchema())
     local_stats = fields.Nested(SectorIndustryReportSchema())
