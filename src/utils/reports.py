@@ -57,6 +57,7 @@ def get_report(cycle_id: str, report_type: str, nonhuman: bool = False):
     previous_cycles = get_previous_cycles(cycle)
     recommendations = recommendation_manager.all()
     get_all_customer_stats()
+    all_stats_by_level = get_all_customer_stats_by_level()
     context = {
         "stats": cycle["nonhuman_stats"] if nonhuman else cycle["stats"],
         "cycle": cycle,
@@ -69,6 +70,7 @@ def get_report(cycle_id: str, report_type: str, nonhuman: bool = False):
         "percent": percent,
         "preview_template": preview_template,
         "preview_from_address": preview_from_address,
+        "stats_by_level": all_stats_by_level,
         "indicators": get_indicators(),
         "datetime": datetime,
         "json": json,
@@ -383,16 +385,35 @@ def get_all_customer_stats_by_level():
     moderate_clicked_avg = 0
     high_clicked_avg = 0
 
+    low_reported_avg = 0
+    moderate_reported_avg = 0
+    high_reported_avg = 0
+
     cycles = cycle_manager.all(fields=["_id", "dirty_stats", "stats"])
     for cycle in cycles:
+        if cycle.get("dirty_stats", True):
+            cycle = cycle_manager.get(cycle["_id"])
+            get_cycle_stats(cycle)
+
+        # Clicked Averages
         low_clicked_avg += cycle["stats"]["stats"]["low"]["clicked"]["average"]
         moderate_clicked_avg = cycle["stats"]["stats"]["moderate"]["clicked"]["average"]
         high_clicked_avg = cycle["stats"]["stats"]["high"]["clicked"]["average"]
+
+        # Reported Averages
+        low_reported_avg += cycle["stats"]["stats"]["low"]["reported"]["average"]
+        moderate_reported_avg = cycle["stats"]["stats"]["moderate"]["reported"][
+            "average"
+        ]
+        high_reported_avg = cycle["stats"]["stats"]["high"]["reported"]["average"]
 
     return {
         "low_clicked_avg": low_clicked_avg,
         "moderate_clicked_avg": moderate_clicked_avg,
         "high_clicked_avg": high_clicked_avg,
+        "low_reported_avg": low_reported_avg,
+        "moderate_reported_avg": moderate_reported_avg,
+        "high_reported_avg": high_reported_avg,
     }
 
 
