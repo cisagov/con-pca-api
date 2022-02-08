@@ -243,9 +243,9 @@ def parse_email(payload, convert_links=False):
 
     for part in message.walk():
         if part.get_content_type() == "text/plain" and text_plain is None:
-            text_plain = part.get_payload()
+            text_plain = part.get_payload(decode=True).decode()
         if part.get_content_type() == "text/html" and text_html is None:
-            text_html = part.get_payload()
+            text_html = part.get_payload(decode=True).decode()
 
     subject = message.get("Subject")
 
