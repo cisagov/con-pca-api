@@ -103,3 +103,4 @@ class CycleStatsSchema(Schema):
     indicator_stats = fields.List(fields.Nested(IndicatorStatsSchema))
     recommendation_stats = fields.List(fields.Nested(RecommendationStatsSchema))
     time_stats = fields.Nested(TimeStatsTypeSchema)
+    all_customer_stats = fields.Nested(CycleStatsLevelSchema)

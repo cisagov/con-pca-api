@@ -867,39 +867,52 @@
           <div class="template-stats-label">
             <b>CISA average click rate for level:</b>
           </div>
-          <div>{{ stats_by_level["low_clicked_avg"] }}</div>
+          <div>
+            {{ percent(all_customer_stats["low"]["clicked"]["average"]) }}%
+          </div>
         </div>
         <div class="d-flex flex-row">
           <div class="template-stats-label">
             <b>CISA average report rate for level:</b>
           </div>
-          <div>{{ stats_by_level["low_reported_avg"] }}</div>
+          <div>
+            {{ percent(all_customer_stats["low"]["reported"]["average"]) }}%
+          </div>
         </div>
         {% elif template.deception_level == "moderate" %}
         <div class="d-flex flex-row">
           <div class="template-stats-label">
             <b>CISA average click rate for level:</b>
           </div>
-          <div>{{ stats_by_level["moderate_clicked_avg"] }}</div>
+          <div>
+            {{ percent(all_customer_stats["moderate"]["clicked"]["average"]) }}%
+          </div>
         </div>
         <div class="d-flex flex-row">
           <div class="template-stats-label">
             <b>CISA average report rate for level:</b>
           </div>
-          <div>{{ stats_by_level["moderate_reported_avg"] }}</div>
+          <div>
+            {{ percent(all_customer_stats["moderate"]["reported"]["average"])
+            }}%
+          </div>
         </div>
         {% elif template.deception_level == "high" %}
         <div class="d-flex flex-row">
           <div class="template-stats-label">
             <b>CISA average click rate for level:</b>
           </div>
-          <div>{{ stats_by_level["high_clicked_avg"] }}</div>
+          <div>
+            {{ percent(all_customer_stats["high"]["clicked"]["average"]) }}%
+          </div>
         </div>
         <div class="d-flex flex-row">
           <div class="template-stats-label">
             <b>CISA average report rate for level:</b>
           </div>
-          <div>{{ stats_by_level["high_reported_avg"] }}</div>
+          <div>
+            {{ percent(all_customer_stats["high"]["reported"]["average"]) }}%
+          </div>
         </div>
         {% endif %}
       </div>

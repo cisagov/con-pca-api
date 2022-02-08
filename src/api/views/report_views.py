@@ -12,12 +12,12 @@ from api.manager import CustomerManager, CycleManager, SubscriptionManager
 from api.schemas.reports_schema import AggregateReportsSchema
 from utils.notifications import Notification
 from utils.reports import (
-    get_all_customer_stats,
     get_report,
     get_report_pdf,
     get_reports_sent,
     get_sector_industry_report,
 )
+from utils.stats import get_all_customer_stats
 
 subscription_manager = SubscriptionManager()
 cycle_manager = CycleManager()
@@ -89,5 +89,5 @@ class AggregateReportView(MethodView):
         }
         context.update(get_reports_sent())
         context.update(get_sector_industry_report())
-        context.update(get_all_customer_stats())
+        context["all_customer_stats"] = get_all_customer_stats()
         return AggregateReportsSchema().dump(context)

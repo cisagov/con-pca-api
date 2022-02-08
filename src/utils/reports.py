@@ -25,7 +25,7 @@ from api.manager import (
 from utils import time
 from utils.emails import get_email_context, get_from_address
 from utils.pdf import append_attachment
-from utils.stats import get_cycle_stats, get_ratio
+from utils.stats import get_all_customer_stats, get_cycle_stats
 from utils.templates import get_indicators
 
 customer_manager = CustomerManager()
@@ -56,8 +56,8 @@ def get_report(cycle_id: str, report_type: str, nonhuman: bool = False):
     get_cycle_stats(cycle)
     previous_cycles = get_previous_cycles(cycle)
     recommendations = recommendation_manager.all()
-    get_all_customer_stats()
-    all_stats_by_level = get_all_customer_stats_by_level()
+    all_customer_stats = get_all_customer_stats()
+
     context = {
         "stats": cycle["nonhuman_stats"] if nonhuman else cycle["stats"],
         "cycle": cycle,
@@ -70,7 +70,7 @@ def get_report(cycle_id: str, report_type: str, nonhuman: bool = False):
         "percent": percent,
         "preview_template": preview_template,
         "preview_from_address": preview_from_address,
-        "stats_by_level": all_stats_by_level,
+        "all_customer_stats": all_customer_stats,
         "indicators": get_indicators(),
         "datetime": datetime,
         "json": json,
@@ -353,92 +353,6 @@ def get_sector_industry_report():
         response[stat]["subscription_count"] += len(subscriptions)
         response[stat]["cycle_count"] += len(cycles)
     return response
-
-
-def get_all_customer_stats():
-    """Get all customer stats."""
-    sent = 0
-    total_clicks = 0
-    averages = []
-    cycles = cycle_manager.all(fields=["_id", "dirty_stats", "stats"])
-    for cycle in cycles:
-        if cycle.get("dirty_stats", True):
-            cycle = cycle_manager.get(cycle["_id"])
-            get_cycle_stats(cycle)
-        sent += cycle["stats"]["stats"]["all"]["sent"]["count"]
-        clicks = cycle["stats"]["stats"]["all"]["clicked"]["count"]
-        avg = cycle["stats"]["stats"]["all"]["clicked"]["average"]
-        total_clicks += clicks
-        averages.extend([avg for _ in range(0, clicks)])
-
-    return {
-        "click_rate_across_all_customers": get_ratio(total_clicks, sent),
-        "average_time_to_click_all_customers": time.convert_seconds(
-            0 if len(averages) == 0 else sum(averages) / len(averages)
-        ),
-    }
-
-
-def get_all_customer_stats_by_level():
-    """Get all customer stats by level."""
-    low_clicked_count = []
-    moderate_clicked_count = []
-    high_clicked_count = []
-
-    low_reported_count = []
-    moderate_reported_count = []
-    high_reported_count = []
-
-    low_clicked_avg = 0
-    moderate_clicked_avg = 0
-    high_clicked_avg = 0
-
-    low_reported_avg = 0
-    moderate_reported_avg = 0
-    high_reported_avg = 0
-
-    cycles = cycle_manager.all(fields=["_id", "dirty_stats", "stats"])
-    for cycle in cycles:
-        if cycle.get("dirty_stats", True):
-            cycle = cycle_manager.get(cycle["_id"])
-            get_cycle_stats(cycle)
-
-        # Clicked Counts
-        low_clicked_count.append(cycle["stats"]["stats"]["low"]["clicked"]["count"])
-        moderate_clicked_count.append(
-            cycle["stats"]["stats"]["moderate"]["clicked"]["count"]
-        )
-        high_clicked_count.append(cycle["stats"]["stats"]["high"]["clicked"]["count"])
-
-        # Reported Counts
-        low_reported_count.append(cycle["stats"]["stats"]["low"]["reported"]["count"])
-        moderate_reported_count.append(
-            cycle["stats"]["stats"]["moderate"]["reported"]["count"]
-        )
-        high_reported_count.append(cycle["stats"]["stats"]["high"]["reported"]["count"])
-
-    # Clicked Averages
-    low_clicked_avg = int(sum(low_clicked_count) / len(low_clicked_count))
-    moderate_clicked_avg = int(
-        sum(moderate_clicked_count) / len(moderate_clicked_count)
-    )
-    high_clicked_avg = int(sum(high_clicked_count) / len(high_clicked_count))
-
-    # Reported Averages
-    low_reported_avg = int(sum(low_reported_count) / len(low_reported_count))
-    moderate_reported_avg = int(
-        sum(moderate_reported_count) / len(moderate_reported_count)
-    )
-    high_reported_avg = int(sum(high_reported_count) / len(high_reported_count))
-
-    return {
-        "low_clicked_avg": low_clicked_avg,
-        "moderate_clicked_avg": moderate_clicked_avg,
-        "high_clicked_avg": high_clicked_avg,
-        "low_reported_avg": low_reported_avg,
-        "moderate_reported_avg": moderate_reported_avg,
-        "high_reported_avg": high_reported_avg,
-    }
 
 
 def get_previous_cycles(current_cycle):
