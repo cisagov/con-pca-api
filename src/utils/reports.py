@@ -56,7 +56,7 @@ def get_report(cycle_id: str, report_type: str, nonhuman: bool = False):
     get_cycle_stats(cycle)
     previous_cycles = get_previous_cycles(cycle)
     recommendations = recommendation_manager.all()
-
+    get_all_customer_stats()
     context = {
         "stats": cycle["nonhuman_stats"] if nonhuman else cycle["stats"],
         "cycle": cycle,
@@ -374,6 +374,25 @@ def get_all_customer_stats():
         "average_time_to_click_all_customers": time.convert_seconds(
             0 if len(averages) == 0 else sum(averages) / len(averages)
         ),
+    }
+
+
+def get_all_customer_stats_by_level():
+    """Get all customer stats by level."""
+    low_clicked_avg = 0
+    moderate_clicked_avg = 0
+    high_clicked_avg = 0
+
+    cycles = cycle_manager.all(fields=["_id", "dirty_stats", "stats"])
+    for cycle in cycles:
+        low_clicked_avg += cycle["stats"]["stats"]["low"]["clicked"]["average"]
+        moderate_clicked_avg = cycle["stats"]["stats"]["moderate"]["clicked"]["average"]
+        high_clicked_avg = cycle["stats"]["stats"]["high"]["clicked"]["average"]
+
+    return {
+        "low_clicked_avg": low_clicked_avg,
+        "moderate_clicked_avg": moderate_clicked_avg,
+        "high_clicked_avg": high_clicked_avg,
     }
 
 
