@@ -17,7 +17,7 @@ from utils.reports import (
     get_reports_sent,
     get_sector_industry_report,
 )
-from utils.stats import get_all_customer_stats
+from utils.stats import get_all_customer_stats, get_all_customer_subscriptions
 
 subscription_manager = SubscriptionManager()
 cycle_manager = CycleManager()
@@ -90,4 +90,5 @@ class AggregateReportView(MethodView):
         context.update(get_reports_sent())
         context.update(get_sector_industry_report())
         context["all_customer_stats"] = get_all_customer_stats()
+        context["subscriptions"] = get_all_customer_subscriptions()
         return AggregateReportsSchema().dump(context)

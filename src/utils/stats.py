@@ -9,6 +9,7 @@ from api.manager import (
     CycleManager,
     NonHumanManager,
     RecommendationManager,
+    SubscriptionManager,
     TargetManager,
     TemplateManager,
 )
@@ -19,6 +20,7 @@ template_manager = TemplateManager()
 cycle_manager = CycleManager()
 nonhuman_manager = NonHumanManager()
 recommendation_manager = RecommendationManager()
+subscription_manager = SubscriptionManager()
 target_manager = TargetManager()
 
 
@@ -439,3 +441,18 @@ def get_all_customer_stats():
 
     process_ratios(all_stats)
     return all_stats
+
+
+def get_all_customer_subscriptions():
+    """Get all customer subscriptions stats."""
+    subscriptions = subscription_manager.all(fields=["name", "status"])
+    return {
+        "new": len(
+            [
+                subscription
+                for subscription in subscriptions
+                if subscription["status"] == "created"
+            ]
+        ),
+        "total": len(subscriptions),
+    }
