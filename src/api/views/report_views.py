@@ -90,8 +90,9 @@ class AggregateReportView(MethodView):
         context.update(get_reports_sent())
         context.update(get_sector_industry_report())
 
-        new_subs, ongoing_subs = get_all_customer_subscriptions()
+        new_subs, ongoing_subs, stopped_subs = get_all_customer_subscriptions()
         context["all_customer_stats"] = get_all_customer_stats()
         context["new_subscriptions"] = new_subs
         context["ongoing_subscriptions"] = ongoing_subs
+        context["stopped_subscriptions"] = stopped_subs
         return AggregateReportsSchema().dump(context)

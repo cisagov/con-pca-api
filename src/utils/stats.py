@@ -458,8 +458,15 @@ def get_all_customer_subscriptions():
         [
             subscription
             for subscription in subscriptions
-            if subscription["status"] in ["queued", "running", "stopped"]
+            if subscription["status"] in ["queued", "running"]
+        ]
+    )
+    stopped = len(
+        [
+            subscription
+            for subscription in subscriptions
+            if subscription["status"] == "stopped"
         ]
     )
 
-    return new, ongoing
+    return new, ongoing, stopped
