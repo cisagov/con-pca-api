@@ -7,7 +7,6 @@ from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import logging
-import re
 from smtplib import SMTP
 
 # Third-Party Libraries
@@ -238,27 +237,24 @@ def parse_email(payload, convert_links=False):
     """Convert html to text for email."""
     message = email.message_from_string(payload.strip())
 
-    text_html = None
-    text_plain = None
+    html = None
+    text = None
 
     for part in message.walk():
-        if part.get_content_type() == "text/plain" and text_plain is None:
-            text_plain = part.get_payload()
-        if part.get_content_type() == "text/html" and text_html is None:
-            text_html = part.get_payload()
+        if part.get_content_type() == "text/plain" and text is None:
+            text = part.get_payload(decode=True).decode()
+        if part.get_content_type() == "text/html" and html is None:
+            html = part.get_payload(decode=True).decode()
 
     subject = message.get("Subject")
 
     # Convert html links
-    if convert_links:
-        text_html = re.sub(
-            r'"https?:///?\S+"', "{{url}}", text_html, flags=re.MULTILINE
-        )
-        text_plain = re.sub(
-            r"https?:///?\S+", "{{url}}", text_plain, flags=re.MULTILINE
-        )
+    soup = BeautifulSoup(html, "html.parser")
+    links = soup.find_all("a")
+    for link in links:
+        link["href"] = "{{ url }}"
 
-    return subject, text_html, text_plain
+    return subject, soup.prettify(), text
 
 
 def get_text_from_html(html):
