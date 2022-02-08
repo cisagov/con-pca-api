@@ -458,7 +458,7 @@ def get_all_customer_subscriptions():
         [
             subscription
             for subscription in subscriptions
-            if subscription["status"] in ["queued", "running"]
+            if subscription["status"] in ["queued", "running", "stopped"]
         ]
     )
 
