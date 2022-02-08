@@ -20,6 +20,7 @@
     <script src="{{ url_for('static', filename='js/chartjs-plugin-datalabels.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/cycle.js') }}"></script>
   </head>
+
   <body class="mat-typography">
     <!-- Global Variables Needed -->
     <!-- Set total pages -->
@@ -861,18 +862,59 @@
             }}% {% else %} N/A {% endif %}
           </div>
         </div>
+        {% if template.deception_level == "low" %}
         <div class="d-flex flex-row">
           <div class="template-stats-label">
             <b>CISA average click rate for level:</b>
           </div>
-          <div>TBD</div>
+          <div>
+            {{ percent(all_customer_stats["low"]["clicked"]["average"]) }}%
+          </div>
         </div>
         <div class="d-flex flex-row">
           <div class="template-stats-label">
             <b>CISA average report rate for level:</b>
           </div>
-          <div>TBD</div>
+          <div>
+            {{ percent(all_customer_stats["low"]["reported"]["average"]) }}%
+          </div>
         </div>
+        {% elif template.deception_level == "moderate" %}
+        <div class="d-flex flex-row">
+          <div class="template-stats-label">
+            <b>CISA average click rate for level:</b>
+          </div>
+          <div>
+            {{ percent(all_customer_stats["moderate"]["clicked"]["average"]) }}%
+          </div>
+        </div>
+        <div class="d-flex flex-row">
+          <div class="template-stats-label">
+            <b>CISA average report rate for level:</b>
+          </div>
+          <div>
+            {{ percent(all_customer_stats["moderate"]["reported"]["average"])
+            }}%
+          </div>
+        </div>
+        {% elif template.deception_level == "high" %}
+        <div class="d-flex flex-row">
+          <div class="template-stats-label">
+            <b>CISA average click rate for level:</b>
+          </div>
+          <div>
+            {{ percent(all_customer_stats["high"]["clicked"]["average"]) }}%
+          </div>
+        </div>
+        <div class="d-flex flex-row">
+          <div class="template-stats-label">
+            <b>CISA average report rate for level:</b>
+          </div>
+          <div>
+            {{ percent(all_customer_stats["high"]["reported"]["average"]) }}%
+          </div>
+        </div>
+        {% endif %}
       </div>
       <p class="page-number">
         Page | {{ 7 + loop.index }} of {{ total_pages }}

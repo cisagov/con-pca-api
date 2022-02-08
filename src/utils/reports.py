@@ -25,7 +25,7 @@ from api.manager import (
 from utils import time
 from utils.emails import get_email_context, get_from_address
 from utils.pdf import append_attachment
-from utils.stats import get_cycle_stats, get_ratio
+from utils.stats import get_all_customer_stats, get_cycle_stats
 from utils.templates import get_indicators
 
 customer_manager = CustomerManager()
@@ -56,6 +56,7 @@ def get_report(cycle_id: str, report_type: str, nonhuman: bool = False):
     get_cycle_stats(cycle)
     previous_cycles = get_previous_cycles(cycle)
     recommendations = recommendation_manager.all()
+    all_customer_stats = get_all_customer_stats()
 
     context = {
         "stats": cycle["nonhuman_stats"] if nonhuman else cycle["stats"],
@@ -69,6 +70,7 @@ def get_report(cycle_id: str, report_type: str, nonhuman: bool = False):
         "percent": percent,
         "preview_template": preview_template,
         "preview_from_address": preview_from_address,
+        "all_customer_stats": all_customer_stats,
         "indicators": get_indicators(),
         "datetime": datetime,
         "json": json,
@@ -351,30 +353,6 @@ def get_sector_industry_report():
         response[stat]["subscription_count"] += len(subscriptions)
         response[stat]["cycle_count"] += len(cycles)
     return response
-
-
-def get_all_customer_stats():
-    """Get all customer stats."""
-    sent = 0
-    total_clicks = 0
-    averages = []
-    cycles = cycle_manager.all(fields=["_id", "dirty_stats", "stats"])
-    for cycle in cycles:
-        if cycle.get("dirty_stats", True):
-            cycle = cycle_manager.get(cycle["_id"])
-            get_cycle_stats(cycle)
-        sent += cycle["stats"]["stats"]["all"]["sent"]["count"]
-        clicks = cycle["stats"]["stats"]["all"]["clicked"]["count"]
-        avg = cycle["stats"]["stats"]["all"]["clicked"]["average"]
-        total_clicks += clicks
-        averages.extend([avg for _ in range(0, clicks)])
-
-    return {
-        "click_rate_across_all_customers": get_ratio(total_clicks, sent),
-        "average_time_to_click_all_customers": time.convert_seconds(
-            0 if len(averages) == 0 else sum(averages) / len(averages)
-        ),
-    }
 
 
 def get_previous_cycles(current_cycle):

@@ -2,6 +2,9 @@
 # Third-Party Libraries
 from marshmallow import Schema, fields
 
+# cisagov Libraries
+from api.schemas.stats_schema import CycleStatsLevelSchema
+
 
 class SectorIndustryReportSchema(Schema):
     """SectorIndustryReportSchema."""
@@ -22,5 +25,4 @@ class AggregateReportsSchema(Schema):
     local_stats = fields.Nested(SectorIndustryReportSchema())
     tribal_stats = fields.Nested(SectorIndustryReportSchema())
     private_stats = fields.Nested(SectorIndustryReportSchema())
-    click_rate_across_all_customers = fields.Float()
-    average_time_to_click_all_customers = fields.Str()
+    all_customer_stats = fields.Nested(CycleStatsLevelSchema)
