@@ -381,6 +381,14 @@ def get_all_customer_stats():
 
 def get_all_customer_stats_by_level():
     """Get all customer stats by level."""
+    low_clicked_count = []
+    moderate_clicked_count = []
+    high_clicked_count = []
+
+    low_reported_count = []
+    moderate_reported_count = []
+    high_reported_count = []
+
     low_clicked_avg = 0
     moderate_clicked_avg = 0
     high_clicked_avg = 0
@@ -395,17 +403,33 @@ def get_all_customer_stats_by_level():
             cycle = cycle_manager.get(cycle["_id"])
             get_cycle_stats(cycle)
 
-        # Clicked Averages
-        low_clicked_avg += cycle["stats"]["stats"]["low"]["clicked"]["average"]
-        moderate_clicked_avg = cycle["stats"]["stats"]["moderate"]["clicked"]["average"]
-        high_clicked_avg = cycle["stats"]["stats"]["high"]["clicked"]["average"]
+        # Clicked Counts
+        low_clicked_count.append(cycle["stats"]["stats"]["low"]["clicked"]["count"])
+        moderate_clicked_count.append(
+            cycle["stats"]["stats"]["moderate"]["clicked"]["count"]
+        )
+        high_clicked_count.append(cycle["stats"]["stats"]["high"]["clicked"]["count"])
 
-        # Reported Averages
-        low_reported_avg += cycle["stats"]["stats"]["low"]["reported"]["average"]
-        moderate_reported_avg = cycle["stats"]["stats"]["moderate"]["reported"][
-            "average"
-        ]
-        high_reported_avg = cycle["stats"]["stats"]["high"]["reported"]["average"]
+        # Reported Counts
+        low_reported_count.append(cycle["stats"]["stats"]["low"]["reported"]["count"])
+        moderate_reported_count.append(
+            cycle["stats"]["stats"]["moderate"]["reported"]["count"]
+        )
+        high_reported_count.append(cycle["stats"]["stats"]["high"]["reported"]["count"])
+
+    # Clicked Averages
+    low_clicked_avg = int(sum(low_clicked_count) / len(low_clicked_count))
+    moderate_clicked_avg = int(
+        sum(moderate_clicked_count) / len(moderate_clicked_count)
+    )
+    high_clicked_avg = int(sum(high_clicked_count) / len(high_clicked_count))
+
+    # Reported Averages
+    low_reported_avg = int(sum(low_reported_count) / len(low_reported_count))
+    moderate_reported_avg = int(
+        sum(moderate_reported_count) / len(moderate_reported_count)
+    )
+    high_reported_avg = int(sum(high_reported_count) / len(high_reported_count))
 
     return {
         "low_clicked_avg": low_clicked_avg,
