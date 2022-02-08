@@ -446,13 +446,14 @@ def get_all_customer_stats():
 def get_all_customer_subscriptions():
     """Get all customer subscriptions stats."""
     subscriptions = subscription_manager.all(fields=["name", "status"])
-    return {
-        "new": len(
-            [
-                subscription
-                for subscription in subscriptions
-                if subscription["status"] == "created"
-            ]
-        ),
-        "total": len(subscriptions),
-    }
+
+    new = len(
+        [
+            subscription
+            for subscription in subscriptions
+            if subscription["status"] == "created"
+        ]
+    )
+    ongoing = len(subscriptions)
+
+    return new, ongoing
