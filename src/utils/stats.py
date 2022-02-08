@@ -454,6 +454,12 @@ def get_all_customer_subscriptions():
             if subscription["status"] == "created"
         ]
     )
-    ongoing = len(subscriptions)
+    ongoing = len(
+        [
+            subscription
+            for subscription in subscriptions
+            if subscription["status"] in ["queued", "running"]
+        ]
+    )
 
     return new, ongoing
