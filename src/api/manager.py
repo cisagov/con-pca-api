@@ -370,6 +370,7 @@ class RecommendationManager(Manager):
         return super().__init__(
             collection="recommendation",
             schema=RecommendationsSchema,
+            unique_indexes=["title", "type"],
         )
 
 
