@@ -382,6 +382,7 @@ class SendingProfileManager(Manager):
         return super().__init__(
             collection="sending_profile",
             schema=SendingProfileSchema,
+            unique_indexes=["name"],
         )
 
 
@@ -414,6 +415,5 @@ class TemplateManager(Manager):
     def __init__(self):
         """Super."""
         return super().__init__(
-            collection="template",
-            schema=TemplateSchema,
+            collection="template", schema=TemplateSchema, unique_indexes=["name"]
         )
