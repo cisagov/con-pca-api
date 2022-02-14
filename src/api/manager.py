@@ -182,12 +182,14 @@ class Manager:
                 and self.get(document_id=document_id)[unique_field]
                 != data[unique_field]
             ):
-                exists.append(unique_field)
+                exists.append(
+                    f"A {self.collection} with {unique_field} '{data[unique_field]}' already exists."
+                )
 
         if exists:
             abort(
                 make_response(
-                    jsonify({"error": f"An instance exists with {', '.join(exists)}."}),
+                    jsonify({"error": ". ".join(exists)}),
                     400,
                 )
             )
@@ -221,12 +223,14 @@ class Manager:
                     }
                 }
             ):
-                exists.append(unique_field)
+                exists.append(
+                    f"A {self.collection} with {unique_field} '{data[unique_field]}' already exists."
+                )
 
         if exists:
             abort(
                 make_response(
-                    jsonify({"error": f"An instance exists with {', '.join(exists)}."}),
+                    jsonify({"error": ". ".join(exists)}),
                     400,
                 )
             )
