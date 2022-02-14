@@ -168,12 +168,13 @@ class Manager:
 
     def update(self, document_id, data, update=True):
         """Update item by id."""
+        exists = []
         for unique_field in self.unique_indexes:
             if (
                 self.exists(
                     {
-                        "name": {
-                            "$regex": f"^{re.escape(data['name'].strip())}$",
+                        unique_field: {
+                            "$regex": f"^{re.escape(data[unique_field].strip())}$",
                             "$options": "i",
                         }
                     }
@@ -181,14 +182,15 @@ class Manager:
                 and self.get(document_id=document_id)[unique_field]
                 != data[unique_field]
             ):
-                abort(
-                    make_response(
-                        jsonify(
-                            {"error": f"An instance exists with that {unique_field}."}
-                        ),
-                        400,
-                    )
+                exists.append(unique_field)
+
+        if exists:
+            abort(
+                make_response(
+                    jsonify({"error": f"An instance exists with {', '.join(exists)}."}),
+                    400,
                 )
+            )
 
         data = self.clean_data(data)
         if update:
@@ -209,23 +211,25 @@ class Manager:
 
     def save(self, data):
         """Save new item to collection."""
+        exists = []
         for unique_field in self.unique_indexes:
             if self.exists(
                 {
-                    "name": {
-                        "$regex": f"^{re.escape(data['name'].strip())}$",
+                    unique_field: {
+                        "$regex": f"^{re.escape(data[unique_field].strip())}$",
                         "$options": "i",
                     }
                 }
             ):
-                abort(
-                    make_response(
-                        jsonify(
-                            {"error": f"An instance exists with that {unique_field}."}
-                        ),
-                        400,
-                    )
+                exists.append(unique_field)
+
+        if exists:
+            abort(
+                make_response(
+                    jsonify({"error": f"An instance exists with {', '.join(exists)}."}),
+                    400,
                 )
+            )
 
         self.create_indexes()
         data = self.clean_data(data)
@@ -311,6 +315,7 @@ class CustomerManager(Manager):
         return super().__init__(
             collection="customer",
             schema=CustomerSchema,
+            unique_indexes=["name", "identifier"],
         )
 
 

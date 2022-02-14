@@ -1,7 +1,4 @@
 """Landing page views."""
-# Standard Python Libraries
-import re
-
 # Third-Party Libraries
 from flask import jsonify, request
 from flask.views import MethodView
@@ -38,15 +35,6 @@ class LandingPagesView(MethodView):
     def post(self):
         """Post."""
         data = request.json
-        if landing_page_manager.exists(
-            {
-                "name": {
-                    "$regex": f"^{re.escape(data['name'].strip())}$",
-                    "$options": "i",
-                }
-            }
-        ):
-            return jsonify({"error": "Landing page exists with that name."}), 400
         landing_page = landing_page_manager.save(data)
         if data["is_default_template"]:
             landing_page_manager.clear_and_set_default(landing_page["_id"])

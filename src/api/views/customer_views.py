@@ -23,11 +23,6 @@ class CustomersView(MethodView):
     def post(self):
         """Post."""
         data = request.json
-        # If a customer exists with either name or identifier, return 400
-        if customer_manager.exists(
-            {"identifier": data["identifier"]}
-        ) or customer_manager.exists({"name": data["name"]}):
-            return jsonify("Customer with identifier or name already exists."), 400
         return jsonify(customer_manager.save(data))
 
 
