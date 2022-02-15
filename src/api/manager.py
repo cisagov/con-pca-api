@@ -1,10 +1,11 @@
 """Database Managers."""
 # Standard Python Libraries
 from datetime import datetime
+import re
 
 # Third-Party Libraries
 from bson.objectid import ObjectId
-from flask import g
+from flask import abort, g, jsonify, make_response
 import pymongo
 
 # cisagov Libraries
@@ -24,10 +25,11 @@ from api.schemas.template_schema import TemplateSchema
 class Manager:
     """Manager."""
 
-    def __init__(self, collection, schema, other_indexes=[]):
+    def __init__(self, collection, schema, unique_indexes=[], other_indexes=[]):
         """Initialize Manager."""
         self.collection = collection
         self.schema = schema
+        self.unique_indexes = unique_indexes
         self.other_indexes = other_indexes
         self.db = getattr(DB, collection)
 
@@ -166,6 +168,32 @@ class Manager:
 
     def update(self, document_id, data, update=True):
         """Update item by id."""
+        exists = []
+        for unique_field in self.unique_indexes:
+            if (
+                self.exists(
+                    {
+                        unique_field: {
+                            "$regex": f"^{re.escape(data[unique_field].strip())}$",
+                            "$options": "i",
+                        }
+                    }
+                )
+                and self.get(document_id=document_id)[unique_field]
+                != data[unique_field]
+            ):
+                exists.append(
+                    f"A {self.collection} with {unique_field} '{data[unique_field]}' already exists."
+                )
+
+        if exists:
+            abort(
+                make_response(
+                    jsonify({"error": ". ".join(exists)}),
+                    400,
+                )
+            )
+
         data = self.clean_data(data)
         if update:
             data = self.add_updated(data)
@@ -185,6 +213,28 @@ class Manager:
 
     def save(self, data):
         """Save new item to collection."""
+        exists = []
+        for unique_field in self.unique_indexes:
+            if self.exists(
+                {
+                    unique_field: {
+                        "$regex": f"^{re.escape(data[unique_field].strip())}$",
+                        "$options": "i",
+                    }
+                }
+            ):
+                exists.append(
+                    f"A {self.collection} with {unique_field} '{data[unique_field]}' already exists."
+                )
+
+        if exists:
+            abort(
+                make_response(
+                    jsonify({"error": ". ".join(exists)}),
+                    400,
+                )
+            )
+
         self.create_indexes()
         data = self.clean_data(data)
         data = self.add_created(data)
@@ -269,6 +319,7 @@ class CustomerManager(Manager):
         return super().__init__(
             collection="customer",
             schema=CustomerSchema,
+            unique_indexes=["name", "identifier"],
         )
 
 
@@ -291,6 +342,7 @@ class LandingPageManager(Manager):
         return super().__init__(
             collection="landing_page",
             schema=LandingPageSchema,
+            unique_indexes=["name"],
         )
 
     def clear_and_set_default(self, document_id):
@@ -322,6 +374,7 @@ class RecommendationManager(Manager):
         return super().__init__(
             collection="recommendation",
             schema=RecommendationsSchema,
+            unique_indexes=["title", "type"],
         )
 
 
@@ -333,6 +386,7 @@ class SendingProfileManager(Manager):
         return super().__init__(
             collection="sending_profile",
             schema=SendingProfileSchema,
+            unique_indexes=["name"],
         )
 
 
@@ -365,6 +419,5 @@ class TemplateManager(Manager):
     def __init__(self):
         """Super."""
         return super().__init__(
-            collection="template",
-            schema=TemplateSchema,
+            collection="template", schema=TemplateSchema, unique_indexes=["name"]
         )
