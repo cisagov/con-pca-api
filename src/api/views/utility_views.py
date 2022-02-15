@@ -1,4 +1,7 @@
 """Utility views."""
+# Standard Python Libraries
+import random
+import string
 
 # Third-Party Libraries
 from flask import jsonify, render_template, render_template_string, request
@@ -86,3 +89,19 @@ class ImageEncodeView(MethodView):
         # Return result
         result = {"imageUrl": f"data:image/jpeg;base64,{base64_encode.decode()}"}
         return jsonify(result), 200
+
+
+class RandomPasswordView(MethodView):
+    """RandomPasswordView."""
+
+    def get(self):
+        """Get a randomly generated password."""
+        length = 20
+        characters = (
+            string.ascii_lowercase
+            + string.ascii_uppercase
+            + string.digits
+            + string.punctuation
+        )
+        password = "".join(random.sample(characters, length))
+        return jsonify({"password": password})

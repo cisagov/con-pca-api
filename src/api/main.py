@@ -63,7 +63,7 @@ from api.views.template_views import (
     TemplateView,
 )
 from api.views.user_views import UserConfirmView, UsersView, UserView
-from api.views.utility_views import ImageEncodeView, TestEmailView
+from api.views.utility_views import ImageEncodeView, RandomPasswordView, TestEmailView
 from utils.decorators.auth import auth_required
 
 # register apps
@@ -124,6 +124,7 @@ rules = [
     # Utility Views
     ("/util/send_test_email/", TestEmailView),
     ("/util/imageencode/", ImageEncodeView),
+    ("/util/randompassword/", RandomPasswordView),
 ]
 
 # Auth Views
