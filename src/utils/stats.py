@@ -9,6 +9,7 @@ from api.manager import (
     CycleManager,
     NonHumanManager,
     RecommendationManager,
+    SendingProfileManager,
     SubscriptionManager,
     TargetManager,
     TemplateManager,
@@ -17,11 +18,13 @@ from api.schemas.stats_schema import CycleStatsSchema
 from utils.templates import get_indicators
 
 template_manager = TemplateManager()
+customer_manager = TemplateManager()
 cycle_manager = CycleManager()
 nonhuman_manager = NonHumanManager()
 recommendation_manager = RecommendationManager()
 subscription_manager = SubscriptionManager()
 target_manager = TargetManager()
+sending_profile_manager = SendingProfileManager()
 
 
 def get_cycle_stats(cycle):
@@ -443,10 +446,8 @@ def get_all_customer_stats():
     return all_stats
 
 
-def get_all_customer_subscriptions():
+def get_all_customer_subscriptions(subscriptions):
     """Get all customer subscriptions stats."""
-    subscriptions = subscription_manager.all(fields=["name", "status"])
-
     new = len(
         [
             subscription
@@ -470,3 +471,23 @@ def get_all_customer_subscriptions():
     )
 
     return new, ongoing, stopped
+
+
+def get_sending_profile_metrics(subscriptions):
+    """Get stats on Sending Profiles."""
+    sending_profiles = sending_profile_manager.all(fields=["_id", "from_address"])
+
+    sp_metrics = {}
+    for subscription in subscriptions:
+        for profile in sending_profiles:
+            if (
+                subscription["sending_profile_id"] == profile["_id"]
+                and profile["from_address"] not in sp_metrics.keys()
+            ):
+                sp_metrics[profile["from_address"]] = [subscription["customer_id"]]
+            elif subscription["customer_id"] not in sp_metrics.get(
+                profile["from_address"], []
+            ):
+                sp_metrics[profile["from_address"]].append(subscription["customer_id"])
+
+    return sp_metrics

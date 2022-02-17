@@ -17,7 +17,11 @@ from utils.reports import (
     get_reports_sent,
     get_sector_industry_report,
 )
-from utils.stats import get_all_customer_stats, get_all_customer_subscriptions
+from utils.stats import (
+    get_all_customer_stats,
+    get_all_customer_subscriptions,
+    get_sending_profile_metrics,
+)
 
 subscription_manager = SubscriptionManager()
 cycle_manager = CycleManager()
@@ -87,12 +91,19 @@ class AggregateReportView(MethodView):
         context = {
             "customers_enrolled": len(customer_manager.all(fields=["_id"])),
         }
-        context.update(get_reports_sent())
+
+        subscriptions = subscription_manager.all()
+
+        context.update(get_reports_sent(subscriptions))
         context.update(get_sector_industry_report())
 
-        new_subs, ongoing_subs, stopped_subs = get_all_customer_subscriptions()
+        new_subs, ongoing_subs, stopped_subs = get_all_customer_subscriptions(
+            subscriptions
+        )
         context["all_customer_stats"] = get_all_customer_stats()
         context["new_subscriptions"] = new_subs
         context["ongoing_subscriptions"] = ongoing_subs
         context["stopped_subscriptions"] = stopped_subs
+        context["sending_profile_metrics"] = get_sending_profile_metrics(subscriptions)
+
         return AggregateReportsSchema().dump(context)
