@@ -473,22 +473,45 @@ def get_all_customer_subscriptions(subscriptions):
     return new, ongoing, stopped
 
 
-def get_sending_profile_metrics(subscriptions):
+def get_sending_profile_metrics(subscriptions, sending_profiles):
     """Get stats on Sending Profiles."""
-    sending_profiles = sending_profile_manager.all(fields=["_id", "from_address"])
+    templates = template_manager.all(
+        fields=["_id", "sending_profile_id"],
+        params={"sending_profile_id": {"$in": [s["_id"] for s in sending_profiles]}},
+    )
 
-    sp_metrics = {}
-    for subscription in subscriptions:
-        for profile in sending_profiles:
-            from_domain = profile["from_address"].split("@", 1)[1]
-            if (
-                subscription["sending_profile_id"] == profile["_id"]
-                and from_domain not in sp_metrics.keys()
-            ):
-                sp_metrics[from_domain] = [subscription["customer_id"]]
-            elif subscription["customer_id"] not in sp_metrics.get(from_domain, []):
-                sp_metrics[from_domain].append(subscription["customer_id"])
+    cycles = cycle_manager.all(
+        fields=["_id", "subscription_id", "template_ids"], params={"active": True}
+    )
 
-    return [
-        {"domain": key, "customers": len(value)} for key, value in sp_metrics.items()
-    ]
+    for sp in sending_profiles:
+        active_subs = list(
+            filter(
+                lambda x: x["sending_profile_id"] == sp["_id"]
+                and x["status"] == "running",
+                subscriptions,
+            )
+        )
+        templs = [
+            t["_id"]
+            for t in list(
+                filter(lambda x: x["sending_profile_id"] == sp["_id"], templates)
+            )
+        ]
+
+        cycles_using = list(
+            filter(
+                lambda x: any(item in templs for item in x["template_ids"])
+                or x["subscription_id"] in [sub["_id"] for sub in active_subs],
+                cycles,
+            )
+        )
+
+        subs_using = list(
+            filter(
+                lambda x: x["_id"] in [c["subscription_id"] for c in cycles_using],
+                subscriptions,
+            )
+        )
+
+        sp["customers_using"] = len(list({s["customer_id"] for s in subs_using}))
