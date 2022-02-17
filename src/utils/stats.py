@@ -9,6 +9,7 @@ from api.manager import (
     CycleManager,
     NonHumanManager,
     RecommendationManager,
+    SendingProfileManager,
     SubscriptionManager,
     TargetManager,
     TemplateManager,
@@ -17,11 +18,13 @@ from api.schemas.stats_schema import CycleStatsSchema
 from utils.templates import get_indicators
 
 template_manager = TemplateManager()
+customer_manager = TemplateManager()
 cycle_manager = CycleManager()
 nonhuman_manager = NonHumanManager()
 recommendation_manager = RecommendationManager()
 subscription_manager = SubscriptionManager()
 target_manager = TargetManager()
+sending_profile_manager = SendingProfileManager()
 
 
 def get_cycle_stats(cycle):
@@ -443,10 +446,8 @@ def get_all_customer_stats():
     return all_stats
 
 
-def get_all_customer_subscriptions():
+def get_all_customer_subscriptions(subscriptions):
     """Get all customer subscriptions stats."""
-    subscriptions = subscription_manager.all(fields=["name", "status"])
-
     new = len(
         [
             subscription
@@ -470,3 +471,47 @@ def get_all_customer_subscriptions():
     )
 
     return new, ongoing, stopped
+
+
+def get_sending_profile_metrics(subscriptions, sending_profiles):
+    """Get stats on Sending Profiles."""
+    templates = template_manager.all(
+        fields=["_id", "sending_profile_id"],
+        params={"sending_profile_id": {"$in": [s["_id"] for s in sending_profiles]}},
+    )
+
+    cycles = cycle_manager.all(
+        fields=["_id", "subscription_id", "template_ids"], params={"active": True}
+    )
+
+    for sp in sending_profiles:
+        active_subs = list(
+            filter(
+                lambda x: x["sending_profile_id"] == sp["_id"]
+                and x["status"] == "running",
+                subscriptions,
+            )
+        )
+        templs = [
+            t["_id"]
+            for t in list(
+                filter(lambda x: x["sending_profile_id"] == sp["_id"], templates)
+            )
+        ]
+
+        cycles_using = list(
+            filter(
+                lambda x: any(item in templs for item in x["template_ids"])
+                or x["subscription_id"] in [sub["_id"] for sub in active_subs],
+                cycles,
+            )
+        )
+
+        subs_using = list(
+            filter(
+                lambda x: x["_id"] in [c["subscription_id"] for c in cycles_using],
+                subscriptions,
+            )
+        )
+
+        sp["customers_using"] = len(list({s["customer_id"] for s in subs_using}))

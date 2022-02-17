@@ -315,14 +315,13 @@ def _add_template_stats_csv(stats: dict):
     return "template_stats.csv", headers, data
 
 
-def get_reports_sent():
+def get_reports_sent(subscriptions):
     """Get reports sent."""
     response = {
         "status_reports_sent": 0,
         "cycle_reports_sent": 0,
         "yearly_reports_sent": 0,
     }
-    subscriptions = subscription_manager.all(fields=["notification_history"])
     for subscription in subscriptions:
         for notification in subscription.get("notification_history", []):
             if f"{notification['message_type']}s_sent" in response:

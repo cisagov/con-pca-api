@@ -10,6 +10,7 @@ from api.manager import (
     SubscriptionManager,
     TemplateManager,
 )
+from utils.stats import get_sending_profile_metrics
 
 sending_profile_manager = SendingProfileManager()
 template_manager = TemplateManager()
@@ -23,7 +24,9 @@ class SendingProfilesView(MethodView):
     def get(self):
         """Get."""
         parameters = sending_profile_manager.get_query(request.args)
-        return jsonify(sending_profile_manager.all(params=parameters))
+        sending_profiles = sending_profile_manager.all(params=parameters)
+        get_sending_profile_metrics(subscription_manager.all(), sending_profiles)
+        return jsonify(sending_profiles)
 
     def post(self):
         """Post."""
