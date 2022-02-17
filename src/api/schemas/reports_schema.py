@@ -13,6 +13,13 @@ class SectorIndustryReportSchema(Schema):
     cycle_count = fields.Integer()
 
 
+class SendingProfileMetrics(Schema):
+    """Sending Profile Metrics."""
+
+    domain = fields.Str()
+    customers = fields.Int()
+
+
 class AggregateReportsSchema(Schema):
     """AggregateStatsSchema."""
 
@@ -23,6 +30,7 @@ class AggregateReportsSchema(Schema):
     new_subscriptions = fields.Integer()
     ongoing_subscriptions = fields.Integer()
     stopped_subscriptions = fields.Integer()
+    sending_profile_metrics = fields.List(fields.Nested(SendingProfileMetrics()))
     federal_stats = fields.Nested(SectorIndustryReportSchema())
     state_stats = fields.Nested(SectorIndustryReportSchema())
     local_stats = fields.Nested(SectorIndustryReportSchema())

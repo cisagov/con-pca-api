@@ -480,14 +480,15 @@ def get_sending_profile_metrics(subscriptions):
     sp_metrics = {}
     for subscription in subscriptions:
         for profile in sending_profiles:
+            from_domain = profile["from_address"].split("@", 1)[1]
             if (
                 subscription["sending_profile_id"] == profile["_id"]
-                and profile["from_address"] not in sp_metrics.keys()
+                and from_domain not in sp_metrics.keys()
             ):
-                sp_metrics[profile["from_address"]] = [subscription["customer_id"]]
-            elif subscription["customer_id"] not in sp_metrics.get(
-                profile["from_address"], []
-            ):
-                sp_metrics[profile["from_address"]].append(subscription["customer_id"])
+                sp_metrics[from_domain] = [subscription["customer_id"]]
+            elif subscription["customer_id"] not in sp_metrics.get(from_domain, []):
+                sp_metrics[from_domain].append(subscription["customer_id"])
 
-    return sp_metrics
+    return [
+        {"domain": key, "customers": len(value)} for key, value in sp_metrics.items()
+    ]
