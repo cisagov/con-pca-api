@@ -238,6 +238,7 @@ class Manager:
         self.create_indexes()
         data = self.clean_data(data)
         data = self.add_created(data)
+        data = self.add_updated(data)
         result = self.db.insert_one(self.load_data(data))
         return {"_id": str(result.inserted_id)}
 
