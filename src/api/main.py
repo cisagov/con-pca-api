@@ -35,6 +35,7 @@ from api.views.cycle_views import (
     CyclesView,
     CycleView,
 )
+from api.views.landing_domain_views import LandingDomainsView, LandingDomainView
 from api.views.landing_page_views import LandingPagesView, LandingPageView
 from api.views.nonhuman_views import NonHumansView
 from api.views.recommendation_views import RecommendationsView, RecommendationView
@@ -83,6 +84,9 @@ rules = [
     ("/cycle/<cycle_id>/reports/<report_type>/", ReportHtmlView),
     ("/cycle/<cycle_id>/reports/<report_type>/pdf/", ReportPdfView),
     ("/cycle/<cycle_id>/reports/<report_type>/email/", ReportEmailView),
+    # Landing domains
+    ("/landingdomains/", LandingDomainsView),
+    ("/landingdomain/<landing_domain_id>", LandingDomainView),
     # Landing Page Views
     ("/landingpages/", LandingPagesView),
     ("/landingpage/<landing_page_id>/", LandingPageView),
