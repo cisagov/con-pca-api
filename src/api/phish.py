@@ -144,11 +144,21 @@ def process_subscription_targets(subscription_id, targets):
             try:
                 if template_email:
                     process_target(
-                        template_sp, target, customer, template, template_email
+                        template_sp,
+                        target,
+                        customer,
+                        template,
+                        subscription,
+                        template_email,
                     )
                 else:
                     process_target(
-                        sending_profile, target, customer, template, subscription_email
+                        sending_profile,
+                        target,
+                        customer,
+                        template,
+                        subscription,
+                        subscription_email,
                     )
             except Exception as e:
                 logging.exception(e)
@@ -168,12 +178,15 @@ def process_subscription_targets(subscription_id, targets):
     )
 
 
-def process_target(sending_profile, target, customer, template, email: Email):
+def process_target(
+    sending_profile, target, customer, template, subscription, email: Email
+):
     """Send email to target."""
     tracking_info = get_tracking_info(
         sending_profile,
         target["cycle_id"],
         target["_id"],
+        subscription,
     )
     context = get_email_context(
         customer=customer,
@@ -196,15 +209,18 @@ def process_target(sending_profile, target, customer, template, email: Email):
     )
 
 
-def get_landing_url(sending_profile):
+def get_landing_url(sending_profile, subscription):
     """Get url for landing page."""
+    if subscription.get("landing_domain"):
+        return f"http://{subscription['landing_domain']}"
+
     return f"http://{sending_profile['landing_page_domain']}"
 
 
-def get_tracking_info(sending_profile, cycle_id, target_id):
+def get_tracking_info(sending_profile, cycle_id, target_id, subscription):
     """Get tracking html for opens and link for clicks."""
     tracking_id = get_tracking_id(cycle_id, target_id)
-    url = get_landing_url(sending_profile)
+    url = get_landing_url(sending_profile, subscription)
     return {
         "open": f'<img width="1px" heigh="1px" alt="" src="{url}/o/{tracking_id}/"/>',
         "click": f"{url}/c/{tracking_id}/",

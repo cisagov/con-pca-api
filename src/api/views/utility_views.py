@@ -34,9 +34,7 @@ class TestEmailView(MethodView):
             }
             template = data["template"]
             tracking_info = get_tracking_info(
-                data["smtp"],
-                "test",
-                "test",
+                data["smtp"], "test", "test", {"name": "test"}
             )
             context = get_email_context(
                 customer=customer,

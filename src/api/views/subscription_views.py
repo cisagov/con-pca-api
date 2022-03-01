@@ -191,11 +191,13 @@ class SubscriptionSafelistExportView(MethodView):
         Get an excel file with safelist attributes in it.
         """
         data = request.json
+
         phish_header = data["phish_header"]
         domains = data["domains"]
         ips = data["ips"]
         templates = data["templates"]
         reporting_password = data["password"]
+        simulation_url = data.get("simulation_url", "")
 
         # Create workbook
         wb = Workbook()
@@ -218,18 +220,24 @@ class SubscriptionSafelistExportView(MethodView):
         ws["B1"] = phish_header
         ws["B1"].font = regular_font
 
-        # Sending Domains
-        ws["A2"] = "Sending Domains"
+        # Simulation URL
+        ws["A2"] = "Simulation URL"
         ws["A2"].font = header_font
-        ws["A2"].alignment = top_align
+        ws["B2"] = simulation_url
+        ws["B2"].font = regular_font
+
+        # Sending Domains
+        ws["A3"] = "Sending Domains"
+        ws["A3"].font = header_font
+        ws["A3"].alignment = top_align
         if domains:
             for i, domain in enumerate(domains):
-                ws[f"B{2 + i}"] = domain
-                ws[f"B{2 + i}"].font = regular_font
-            ws.merge_cells(f"A2:A{2 + len(domains) - 1}")
+                ws[f"B{3 + i}"] = domain
+                ws[f"B{3 + i}"].font = regular_font
+            ws.merge_cells(f"A3:A{3 + len(domains) - 1}")
 
         # Sending Ips
-        ip_start = 2 + len(domains)
+        ip_start = 3 + len(domains)
         ws[f"A{ip_start}"] = "Sending IP Addresses"
         ws[f"A{ip_start}"].alignment = top_align
         ws[f"A{ip_start}"].font = header_font
@@ -240,7 +248,7 @@ class SubscriptionSafelistExportView(MethodView):
             ws.merge_cells(f"A{ip_start}:A{ip_start + len(ips) - 1}")
 
         # Templates
-        template_start = 2 + len(domains) + (1 if not ips else len(ips)) + 1
+        template_start = 3 + len(domains) + (1 if not ips else len(ips)) + 1
         ws[f"A{template_start}"] = "Template Subject"
         ws[f"B{template_start}"] = "Deception Level"
         ws[f"A{template_start}"].font = header_font
