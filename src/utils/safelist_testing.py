@@ -141,6 +141,7 @@ def process_contact(
         sending_profile,
         f"test_{subscription['_id']}",
         contact["test_uuid"],
+        subscription,
     )
     context = get_email_context(
         customer=customer,
