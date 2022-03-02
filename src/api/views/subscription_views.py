@@ -148,7 +148,8 @@ class SubscriptionTestView(MethodView):
 
     def post(self, subscription_id):
         """Launch a test for the subscription."""
-        return jsonify(test_subscription(subscription_id, request.json["contacts"]))
+        resp, status_code = test_subscription(subscription_id, request.json["contacts"])
+        return jsonify(resp), status_code
 
 
 class SubscriptionValidView(MethodView):
