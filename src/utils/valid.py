@@ -55,9 +55,9 @@ def is_subscription_valid(target_count, cycle_minutes):
             }
     else:
         percent_increase = get_daily_percent_increase(current_daily_rate, daily_rate)
-        new_daily_rate = current_daily_rate + daily_rate
-        if new_daily_rate <= 1000:
-            return True, ""
+        # new_daily_rate = current_daily_rate + daily_rate
+        # if new_daily_rate <= 1000:
+        #     return True, ""
         if percent_increase > 20:
             needed_targets, needed_minutes = get_needed_percent_increase(
                 cycle_minutes,
@@ -72,17 +72,17 @@ def is_subscription_valid(target_count, cycle_minutes):
                     f"or increase minutes to {needed_minutes}."
                 ),
                 "success": False,
-                "current_daily_rate": current_daily_rate,
-                "daily_rate": daily_rate,
-                "hourly_rate": hourly_rate,
+                "current_daily_rate": round(current_daily_rate * 100, 2),
+                "daily_rate": round(daily_rate * 100, 2),
+                "hourly_rate": round(hourly_rate * 100, 2),
             }
 
     return {
         "message": "Subscription is valid.",
         "success": True,
-        "daily_rate": daily_rate,
-        "hourly_rate": hourly_rate,
-        "current_daily_rate": current_daily_rate,
+        "daily_rate": round(daily_rate * 100, 2),
+        "hourly_rate": round(hourly_rate * 100, 2),
+        "current_daily_rate": round(current_daily_rate * 100, 2),
     }
 
 
