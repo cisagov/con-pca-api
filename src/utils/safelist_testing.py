@@ -64,11 +64,14 @@ def test_subscription(subscription_id, contacts):
         document_id=subscription["sending_profile_id"]
     )
 
-    # Add headers to sending profile
-    add_phish_headers(subscription, sending_profile)
+    try:
+        # Add headers to sending profile
+        add_phish_headers(subscription, sending_profile)
 
-    # Login to subscription SMTP server
-    subscription_email = Email(sending_profile)
+        # Login to subscription SMTP server
+        subscription_email = Email(sending_profile)
+    except Exception as e:
+        return str(e), 400
 
     # Instantiate variable to store results
     test_results = []
@@ -116,10 +119,12 @@ def test_subscription(subscription_id, contacts):
                         template,
                         subscription_email,
                     )
+                status_code = 200
             except Exception as e:
                 logging.exception(e)
                 result["sent"] = False
                 result["error"] = str(e)
+                status_code = 400
             finally:
                 test_results.append(result)
 
@@ -129,7 +134,7 @@ def test_subscription(subscription_id, contacts):
             "test_results": test_results,
         },
     )
-    return test_results
+    return test_results, status_code
 
 
 def process_contact(
