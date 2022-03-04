@@ -72,17 +72,17 @@ def is_subscription_valid(target_count, cycle_minutes):
                     f"or increase minutes to {needed_minutes}."
                 ),
                 "success": False,
-                "current_daily_rate": round(current_daily_rate * 100, 2),
-                "daily_rate": round(daily_rate * 100, 2),
-                "hourly_rate": round(hourly_rate * 100, 2),
+                "current_daily_rate": round(current_daily_rate, 2),
+                "daily_rate": round(daily_rate, 2),
+                "hourly_rate": round(hourly_rate, 2),
             }
 
     return {
         "message": "Subscription is valid.",
         "success": True,
-        "daily_rate": round(daily_rate * 100, 2),
-        "hourly_rate": round(hourly_rate * 100, 2),
-        "current_daily_rate": round(current_daily_rate * 100, 2),
+        "daily_rate": round(daily_rate, 2),
+        "hourly_rate": round(hourly_rate, 2),
+        "current_daily_rate": round(current_daily_rate, 2),
     }
 
 
