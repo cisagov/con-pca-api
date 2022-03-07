@@ -11,6 +11,6 @@ marshmallow==3.14.1
 mongomock==4.0.0
 openpyxl==3.0.9
 Pillow==9.0.1
-pymongo~=3.12.1
+pymongo~=4.0.2
 PyPDF2==1.26.0
 requests==2.27.1
