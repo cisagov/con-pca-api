@@ -4,6 +4,7 @@ from marshmallow import fields, validate
 
 # cisagov Libraries
 from api.schemas.base_schema import BaseSchema
+from api.schemas.fields import DateTimeField
 
 
 class CustomerContactSchema(BaseSchema):
@@ -38,3 +39,4 @@ class CustomerSchema(BaseSchema):
     industry = fields.Str(required=False, allow_none=True)
     sector = fields.Str(required=False, allow_none=True)
     domain = fields.Str(required=False, allow_none=True)
+    appendix_a_date = DateTimeField()
