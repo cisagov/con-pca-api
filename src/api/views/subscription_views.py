@@ -66,6 +66,7 @@ class SubscriptionsView(MethodView):
                     "name",
                     "status",
                     "start_date",
+                    "cycle_length_minutes",
                     "active",
                     "archived",
                     "primary_contact",
