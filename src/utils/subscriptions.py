@@ -63,7 +63,11 @@ def start_subscription(subscription_id):
         target["subscription_id"] = subscription_id
         # Assign send date to target
         target["send_date"] = get_target_send_date(
-            index, total_targets, cycle["start_date"], cycle["send_by_date"]
+            index,
+            total_targets,
+            subscription.get("buffer_time_minutes", 0),
+            cycle["start_date"],
+            cycle["send_by_date"],
         )
 
         # Assign template to target
@@ -143,12 +147,16 @@ def calculate_cycle_dates(subscription):
 
 
 def get_target_send_date(
-    index: int, total_targets: int, start_date: datetime, send_by_date: datetime
+    index: int,
+    total_targets: int,
+    buffer_time_minutes: int,
+    start_date: datetime,
+    send_by_date: datetime,
 ):
     """Get datetime to send email to target."""
     total_minutes = (send_by_date - start_date).total_seconds() / 60
     minutes_per_email = total_minutes / total_targets
-    offset = minutes_per_email * index
+    offset = (minutes_per_email * index) + buffer_time_minutes
     return start_date + timedelta(minutes=offset)
 
 

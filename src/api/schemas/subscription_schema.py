@@ -92,6 +92,7 @@ class SubscriptionSchema(BaseSchema):
     target_email_list = fields.List(fields.Nested(SubscriptionTargetSchema))
     templates_selected = fields.List(fields.Str())
     continuous_subscription = fields.Bool()
+    buffer_time_minutes = fields.Integer()
     cycle_length_minutes = fields.Integer()
     cooldown_minutes = fields.Integer()
     report_frequency_minutes = fields.Integer()
