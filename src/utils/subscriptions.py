@@ -136,9 +136,14 @@ def calculate_cycle_dates(subscription):
     if start_date < now:
         start_date = now
 
+    buffer = subscription.get("buffer_time_minutes", 0)
     start_date = start_date + timedelta(minutes=environment.DELAY_MINUTES)
-    send_by_date = start_date + timedelta(minutes=subscription["cycle_length_minutes"])
-    end_date = send_by_date + timedelta(minutes=subscription["cooldown_minutes"])
+    send_by_date = start_date + timedelta(
+        minutes=subscription["cycle_length_minutes"] + buffer
+    )
+    end_date = send_by_date + timedelta(
+        minutes=subscription["cooldown_minutes"] + buffer
+    )
     return {
         "start_date": start_date,
         "send_by_date": send_by_date,
