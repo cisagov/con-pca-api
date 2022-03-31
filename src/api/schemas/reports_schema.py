@@ -11,6 +11,8 @@ class SectorIndustryReportSchema(Schema):
 
     subscription_count = fields.Integer()
     cycle_count = fields.Integer()
+    emails_sent = fields.Integer()
+    emails_clicked = fields.Integer()
 
 
 class AggregateReportsSchema(Schema):
