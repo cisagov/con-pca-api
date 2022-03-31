@@ -372,12 +372,17 @@ def get_sector_industry_report():
         )
         cycles = cycle_manager.all(
             params={"subscription_id": {"$in": [s["_id"] for s in subscriptions]}},
-            fields=["_id"],
+            fields=["_id", "stats"],
         )
         response[stat]["subscription_count"] += len(subscriptions)
         response[stat]["cycle_count"] += len(cycles)
-        response[stat]["emails_sent"] = 0
-        response[stat]["emails_clicked"] = 0
+        response[stat]["emails_sent"] = [
+            cycle["stats"]["stats"]["all"]["sent"] for cycle in cycles
+        ][0]["count"]
+        response[stat]["emails_clicked"] = [
+            cycle["stats"]["stats"]["all"]["clicked"] for cycle in cycles
+        ][0]["count"]
+
     return response
 
 
