@@ -332,11 +332,36 @@ def get_reports_sent(subscriptions):
 def get_sector_industry_report():
     """Get reports on sector industries."""
     response = {
-        "federal_stats": {"subscription_count": 0, "cycle_count": 0},
-        "state_stats": {"subscription_count": 0, "cycle_count": 0},
-        "local_stats": {"subscription_count": 0, "cycle_count": 0},
-        "tribal_stats": {"subscription_count": 0, "cycle_count": 0},
-        "private_stats": {"subscription_count": 0, "cycle_count": 0},
+        "federal_stats": {
+            "subscription_count": 0,
+            "cycle_count": 0,
+            "emails_sent": 0,
+            "emails_clicked": 0,
+        },
+        "state_stats": {
+            "subscription_count": 0,
+            "cycle_count": 0,
+            "emails_sent": 0,
+            "emails_clicked": 0,
+        },
+        "local_stats": {
+            "subscription_count": 0,
+            "cycle_count": 0,
+            "emails_sent": 0,
+            "emails_clicked": 0,
+        },
+        "tribal_stats": {
+            "subscription_count": 0,
+            "cycle_count": 0,
+            "emails_sent": 0,
+            "emails_clicked": 0,
+        },
+        "private_stats": {
+            "subscription_count": 0,
+            "cycle_count": 0,
+            "emails_sent": 0,
+            "emails_clicked": 0,
+        },
     }
     customers = customer_manager.all(fields=["_id", "customer_type"])
     for customer in customers:
@@ -347,10 +372,17 @@ def get_sector_industry_report():
         )
         cycles = cycle_manager.all(
             params={"subscription_id": {"$in": [s["_id"] for s in subscriptions]}},
-            fields=["_id"],
+            fields=["_id", "stats"],
         )
         response[stat]["subscription_count"] += len(subscriptions)
         response[stat]["cycle_count"] += len(cycles)
+        response[stat]["emails_sent"] = [
+            cycle["stats"]["stats"]["all"]["sent"] for cycle in cycles
+        ][0]["count"]
+        response[stat]["emails_clicked"] = [
+            cycle["stats"]["stats"]["all"]["clicked"] for cycle in cycles
+        ][0]["count"]
+
     return response
 
 

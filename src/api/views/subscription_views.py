@@ -71,6 +71,7 @@ class SubscriptionsView(MethodView):
                     "archived",
                     "primary_contact",
                     "admin_email",
+                    "target_email_list",
                     "created",
                     "created_by",
                     "updated",
