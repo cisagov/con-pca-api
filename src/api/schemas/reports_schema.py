@@ -13,6 +13,7 @@ class SectorIndustryReportSchema(Schema):
     cycle_count = fields.Integer()
     emails_sent = fields.Integer()
     emails_clicked = fields.Integer()
+    emails_clicked_ratio = fields.Integer()
 
 
 class AggregateReportsSchema(Schema):

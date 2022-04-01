@@ -337,30 +337,35 @@ def get_sector_industry_report():
             "cycle_count": 0,
             "emails_sent": 0,
             "emails_clicked": 0,
+            "emails_clicked_ratio": 0,
         },
         "state_stats": {
             "subscription_count": 0,
             "cycle_count": 0,
             "emails_sent": 0,
             "emails_clicked": 0,
+            "emails_clicked_ratio": 0,
         },
         "local_stats": {
             "subscription_count": 0,
             "cycle_count": 0,
             "emails_sent": 0,
             "emails_clicked": 0,
+            "emails_clicked_ratio": 0,
         },
         "tribal_stats": {
             "subscription_count": 0,
             "cycle_count": 0,
             "emails_sent": 0,
             "emails_clicked": 0,
+            "emails_clicked_ratio": 0,
         },
         "private_stats": {
             "subscription_count": 0,
             "cycle_count": 0,
             "emails_sent": 0,
             "emails_clicked": 0,
+            "emails_clicked_ratio": 0,
         },
     }
     customers = customer_manager.all(fields=["_id", "customer_type"])
@@ -376,12 +381,15 @@ def get_sector_industry_report():
         )
         response[stat]["subscription_count"] += len(subscriptions)
         response[stat]["cycle_count"] += len(cycles)
-        response[stat]["emails_sent"] = [
-            cycle["stats"]["stats"]["all"]["sent"] for cycle in cycles
-        ][0]["count"]
-        response[stat]["emails_clicked"] = [
-            cycle["stats"]["stats"]["all"]["clicked"] for cycle in cycles
-        ][0]["count"]
+        response[stat]["emails_sent"] = sum(
+            cycle["stats"]["stats"]["all"]["sent"]["count"] for cycle in cycles
+        )
+        response[stat]["emails_clicked"] = sum(
+            cycle["stats"]["stats"]["all"]["clicked"]["count"] for cycle in cycles
+        )
+        response[stat]["emails_clicked_ratio"] = round(
+            (response[stat]["emails_clicked"] / response[stat]["emails_sent"]) * 100, 2
+        )
 
     return response
 
