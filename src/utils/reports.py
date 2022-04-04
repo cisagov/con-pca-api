@@ -382,10 +382,14 @@ def get_sector_industry_report():
         response[stat]["subscription_count"] += len(subscriptions)
         response[stat]["cycle_count"] += len(cycles)
         response[stat]["emails_sent"] = sum(
-            cycle["stats"]["stats"]["all"]["sent"]["count"] for cycle in cycles
+            cycle["stats"]["stats"]["all"]["sent"]["count"]
+            for cycle in cycles
+            if cycle.get("stats")
         )
         response[stat]["emails_clicked"] = sum(
-            cycle["stats"]["stats"]["all"]["clicked"]["count"] for cycle in cycles
+            cycle["stats"]["stats"]["all"]["clicked"]["count"]
+            for cycle in cycles
+            if cycle.get("stats")
         )
 
         try:
