@@ -72,6 +72,7 @@ class SubscriptionsView(MethodView):
                     "primary_contact",
                     "admin_email",
                     "target_email_list",
+                    "continuous_subscription",
                     "created",
                     "created_by",
                     "updated",
