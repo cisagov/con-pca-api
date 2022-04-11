@@ -12,5 +12,5 @@ mongomock==4.0.0
 openpyxl==3.0.9
 Pillow==9.1.0
 pymongo==3.12.3
-PyPDF2==1.26.0
+PyPDF2==1.27.3
 requests==2.27.1
