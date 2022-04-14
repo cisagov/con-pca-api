@@ -4,11 +4,17 @@ from flask import jsonify, request
 from flask.views import MethodView
 
 # cisagov Libraries
-from api.manager import CycleManager, SubscriptionManager, TemplateManager
+from api.manager import (
+    CycleManager,
+    SendingProfileManager,
+    SubscriptionManager,
+    TemplateManager,
+)
 from utils.emails import parse_email
 from utils.templates import select_templates
 
 template_manager = TemplateManager()
+sp_manager = SendingProfileManager()
 subscription_manager = SubscriptionManager()
 cycle_manager = CycleManager()
 
@@ -27,7 +33,18 @@ class TemplatesView(MethodView):
         parameters["retired"] = {"$in": [False, None]}
         if request.args.get("retired", "").lower() == "true":
             parameters["retired"] = True
-        return jsonify(template_manager.all(params=parameters))
+
+        templates = []
+        for template in template_manager.all(params=parameters):
+            sending_profile_id = template.get("sending_profile_id")
+            template["sending_profile_domain"] = ""
+            if sending_profile_id:
+                sending_profile = sp_manager.get(document_id=sending_profile_id)
+                template["sending_profile_domain"] = sending_profile[
+                    "from_address"
+                ].split("@")[1]
+            templates.append(template)
+        return jsonify(templates)
 
     def post(self):
         """Post."""
