@@ -694,11 +694,11 @@
       </p>
       <p class="indent">
         Specifically, CISA recommends that {{ customer.identifier }} include in
-        anti-phishing training and awareness efforts the red flags and the
-        sophisticated techniques outlined in the table below. Special attention
-        should be paid to the indicators with click rates above this cycle’s
-        average click rate ({{ percent(stats.stats.all.clicked.ratio) }}%)
-        because they are representative of the phishing elements that {{
+        anti-phishing training and awareness efforts of the top 5 red flags and
+        the sophisticated techniques outlined in the table below. Special
+        attention should be paid to the indicators with click rates above this
+        cycle’s average click rate ({{ percent(stats.stats.all.clicked.ratio)
+        }}%) because they are representative of the phishing elements that {{
         customer.identifier }} targeted users are potentially least aware of and
         may benefit additional training on.
       </p>
@@ -930,24 +930,89 @@
     <!-- Attachments -->
     <div class="page">
       <p class="page-header">7. Attachments</p>
-      <p>Work in Progress</p>
       <p>
-        Generally anything we mention in this report should be available as a
-        CSV
+        The raw data presented in this report are attached to this pdf in CSV
+        format
+      </p>
+      <p>
+        You can access the CSV files attached to this report by following these
+        steps:
       </p>
       <ul>
+        <li>Install Adobe Acrobat DC Reader on your machine</li>
+        <li>Open this report PDF file in Adobe Acrobat DC Reader</li>
+        <li>Click on Attachments in the left pane</li>
         <li>
-          CSV of per campaign click (rate and time) results for this cycle
-        </li>
-        <li>CSV of per indicator click rate results</li>
-        <li>CSV of all previously used senders, subjects, campaign dates</li>
-        <li>
-          CSV template of preferred headers for sending an updated target list
+          You should now be able to access CSV files attached to this report
+          pdf.
         </li>
       </ul>
       <p class="page-number">
         Page | {{ total_pages - 4 }} of {{ total_pages }}
       </p>
+    </div>
+
+    <!-- Summary -->
+    <div class="page">
+      <div class="page-header">8. Summary</div>
+      <p style="margin-top: 0.25in">
+        Under this Con-PCA attack scenario, CISA measured {{ customer.name }}
+        information system user susceptibility to a successful email phishing
+        attack in the case where technical controls failed to detect, report, or
+        stop the attack. Targeted-userbase vulnerability was measured through
+        two key metrics:
+      </p>
+      <ul>
+        <li>
+          <b>Click Rate</b> (number of email links clicked divided by number of
+          emails sent)
+        </li>
+        <li>
+          <b>Click Time</b> (the time it took the user to click the “malicious”
+          email link minus the time CISA sent the phishing emails)
+        </li>
+      </ul>
+      <p style="margin-top: 0.25in">
+        To collect these metrics, CISA sent three emails of varying deception
+        levels to the email list provided by {{ customer.name }}. The overall
+        click rate was {{ percent(cycle.stats.stats.all.clicked.ratio) }}
+        percent when analyzing all emails clicked across all levels of
+        deception. Overall, {{ customer.name }} user click rates {% if
+        stats.stats.low.clicked.count < stats.stats.high.clicked.count
+        %}increased as the deception or phishing sophistication levels
+        increased{% elif stats.stats.low.clicked.count>
+        stats.stats.high.clicked.count %}decreased as the deception or phishing
+        sophistication levels decreased{% else %}don't reflect a correlation
+        with the deception or phishing sophistication levels{% endif %}. When
+        looking at all levels assessed, emails with the following indicators had
+        higher than average clicks: {% for template in stats.template_stats |
+        sort(attribute="clicked.ratio", reverse=True) %}{{
+        template.template.name }}, {% endfor %}.
+      </p>
+
+      <p style="margin-top: 0.25in">
+        Additionally, sophisticated techniques were used to entice the targets
+        to click. Those techniques are:
+      </p>
+
+      <p style="margin-top: 0.25in">
+        The email template that had the second highest unique user click rate {{
+        percent(stats.template_stats[1].clicked.ratio) }}% was the {{
+        stats.template_stats[1].deception_level }} deception level, a moderate
+        deception email with the subject line “{{
+        stats.template_stats[1].template.subject }}”
+      </p>
+      <p style="margin-top: 0.25in">
+        CISA appreciates any comments to improve this report or service as a
+        whole. For questions about this report or for future engagements with
+        CISA, please send an email to
+        <a href="mailto:vulnerability@cisa.dhs.gov"
+          >vulnerability@cisa.dhs.gov</a
+        >
+      </p>
+      <div class="page-number">
+        Page | {{ total_pages - 3 }} of {{ total_pages }}
+      </div>
     </div>
 
     <!-- Appendix A: Definitions -->
@@ -971,7 +1036,7 @@
         </li>
         <li>
           <b>Click Time</b> is the time CISA sent the phishing email minus the
-          time the user clicked the link within the eail.
+          time the user clicked the link within the email.
         </li>
         <li>
           <b>Average time to first click</b> is the average click time of the
