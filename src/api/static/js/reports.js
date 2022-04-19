@@ -15,6 +15,7 @@ function createDoughnut(chartId, subtotal, total) {
   };
 
   const options = {
+    animation: false,
     plugins: {
       datalabels: {
         backgroundColor: function (context) {
