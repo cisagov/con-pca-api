@@ -40,7 +40,7 @@ class Email:
         from_email: str,
         subject: str,
         body: str,
-        message_type: str,
+        message_type="",
         to_recipients=[],
         bcc_recipients=[],
         attachments=[],

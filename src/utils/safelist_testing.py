@@ -164,7 +164,6 @@ def process_contact(
     email.send(
         to_recipients=[contact["email"]],
         from_email=from_address,
-        message_type="",
         subject=subject,
         body=email_body,
     )

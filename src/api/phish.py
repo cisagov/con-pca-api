@@ -204,7 +204,6 @@ def process_target(
     email.send(
         to_recipients=[target["email"]],
         from_email=from_address,
-        message_type="",
         subject=subject,
         body=email_body,
     )
