@@ -977,22 +977,7 @@
         levels to the email list provided by {{ customer.name }}. The overall
         click rate was {{ percent(cycle.stats.stats.all.clicked.ratio) }}
         percent when analyzing all emails clicked across all levels of
-        deception. Overall, {{ customer.name }} user click rates {% if
-        stats.stats.low.clicked.count < stats.stats.high.clicked.count
-        %}increased as the deception or phishing sophistication levels
-        increased{% elif stats.stats.low.clicked.count>
-        stats.stats.high.clicked.count %}decreased as the deception or phishing
-        sophistication levels decreased{% else %}don't reflect a correlation
-        with the deception or phishing sophistication levels{% endif %}. When
-        looking at all levels assessed, emails with the following indicators had
-        higher than average clicks: {% for template in stats.template_stats |
-        sort(attribute="clicked.ratio", reverse=True) %}{{
-        template.template.name }}, {% endfor %}.
-      </p>
-
-      <p style="margin-top: 0.25in">
-        Additionally, sophisticated techniques were used to entice the targets
-        to click. Those techniques are:
+        deception.
       </p>
 
       <p style="margin-top: 0.25in">
