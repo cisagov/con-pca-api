@@ -131,13 +131,17 @@ class Email:
         for header in self.sending_profile.get("headers", []):
             data[f"h:{header['key']}"] = header["value"]
 
+        # Attach files to email
+        attachment_files = []
+        for a in attachments:
+            with open(a, "rb") as file:
+                attachment_files.append(("attachment", (filename, file.read())))
+
         resp = requests.post(
             f"https://api.mailgun.net/v3/{self.sending_profile['mailgun_domain']}/messages",
             auth=("api", self.sending_profile["mailgun_api_key"]),
             data=data,
-            files=[
-                ("attachment", (filename, open(a, "rb").read())) for a in attachments
-            ],
+            files=attachment_files,
         )
         try:
             resp.raise_for_status()
