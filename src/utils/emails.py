@@ -37,28 +37,50 @@ class Email:
 
     def send(
         self,
-        from_email,
-        subject,
-        body,
+        from_email: str,
+        subject: str,
+        body: str,
+        message_type="",
         to_recipients=[],
         bcc_recipients=[],
         attachments=[],
     ):
         """Send email."""
+        pdf_filename = (
+            f"CISA_PCA_{message_type}_{datetime.today().strftime('%m%d%Y')}.pdf"
+        )
         if self.sending_profile["interface_type"] == "SMTP":
             logging.info("Sending email via SMTP")
             self.send_smtp(
-                from_email, subject, body, to_recipients, bcc_recipients, attachments
+                from_email,
+                subject,
+                body,
+                pdf_filename,
+                to_recipients,
+                bcc_recipients,
+                attachments,
             )
         elif self.sending_profile["interface_type"] == "Mailgun":
             logging.info("Sending email via Mailgun")
             self.send_mailgun(
-                from_email, subject, body, to_recipients, bcc_recipients, attachments
+                from_email,
+                subject,
+                body,
+                pdf_filename,
+                to_recipients,
+                bcc_recipients,
+                attachments,
             )
         elif self.sending_profile["interface_type"] == "SES":
             logging.info("Sending email via SES")
             self.send_ses(
-                from_email, subject, body, to_recipients, bcc_recipients, attachments
+                from_email,
+                subject,
+                body,
+                pdf_filename,
+                to_recipients,
+                bcc_recipients,
+                attachments,
             )
         logging.info(
             f"Sent email to {to_recipients}, {bcc_recipients} from {from_email}."
@@ -69,6 +91,7 @@ class Email:
         from_email,
         subject,
         body,
+        filename,
         to_recipients=[],
         bcc_recipients=[],
         attachments=[],
@@ -78,6 +101,7 @@ class Email:
             subject=subject,
             from_email=from_email,
             html=body,
+            pdf_filename=filename,
             to_recipients=to_recipients,
             bcc_recipients=bcc_recipients,
             headers=self.sending_profile.get("headers", []),
@@ -90,6 +114,7 @@ class Email:
         from_email,
         subject,
         html,
+        filename: str,
         to_recipients=[],
         bcc_recipients=[],
         attachments=[],
@@ -106,14 +131,17 @@ class Email:
         for header in self.sending_profile.get("headers", []):
             data[f"h:{header['key']}"] = header["value"]
 
+        # Attach files to email
+        attachment_files = []
+        for a in attachments:
+            with open(a, "rb") as file:
+                attachment_files.append(("attachment", (filename, file.read())))
+
         resp = requests.post(
             f"https://api.mailgun.net/v3/{self.sending_profile['mailgun_domain']}/messages",
             auth=("api", self.sending_profile["mailgun_api_key"]),
             data=data,
-            files=[
-                ("attachment", ("report.pdf", open(a, "rb").read()))
-                for a in attachments
-            ],
+            files=attachment_files,
         )
         try:
             resp.raise_for_status()
@@ -131,6 +159,7 @@ class Email:
         from_email,
         subject,
         body,
+        filename: str,
         to_recipients=[],
         bcc_recipients=[],
         attachments=[],
@@ -141,6 +170,7 @@ class Email:
             subject=subject,
             from_email=from_email,
             html=body,
+            pdf_filename=filename,
             to_recipients=to_recipients,
             bcc_recipients=bcc_recipients,
             headers=self.sending_profile.get("headers", []),
@@ -196,6 +226,7 @@ def build_message(
     subject,
     from_email,
     html,
+    pdf_filename,
     to_recipients=[],
     bcc_recipients=[],
     attachments=[],
@@ -227,7 +258,11 @@ def build_message(
     for filename in attachments:
         with open(filename, "rb") as attachment:
             part = MIMEApplication(attachment.read())
-            part.add_header("Content-Disposition", "attachment", filename="report.pdf")
+            part.add_header(
+                "Content-Disposition",
+                "attachment",
+                filename=pdf_filename,
+            )
         message.attach(part)
 
     return message.as_string()

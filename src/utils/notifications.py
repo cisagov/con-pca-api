@@ -169,6 +169,7 @@ class Notification:
                     from_email=from_address,
                     to_recipients=addresses.get("to"),
                     bcc_recipients=addresses.get("bcc"),
+                    message_type=self.message_type,
                     subject=report["subject"],
                     body=report["html"],
                     attachments=attachments,
