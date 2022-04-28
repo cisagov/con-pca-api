@@ -8,7 +8,7 @@ from uuid import uuid4
 from api.app import app
 from api.manager import CycleManager, SubscriptionManager
 from utils.notifications import Notification
-from utils.subscriptions import start_subscription, stop_subscription
+from utils.subscriptions import stop_subscription
 from utils.time import get_yearly_minutes
 
 subscription_manager = SubscriptionManager()
@@ -175,9 +175,12 @@ def five_day_reminder(subscription, cycle):
 
 def end_cycle(subscription, cycle):
     """End cycle by stopping or continuing new cycle."""
-    if subscription.get("continuous_subscription"):
-        stop_subscription(str(subscription["_id"]))
-        start_subscription(str(subscription["_id"]))
-    else:
-        stop_subscription(str(subscription["_id"]))
-        Notification("subscription_stopped", subscription, cycle).send()
+    # Temporarily disable continuous subscription cycle for all subscriptions
+    # When ready to re-enable, just uncomment the code below. This the only
+    # instance in this codebase where this needs to be done.
+    # if subscription.get("continuous_subscription"):
+    #     stop_subscription(str(subscription["_id"]))
+    #     start_subscription(str(subscription["_id"]))
+    # else:
+    stop_subscription(str(subscription["_id"]))
+    Notification("subscription_stopped", subscription, cycle).send()
