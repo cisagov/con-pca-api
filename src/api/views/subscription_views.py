@@ -57,29 +57,37 @@ class SubscriptionsView(MethodView):
         if request.args.get("archived", "").lower() == "true":
             parameters["archived"] = True
 
-        return jsonify(
-            subscription_manager.all(
-                params=parameters,
-                fields=[
-                    "_id",
-                    "customer_id",
-                    "name",
-                    "status",
-                    "start_date",
-                    "cycle_length_minutes",
-                    "active",
-                    "archived",
-                    "primary_contact",
-                    "admin_email",
-                    "target_email_list",
-                    "continuous_subscription",
-                    "created",
-                    "created_by",
-                    "updated",
-                    "updated_by",
-                ],
-            )
+        subscriptions = subscription_manager.all(
+            params=parameters,
+            fields=[
+                "_id",
+                "customer_id",
+                "name",
+                "status",
+                "start_date",
+                "cycle_length_minutes",
+                "active",
+                "archived",
+                "primary_contact",
+                "admin_email",
+                "target_email_list",
+                "continuous_subscription",
+                "created",
+                "created_by",
+                "updated",
+                "updated_by",
+            ],
         )
+        if request.args.get("overview"):
+            cycles = cycle_manager.all(fields=["subscription_id", "end_date"])
+            subscriptions = [
+                dict(s, **{"end_date": c["end_date"]})
+                for c in cycles
+                for s in subscriptions
+                if c["subscription_id"] == s["_id"]
+            ]
+
+        return jsonify(subscriptions)
 
     def post(self):
         """Post."""
