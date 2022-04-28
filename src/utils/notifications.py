@@ -170,6 +170,7 @@ class Notification:
                     to_recipients=addresses.get("to"),
                     bcc_recipients=addresses.get("bcc"),
                     message_type=self.message_type,
+                    subscription_name=self.subscription.get("name"),
                     subject=report["subject"],
                     body=report["html"],
                     attachments=attachments,

@@ -41,14 +41,13 @@ class Email:
         subject: str,
         body: str,
         message_type="",
+        subscription_name="",
         to_recipients=[],
         bcc_recipients=[],
         attachments=[],
     ):
         """Send email."""
-        pdf_filename = (
-            f"CISA_PCA_{message_type}_{datetime.today().strftime('%m%d%Y')}.pdf"
-        )
+        pdf_filename = f"CISA_PCA_{message_type}_{subscription_name}_{datetime.today().strftime('%m%d%Y')}.pdf"
         if self.sending_profile["interface_type"] == "SMTP":
             logging.info("Sending email via SMTP")
             self.send_smtp(
