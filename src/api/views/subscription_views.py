@@ -81,10 +81,10 @@ class SubscriptionsView(MethodView):
         if request.args.get("overview"):
             cycles = cycle_manager.all(fields=["subscription_id", "end_date"])
             subscriptions = [
-                dict(subscription, **{"end_date": cycle["end_date"]})
-                for cycle in cycles
-                for subscription in subscriptions
-                if cycle["subscription_id"] == subscription["_id"]
+                dict(s, **{"end_date": c["end_date"]})
+                for c in cycles
+                for s in subscriptions
+                if c["subscription_id"] == s["_id"]
             ]
 
         return jsonify(subscriptions)
