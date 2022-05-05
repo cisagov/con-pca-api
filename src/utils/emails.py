@@ -7,6 +7,7 @@ from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import logging
+import re
 from smtplib import SMTP
 
 # Third-Party Libraries
@@ -198,14 +199,16 @@ def get_email_context(customer=None, target=None, url=None):
 def clean_from_address(template_from_address: str):
     """Clean processed from address."""
     # Get template display name
-    if "<" in template_from_address:
-        template_display = template_from_address.split("<")[0].strip()
-        template_sender = template_from_address.split("@")[0].split("<")[-1]
-        sp_domain = template_from_address.split("@")[1].split(">")[0]
-    else:
-        template_display = ""
-        template_sender = template_from_address.split("@")[0]
-        sp_domain = template_from_address.split("@")[1]
+    template_display = ""
+    try:
+        r = re.match("^(.*?) <(.*?)@(.*?)>", template_from_address)
+        template_display = r.group(1)  # type: ignore
+        template_sender = r.group(2)  # type: ignore
+        sp_domain = r.group(3)  # type: ignore
+    except AttributeError:
+        split_from_address = template_from_address.split("@")
+        template_sender = split_from_address[0]
+        sp_domain = split_from_address[1]
 
     # Remove spaces and other special characters
     template_sender = template_sender.translate(template_sender.maketrans(" ,.", "---"))
