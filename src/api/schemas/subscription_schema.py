@@ -86,6 +86,7 @@ class SubscriptionSchema(BaseSchema):
     start_date = DateTimeField()
     primary_contact = fields.Nested(CustomerContactSchema)
     admin_email = fields.Str()
+    operator_email = fields.Str()
     status = fields.Str(
         validate=validate.OneOf(["created", "queued", "running", "stopped"])
     )

@@ -18,7 +18,7 @@ from api.manager import (
     TargetManager,
     TemplateManager,
 )
-from utils.emails import Email, get_email_context, get_from_address
+from utils.emails import Email, clean_from_address, get_email_context, get_from_address
 
 customer_manager = CustomerManager()
 cycle_manager = CycleManager()
@@ -200,6 +200,7 @@ def process_target(
     from_address = render_template_string(
         get_from_address(sending_profile, template["from_address"]), **context
     )
+    from_address = clean_from_address(from_address)
     subject = render_template_string(template["subject"], **context)
     email.send(
         to_recipients=[target["email"]],
