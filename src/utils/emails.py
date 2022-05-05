@@ -195,6 +195,30 @@ def get_email_context(customer=None, target=None, url=None):
     }
 
 
+def clean_from_address(template_from_address: str):
+    """Clean processed from address."""
+    # Get template display name
+    if "<" in template_from_address:
+        template_display = template_from_address.split("<")[0].strip()
+        template_sender = template_from_address.split("@")[0].split("<")[-1]
+        sp_domain = template_from_address.split("@")[1].split(">")[0]
+    else:
+        template_display = ""
+        template_sender = template_from_address.split("@")[0]
+        sp_domain = template_from_address.split("@")[1]
+
+    # Remove spaces and other special characters
+    template_sender = template_sender.translate(template_sender.maketrans(" ,.", "---"))
+    template_sender = template_sender.strip("-").lower()
+
+    # Generate from address
+    if "<" in template_from_address:
+        from_address = f"{template_display} <{template_sender}@{sp_domain}>"
+    else:
+        from_address = f"{template_sender}@{sp_domain}"
+    return from_address
+
+
 def get_from_address(sending_profile, template_from_address):
     """Get campaign from address."""
     # Get template display name

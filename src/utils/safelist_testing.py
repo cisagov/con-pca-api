@@ -17,7 +17,7 @@ from api.manager import (
     TemplateManager,
 )
 from api.phish import add_phish_headers, get_tracking_info
-from utils.emails import Email, get_email_context, get_from_address
+from utils.emails import Email, clean_from_address, get_email_context, get_from_address
 from utils.request import get_landing_page, get_timeline_entry
 
 customer_manager = CustomerManager()
@@ -160,6 +160,9 @@ def process_contact(
     from_address = render_template_string(
         get_from_address(sending_profile, template["from_address"]), **context
     )
+
+    from_address = clean_from_address(from_address)
+
     subject = render_template_string(template["subject"], **context)
     email.send(
         to_recipients=[contact["email"]],
