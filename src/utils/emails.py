@@ -200,11 +200,14 @@ def clean_from_address(template_from_address: str):
     """Clean processed from address."""
     # Get template display name
     template_display = ""
+    template_sender = ""
+    sp_domain = ""
     try:
         r = re.match("^(.*?) <(.*?)@(.*?)>", template_from_address)
-        template_display = r.group(1)  # type: ignore
-        template_sender = r.group(2)  # type: ignore
-        sp_domain = r.group(3)  # type: ignore
+        if r is not None:
+            template_display = r.group(1)  # type: ignore
+            template_sender = r.group(2)  # type: ignore
+            sp_domain = r.group(3)  # type: ignore
     except AttributeError:
         split_from_address = template_from_address.split("@")
         template_sender = split_from_address[0]
