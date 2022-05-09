@@ -1,6 +1,6 @@
 APScheduler==3.9.1
 beautifulsoup4==4.11.1
-boto3==1.22.1
+boto3==1.22.9
 cognitojwt==1.4.1
 Faker==13.4.0
 Flask==2.1.1
