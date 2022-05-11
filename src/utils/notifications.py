@@ -92,6 +92,11 @@ class Notification:
                 "subject": "Con-PCA Phish Subscription 5-Day Reminder",
                 "to": "admin",
             },
+            "safelisting_reminder": {
+                "subject": "Con-PCA Phish Subscription Safelisting Information",
+                "to": "primary_contact",
+                "bcc": "admin",
+            },
         }.get(message_type, {})
         report["html"] = render_template(f"emails/{message_type}.html", **context)
         return report
