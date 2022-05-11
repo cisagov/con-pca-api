@@ -131,7 +131,7 @@ def process_task(task, subscription, cycle):
         "thirty_day_reminder": thirty_day_reminder,
         "fifteen_day_reminder": fifteen_day_reminder,
         "five_day_reminder": five_day_reminder,
-        "safelisting_reminder": safelisting_reminder,
+        # "safelisting_reminder": safelisting_reminder,
     }
     return task_types[task["task_type"]](subscription, cycle)
 
