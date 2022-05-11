@@ -101,7 +101,6 @@ def add_new_task(subscription, task):
         "cycle_report": scheduled + timedelta(minutes=cycle_minutes),
         "yearly_report": scheduled + timedelta(minutes=yearly_minutes),
         "end_cycle": scheduled + timedelta(minutes=cycle_minutes),
-        "safelisting_reminder": scheduled,
     }.get(task["task_type"])
     if new_date:
         task = {
@@ -131,7 +130,7 @@ def process_task(task, subscription, cycle):
         "thirty_day_reminder": thirty_day_reminder,
         "fifteen_day_reminder": fifteen_day_reminder,
         "five_day_reminder": five_day_reminder,
-        # "safelisting_reminder": safelisting_reminder,
+        "safelisting_reminder": safelisting_reminder,
     }
     return task_types[task["task_type"]](subscription, cycle)
 
