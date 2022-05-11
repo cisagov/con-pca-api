@@ -50,6 +50,7 @@ from api.views.subscription_views import (
     SubscriptionHeaderView,
     SubscriptionLaunchView,
     SubscriptionSafelistExportView,
+    SubscriptionSafelistSendView,
     SubscriptionsView,
     SubscriptionTestView,
     SubscriptionValidView,
@@ -113,6 +114,7 @@ rules = [
         "/subscription/<subscription_id>/safelist/export/",
         SubscriptionSafelistExportView,
     ),
+    ("/subscription/<subscription_id>/safelist/send/", SubscriptionSafelistSendView),
     # Tag Views
     ("/tags/", TagsView),
     # Template Views

@@ -18,6 +18,7 @@ from api.manager import (
     SubscriptionManager,
     TargetManager,
 )
+from utils.notifications import Notification
 from utils.safelist_testing import test_subscription
 from utils.subscriptions import (
     create_subscription_name,
@@ -307,3 +308,21 @@ class SubscriptionSafelistExportView(MethodView):
         finally:
             logging.info(f"Deleting file {filepath}")
             os.remove(filepath)
+
+
+class SubscriptionSafelistSendView(MethodView):
+    """Send Safelisting Information Email."""
+
+    def get(self, subscription_id):
+        """Send Safelisting Information Email."""
+        subscription = subscription_manager.get(document_id=subscription_id)
+        cycle_filter_data = {
+            "subscription_id": subscription["_id"],
+        }
+        if subscription["status"] not in ["created", "stopped"]:
+            cycle_filter_data["active"] = True
+
+        cycle = cycle_manager.get(filter_data=cycle_filter_data)
+
+        Notification("safelisting_reminder", subscription, cycle).send()
+        return jsonify({"success": "Safelisting information email sent."})

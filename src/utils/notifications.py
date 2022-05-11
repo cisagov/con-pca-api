@@ -29,7 +29,7 @@ class Notification:
 
     def set_context(self):
         """Set notification context."""
-        if self.message_type == "subscription_stopped":
+        if self.message_type in ["subscription_stopped, safelisting_reminder"]:
             end_date = datetime.utcnow()
         else:
             end_date = self.cycle["end_date"]
@@ -91,6 +91,11 @@ class Notification:
             "five_day_reminder": {
                 "subject": "Con-PCA Phish Subscription 5-Day Reminder",
                 "to": "admin",
+            },
+            "safelisting_reminder": {
+                "subject": "Con-PCA Phish Subscription Safelisting Information",
+                "to": "primary_contact",
+                "bcc": "admin",
             },
         }.get(message_type, {})
         report["html"] = render_template(f"emails/{message_type}.html", **context)
