@@ -29,7 +29,7 @@ class Notification:
 
     def set_context(self):
         """Set notification context."""
-        if self.message_type == "subscription_stopped":
+        if self.message_type in ["subscription_stopped, safelisting_reminder"]:
             end_date = datetime.utcnow()
         else:
             end_date = self.cycle["end_date"]
