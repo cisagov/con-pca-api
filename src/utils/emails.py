@@ -48,14 +48,17 @@ class Email:
         attachments=[],
     ):
         """Send email."""
-        pdf_filename = f"CISA_PCA_{message_type}_{subscription_name}_{datetime.today().strftime('%m%d%Y')}.pdf"
+        if message_type == "safelisting_reminder":
+            f"CISA_PCA_Safelisting_Information_{subscription_name}_{datetime.today().strftime('%m%d%Y')}.xlsx"
+        else:
+            attachment_filename = f"CISA_PCA_{message_type}_{subscription_name}_{datetime.today().strftime('%m%d%Y')}.pdf"
         if self.sending_profile["interface_type"] == "SMTP":
             logging.info("Sending email via SMTP")
             self.send_smtp(
                 from_email,
                 subject,
                 body,
-                pdf_filename,
+                attachment_filename,
                 to_recipients,
                 bcc_recipients,
                 attachments,
@@ -66,7 +69,7 @@ class Email:
                 from_email,
                 subject,
                 body,
-                pdf_filename,
+                attachment_filename,
                 to_recipients,
                 bcc_recipients,
                 attachments,
@@ -77,7 +80,7 @@ class Email:
                 from_email,
                 subject,
                 body,
-                pdf_filename,
+                attachment_filename,
                 to_recipients,
                 bcc_recipients,
                 attachments,
