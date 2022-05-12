@@ -204,6 +204,7 @@ class SubscriptionSafelistExportView(MethodView):
         filepath = generate_safelist_file(
             subscription_id=subscription_id,
             phish_header=data["phish_header"],
+            domains=data["domains"],
             ips=data["ips"],
             templates=data["templates"],
             reporting_password=data["password"],
