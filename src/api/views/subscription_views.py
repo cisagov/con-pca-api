@@ -228,7 +228,7 @@ class SubscriptionSafelistExportView(MethodView):
 class SubscriptionSafelistSendView(MethodView):
     """Send Safelisting Information Email."""
 
-    def get(self, subscription_id):
+    def post(self, subscription_id):
         """Send Safelisting Information Email."""
         subscription = subscription_manager.get(document_id=subscription_id)
         cycle_filter_data = {
@@ -239,8 +239,19 @@ class SubscriptionSafelistSendView(MethodView):
 
         cycle = cycle_manager.get(filter_data=cycle_filter_data)
 
-        filepath = ""
-        Notification("safelisting_reminder", subscription, cycle).send()
-        os.remove(filepath)
+        data = request.json
+        filepath = generate_safelist_file(
+            subscription_id=subscription_id,
+            phish_header=data["phish_header"],
+            domains=data["domains"],
+            ips=data["ips"],
+            templates=data["templates"],
+            reporting_password=data["password"],
+            simulation_url=data.get("simulation_url", ""),
+        )
+
+        Notification("safelisting_reminder", subscription, cycle).send(
+            attachments=[filepath]
+        )
 
         return jsonify({"success": "Safelisting information email sent."})
