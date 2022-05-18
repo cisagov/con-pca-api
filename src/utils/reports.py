@@ -544,7 +544,12 @@ def compare_svg(
 
 def percent_change(current_percent, previous_percent):
     """Get percent change."""
-    return round((current_percent - previous_percent) / abs(previous_percent) * 100, 2)
+    try:
+        return round(
+            (current_percent - previous_percent) / abs(previous_percent) * 100, 2
+        )
+    except ZeroDivisionError:
+        return 0
 
 
 def percent_svg(current_percent, previous_percent):
