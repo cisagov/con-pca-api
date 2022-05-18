@@ -6,13 +6,21 @@ from uuid import uuid4
 
 # cisagov Libraries
 from api.app import app
-from api.manager import CycleManager, SubscriptionManager
+from api.manager import (
+    CycleManager,
+    SendingProfileManager,
+    SubscriptionManager,
+    TemplateManager,
+)
 from utils.notifications import Notification
+from utils.safelist import generate_safelist_file
 from utils.subscriptions import stop_subscription
 from utils.time import get_yearly_minutes
 
-subscription_manager = SubscriptionManager()
 cycle_manager = CycleManager()
+sending_profile_manager = SendingProfileManager()
+subscription_manager = SubscriptionManager()
+template_manager = TemplateManager()
 
 
 def tasks_job():
@@ -189,4 +197,23 @@ def end_cycle(subscription, cycle):
 
 def safelisting_reminder(subscription, cycle):
     """Send safelisting reminder email."""
-    Notification("safelisting_reminder", subscription, cycle).send()
+    sending_profiles = sending_profile_manager.all()
+
+    templates = template_manager.all(
+        params={"_id": {"$in": subscription["templates_selected"]}},
+        fields=["subject", "deception_score"],
+    )
+
+    filepath = generate_safelist_file(
+        subscription_id=subscription["_id"],
+        phish_header=cycle["phish_header"],
+        domains=[sp["from_address"].split("@")[1] for sp in sending_profiles],
+        ips=[sp["sending_ips"] for sp in sending_profiles],
+        templates=templates,
+        reporting_password=subscription["reporting_password"],
+        simulation_url=subscription.get("landing_domain", ""),  # simulated phishing url
+    )
+
+    Notification("safelisting_reminder", subscription, cycle).send(
+        attachments=[filepath]
+    )
