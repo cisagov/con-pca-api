@@ -214,6 +214,7 @@ def safelisting_reminder(subscription, cycle):
         simulation_url=subscription.get("landing_domain", ""),  # simulated phishing url
     )
 
-    Notification("safelisting_reminder", subscription, cycle).send(
-        attachments=[filepath]
-    )
+    with app.app_context():
+        Notification("safelisting_reminder", subscription, cycle).send(
+            attachments=[filepath]
+        )
