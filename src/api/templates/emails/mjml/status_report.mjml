@@ -8,7 +8,8 @@
 
         <mj-text font-size="20px" color="#1B2352" font-family="helvetica">
           Thank you for participating in the CISA Phishing Subscription Service
-          Con-PCA. Attached is your phishing progress report for your review.
+          Con-PCA. Attached is your phishing progress report for your review. It
+          is encrypted with the same previously shared key.
         </mj-text>
         <mj-text font-size="20px" color="#1B2352" font-family="helvetica">
           As this email address is unmonitored, please respond to your CISA
