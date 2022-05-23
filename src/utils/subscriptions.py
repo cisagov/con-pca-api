@@ -176,7 +176,6 @@ def get_initial_tasks(subscription, cycle):
     yearly_minutes = get_yearly_minutes()
     task_types = {
         "start_subscription_email": start_date,
-        "safelisting_reminder": start_date,
         "status_report": start_date + timedelta(minutes=report_minutes),
         "cycle_report": start_date + timedelta(minutes=cycle_minutes),
         "yearly_report": start_date + timedelta(minutes=yearly_minutes),
@@ -188,8 +187,10 @@ def get_initial_tasks(subscription, cycle):
         task_types["thirty_day_reminder"] = end_date - timedelta(days=30)
     if cycle_days >= 15:
         task_types["fifteen_day_reminder"] = end_date - timedelta(days=15)
+        task_types["safelisting_reminder"] = end_date - timedelta(days=15)
     if cycle_days >= 5:
         task_types["five_day_reminder"] = end_date - timedelta(days=5)
+        task_types["safelisting_reminder"] = end_date - timedelta(days=15)
 
     tasks = []
     for task_type, scheduled_date in task_types.items():
