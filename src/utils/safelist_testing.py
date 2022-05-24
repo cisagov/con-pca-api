@@ -198,7 +198,9 @@ def process_click_test(subscription_id, contact_id):
         return redirect(subscription["landing_page_url"], 302)
 
     # Get landing page
-    landing_page = get_landing_page(contact["template"]["_id"])
+    landing_page = get_landing_page(
+        subscription=subscription, template_id=contact["template"]["_id"]
+    )
 
     # Get customer
     customer = customer_manager.get(document_id=subscription["customer_id"])

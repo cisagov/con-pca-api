@@ -66,7 +66,9 @@ class ClickView(MethodView):
             return redirect(subscription["landing_page_url"], 302)
 
         customer = customer_manager.get(document_id=subscription["customer_id"])
-        landing_page = get_landing_page(target["template_id"])
+        landing_page = get_landing_page(
+            subscription=subscription, template_id=target["template_id"]
+        )
 
         context = get_email_context(target=target, customer=customer)
         return render_template_string(landing_page["html"], **context)
