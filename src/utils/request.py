@@ -41,6 +41,7 @@ def get_timeline_entry(action):
 
 def get_landing_page(subscription, template_id):
     """Get landing page from a click request."""
+    landing_page_id = ""
     template = template_manager.get(document_id=template_id)
 
     if subscription.get("landing_page_id"):
