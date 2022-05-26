@@ -39,15 +39,22 @@ def get_timeline_entry(action):
     }
 
 
-def get_landing_page(template_id):
+def get_landing_page(subscription, template_id):
     """Get landing page from a click request."""
     template = template_manager.get(document_id=template_id)
-    if template.get("landing_page_id"):
-        landing_page = landing_page_manager.get(document_id=template["landing_page_id"])
+
+    if subscription.get("landing_page_id"):
+        landing_page_id = subscription["landing_page_id"]
+    elif template.get("landing_page_id"):
+        landing_page_id = template["landing_page_id"]
     else:
         landing_page = landing_page_manager.get(
             filter_data={"is_default_template": True}
         )
+
     if not landing_page:
         landing_page = landing_page_manager.get(filter_data={})
+    else:
+        landing_page = landing_page_manager.get(document_id=landing_page_id)
+
     return landing_page
