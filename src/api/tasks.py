@@ -193,7 +193,7 @@ def end_cycle(subscription, cycle):
             for t in template_manager.all({"retired": False})
             if t not in subscription["templates_selected"]
         ]
-        templates_selected = select_templates(templates)
+        templates_selected = sum(select_templates(templates), [])
         start_subscription(
             str(subscription["_id"]), templates_selected=templates_selected
         )
