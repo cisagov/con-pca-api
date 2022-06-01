@@ -149,7 +149,8 @@ class Notification:
                 nonhuman=nonhuman,
             )
             logging.info(f"Attaching {filename} to notification.")
-            attachments.append(filename)
+            if filename not in attachments:
+                attachments.append(filename)
 
         addresses = self.get_to_addresses(report)
 

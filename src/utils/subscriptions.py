@@ -27,7 +27,7 @@ target_manager = TargetManager()
 template_manager = TemplateManager()
 
 
-def start_subscription(subscription_id):
+def start_subscription(subscription_id, templates_selected=[]):
     """Launch a subscription."""
     subscription = subscription_manager.get(document_id=subscription_id)
 
@@ -48,6 +48,10 @@ def start_subscription(subscription_id):
     cycle["template_ids"] = set()
     resp = cycle_manager.save(cycle)
     cycle_id = resp["_id"]
+
+    if templates_selected:
+        subscription["templates_selected"] = templates_selected
+
     templates = template_manager.all(
         params={"_id": {"$in": subscription["templates_selected"]}},
         fields=["_id", "deception_score"],
@@ -82,13 +86,16 @@ def start_subscription(subscription_id):
         cycle["template_ids"].add(target["template_id"])
 
     tasks = get_initial_tasks(subscription, cycle)
-    subscription_manager.update(
-        document_id=subscription_id,
-        data={
-            "status": "running",
-            "tasks": tasks,
-        },
-    )
+
+    update_data = {
+        "status": "running",
+        "tasks": tasks,
+    }
+
+    if templates_selected:
+        update_data["templates_selected"] = templates_selected
+
+    subscription_manager.update(document_id=subscription_id, data=update_data)
     cycle_manager.update(document_id=cycle_id, data=cycle)
     target_manager.save_many(targets)
     return resp, 200
