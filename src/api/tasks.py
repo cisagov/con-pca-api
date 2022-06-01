@@ -15,6 +15,7 @@ from api.manager import (
 from utils.notifications import Notification
 from utils.safelist import generate_safelist_file
 from utils.subscriptions import start_subscription, stop_subscription
+from utils.templates import select_templates
 from utils.time import get_yearly_minutes
 
 cycle_manager = CycleManager()
@@ -186,7 +187,16 @@ def end_cycle(subscription, cycle):
     """End cycle by stopping or continuing new cycle."""
     if subscription.get("continuous_subscription"):
         stop_subscription(str(subscription["_id"]))
-        start_subscription(str(subscription["_id"]))
+        # randomize templates between cycles
+        templates = [
+            t
+            for t in template_manager.all({"retired": False})
+            if t not in subscription["templates_selected"]
+        ]
+        templates_selected = select_templates(templates)
+        start_subscription(
+            str(subscription["_id"]), templates_selected=templates_selected
+        )
     else:
         stop_subscription(str(subscription["_id"]))
         Notification("subscription_stopped", subscription, cycle).send()
