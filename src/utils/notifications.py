@@ -188,4 +188,8 @@ class Notification:
             if attachments:
                 for attachment in attachments:
                     logging.info(f"Deleting attachment {attachment}")
-                    os.remove(attachment)
+                    try:
+                        os.remove(attachment)
+                    except FileNotFoundError as e:
+                        logging.info(str(e))
+                        pass

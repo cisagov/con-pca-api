@@ -197,7 +197,7 @@ def get_initial_tasks(subscription, cycle):
         task_types["safelisting_reminder"] = end_date - timedelta(days=15)
     if cycle_days >= 5:
         task_types["five_day_reminder"] = end_date - timedelta(days=5)
-        task_types["safelisting_reminder"] = end_date - timedelta(days=15)
+        task_types["safelisting_reminder"] = end_date - timedelta(days=5)
 
     tasks = []
     for task_type, scheduled_date in task_types.items():
