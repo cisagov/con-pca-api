@@ -192,3 +192,4 @@ class Notification:
                         os.remove(attachment)
                     except FileNotFoundError as e:
                         logging.info(str(e))
+                        pass
