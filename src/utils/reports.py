@@ -180,7 +180,7 @@ def _add_overall_stats_csv(stats: dict):
 def _add_time_stats_csv(stats: dict):
     """Add Time Stats CSV attachment to PDF."""
     headers = [
-        "opened__one_minutes",
+        "opened__one_minute",
         "opened__three_minutes",
         "opened__five_minutes",
         "opened__fifteen_minutes",
@@ -190,7 +190,7 @@ def _add_time_stats_csv(stats: dict):
         "opened__three_hours",
         "opened__four_hours",
         "opened__one_day",
-        "clicked__one_minutes",
+        "clicked__one_minute",
         "clicked__three_minutes",
         "clicked__five_minutes",
         "clicked__fifteen_minutes",
@@ -202,7 +202,7 @@ def _add_time_stats_csv(stats: dict):
         "clicked__one_day",
     ]
     data = {
-        "opened__one_minutes": stats["time_stats"]["opened"]["one_minutes"]["count"],
+        "opened__one_minute": stats["time_stats"]["opened"]["one_minutes"]["count"],
         "opened__three_minutes": stats["time_stats"]["opened"]["three_minutes"][
             "count"
         ],
@@ -218,9 +218,9 @@ def _add_time_stats_csv(stats: dict):
         ],
         "opened__two_hours": stats["time_stats"]["opened"]["two_hours"]["count"],
         "opened__three_hours": stats["time_stats"]["opened"]["three_hours"]["count"],
-        "opened__four_hours": stats["time_stats"]["opened"]["four_hours"],
+        "opened__four_hours": stats["time_stats"]["opened"]["four_hours"]["count"],
         "opened__one_day": stats["time_stats"]["opened"]["one_day"]["count"],
-        "clicked__one_minutes": stats["time_stats"]["clicked"]["one_minutes"]["count"],
+        "clicked__one_minute": stats["time_stats"]["clicked"]["one_minutes"]["count"],
         "clicked__three_minutes": stats["time_stats"]["clicked"]["three_minutes"][
             "count"
         ],
@@ -253,7 +253,6 @@ def _add_template_stats_csv(stats: dict):
         "clicked",
         "deception_level",
         "subject",
-        "html",
         "from_address",
         "deception_score",
         "relevancy__public_news",
@@ -277,7 +276,6 @@ def _add_template_stats_csv(stats: dict):
             "clicked": stat["clicked"]["count"],
             "deception_level": stat["deception_level"],
             "subject": stat["template"]["subject"],
-            "html": stat["template"]["html"],
             "from_address": stat["template"]["from_address"],
             "deception_score": stat["template"]["deception_score"],
             "relevancy__public_news": stat["template"]["indicators"]["relevancy"][
