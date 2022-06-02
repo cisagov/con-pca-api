@@ -25,7 +25,7 @@ class LandingPagesView(MethodView):
                 default_landing_page["name"] = (
                     "(System Default)" + default_landing_page["name"]
                 )
-                default_landing_page["_id"] = 0
+                default_landing_page["_id"] = page["_id"]
                 if with_default:
                     pages.append(default_landing_page)
                 break
