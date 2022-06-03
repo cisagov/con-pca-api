@@ -49,7 +49,7 @@ def get_landing_page(subscription, template_id):
     """
     landing_page_id = ""
 
-    template = template_manager.get(document_id=template_id)
+    template = template_manager.get(document_id=template_id, fields=["landing_page_id"])
 
     if subscription.get("landing_page_id"):
         landing_page_id = subscription["landing_page_id"]
