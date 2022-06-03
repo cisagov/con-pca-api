@@ -1,6 +1,7 @@
 """Flask request helpers."""
 # Standard Python Libraries
 from datetime import datetime
+import logging
 
 # Third-Party Libraries
 from flask import request
@@ -49,17 +50,19 @@ def get_landing_page(subscription, template_id):
     """
     landing_page_id = ""
 
-    template = template_manager.get(document_id=template_id)
+    template = template_manager.get(document_id=template_id, fields=["landing_page_id"])
 
     if subscription.get("landing_page_id"):
         landing_page_id = subscription["landing_page_id"]
+        logging.info(f"Subscription landing page has been set with {landing_page_id}")
     elif template.get("landing_page_id"):
         landing_page_id = template["landing_page_id"]
+        logging.info(f"Template landing page has been set with {landing_page_id}")
 
-    landing_page = (
-        landing_page_manager.get(document_id=landing_page_id)
+    kwargs = (
+        {"document_id": landing_page_id}
         if landing_page_id
-        else landing_page_manager.get(filter_data={"is_default_template": True})
+        else {"filter_data": {"is_default_template": True}}
     )
 
-    return landing_page
+    return landing_page_manager.get(**kwargs)

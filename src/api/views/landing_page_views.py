@@ -16,18 +16,12 @@ class LandingPagesView(MethodView):
     def get(self):
         """Get."""
         parameters = landing_page_manager.get_query(request.args)
-        with_default = bool(request.args.get("with_default"))
         pages = landing_page_manager.all(params=parameters)
 
         for page in pages:
             if page["is_default_template"]:
-                default_landing_page = page.copy()
-                default_landing_page["name"] = (
-                    "(System Default)" + default_landing_page["name"]
-                )
-                default_landing_page["_id"] = page["_id"]
-                if with_default:
-                    pages.append(default_landing_page)
+                default_name = f"(System Default) {page['name']}"
+                page["name"] = default_name
                 break
 
         return jsonify(pages)
