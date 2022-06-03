@@ -65,4 +65,4 @@ def get_landing_page(subscription, template_id):
         else {"filter_data": {"is_default_template": True}}
     )
 
-    return landing_page_manager.get(kwargs)
+    return landing_page_manager.get(**kwargs)
