@@ -59,7 +59,7 @@ class ClickView(MethodView):
         # If a landing page url exists for the subscription, redirect to it after click has been tracked
         subscription = subscription_manager.get(
             document_id=cycle["subscription_id"],
-            fields=["customer_id", "landing_page_url"],
+            fields=["customer_id", "landing_page_id", "landing_page_url"],
         )
 
         if subscription.get("landing_page_url"):
