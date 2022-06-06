@@ -176,8 +176,9 @@ def process_click_test(subscription_id, contact_id):
     """Process a click from the landing page."""
     subscription = subscription_manager.get(
         document_id=subscription_id,
-        fields=["test_results", "customer_id", "landing_page_url"],
+        fields=["test_results", "customer_id", "landing_page_id", "landing_page_url"],
     )
+
     contact = next(
         filter(lambda x: x["test_uuid"] == contact_id, subscription["test_results"])
     )
