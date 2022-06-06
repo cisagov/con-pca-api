@@ -2,9 +2,6 @@
 # Standard Python Libraries
 import os  # aws
 
-# Third-Party Libraries
-import mongomock
-
 from .db import get_db
 
 AWS_REGION = os.environ.get("AWS_REGION", "us-east-1")
@@ -31,10 +28,8 @@ DEPLOYED_DATE = os.environ.get("DEPLOYED_DATE")
 API_COMMIT_ID = os.environ.get("API_COMMIT_ID")
 UI_COMMIT_ID = os.environ.get("UI_COMMIT_ID")
 
-if os.environ.get("PYTESTING"):
-    DB = mongomock.MongoClient().db
-else:
-    DB = get_db()
+# get Database
+DB = get_db()
 
 # about
 DEPLOYED_DATE = os.environ.get("DEPLOYED_DATE")
