@@ -142,12 +142,9 @@ def calculate_cycle_dates(subscription):
     if start_date < now:
         start_date = now
 
-    buffer_time = subscription.get("buffer_time_minutes", 0)
     start_date = start_date + timedelta(minutes=environment.DELAY_MINUTES)
     send_by_date = start_date + timedelta(minutes=subscription["cycle_length_minutes"])
-    end_date = send_by_date + timedelta(
-        minutes=subscription["cooldown_minutes"] + buffer_time
-    )
+    end_date = send_by_date + timedelta(minutes=subscription["cooldown_minutes"])
     return {
         "start_date": start_date,
         "send_by_date": send_by_date,
@@ -182,7 +179,12 @@ def get_initial_tasks(subscription, cycle):
         "status_report": start_date + timedelta(minutes=report_minutes),
         "cycle_report": start_date + timedelta(minutes=cycle_minutes),
         "yearly_report": start_date + timedelta(minutes=yearly_minutes),
-        "end_cycle": start_date + timedelta(minutes=cycle_minutes),
+        "end_cycle": start_date
+        + timedelta(
+            minutes=(cycle_minutes + subscription.get("buffer_time_minutes", 0))
+        )
+        if subscription.get("continuous_subscription")
+        else start_date + timedelta(minutes=cycle_minutes),
     }
 
     cycle_days = cycle_minutes / 60 / 24
