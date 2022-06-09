@@ -68,6 +68,10 @@ coverage:
 	coverage run --omit *.venv*,*test* -m pytest ./tests/ --disable-warnings
 	coverage html
 
+# target: test - run unit tests against code
+test:
+	python -m pytest
+
 # target: cc - calculates cyclomatic complexity
 cc:
 	radon cc ./src/ -e "*.venv*" -s -o SCORE
