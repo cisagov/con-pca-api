@@ -88,7 +88,7 @@ def process_subscription(subscription):
 
 
 def update_task(subscription_id, task):
-    """Update subsscription task."""
+    """Update subscription task."""
     subscription_manager.update_in_list(
         document_id=subscription_id,
         field="tasks.$",
