@@ -28,3 +28,5 @@ node_modules
 .geoipupdate.lock
 config.ini
 Dockerfile-x
+
+.idea/
