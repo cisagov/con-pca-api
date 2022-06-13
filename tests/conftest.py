@@ -10,6 +10,7 @@ import warnings
 import pytest
 
 # cisagov Libraries
+from api.commands.load_test_data import load_test_data
 from api.main import app
 
 warnings.filterwarnings("ignore")
@@ -48,6 +49,7 @@ def pytest_collection_modifyitems(config, items):
 def client():
     """Return a test instance of the flask app."""
     with app.app_context():
+        load_test_data()
         with app.test_client() as client:
             yield client
 
