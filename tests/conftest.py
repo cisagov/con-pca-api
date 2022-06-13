@@ -2,17 +2,20 @@
 
 https://docs.pytest.org/en/latest/writing_plugins.html#conftest-py-plugins
 """
+# Standard Python Libraries
+import logging
+import warnings
+
 # Third-Party Libraries
 import pytest
-import logging
 
-from api.main import app
+# cisagov Libraries
 from api.commands.load_test_data import load_test_data
+from api.main import app
 
-import warnings
 warnings.filterwarnings("ignore")
 
-logging.getLogger('faker').setLevel(logging.ERROR)
+logging.getLogger("faker").setLevel(logging.ERROR)
 
 MAIN_SERVICE_NAME = "api"
 
@@ -44,6 +47,7 @@ def pytest_collection_modifyitems(config, items):
 
 @pytest.fixture(scope="session")
 def client():
+    """Return a test instance of the flask app."""
     with app.app_context():
         load_test_data()
         with app.test_client() as client:
@@ -52,10 +56,11 @@ def client():
 
 @pytest.fixture()
 def subscription():
+    """Return a single subscription object from the test dataset."""
     with app.app_context():
+        # cisagov Libraries
         from api.manager import SubscriptionManager
+
         subscription_manager = SubscriptionManager()
         subscriptions = subscription_manager.all()
         return subscriptions[0]
-
-

@@ -1,6 +1,8 @@
 APScheduler==3.9.1
 beautifulsoup4==4.11.1
 boto3==1.23.6
+
+botocore~=1.26.10
 cognitojwt==1.4.1
 Faker==13.11.0
 Flask==2.1.2
@@ -13,8 +15,6 @@ openpyxl==3.0.9
 Pillow==9.1.1
 pymongo==3.12.3
 PyPDF2==1.28.2
-requests==2.27.1
-
-botocore~=1.26.10
-python-dateutil~=2.8.2
 pytest~=7.1.2
+python-dateutil~=2.8.2
+requests==2.27.1
