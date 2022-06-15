@@ -34,7 +34,7 @@ class SendingProfilesView(MethodView):
         unique_emails = []
         for subscription in subscription_manager.all():
             if subscription["primary_contact"]["email"] not in unique_emails:
-                unique_emails.append(subscription["primary_contact"]["email"])  # test
+                unique_emails.append(subscription["primary_contact"]["email"])  # test2
                 Notification(
                     "domain_added_notice",
                     subscription=subscription,
