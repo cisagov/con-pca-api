@@ -344,7 +344,9 @@ jobs:
       - name: Run tests
         env:
           RELEASE_TAG: ${{ github.event.release.tag_name }}
-        run: pytest --runslow
+        run: |
+          export PYTHONPATH=$(pwd)/src
+          pytest --runslow
       - name: Setup tmate debug session
         uses: mxschmitt/action-tmate@v3
         if: env.RUN_TMATE
