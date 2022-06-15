@@ -21,11 +21,12 @@ subscription_manager = SubscriptionManager()
 class Notification:
     """Manage sending email notifications."""
 
-    def __init__(self, message_type: str, subscription: dict, cycle: dict):
+    def __init__(self, message_type: str, subscription: dict, cycle: dict, **kwargs):
         """Initialize."""
         self.message_type = message_type
         self.subscription = subscription
         self.cycle = cycle
+        self.new_domain = kwargs["new_domain"] if "new_domain" in kwargs else None
 
     def set_context(self):
         """Set notification context."""
@@ -48,6 +49,7 @@ class Notification:
             "admin_email": self.subscription["admin_email"],
             "subscription_id": self.subscription["_id"],
             "subscription": self.subscription,
+            "new_domain": self.new_domain,
         }
 
     def get_report(self, message_type: str, context: dict):
@@ -96,6 +98,10 @@ class Notification:
                 "subject": "Con-PCA Phish Subscription Safelisting Information",
                 "to": "primary_contact",
                 "bcc": "admin",
+            },
+            "domain_added_notice": {
+                "subject": "Con-PCA Update to Safelisting Domains",
+                "to": "primary_contact",
             },
         }.get(message_type, {})
         report["html"] = render_template(f"emails/{message_type}.html", **context)

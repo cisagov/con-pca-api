@@ -31,16 +31,14 @@ class SendingProfilesView(MethodView):
 
     def post(self):
         """Post."""
-        subscriptions = subscription_manager.all()
-        unique_subscriptions = subscriptions.copy()
+        import ipdb
+        ipdb.set_trace()
         unique_emails = []
-        for subscription in subscriptions:
-            if subscription["primary_contact"]["email"] in unique_emails:
-                unique_subscriptions.remove(subscription)
-            else:
-                unique_emails.append(subscription["primary_contact"]["email"])        
-        for subscription in unique_subscriptions:
-            Notification("domain_added_notice",subscription=subscription).send()
+        for subscription in subscription_manager.all():
+            if subscription["primary_contact"]["email"] not in unique_emails:
+                unique_emails.append(subscription["primary_contact"]["email"])
+                Notification("domain_added_notice",subscription=subscription,cycle=cycle_manager.get(filter_data={"active": True})
+                             ,new_domain=request.json['from_address'].split("@")[1]).send()
         return jsonify(sending_profile_manager.save(request.json))
 
 
