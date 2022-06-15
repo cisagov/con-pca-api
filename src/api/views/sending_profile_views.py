@@ -31,8 +31,6 @@ class SendingProfilesView(MethodView):
 
     def post(self):
         """Post."""
-        import ipdb
-        ipdb.set_trace()
         unique_emails = []
         for subscription in subscription_manager.all():
             if subscription["primary_contact"]["email"] not in unique_emails:
