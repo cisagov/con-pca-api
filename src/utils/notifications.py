@@ -149,7 +149,10 @@ class Notification:
                 nonhuman=nonhuman,
             )
             logging.info(f"Attaching {filename} to notification.")
-            if filename not in attachments:
+
+            if not os.path.exists(filename):
+                logging.error("Attachment file does not exist: ", filename)
+            elif filename not in attachments:
                 attachments.append(filename)
 
         addresses = self.get_to_addresses(report)
@@ -183,6 +186,7 @@ class Notification:
 
                 self.add_notification_history(addresses, from_address)
         except Exception as e:
+            logging.error("Send email error", exc_info=e)
             raise e
         finally:
             if attachments:
@@ -191,5 +195,4 @@ class Notification:
                     try:
                         os.remove(attachment)
                     except FileNotFoundError as e:
-                        logging.info(str(e))
-                        pass
+                        logging.error("Failed to delete file", exc_info=e)

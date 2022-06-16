@@ -7,6 +7,7 @@ from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import logging
+import os
 import re
 from smtplib import SMTP
 
@@ -289,6 +290,10 @@ def build_message(
         message[header["key"]] = header["value"]
 
     for filename in attachments:
+        if not os.path.exists(filename):
+            logging.error("File does not exist: ", filename)
+            continue
+
         with open(filename, "rb") as attachment:
             part = MIMEApplication(attachment.read())
             part.add_header(
