@@ -11,6 +11,11 @@ def get_asn_org(ip_address):
     """Get asn org from maxmind database."""
     try:
         with geoip2.database.Reader("GeoLite2-ASN.mmdb") as reader:
+            if "," in ip_address:
+                return reader.asn(
+                    ip_address.split(",")[1].strip()
+                ).autonomous_system_organization
+
             return reader.asn(ip_address).autonomous_system_organization
     except geoip2.errors.AddressNotFoundError:
         logging.info(f"{ip_address} not found in maxmind database.")
