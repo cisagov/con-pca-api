@@ -35,8 +35,12 @@ class SendingProfilesView(MethodView):
         for subscription in subscription_manager.all():
             if subscription["primary_contact"]["email"] not in unique_emails:
                 unique_emails.append(subscription["primary_contact"]["email"])
-                Notification("domain_added_notice",subscription=subscription,cycle=cycle_manager.get(filter_data={"active": True})
-                             ,new_domain=request.json['from_address'].split("@")[1]).send()
+                Notification(
+                    "domain_added_notice",
+                    subscription=subscription,
+                    cycle=cycle_manager.get(filter_data={"active": True}),
+                    new_domain=request.json["from_address"].split("@")[1],
+                ).send()
         return jsonify(sending_profile_manager.save(request.json))
 
 
