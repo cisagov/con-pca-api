@@ -221,7 +221,7 @@ class SubscriptionSafelistExportView(MethodView):
             logging.error("Failed to generate safelisting file.", exc_info=e)
             raise e
         finally:
-            logging.info(f"Deleting file {filepath}")
+            logging.info(f"Deleting safelisting file {filepath}")
             os.remove(filepath)
 
 

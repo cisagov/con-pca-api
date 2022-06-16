@@ -195,4 +195,4 @@ class Notification:
                     try:
                         os.remove(attachment)
                     except FileNotFoundError as e:
-                        logging.error("Failed to delete file", exc_info=e)
+                        logging.error("Failed to delete attachment file", exc_info=e)
