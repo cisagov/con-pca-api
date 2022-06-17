@@ -15,6 +15,7 @@ from smtplib import SMTP
 from bs4 import BeautifulSoup
 import requests  # type: ignore
 from requests.exceptions import HTTPError  # type: ignore
+from werkzeug.utils import secure_filename
 
 # cisagov Libraries
 from utils import time
@@ -50,9 +51,13 @@ class Email:
     ):
         """Send email."""
         if message_type == "safelisting_reminder":
-            attachment_filename = f"CISA_PCA_Safelisting_Information_{subscription_name}_{datetime.today().strftime('%m%d%Y')}.xlsx"
+            attachment_filename = secure_filename(
+                f"CISA_PCA_Safelisting_Information_{subscription_name}_{datetime.today().strftime('%m%d%Y')}.xlsx"
+            )
         else:
-            attachment_filename = f"CISA_PCA_{message_type}_{subscription_name}_{datetime.today().strftime('%m%d%Y')}.pdf"
+            attachment_filename = secure_filename(
+                f"CISA_PCA_{message_type}_{subscription_name}_{datetime.today().strftime('%m%d%Y')}.pdf"
+            )
 
         if self.sending_profile["interface_type"] == "SMTP":
             logging.info("Sending email via SMTP")
@@ -289,12 +294,12 @@ def build_message(
     for header in headers:
         message[header["key"]] = header["value"]
 
-    for filename in attachments:
-        if not os.path.exists(filename):
-            logging.error("Attachment file does not exist: ", filename)
+    for filepath in attachments:
+        if not os.path.exists(filepath):
+            logging.error("Attachment file does not exist: ", filepath)
             continue
 
-        with open(filename, "rb") as attachment:
+        with open(filepath, "rb") as attachment:
             part = MIMEApplication(attachment.read())
             part.add_header(
                 "Content-Disposition",
