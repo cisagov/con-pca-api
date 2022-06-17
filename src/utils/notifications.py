@@ -142,18 +142,18 @@ class Notification:
         report = self.get_report(self.message_type, context)
 
         if self.message_type in ["status_report", "cycle_report"]:
-            filename = get_report_pdf(
+            filepath = get_report_pdf(
                 self.cycle,
                 self.message_type.split("_")[0],
                 reporting_password=self.subscription.get("reporting_password"),
                 nonhuman=nonhuman,
             )
-            logging.info(f"Attaching {filename} to notification.")
+            logging.info(f"Attaching {filepath} to notification.")
 
-            if not os.path.exists(filename):
-                logging.error("Attachment file does not exist: ", filename)
-            elif filename not in attachments:
-                attachments.append(filename)
+            if not os.path.exists(filepath):
+                logging.error("Attachment file does not exist: ", filepath)
+            elif filepath not in attachments:
+                attachments.append(filepath)
 
         addresses = self.get_to_addresses(report)
 
