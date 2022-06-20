@@ -21,36 +21,51 @@ subscription_manager = SubscriptionManager()
 class Notification:
     """Manage sending email notifications."""
 
-    def __init__(self, message_type: str, subscription: dict, cycle: dict, **kwargs):
+    def __init__(
+        self, message_type: str, subscription: dict = None, cycle: dict = None, **kwargs
+    ):
         """Initialize."""
         self.message_type = message_type
         self.subscription = subscription
         self.cycle = cycle
         self.new_domain = kwargs["new_domain"] if "new_domain" in kwargs else None
 
-    def set_context(self):
+    def _set_context(self):
         """Set notification context."""
-        if self.message_type in ["subscription_stopped, safelisting_reminder"]:
-            end_date = datetime.utcnow()
+
+        if self.cycle is not None:
+            if self.message_type in ["subscription_stopped, safelisting_reminder"]:
+                end_date = datetime.utcnow()
+            else:
+                end_date = self.cycle["end_date"]
+
+            templates = template_manager.all(
+                params={"_id": {"$in": self.cycle["template_ids"]}}
+            )
+
+            return {
+                "first_name": self.subscription["primary_contact"][
+                    "first_name"
+                ].title(),
+                "last_name": self.subscription["primary_contact"]["last_name"].title(),
+                "start_date": self.subscription["start_date"].strftime(
+                    "%b %d %Y %H:%M:%S"
+                ),
+                "end_date": end_date.strftime("%b %d %Y %H:%M:%S"),
+                "templates": templates,
+                "target_count": self.cycle["target_count"],
+                "admin_email": self.subscription["admin_email"],
+                "subscription_id": self.subscription["_id"],
+                "subscription": self.subscription,
+            }
         else:
-            end_date = self.cycle["end_date"]
-
-        templates = template_manager.all(
-            params={"_id": {"$in": self.cycle["template_ids"]}}
-        )
-
-        return {
-            "first_name": self.subscription["primary_contact"]["first_name"].title(),
-            "last_name": self.subscription["primary_contact"]["last_name"].title(),
-            "start_date": self.subscription["start_date"].strftime("%b %d %Y %H:%M:%S"),
-            "end_date": end_date.strftime("%b %d %Y %H:%M:%S"),
-            "templates": templates,
-            "target_count": self.cycle["target_count"],
-            "admin_email": self.subscription["admin_email"],
-            "subscription_id": self.subscription["_id"],
-            "subscription": self.subscription,
-            "new_domain": self.new_domain,
-        }
+            return {
+                "first_name": self.subscription["primary_contact"][
+                    "first_name"
+                ].title(),
+                "last_name": self.subscription["primary_contact"]["last_name"].title(),
+                "new_domain": self.new_domain,
+            }
 
     def get_report(self, message_type: str, context: dict):
         """Get report html, text and subject."""
