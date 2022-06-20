@@ -158,7 +158,7 @@ class Notification:
     def send(self, nonhuman=False, attachments=[]):
         """Send Email."""
         # Set Context
-        context = self.set_context()
+        context = self._set_context()
         report = self.get_report(self.message_type, context)
 
         if self.message_type in ["status_report", "cycle_report"]:
