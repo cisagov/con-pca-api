@@ -2,6 +2,7 @@
 # Standard Python Libraries
 from datetime import datetime, timedelta
 import logging
+import os
 from uuid import uuid4
 
 # cisagov Libraries
@@ -88,7 +89,7 @@ def process_subscription(subscription):
 
 
 def update_task(subscription_id, task):
-    """Update subsscription task."""
+    """Update subscription task."""
     subscription_manager.update_in_list(
         document_id=subscription_id,
         field="tasks.$",
@@ -220,6 +221,10 @@ def safelisting_reminder(subscription, cycle):
         reporting_password=subscription["reporting_password"],
         simulation_url=subscription.get("landing_domain", ""),  # simulated phishing url
     )
+
+    if not os.path.exists(filepath):
+        logging.error("Safelist file does not exist: ", filepath)
+        return
 
     with app.app_context():
         Notification("safelisting_reminder", subscription, cycle).send(
