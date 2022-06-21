@@ -114,7 +114,7 @@ class Notification:
                 "bcc": "admin",
             },
             "domain_added_notice": {
-                "subject": "Con-PCA Update to Safelisting Domains",
+                "subject": "Con-PCA New Sending Domain Added",
                 "to": "primary_contact",
             },
         }.get(message_type, {})
