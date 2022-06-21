@@ -10,7 +10,8 @@ from api.manager import (
     SubscriptionManager,
     TemplateManager,
 )
-from utils.notifications import Notification
+
+# from utils.notifications import Notification ### Will be uncommented at a later date, see below.
 from utils.stats import get_sending_profile_metrics
 
 sending_profile_manager = SendingProfileManager()
@@ -31,15 +32,15 @@ class SendingProfilesView(MethodView):
 
     def post(self):
         """Post."""
-        unique_emails = []
-        for subscription in subscription_manager.all(params={"status": "running"}):
-            if subscription["primary_contact"]["email"] not in unique_emails:
-                unique_emails.append(subscription["primary_contact"]["email"])
-                Notification(
-                    "domain_added_notice",
-                    subscription=subscription,
-                    new_domain=request.json["from_address"].split("@")[1],
-                ).send()
+        # unique_emails = [] ### The following code will send out an email when a sending profile domain is created. This functionality will be uncommented at a later date.
+        # for subscription in subscription_manager.all(params={"status": "running"}):
+        #     if subscription["primary_contact"]["email"] not in unique_emails:
+        #         unique_emails.append(subscription["primary_contact"]["email"])
+        #         Notification(
+        #             "domain_added_notice",
+        #             subscription=subscription,
+        #             new_domain=request.json["from_address"].split("@")[1],
+        #         ).send()
         return jsonify(sending_profile_manager.save(request.json))
 
 
