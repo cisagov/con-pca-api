@@ -15,6 +15,7 @@ from api.schemas.customer_schema import CustomerSchema
 from api.schemas.cycle_schema import CycleSchema
 from api.schemas.landing_domain_schema import LandingDomainSchema
 from api.schemas.landing_page_schema import LandingPageSchema
+from api.schemas.logging_schema import LoggingSchema
 from api.schemas.nonhuman_schema import NonHumanSchema
 from api.schemas.recommendation_schema import RecommendationsSchema
 from api.schemas.sending_profile_schema import SendingProfileSchema
@@ -434,4 +435,15 @@ class TemplateManager(Manager):
         """Super."""
         return super().__init__(
             collection="template", schema=TemplateSchema, unique_indexes=["name"]
+        )
+
+
+class LoggingManager(Manager):
+    """LoggingManager."""
+
+    def __init__(self):
+        """Super."""
+        return super().__init__(
+            collection="logging",
+            schema=LoggingSchema,
         )
