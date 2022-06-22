@@ -1,6 +1,6 @@
 """Logging views."""
 # Third-Party Libraries
-from flask import jsonify, request
+from flask import jsonify
 from flask.views import MethodView
 
 # cisagov Libraries
@@ -15,4 +15,3 @@ class LoggingView(MethodView):
     def get(self):
         """Get."""
         return jsonify(logging_manager.all())
-
