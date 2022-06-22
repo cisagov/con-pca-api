@@ -39,8 +39,13 @@ class CycleView(MethodView):
     """CycleView."""
 
     def get(self, cycle_id):
-        """Get."""
+        """Get a cycle."""
         return cycle_manager.get(document_id=cycle_id)
+
+    def delete(self, cycle_id):
+        """Delete a cycle."""
+        cycle_manager.delete(document_id=cycle_id)
+        return jsonify({"success": True})
 
 
 class CycleStatsView(MethodView):

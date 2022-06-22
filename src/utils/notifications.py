@@ -21,34 +21,50 @@ subscription_manager = SubscriptionManager()
 class Notification:
     """Manage sending email notifications."""
 
-    def __init__(self, message_type: str, subscription: dict, cycle: dict):
+    def __init__(
+        self, message_type: str, subscription: dict = None, cycle: dict = None, **kwargs
+    ):
         """Initialize."""
         self.message_type = message_type
         self.subscription = subscription
         self.cycle = cycle
+        self.new_domain = kwargs["new_domain"] if "new_domain" in kwargs else None
 
-    def set_context(self):
+    def _set_context(self):
         """Set notification context."""
-        if self.message_type in ["subscription_stopped, safelisting_reminder"]:
-            end_date = datetime.utcnow()
+        if self.cycle is not None:
+            if self.message_type in ["subscription_stopped, safelisting_reminder"]:
+                end_date = datetime.utcnow()
+            else:
+                end_date = self.cycle["end_date"]
+
+            templates = template_manager.all(
+                params={"_id": {"$in": self.cycle["template_ids"]}}
+            )
+
+            return {
+                "first_name": self.subscription["primary_contact"][
+                    "first_name"
+                ].title(),
+                "last_name": self.subscription["primary_contact"]["last_name"].title(),
+                "start_date": self.subscription["start_date"].strftime(
+                    "%b %d %Y %H:%M:%S"
+                ),
+                "end_date": end_date.strftime("%b %d %Y %H:%M:%S"),
+                "templates": templates,
+                "target_count": self.cycle["target_count"],
+                "admin_email": self.subscription["admin_email"],
+                "subscription_id": self.subscription["_id"],
+                "subscription": self.subscription,
+            }
         else:
-            end_date = self.cycle["end_date"]
-
-        templates = template_manager.all(
-            params={"_id": {"$in": self.cycle["template_ids"]}}
-        )
-
-        return {
-            "first_name": self.subscription["primary_contact"]["first_name"].title(),
-            "last_name": self.subscription["primary_contact"]["last_name"].title(),
-            "start_date": self.subscription["start_date"].strftime("%b %d %Y %H:%M:%S"),
-            "end_date": end_date.strftime("%b %d %Y %H:%M:%S"),
-            "templates": templates,
-            "target_count": self.cycle["target_count"],
-            "admin_email": self.subscription["admin_email"],
-            "subscription_id": self.subscription["_id"],
-            "subscription": self.subscription,
-        }
+            return {
+                "first_name": self.subscription["primary_contact"][
+                    "first_name"
+                ].title(),
+                "last_name": self.subscription["primary_contact"]["last_name"].title(),
+                "new_domain": self.new_domain,
+            }
 
     def get_report(self, message_type: str, context: dict):
         """Get report html, text and subject."""
@@ -97,6 +113,10 @@ class Notification:
                 "to": "primary_contact",
                 "bcc": "admin",
             },
+            "domain_added_notice": {
+                "subject": "Con-PCA New Sending Domain Added",
+                "to": "primary_contact",
+            },
         }.get(message_type, {})
         report["html"] = render_template(f"emails/{message_type}.html", **context)
         return report
@@ -138,19 +158,22 @@ class Notification:
     def send(self, nonhuman=False, attachments=[]):
         """Send Email."""
         # Set Context
-        context = self.set_context()
+        context = self._set_context()
         report = self.get_report(self.message_type, context)
 
         if self.message_type in ["status_report", "cycle_report"]:
-            filename = get_report_pdf(
+            filepath = get_report_pdf(
                 self.cycle,
                 self.message_type.split("_")[0],
                 reporting_password=self.subscription.get("reporting_password"),
                 nonhuman=nonhuman,
             )
-            logging.info(f"Attaching {filename} to notification.")
-            if filename not in attachments:
-                attachments.append(filename)
+            logging.info(f"Attaching {filepath} to notification.")
+
+            if not os.path.exists(filepath):
+                logging.error("Attachment file does not exist: ", filepath)
+            elif filepath not in attachments:
+                attachments.append(filepath)
 
         addresses = self.get_to_addresses(report)
 
@@ -183,6 +206,7 @@ class Notification:
 
                 self.add_notification_history(addresses, from_address)
         except Exception as e:
+            logging.error("Send email error", exc_info=e)
             raise e
         finally:
             if attachments:
@@ -191,5 +215,4 @@ class Notification:
                     try:
                         os.remove(attachment)
                     except FileNotFoundError as e:
-                        logging.info(str(e))
-                        pass
+                        logging.error("Failed to delete attachment file", exc_info=e)
