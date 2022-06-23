@@ -19,7 +19,7 @@ class DatabaseHandler(logging.Handler):
         self.loggingManager = LoggingManager()
         self.level = logging.ERROR
         self.collection = getattr(DB, "logging")
-        if "datetime_1" not in self.db.index_information():
+        if "datetime_1" not in self.collection.index_information():
             self.collection.create_index(
                 "datetime", expireAfterSeconds=24 * 60 * 60
             )  # Logs are hard-coded to expire every 24 hours. This can be changed via PUT //api/loggingTTL/<ttl_in_seconds>/
