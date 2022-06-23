@@ -33,8 +33,9 @@ created_dummy_data_*.json
 src/staticfiles
 
 ## Python ##
+__pycache__
+.coverage
 .mypy_cache
 .pytest_cache
 .python-version
-__pycache__
 htmlcov
