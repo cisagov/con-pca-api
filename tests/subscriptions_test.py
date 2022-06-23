@@ -3,6 +3,9 @@
 # Standard Python Libraries
 import logging
 
+# Third-Party Libraries
+import pytest
+
 log = logging.getLogger(__name__)
 
 
@@ -15,7 +18,7 @@ class TestSubscriptions:
         assert resp.status_code == 200
 
         sub = resp.json[0]
-        assert self.check_subscription_properties(sub)
+        self.check_subscription_properties(sub)
 
     def test_get_subscription(self, client, subscription):
         """Test the subscription view."""
@@ -26,21 +29,33 @@ class TestSubscriptions:
         assert resp.status_code == 200
 
         sub = resp.json
-        assert self.check_subscription_properties(sub)
+        self.check_subscription_properties(sub)
 
     @staticmethod
     def check_subscription_properties(sub):
-        """Check subscription objects for expected properties."""
-        if sub.get("name") != "test_subscription":
-            return False
+        """Check subscription object for expected properties."""
 
-        if sub.get("created_by") != "bot":
-            return False
+        def _check(key):
+            try:
+                return sub[key]
+            except KeyError:
+                raise ValueError(f"{key} does not exist in subscription object")
 
-        if sub.get("continuous_subscription") is True:
-            return False
+        with pytest.raises(ValueError):
+            assert _check("does_not_exist") == "nope"
 
-        if len(sub.get("target_email_list", [])) != 4:
-            return False
+        assert (
+            _check("name") == "test_subscription"
+        ), "name does not match expected value"
 
-        return True
+        assert _check("created_by") == "bot", "created_by does not match expected value"
+
+        assert (
+            _check("continuous_subscription") is False
+        ), "continuous_subscription does not match expected value"
+
+        target_email_list = _check("target_email_list")
+        assert isinstance(target_email_list, list), "target_email_list is not a list"
+        assert (
+            len(target_email_list) == 4
+        ), "length of target_email_list does not match expected value"
