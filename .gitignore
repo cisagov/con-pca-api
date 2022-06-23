@@ -1,6 +1,7 @@
 # This file specifies intentionally untracked files that Git should ignore.
 # Files already tracked by Git are not affected.
 # See: https://git-scm.com/docs/gitignore
+
 ## Amazon Web Services ##
 .lambda
 .lambda_other
