@@ -22,7 +22,7 @@ Dockerfile-x
 config.ini
 old.env
 
-## Nodejs ##
+## Node.js ##
 node_modules
 
 ## Other ##
