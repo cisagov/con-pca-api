@@ -213,7 +213,7 @@ class Manager:
             {"$set": self.load_data(data, partial=True)},
         )
 
-    def save(self, data, ttl=None):
+    def save(self, data):
         """Save new item to collection."""
         exists = []
         for unique_field in self.unique_indexes:
