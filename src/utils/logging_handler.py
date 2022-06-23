@@ -2,11 +2,9 @@
 
 # Standard Python Libraries
 import logging
-import time
 
 # cisagov Libraries
 from api.app import app
-from api.config.environment import DB
 from api.manager import LoggingManager
 
 
@@ -14,27 +12,17 @@ class DatabaseHandler(logging.Handler):
     """Customized logging handler that adds logs to a collection."""
 
     def __init__(self):
-        """Initialize the handler, load the loggingManager, set the ttl time."""
+        """Initialize the handler, load the loggingManager."""
         logging.Handler.__init__(self)
         self.loggingManager = LoggingManager()
         self.level = logging.ERROR
-        self.collection = getattr(DB, "logging")
-        if "datetime_1" not in self.collection.index_information():
-            self.collection.create_index("datetime", expireAfterSeconds=24 * 60 * 60)
-        else:
-            DB.command(
-                "collMod",
-                "logging",
-                index={"name": "datetime_1", "expireAfterSeconds": 24 * 60 * 60},
-            )
 
     def emit(self, record):
         """Emit a record to the database."""
         with app.app_context():
-            tm = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(record.created))
             try:
                 msg = self.format(record)
-                log = {"error_message": msg, "datetime": tm}
+                log = {"error_message": msg}
                 self.loggingManager.save(log)
             except (KeyboardInterrupt, SystemExit):
                 raise
