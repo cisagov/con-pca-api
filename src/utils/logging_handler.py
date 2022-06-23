@@ -20,20 +20,17 @@ class DatabaseHandler(logging.Handler):
         self.level = logging.ERROR
         self.collection = getattr(DB, "logging")
         if "datetime_1" not in self.collection.index_information():
-            self.collection.create_index(
-                "datetime", expireAfterSeconds=24 * 60 * 60
-            )  # Logs are hard-coded to expire every 24 hours. This can be changed via PUT //api/loggingTTL/<ttl_in_seconds>/
+            self.collection.create_index("datetime", expireAfterSeconds=24 * 60 * 60)
         else:
             DB.command(
                 "collMod",
                 "logging",
                 index={"name": "datetime_1", "expireAfterSeconds": 24 * 60 * 60},
-            )  # Logs are hard-coded to expire every 24 hours. This can be changed via PUT //api/loggingTTL/<ttl_in_seconds>/
+            )
 
     def emit(self, record):
         """Emit a record to the database."""
         with app.app_context():
-            # Set current time
             tm = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(record.created))
             try:
                 msg = self.format(record)

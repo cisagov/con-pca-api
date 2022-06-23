@@ -37,7 +37,7 @@ from api.views.cycle_views import (
 )
 from api.views.landing_domain_views import LandingDomainsView, LandingDomainView
 from api.views.landing_page_views import LandingPagesView, LandingPageView
-from api.views.logging_views import LoggingTTLView, LoggingView
+from api.views.logging_views import LoggingView
 from api.views.nonhuman_views import NonHumansView
 from api.views.recommendation_views import RecommendationsView, RecommendationView
 from api.views.report_views import (
@@ -95,8 +95,6 @@ rules = [
     ("/landingpage/<landing_page_id>/", LandingPageView),
     # Logging Views
     ("/logging/", LoggingView),
-    ("/loggingTTL/", LoggingTTLView),
-    ("/loggingTTL/<ttl_in_seconds>/", LoggingTTLView),
     # Non Human Views
     ("/nonhumans/", NonHumansView),
     # Recommendation Views
