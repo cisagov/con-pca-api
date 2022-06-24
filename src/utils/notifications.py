@@ -209,10 +209,12 @@ class Notification:
             logging.error("Send email error", exc_info=e)
             raise e
         finally:
-            if attachments:
-                for attachment in attachments:
-                    logging.info(f"Deleting attachment {attachment}")
-                    try:
+            for attachment in attachments:
+                logging.info(f"Deleting attachment {attachment}")
+                try:
+                    if not os.path.exists(attachment):
+                        logging.info(f"{attachment} file already deleted. Skipping...")
+                    else:
                         os.remove(attachment)
-                    except FileNotFoundError as e:
-                        logging.error("Failed to delete attachment file", exc_info=e)
+                except FileNotFoundError as e:
+                    logging.error("Failed to delete attachment file", exc_info=e)
