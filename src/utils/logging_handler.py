@@ -22,7 +22,11 @@ class DatabaseHandler(logging.Handler):
         with app.app_context():
             try:
                 msg = self.format(record)
-                log = {"error_message": msg}
+                log = {
+                    "error_message": msg.replace("ERROR:root:", "")
+                    if "ERROR:root:"
+                    else msg
+                }
                 self.loggingManager.save(log)
             except (KeyboardInterrupt, SystemExit):
                 raise
