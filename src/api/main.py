@@ -37,6 +37,7 @@ from api.views.cycle_views import (
 )
 from api.views.landing_domain_views import LandingDomainsView, LandingDomainView
 from api.views.landing_page_views import LandingPagesView, LandingPageView
+from api.views.logging_views import LoggingView
 from api.views.nonhuman_views import NonHumansView
 from api.views.recommendation_views import RecommendationsView, RecommendationView
 from api.views.report_views import (
@@ -67,6 +68,7 @@ from api.views.template_views import (
 from api.views.user_views import UserConfirmView, UsersView, UserView
 from api.views.utility_views import ImageEncodeView, RandomPasswordView, TestEmailView
 from utils.decorators.auth import auth_required
+from utils.logging_handler import DatabaseHandler
 
 # register apps
 url_prefix = "/api"
@@ -91,6 +93,8 @@ rules = [
     # Landing Page Views
     ("/landingpages/", LandingPagesView),
     ("/landingpage/<landing_page_id>/", LandingPageView),
+    # Logging Views
+    ("/logging/", LoggingView),
     # Non Human Views
     ("/nonhumans/", NonHumansView),
     # Recommendation Views
@@ -152,7 +156,9 @@ for rule in login_rules:
     url = f"{url_prefix}{rule[0]}"
     app.add_url_rule(url, view_func=rule[1].as_view(url))  # type: ignore
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    level=logging.INFO, handlers=[logging.StreamHandler(), DatabaseHandler()]
+)
 
 # Start Background Jobs
 sched = BackgroundScheduler()
