@@ -49,7 +49,10 @@ def pytest_collection_modifyitems(config, items):
 def client():
     """Return a test instance of the flask app."""
     with app.app_context():
-        load_test_data()
+        try:
+            load_test_data()
+        except Exception as ex:
+            logging.error("failed to load test data", exc_info=ex)
         with app.test_client() as client:
             yield client
 
