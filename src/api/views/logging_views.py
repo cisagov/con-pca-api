@@ -1,4 +1,7 @@
 """Logging views."""
+# Standard Python Libraries
+import logging
+
 # Third-Party Libraries
 from flask import jsonify
 from flask.views import MethodView
@@ -14,4 +17,5 @@ class LoggingView(MethodView):
 
     def get(self):
         """Get."""
+        logging.error("this is a test.")
         return jsonify(logging_manager.all())
