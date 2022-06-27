@@ -94,8 +94,6 @@ class Manager:
 
     def create_indexes(self):
         """Create indexes for collection."""
-        for index in self.unique_indexes:
-            self.db.create_index(index, unique=True)
         for index in self.other_indexes:
             self.db.create_index(index, unique=False)
         for index in self.ttl_indexes:
