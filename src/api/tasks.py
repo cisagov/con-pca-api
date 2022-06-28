@@ -76,7 +76,11 @@ def process_subscription(subscription):
         try:
             process_task(task, subscription, cycle)
         except Exception as e:
-            logging.exception(e)
+            logging.exception(
+                "The following error occurred performing '{task}' task for '{sub}' subscription: {error}".format(
+                    task=task["task_type"], sub=subscription["name"], error=e
+                )
+            )
             task["error"] = str(e)
         if not end_cycle_task:
             update_task(subscription["_id"], task)
