@@ -17,8 +17,7 @@ class TestSubscriptions:
         resp = client.get("/api/subscriptions/")
         assert resp.status_code == 200
 
-        sub = resp.json[0]
-        self.check_subscription_properties(sub)
+        self.check_subscription_properties(resp.json[0])
 
     def test_get_subscription(self, client, subscription):
         """Test the subscription view."""
@@ -28,8 +27,7 @@ class TestSubscriptions:
         resp = client.get(f"/api/subscription/{sub_id}")
         assert resp.status_code == 200
 
-        sub = resp.json
-        self.check_subscription_properties(sub)
+        self.check_subscription_properties(resp.json)
 
     @staticmethod
     def check_subscription_properties(sub):

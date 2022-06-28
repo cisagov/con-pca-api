@@ -12,6 +12,7 @@ import pytest
 # cisagov Libraries
 from api.commands.load_test_data import load_test_data
 from api.main import app
+from api.manager import SubscriptionManager
 
 warnings.filterwarnings("ignore")
 
@@ -58,9 +59,6 @@ def client():
 def subscription():
     """Return a single subscription object from the test dataset."""
     with app.app_context():
-        # cisagov Libraries
-        from api.manager import SubscriptionManager
-
         subscription_manager = SubscriptionManager()
         subscriptions = subscription_manager.all()
         return subscriptions[0]
