@@ -18,14 +18,24 @@ class DatabaseHandler(logging.Handler):
 
     def emit(self, record):
         """Emit a record to the database."""
+        extra = {k: v for k, v in record.__dict__.items()}
         with app.app_context():
             try:
                 msg = self.format(record)
-                log = {
-                    "error_message": msg.replace("ERROR:root:", "")
-                    if "ERROR:root:"
-                    else msg
-                }
+                if "source" in extra and "source_type" in extra:
+                    log = {
+                        "error_message": msg.replace("ERROR:root:", "")
+                        if "ERROR:root:"
+                        else msg,
+                        "source": extra["source"],
+                        "source_type": extra["source_type"],
+                    }
+                else:
+                    log = {
+                        "error_message": msg.replace("ERROR:root:", "")
+                        if "ERROR:root:"
+                        else msg,
+                    }
                 self.loggingManager.save(log)
             except (KeyboardInterrupt, SystemExit):
                 raise
