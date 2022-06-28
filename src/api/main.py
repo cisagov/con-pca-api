@@ -1,7 +1,6 @@
 """Domain manager."""
 # Standard Python Libraries
 from datetime import date
-import logging
 from types import FunctionType, MethodType
 
 # Third-Party Libraries
@@ -68,7 +67,7 @@ from api.views.template_views import (
 from api.views.user_views import UserConfirmView, UsersView, UserView
 from api.views.utility_views import ImageEncodeView, RandomPasswordView, TestEmailView
 from utils.decorators.auth import auth_required
-from utils.logging_handler import DatabaseHandler
+from utils.logging import setLogger
 
 # register apps
 url_prefix = "/api"
@@ -156,9 +155,7 @@ for rule in login_rules:
     url = f"{url_prefix}{rule[0]}"
     app.add_url_rule(url, view_func=rule[1].as_view(url))  # type: ignore
 
-logging.basicConfig(
-    level=logging.INFO, handlers=[logging.StreamHandler(), DatabaseHandler()]
-)
+logger = setLogger(__name__)
 
 # Start Background Jobs
 sched = BackgroundScheduler()
@@ -194,8 +191,8 @@ class CustomJSONEncoder(JSONEncoder):
         try:
             return JSONEncoder.default(self, obj)
         except Exception as e:
-            logging.error(type(obj))
-            logging.error(obj)
+            logger.error(type(obj))
+            logger.error(obj)
             raise e
 
 
@@ -205,7 +202,7 @@ app.json_encoder = CustomJSONEncoder
 @app.errorhandler(ValidationError)
 def handle_validation_error(e):
     """Handle a validation error from marshmallow."""
-    logging.error(e)
+    logger.error(e)
     return str(e), 400
 
 
@@ -226,4 +223,4 @@ def load_dummy_data():
     """Load test data to db."""
     initialize_templates()
     load_test_data()
-    logging.info("Success.")
+    logger.info("Success.")

@@ -1,7 +1,6 @@
 """Safelist testing utils."""
 # Standard Python Libraries
 from datetime import datetime
-import logging
 from uuid import uuid4
 
 # Third-Party Libraries
@@ -18,7 +17,10 @@ from api.manager import (
 )
 from api.phish import add_phish_headers, get_tracking_info
 from utils.emails import Email, clean_from_address, get_email_context, get_from_address
+from utils.logging import setLogger
 from utils.request import get_landing_page, get_timeline_entry
+
+logger = setLogger(__name__)
 
 customer_manager = CustomerManager()
 landing_page_manager = LandingPageManager()
@@ -121,7 +123,7 @@ def test_subscription(subscription_id, contacts):
                     )
                 status_code = 200
             except Exception as e:
-                logging.exception(e)
+                logger.exception(e)
                 result["sent"] = False
                 result["error"] = str(e)
                 status_code = 400

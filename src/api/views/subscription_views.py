@@ -1,6 +1,5 @@
 """Subscription Views."""
 # Standard Python Libraries
-import logging
 import os
 
 # Third-Party Libraries
@@ -14,6 +13,7 @@ from api.manager import (
     SubscriptionManager,
     TargetManager,
 )
+from utils.logging import setLogger
 from utils.notifications import Notification
 from utils.safelist import generate_safelist_file
 from utils.safelist_testing import test_subscription
@@ -24,6 +24,8 @@ from utils.subscriptions import (
     stop_subscription,
 )
 from utils.valid import is_subscription_valid
+
+logger = setLogger(__name__)
 
 subscription_manager = SubscriptionManager()
 customer_manager = CustomerManager()
@@ -218,10 +220,10 @@ class SubscriptionSafelistExportView(MethodView):
                 attachment_filename="safelist_export.xlsx",
             )
         except Exception as e:
-            logging.error("Failed to generate safelisting file.", exc_info=e)
+            logger.error("Failed to generate safelisting file.", exc_info=e)
             raise e
         finally:
-            logging.info(f"Deleting safelisting file {filepath}")
+            logger.info(f"Deleting safelisting file {filepath}")
             os.remove(filepath)
 
 
@@ -251,7 +253,7 @@ class SubscriptionSafelistSendView(MethodView):
         )
 
         if not os.path.exists(filepath):
-            logging.error("Safelist file does not exist: ", filepath)
+            logger.error("Safelist file does not exist: ", filepath)
             return jsonify({"success": "Failed to generate safelisting file."}), 500
 
         Notification("safelisting_reminder", subscription, cycle).send(

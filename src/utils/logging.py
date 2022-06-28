@@ -15,7 +15,6 @@ class DatabaseHandler(logging.Handler):
         """Initialize the handler, load the loggingManager."""
         logging.Handler.__init__(self)
         self.loggingManager = LoggingManager()
-        self.level = logging.ERROR
 
     def emit(self, record):
         """Emit a record to the database."""
@@ -32,3 +31,16 @@ class DatabaseHandler(logging.Handler):
                 raise
             except Exception:
                 self.handleError(record)
+                
+def setLogger(name):
+    formatter = logging.Formatter('%(levelname)s - %(name)s - %(message)s')
+    sh = logging.StreamHandler()
+    dh = DatabaseHandler()
+    sh.setLevel(logging.INFO)
+    dh.setLevel(logging.ERROR)
+    sh.setFormatter(formatter)
+    dh.setFormatter(formatter)
+    logger = logging.getLogger(name)
+    logger.addHandler(sh)
+    logger.addHandler(dh)
+    return logger

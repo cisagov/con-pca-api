@@ -3,7 +3,6 @@
 import base64
 from datetime import datetime
 from itertools import groupby
-import logging
 
 # Third-Party Libraries
 from flask import render_template_string
@@ -19,6 +18,10 @@ from api.manager import (
     TemplateManager,
 )
 from utils.emails import Email, clean_from_address, get_email_context, get_from_address
+from utils.logging import setLogger
+
+logger = setLogger(__name__)
+
 
 customer_manager = CustomerManager()
 cycle_manager = CycleManager()
@@ -34,19 +37,19 @@ def emails_job():
         targets = []
         cycle_ids = get_active_cycles()
         if not cycle_ids:
-            logging.info("No cycles to process")
+            logger.info("No cycles to process")
             return
         while True:
             target = get_target(cycle_ids)
             if not target:
-                logging.info("No more targets found.")
+                logger.info("No more targets found.")
                 break
             targets.append(target)
         if targets:
             process_targets(targets)
-            logging.info("Processed all targets.")
+            logger.info("Processed all targets.")
         else:
-            logging.info("No targets to send to.")
+            logger.info("No targets to send to.")
 
 
 def get_active_cycles():
@@ -87,7 +90,7 @@ def process_targets(targets):
         try:
             process_subscription_targets(subscription_id, subscription_targets)
         except Exception as e:
-            logging.exception(e)
+            logger.exception(e)
             for t in subscription_targets:
                 target_manager.update(
                     document_id=t["_id"],
@@ -161,7 +164,7 @@ def process_subscription_targets(subscription_id, targets):
                         subscription_email,
                     )
             except Exception as e:
-                logging.exception(e)
+                logger.exception(e)
                 target["error"] = str(e)
             finally:
                 target_manager.update(

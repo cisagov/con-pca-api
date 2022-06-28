@@ -1,7 +1,6 @@
 """Tasks."""
 # Standard Python Libraries
 from datetime import datetime, timedelta
-import logging
 import os
 from uuid import uuid4
 
@@ -13,11 +12,15 @@ from api.manager import (
     SubscriptionManager,
     TemplateManager,
 )
+from utils.logging import setLogger
 from utils.notifications import Notification
 from utils.safelist import generate_safelist_file
 from utils.subscriptions import start_subscription, stop_subscription
 from utils.templates import select_templates
 from utils.time import get_yearly_minutes
+
+logger = setLogger(__name__)
+
 
 cycle_manager = CycleManager()
 sending_profile_manager = SendingProfileManager()
@@ -31,7 +34,7 @@ def tasks_job():
         while True:
             subscription = get_subscription()
             if not subscription:
-                logging.info("No more subscription tasks to process.")
+                logger.info("No more subscription tasks to process.")
                 break
             process_subscription(subscription)
 
@@ -72,11 +75,11 @@ def process_subscription(subscription):
     for task in tasks:
         task["executed"] = True
         task["executed_date"] = datetime.utcnow()
-        logging.info(f"Processing task {task}")
+        logger.info(f"Processing task {task}")
         try:
             process_task(task, subscription, cycle)
         except Exception as e:
-            logging.exception(
+            logger.exception(
                 "The following error occurred performing '{task}' task for '{sub}' subscription: {error}".format(
                     task=task["task_type"], sub=subscription["name"], error=e
                 )
@@ -85,7 +88,7 @@ def process_subscription(subscription):
         if not end_cycle_task:
             update_task(subscription["_id"], task)
             add_new_task(subscription, task)
-        logging.info(f"Executed task {task}")
+        logger.info(f"Executed task {task}")
 
     subscription_manager.update(
         document_id=subscription["_id"], data={"processing": False}, update=False
@@ -123,7 +126,7 @@ def add_new_task(subscription, task):
             "scheduled_date": new_date,
             "executed": False,
         }
-        logging.info(f"Adding new task {task}")
+        logger.info(f"Adding new task {task}")
 
         return subscription_manager.add_to_list(
             document_id=subscription["_id"],
@@ -227,7 +230,7 @@ def safelisting_reminder(subscription, cycle):
     )
 
     if not os.path.exists(filepath):
-        logging.error("Safelist file does not exist: ", filepath)
+        logger.error("Safelist file does not exist: ", filepath)
         return
 
     with app.app_context():
