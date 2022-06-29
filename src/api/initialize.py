@@ -1,6 +1,7 @@
 """Scripts to run when application starts."""
 # Standard Python Libraries
 import json
+import os
 
 # cisagov Libraries
 from api.manager import NonHumanManager, RecommendationManager, TemplateManager
@@ -27,7 +28,9 @@ def initialize_templates():
         return
 
     logger.info("Initializing templates.")
-    with open("static/templates.json", "r") as f:
+
+    templates_path = os.environ.get("TEMPLATES_PATH", "static/templates.json")
+    with open(templates_path, "r") as f:
         templates = json.load(f)
         logger.info(f"Found {len(templates)} to create.")
         for template in templates:
@@ -67,7 +70,10 @@ def initialize_recommendations():
         logger.info("Recommendations already initialized")
         return
 
-    with open("static/recommendations.json", "r") as f:
+    recommendations_path = os.environ.get(
+        "RECOMMENDATIONS_PATH", "static/recommendations.json"
+    )
+    with open(recommendations_path, "r") as f:
         recommendations = json.load(f)
         logger.info(f"Found {len(recommendations)} to create.")
     recommendation_manager.save_many(recommendations)
