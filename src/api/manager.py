@@ -1,6 +1,7 @@
 """Database Managers."""
 # Standard Python Libraries
 from datetime import datetime
+import logging
 import re
 
 # Third-Party Libraries
@@ -96,8 +97,28 @@ class Manager:
         """Create indexes for collection."""
         for index in self.other_indexes:
             self.db.create_index(index, unique=False)
+        ttl_in_seconds = 345600
         for index in self.ttl_indexes:
-            self.db.create_index(index, expireAfterSeconds=345600)
+            if (
+                self.db.index_information()[index]["expireAfterSeconds"]
+                != ttl_in_seconds
+            ):
+                try:
+                    DB.command(
+                        "collMod",
+                        "logging",
+                        index={
+                            "name": "created_1",
+                            "expireAfterSeconds": ttl_in_seconds,
+                        },
+                    )
+                except Exception as e:
+                    logging.exception(e)
+            else:
+                try:
+                    self.db.create_index(index, expireAfterSeconds=ttl_in_seconds)
+                except Exception as e:
+                    logging.exception(e)
 
     def add_created(self, data):
         """Add created attribute to data on save."""
