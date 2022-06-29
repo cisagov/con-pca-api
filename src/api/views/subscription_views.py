@@ -220,7 +220,11 @@ class SubscriptionSafelistExportView(MethodView):
                 attachment_filename="safelist_export.xlsx",
             )
         except Exception as e:
-            logger.error("Failed to generate safelisting file.", exc_info=e)
+            logger.error(
+                "Failed to generate safelisting file.",
+                exc_info=e,
+                extra={"source_type": "subscription", "source": subscription_id},
+            )
             raise e
         finally:
             logger.info(f"Deleting safelisting file {filepath}")
@@ -253,7 +257,11 @@ class SubscriptionSafelistSendView(MethodView):
         )
 
         if not os.path.exists(filepath):
-            logger.error("Safelist file does not exist: ", filepath)
+            logger.error(
+                "Safelist file does not exist: ",
+                filepath,
+                extra={"source_type": "subscription", "source": subscription_id},
+            )
             return jsonify({"success": "Failed to generate safelisting file."}), 500
 
         Notification("safelisting_reminder", subscription, cycle).send(

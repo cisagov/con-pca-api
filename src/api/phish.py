@@ -90,7 +90,9 @@ def process_targets(targets):
         try:
             process_subscription_targets(subscription_id, subscription_targets)
         except Exception as e:
-            logger.exception(e)
+            logger.exception(
+                e, extra={"source_type": "subscription", "source": subscription_id}
+            )
             for t in subscription_targets:
                 target_manager.update(
                     document_id=t["_id"],
@@ -164,7 +166,12 @@ def process_subscription_targets(subscription_id, targets):
                         subscription_email,
                     )
             except Exception as e:
-                logger.exception(e)
+                logger.exception(
+                    "An exception occurred processing  '{target}' target for '{sub}' subscription: {error}".format(
+                        target=target, sub=subscription["name"], error=e
+                    ),
+                    extra={"source_type": "subscription", "source": subscription_id},
+                )
                 target["error"] = str(e)
             finally:
                 target_manager.update(

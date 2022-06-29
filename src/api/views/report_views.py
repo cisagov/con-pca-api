@@ -61,7 +61,15 @@ class ReportPdfView(MethodView):
                 filepath, as_attachment=True, download_name=f"{report_type}.pdf"
             )
         except Exception as e:
-            logger.exception(e)
+            logger.exception(
+                "An exception occurred creating a report for the {start}-{end} cycle for '{sub}' subscription: {error}".format(
+                    start=cycle["start_date"],
+                    end=cycle["end_date"],
+                    sub=subscription["name"],
+                    error=e,
+                ),
+                extra={"source_type": "cycle", "source": subscription["_id"]},
+            )
         finally:
             logger.info(f"Deleting file {filepath}")
             os.remove(filepath)

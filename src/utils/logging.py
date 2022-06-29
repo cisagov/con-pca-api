@@ -24,17 +24,13 @@ class DatabaseHandler(logging.Handler):
                 msg = self.format(record)
                 if "source" in extra and "source_type" in extra:
                     log = {
-                        "error_message": msg.replace("ERROR:root:", "")
-                        if "ERROR:root:"
-                        else msg,
+                        "error_message": msg,
                         "source": extra["source"],
                         "source_type": extra["source_type"],
                     }
                 else:
                     log = {
-                        "error_message": msg.replace("ERROR:root:", "")
-                        if "ERROR:root:"
-                        else msg,
+                        "error_message": msg,
                     }
                 self.loggingManager.save(log)
             except (KeyboardInterrupt, SystemExit):
