@@ -103,7 +103,7 @@ class Manager:
                 != ttl_in_seconds
             ):
                 try:
-                    self.db.command(
+                    DB.command(
                         "collMod",
                         "logging",
                         index={
