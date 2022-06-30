@@ -2,6 +2,7 @@
 # Standard Python Libraries
 from datetime import datetime, timedelta
 import json
+import logging
 import os
 import random
 
@@ -17,12 +18,8 @@ from api.manager import (
     TargetManager,
     TemplateManager,
 )
-from utils.logging import setLogger
 from utils.subscriptions import get_target_send_date
 from utils.templates import get_deception_level
-
-logger = setLogger(__name__)
-
 
 current_dir = os.path.dirname(__file__)
 
@@ -71,7 +68,7 @@ def load_sending_profile():
         filter_data={"name": "Test Sending Profile"}
     )
     if sending_profile:
-        logger.info("Test data for sending profile already exists.")
+        logging.info("Test data for sending profile already exists.")
         return sending_profile["_id"]
 
     load_data = read_json_file("sending_profile.json")
@@ -84,11 +81,11 @@ def load_customer():
     """Load sample customer data."""
     customer = customer_manager.get(filter_data={"name": "Test Customer"})
     if customer:
-        logger.info("Test data for customer already exists.")
+        logging.info("Test data for customer already exists.")
         return customer["_id"]
 
     load_data = read_json_file("customer.json")
-    logger.info("loading customer test data...")
+    logging.info("loading customer test data...")
     customer = customer_manager.save(load_data)
 
     return customer["_id"]
@@ -98,12 +95,12 @@ def load_subscription(customer_id, sending_profile_id, templates):
     """Load sample subscription data."""
     subscription = subscription_manager.get(filter_data={"name": "test_subscription"})
     if subscription:
-        logger.info("Test data for subscription already exists.")
+        logging.info("Test data for subscription already exists.")
         return subscription["_id"]
 
     template_ids = [t["_id"] for t in templates]
     load_data = read_json_file("subscription.json")
-    logger.info("loading subscription test data...")
+    logging.info("loading subscription test data...")
     load_data["start_date"] = datetime.utcnow()
     load_data["customer_id"] = customer_id
     load_data["sending_profile_id"] = sending_profile_id
@@ -115,7 +112,7 @@ def load_subscription(customer_id, sending_profile_id, templates):
 
 def load_cycle(subscription_id: str, templates):
     """Load sample cycle data."""
-    logger.info("loading cycle test data...")
+    logging.info("loading cycle test data...")
     load_data = read_json_file("cycle.json")
     load_data["subscription_id"] = subscription_id
     load_data["start_date"] = datetime.utcnow()
