@@ -1,17 +1,10 @@
 """Sending Profile Schemas."""
 
 # Third-Party Libraries
-from marshmallow import Schema, fields, validate
+from marshmallow import fields, validate
 
 # cisagov Libraries
 from api.schemas.base_schema import BaseSchema
-
-
-class HeaderSchema(Schema):
-    """HeaderSchema."""
-
-    key = fields.Str()
-    value = fields.Str()
 
 
 class SendingProfileSchema(BaseSchema):
@@ -29,7 +22,6 @@ class SendingProfileSchema(BaseSchema):
         ),
     )
     from_address = fields.Str()
-    headers = fields.List(fields.Nested(HeaderSchema))
     landing_page_domain = fields.Str(required=False)
     sending_ips = fields.Str()
 
