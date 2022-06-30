@@ -167,9 +167,7 @@ def process_subscription_targets(subscription_id, targets):
                     )
             except Exception as e:
                 logger.exception(
-                    "An exception occurred processing  '{target}' target for '{sub}' subscription: {error}".format(
-                        target=target, sub=subscription["name"], error=e
-                    ),
+                    f"An exception occurred processing {target} target for {subscription['name']} subscription: {e}",
                     extra={"source_type": "subscription", "source": subscription_id},
                 )
                 target["error"] = str(e)

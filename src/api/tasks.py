@@ -80,9 +80,7 @@ def process_subscription(subscription):
             process_task(task, subscription, cycle)
         except Exception as e:
             logger.exception(
-                "An exception occurred performing '{task}' task for '{sub}' subscription: {error}".format(
-                    task=task["task_type"], sub=subscription["name"], error=e
-                ),
+                f"An exception occurred performing {task['task_type']} task for {subscription['name']} subscription: {e}",
                 extra={"source_type": "subscription", "source": subscription["_id"]},
             )
             task["error"] = str(e)

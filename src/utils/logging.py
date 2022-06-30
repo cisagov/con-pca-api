@@ -41,7 +41,7 @@ class DatabaseHandler(logging.Handler):
 
 def setLogger(name):
     """Easily set the logger with both handlers."""
-    formatter = logging.Formatter("%(levelname)s - %(name)s - %(message)s")
+    formatter = logging.Formatter("%(levelname)s:%(name)s:%(message)s")
     sh = logging.StreamHandler()
     dh = DatabaseHandler()
     sh.setLevel(logging.INFO)

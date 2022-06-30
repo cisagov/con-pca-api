@@ -62,12 +62,7 @@ class ReportPdfView(MethodView):
             )
         except Exception as e:
             logger.exception(
-                "An exception occurred creating a report for the {start}-{end} cycle for '{sub}' subscription: {error}".format(
-                    start=cycle["start_date"],
-                    end=cycle["end_date"],
-                    sub=subscription["name"],
-                    error=e,
-                ),
+                f"An exception occurred creating a report for the {cycle['start_date']}-{cycle['end_date']} cycle for {subscription['name']} subscription: {e}",
                 extra={"source_type": "cycle", "source": subscription["_id"]},
             )
         finally:
