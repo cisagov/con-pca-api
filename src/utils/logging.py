@@ -21,17 +21,18 @@ class DatabaseHandler(logging.Handler):
         extra = {k: v for k, v in record.__dict__.items()}
         with app.app_context():
             try:
-                msg = self.format(record)
-                if "source" in extra and "source_type" in extra:
-                    log = {
-                        "error_message": msg,
-                        "source": extra["source"],
-                        "source_type": extra["source_type"],
+                _, file, message = self.format(record).split(":", 2)
+                log = {
+                    "error_message": message,
+                    "file": file,
+                }
+                log.update(
+                    {
+                        key: extra[key]
+                        for key in ["source", "source_type"]
+                        if key in extra
                     }
-                else:
-                    log = {
-                        "error_message": msg,
-                    }
+                )
                 self.loggingManager.save(log)
             except (KeyboardInterrupt, SystemExit):
                 raise

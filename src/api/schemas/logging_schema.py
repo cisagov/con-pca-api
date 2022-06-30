@@ -10,6 +10,7 @@ class LoggingSchema(BaseSchema):
     """LoggingSchema."""
 
     error_message = fields.Str()
+    file = fields.Str(required=False, allow_none=True)
     source = fields.Str(required=False, allow_none=True)
     source_type = fields.Str(
         validate=validate.OneOf(["subscription", "cycle", "target"]),
