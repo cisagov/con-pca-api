@@ -10,9 +10,14 @@ from api.manager import (
     SubscriptionManager,
     TemplateManager,
 )
+from utils.logging import setLogger
 
 # from utils.notifications import Notification ### Will be uncommented at a later date, see below.
 from utils.stats import get_sending_profile_metrics
+from utils.validate import is_valid_domain
+
+logger = setLogger(__name__)
+
 
 sending_profile_manager = SendingProfileManager()
 template_manager = TemplateManager()
@@ -33,6 +38,12 @@ class SendingProfilesView(MethodView):
     def post(self):
         """Post."""
         post_data = request.json
+
+        if not is_valid_domain(post_data["name"]):
+            logger.error("domain name format is not valid.")
+            return jsonify({"error": "domain name format is not valid."}), 400
+
+        post_data["name"] = post_data["name"].lower()
         post_data["from_address"] = f"test@{post_data['name']}"
 
         # unique_emails = [] ### The following code will send out an email when a sending profile domain is created. This functionality will be uncommented at a later date.
@@ -56,9 +67,17 @@ class SendingProfileView(MethodView):
 
     def put(self, sending_profile_id):
         """Put."""
-        sending_profile_manager.update(
-            document_id=sending_profile_id, data=request.json
-        )
+        put_data = request.json
+
+        if put_data.get("name"):
+            if not is_valid_domain(put_data["name"]):
+                logger.error("domain name format is not valid.")
+                return jsonify({"error": "domain name format is not valid."}), 400
+
+            put_data["name"] = put_data["name"].lower()
+            put_data["from_address"] = f"test@{put_data['name'].lower()}"
+
+        sending_profile_manager.update(document_id=sending_profile_id, data=put_data)
         return jsonify({"success": True})
 
     def delete(self, sending_profile_id):
