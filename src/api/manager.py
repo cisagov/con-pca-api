@@ -1,6 +1,7 @@
 """Database Managers."""
 # Standard Python Libraries
 from datetime import datetime
+import logging
 import re
 
 # Third-Party Libraries
@@ -92,12 +93,31 @@ class Manager:
         schema = self.schema(many=many)
         return schema.load(data, partial=partial)
 
-    def create_indexes(self):
+    def create_indexes(self, ttl_in_seconds=345600):
         """Create indexes for collection."""
         for index in self.other_indexes:
             self.db.create_index(index, unique=False)
         for index in self.ttl_indexes:
-            self.db.create_index(index, expireAfterSeconds=86400)
+            if (
+                self.db.index_information()[index + "_1"]["expireAfterSeconds"]
+                != ttl_in_seconds
+            ):
+                try:
+                    DB.command(
+                        "collMod",
+                        "logging",
+                        index={
+                            "name": "created_1",
+                            "expireAfterSeconds": ttl_in_seconds,
+                        },
+                    )
+                except Exception as e:
+                    logging.exception(e)
+            else:
+                try:
+                    self.db.create_index(index, expireAfterSeconds=ttl_in_seconds)
+                except Exception as e:
+                    logging.exception(e)
 
     def add_created(self, data):
         """Add created attribute to data on save."""
@@ -218,7 +238,7 @@ class Manager:
             {"$set": self.load_data(data, partial=True)},
         )
 
-    def save(self, data):
+    def save(self, data, ttl_in_seconds=345600):
         """Save new item to collection."""
         exists = []
         for unique_field in self.unique_indexes:
@@ -242,7 +262,7 @@ class Manager:
                 )
             )
 
-        self.create_indexes()
+        self.create_indexes(ttl_in_seconds)
         data = self.clean_data(data)
         data = self.add_created(data)
         data = self.add_updated(data)

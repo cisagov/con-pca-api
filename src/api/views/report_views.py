@@ -1,6 +1,5 @@
 """Report views."""
 # Standard Python Libraries
-import logging
 import os
 
 # Third-Party Libraries
@@ -10,6 +9,7 @@ from flask.views import MethodView
 # cisagov Libraries
 from api.manager import CustomerManager, CycleManager, SubscriptionManager
 from api.schemas.reports_schema import AggregateReportsSchema
+from utils.logging import setLogger
 from utils.notifications import Notification
 from utils.reports import (
     get_report,
@@ -18,6 +18,8 @@ from utils.reports import (
     get_sector_industry_report,
 )
 from utils.stats import get_all_customer_stats, get_all_customer_subscriptions
+
+logger = setLogger(__name__)
 
 subscription_manager = SubscriptionManager()
 cycle_manager = CycleManager()
@@ -54,14 +56,17 @@ class ReportPdfView(MethodView):
             nonhuman=nonhuman,
         )
         try:
-            logging.info(f"Sending file {filepath}")
+            logger.info(f"Sending file {filepath}")
             return send_file(
                 filepath, as_attachment=True, download_name=f"{report_type}.pdf"
             )
         except Exception as e:
-            logging.exception(e)
+            logger.exception(
+                f"An exception occurred creating a report for the {cycle['start_date']}-{cycle['end_date']} cycle for {subscription['name']} subscription: {e}",
+                extra={"source_type": "cycle", "source": subscription["_id"]},
+            )
         finally:
-            logging.info(f"Deleting file {filepath}")
+            logger.info(f"Deleting file {filepath}")
             os.remove(filepath)
 
 
