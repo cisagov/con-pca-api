@@ -1,19 +1,19 @@
 """Domain manager."""
-# Standard Python Libraries
-import logging
-
 # Third-Party Libraries
 from flask.templating import render_template_string
 
 # cisagov Libraries
 from landing.app import app
 from landing.views import ClickView, OpenView
+from utils.logging import setLogger
+
+logger = setLogger(__name__)
 
 
 @app.route("/")
 def api_map():
     """List endpoints for api."""
-    logging.info("Landing page is running.")
+    logger.info("Landing page is running.")
     return render_template_string("404 Not Found"), 404
 
 
