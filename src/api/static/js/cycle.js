@@ -85,7 +85,6 @@ function getClickRateFromCycle(cycle, level) {
   return Math.round(cycle.stats.stats[level].clicked.ratio * 100);
 }
 
-
 function clickRateTimeIntervalChart() {
   var ctx = document
     .getElementById("click-rate-time-interval")
@@ -134,8 +133,8 @@ function clickRateTimeIntervalChart() {
         position: "top",
       },
       datalabels: {
-        anchor: 'end',
-        align: 'top',
+        anchor: "end",
+        align: "top",
         color: "black",
         font: {
           weight: "bold",
@@ -149,16 +148,16 @@ function clickRateTimeIntervalChart() {
       },
     },
     layout: {
-      padding:{
-        top: 20
-      }
+      padding: {
+        top: 20,
+      },
     },
     scales: {
       y: {
-        min:0,
+        min: 0,
         max: 100,
         ticks: {
-          count: 6
+          count: 6,
         },
         title: {
           display: true,
@@ -182,49 +181,48 @@ function clickRateTimeIntervalChart() {
   });
 }
 
-function millisecondToTextDate(){
-
+function millisecondToTextDate() {
   var currentCycle = JSON.parse(
     document.getElementById("currentCycle").innerText
   );
 
   var remainingMills = currentCycle.stats.stats.all.clicked.median;
-  var days = 0
-  var hours = 0
-  var minutes = 0
-  var seconds = 0
+  var days = 0;
+  var hours = 0;
+  var minutes = 0;
+  var seconds = 0;
 
   var retVal = "The median time to click was ";
-  if(remainingMills == 0){ retVal += "not found"}
+  if (remainingMills == 0) {
+    retVal += "not found";
+  }
 
   //days
-  if(remainingMills > 86400000){
+  if (remainingMills > 86400000) {
     days = Math.floor(remainingMills / 86400000);
-    retVal += (days + " days" + (remainingMills > 3600000 ? ", " : "."))
+    retVal += days + " days" + (remainingMills > 3600000 ? ", " : ".");
     remainingMills = remainingMills % 86400000;
   }
   //hours
-  if(remainingMills > 3600000 ){
-    hours = Math.floor(remainingMills / 3600000) ;
-    retVal += (hours + " hours" + (remainingMills > 60000 ? ", " : "."))
+  if (remainingMills > 3600000) {
+    hours = Math.floor(remainingMills / 3600000);
+    retVal += hours + " hours" + (remainingMills > 60000 ? ", " : ".");
     remainingMills = remainingMills % 3600000;
   }
   //minutes
-  if(remainingMills > 60000 ){
-    minutes = Math.floor(remainingMills / 60000) ;
+  if (remainingMills > 60000) {
+    minutes = Math.floor(remainingMills / 60000);
     remainingMills = remainingMills % 60000;
-    retVal += (minutes + " minutes" + (remainingMills > 1000 ? ", " : "."))
+    retVal += minutes + " minutes" + (remainingMills > 1000 ? ", " : ".");
   }
   //seconds
   if(remainingMills > 1000 ){
     seconds = Math.floor(remainingMills / 1000) ;
     retVal += (seconds + " seconds.")
   }
-  document
-    .getElementById("timeIntervalClickInText")
-    .textContent = retVal
-    
-  return
+  document.getElementById("timeIntervalClickInText").textContent = retVal;
+
+  return;
 }
 
 function createClickRateLineGraph() {
@@ -232,7 +230,7 @@ function createClickRateLineGraph() {
   var currentCycle = JSON.parse(
     document.getElementById("currentCycle").innerText
   );
-  console.log(currentCycle)
+  console.log(currentCycle);
   var cycles = JSON.parse(document.getElementById("previousCycles").innerText);
   cycles.reverse();
   cycles.push(currentCycle);

@@ -64,22 +64,6 @@ class TemplateView(MethodView):
         if data.get("landing_page_id") in ["0", None]:
             data["landing_page_id"] = None
 
-        if data.get("retired"):
-            subscriptions = subscription_manager.all(
-                params={"templates_selected": template_id},
-                fields=["_id", "name"],
-            )
-            if subscriptions:
-                return (
-                    jsonify(
-                        {
-                            "error": "Subscriptions are currently utilizing this template.",
-                            "subscriptions": subscriptions,
-                        }
-                    ),
-                    400,
-                )
-
         template = template_manager.get(document_id=template_id)
         template.update(data)
         template_manager.update(document_id=template_id, data=template)
