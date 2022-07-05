@@ -810,56 +810,22 @@
     <div class="page">
       <p class="page-header">5. Time Intervals</p>
       <p class="indent">
-        DESCRIPTION NEEDED. Lorem ipsum dolor sit amet, consectetur adipiscing 
-        elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi 
-        ut aliquip ex ea commodo consequat.
-      </p>
-      <table class="performance-table">
-        <thead>
-          <tr>
-            <th>Cycle</th>
-            <th>Start Date</th>
-            <th>End Date</th>
-            <th>Targets</th>
-            <th>Click Rate</th>
-            <th>Click Time (HH:MM:SS)</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% if previous_cycles %} {% for c in previous_cycles | reverse %} {%
-          if loop.index > (loop.length - 5) %}
-          <tr>
-            <td>Cycle #{{ loop.index }}</td>
-            <td>{{ c.start_date.strftime('%b %d, %Y') }}</td>
-            <td>{{ c.end_date.strftime('%b %d, %Y') }}</td>
-            <td>{{ c.target_count }}</td>
-            <td>{{ percent(c.stats.stats.all.clicked.ratio) }}%</td>
-            <td>
-              {{ time.convert_seconds(c.stats.stats.all.clicked.average).short
-              }}
-            </td>
-          </tr>
-          {% endif %} {% endfor %} {% endif %}
-          <tr>
-            <td>Cycle #{{ previous_cycles | length + 1 }}</td>
-            <td>{{ cycle.start_date.strftime('%b %d, %Y') }}</td>
-            <td>{{ cycle.end_date.strftime('%b %d, %Y') }}</td>
-            <td>{{ cycle.target_count }}</td>
-            <td>{{ percent(cycle.stats.stats.all.clicked.ratio) }}%</td>
-            <td>
-              {{
-              time.convert_seconds(cycle.stats.stats.all.clicked.average).short
-              }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <p class="indent">
-        The following chart represents the average click rate across the three
-        different deception levels (low, moderate, high). This is a good
-        indication to see how click rates are improving based on the quality of
-        the sent template.
+        The figure below shows the percentage of users who clicked during
+        certain time intervals in the first 24 hours of being sent a
+        phish. Overall, nearly 
+        {{ cycle.stats.time_stats.clicked.sixty_minutes.ratio * 100}} 
+        percent of all clicks occurred within one hour 
+        of receiving a phishing email. The median time to click was 
+        {{ cycle.stats.stats.all.clicked.median }}
+        hours,
+        {{ cycle.stats.stats.all.clicked.median }}
+        minutes, and 
+        {median_click_time.seconds } 
+        seconds for the entire assessment.
+        <span id="timeIntervalClickInText"></span>
+        <script>
+          millisecondToTextDate();
+        </script>
       </p>
       <canvas id="click-rate-time-interval">
         <script>
