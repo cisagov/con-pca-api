@@ -6,7 +6,6 @@ from email.charset import QP, Charset
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-import logging
 import os
 import re
 from smtplib import SMTP
@@ -21,6 +20,9 @@ from werkzeug.utils import secure_filename
 from utils import time
 from utils.aws import SES
 from utils.fake import Fake
+from utils.logging import setLogger
+
+logger = setLogger(__name__)
 
 
 class Email:
@@ -60,7 +62,7 @@ class Email:
             )
 
         if self.sending_profile["interface_type"] == "SMTP":
-            logging.info("Sending email via SMTP")
+            logger.info("Sending email via SMTP")
             self.send_smtp(
                 from_email,
                 subject,
@@ -71,7 +73,7 @@ class Email:
                 attachments,
             )
         elif self.sending_profile["interface_type"] == "Mailgun":
-            logging.info("Sending email via Mailgun")
+            logger.info("Sending email via Mailgun")
             self.send_mailgun(
                 from_email,
                 subject,
@@ -82,7 +84,7 @@ class Email:
                 attachments,
             )
         elif self.sending_profile["interface_type"] == "SES":
-            logging.info("Sending email via SES")
+            logger.info("Sending email via SES")
             self.send_ses(
                 from_email,
                 subject,
@@ -92,7 +94,7 @@ class Email:
                 bcc_recipients,
                 attachments,
             )
-        logging.info(
+        logger.info(
             f"Sent email to {to_recipients}, {bcc_recipients} from {from_email}."
         )
 
@@ -156,8 +158,8 @@ class Email:
         try:
             resp.raise_for_status()
         except HTTPError as e:
-            logging.exception(e)
-            logging.error(resp.text)
+            logger.exception(e)
+            logger.error(resp.text)
             raise e
         # message = resp.json()
         # The message id that comes back looks like <20211027170419.1.8E418A15D17BB7E3@example.com>
@@ -296,7 +298,7 @@ def build_message(
 
     for filepath in attachments:
         if not os.path.exists(filepath):
-            logging.error("Attachment file does not exist: ", filepath)
+            logger.error("Attachment file does not exist: ", filepath)
             continue
 
         with open(filepath, "rb") as attachment:

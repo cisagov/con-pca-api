@@ -1,10 +1,12 @@
 """Maxmind database utils."""
-# Standard Python Libraries
-import logging
-
 # Third-Party Libraries
 import geoip2.database  # type: ignore
 import geoip2.errors  # type: ignore
+
+# cisagov Libraries
+from utils.logging import setLogger
+
+logger = setLogger(__name__)
 
 
 def get_asn_org(ip_address):
@@ -18,10 +20,10 @@ def get_asn_org(ip_address):
 
             return reader.asn(ip_address).autonomous_system_organization
     except geoip2.errors.AddressNotFoundError:
-        logging.info(f"{ip_address} not found in maxmind database.")
+        logger.info(f"{ip_address} not found in maxmind database.")
         return None
     except Exception as e:
-        logging.exception(e)
+        logger.exception(e)
         return None
 
 
@@ -32,8 +34,8 @@ def get_city_country(ip_address):
             response = reader.city(ip_address)
             return response.city.name, response.country.name
     except geoip2.errors.AddressNotFoundError:
-        logging.info(f"{ip_address} not found in maxmind database.")
+        logger.info(f"{ip_address} not found in maxmind database.")
         return None, None
     except Exception as e:
-        logging.exception(e)
+        logger.exception(e)
         return None, None

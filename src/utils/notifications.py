@@ -1,7 +1,6 @@
 """Email Notifications."""
 # Standard Python Libraries
 from datetime import datetime
-import logging
 import os
 
 # Third-Party Libraries
@@ -11,7 +10,10 @@ from flask import render_template
 from api.config.application import AppConfig
 from api.manager import SubscriptionManager, TemplateManager
 from utils.emails import Email
+from utils.logging import setLogger
 from utils.reports import get_report_pdf
+
+logger = setLogger(__name__)
 
 app_config = AppConfig()
 template_manager = TemplateManager()
@@ -168,16 +170,16 @@ class Notification:
                 reporting_password=self.subscription.get("reporting_password"),
                 nonhuman=nonhuman,
             )
-            logging.info(f"Attaching {filepath} to notification.")
+            logger.info(f"Attaching {filepath} to notification.")
 
             if not os.path.exists(filepath):
-                logging.error("Attachment file does not exist: ", filepath)
+                logger.error("Attachment file does not exist: ", filepath)
             elif filepath not in attachments:
                 attachments.append(filepath)
 
         addresses = self.get_to_addresses(report)
 
-        logging.info(f"Sending template {self.message_type} to {addresses}")
+        logger.info(f"Sending template {self.message_type} to {addresses}")
         try:
             config = app_config.load()
             sending_profile = {
@@ -206,15 +208,15 @@ class Notification:
 
                 self.add_notification_history(addresses, from_address)
         except Exception as e:
-            logging.error("Send email error", exc_info=e)
+            logger.error("Send email error", exc_info=e)
             raise e
         finally:
             for attachment in attachments:
-                logging.info(f"Deleting attachment {attachment}")
+                logger.info(f"Deleting attachment {attachment}")
                 try:
                     if not os.path.exists(attachment):
-                        logging.info(f"{attachment} file already deleted. Skipping...")
+                        logger.info(f"{attachment} file already deleted. Skipping...")
                     else:
                         os.remove(attachment)
                 except FileNotFoundError as e:
-                    logging.error("Failed to delete attachment file", exc_info=e)
+                    logger.error("Failed to delete attachment file", exc_info=e)

@@ -1,7 +1,6 @@
 """Auth views."""
 # Standard Python Libraries
 from datetime import datetime, timedelta
-import logging
 
 # Third-Party Libraries
 import botocore
@@ -10,6 +9,10 @@ from flask.views import MethodView
 
 # cisagov Libraries
 from utils.aws import Cognito
+from utils.logging import setLogger
+
+logger = setLogger(__name__)
+
 
 cognito = Cognito()
 
@@ -25,7 +28,7 @@ class RegisterView(MethodView):
             cognito.auto_verify_user_email(username=data["username"])
             return jsonify(success=True)
         except botocore.exceptions.ClientError as e:
-            logging.exception(e)
+            logger.exception(e)
             return e.response["Error"]["Message"], 400
 
 
@@ -85,7 +88,7 @@ class ResetPasswordView(MethodView):
                 password=post_data["password"],
             )
         except botocore.exceptions.ClientError as e:
-            logging.exception(e)
+            logger.exception(e)
             return e.response["Error"]["Message"], 400
         return jsonify({"success": "User password has been reset."}), 200
 
@@ -94,7 +97,7 @@ class ResetPasswordView(MethodView):
         try:
             cognito.reset_password(username=username)
         except botocore.exceptions.ClientError as e:
-            logging.exception(e)
+            logger.exception(e)
             try:
                 cognito.auto_verify_user_email(username=username)
                 cognito.reset_password(username=username)
