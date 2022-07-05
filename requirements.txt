@@ -1,12 +1,12 @@
 APScheduler==3.9.1
 beautifulsoup4==4.11.1
 boto3==1.23.10
-botocore~=1.26.10
+botocore~=1.27.23
 cognitojwt==1.4.1
 Faker==13.11.0
 Flask==2.1.2
 Flask-Cors==3.0.10
-geoip2==4.5.0
+geoip2==4.6.0
 gunicorn==20.1.0
 marshmallow==3.17.0
 mongomock==4.0.0
