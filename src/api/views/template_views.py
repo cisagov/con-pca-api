@@ -133,7 +133,7 @@ class TemplatesSelectView(MethodView):
 
     def get(self):
         """Get."""
-        templates = template_manager.all({"retired": False})
+        templates = template_manager.all()
         return jsonify(select_templates(templates))
 
 
