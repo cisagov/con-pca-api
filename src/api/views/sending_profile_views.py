@@ -32,6 +32,9 @@ class SendingProfilesView(MethodView):
 
     def post(self):
         """Post."""
+        post_data = request.json
+        post_data["from_address"] = f"test@{post_data['name']}"
+
         # unique_emails = [] ### The following code will send out an email when a sending profile domain is created. This functionality will be uncommented at a later date.
         # for subscription in subscription_manager.all(params={"status": "running"}):
         #     if subscription["primary_contact"]["email"] not in unique_emails:
@@ -41,7 +44,7 @@ class SendingProfilesView(MethodView):
         #             subscription=subscription,
         #             new_domain=request.json["from_address"].split("@")[1],
         #         ).send()
-        return jsonify(sending_profile_manager.save(request.json))
+        return jsonify(sending_profile_manager.save(post_data))
 
 
 class SendingProfileView(MethodView):
