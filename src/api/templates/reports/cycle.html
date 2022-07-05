@@ -805,23 +805,18 @@
       <p class="page-number">Page | 7 of {{ total_pages }}</p>
     </div>
 
-
     <!-- Time Intervals -->
     <div class="page">
       <p class="page-header">5. Time Intervals</p>
       <p class="indent">
         The figure below shows the percentage of users who clicked during
-        certain time intervals in the first 24 hours of being sent a
-        phish. Overall, nearly 
-        {{ cycle.stats.time_stats.clicked.sixty_minutes.ratio * 100}} 
-        percent of all clicks occurred within one hour 
-        of receiving a phishing email. The median time to click was 
-        {{ cycle.stats.stats.all.clicked.median }}
-        hours,
-        {{ cycle.stats.stats.all.clicked.median }}
-        minutes, and 
-        {median_click_time.seconds } 
-        seconds for the entire assessment.
+        certain time intervals in the first 24 hours of being sent a phish.
+        Overall, nearly {{ cycle.stats.time_stats.clicked.sixty_minutes.ratio *
+        100}} percent of all clicks occurred within one hour of receiving a
+        phishing email. The median time to click was {{
+        cycle.stats.stats.all.clicked.median }} hours, {{
+        cycle.stats.stats.all.clicked.median }} minutes, and
+        {median_click_time.seconds } seconds for the entire assessment.
         <span id="timeIntervalClickInText"></span>
         <script>
           millisecondToTextDate();
