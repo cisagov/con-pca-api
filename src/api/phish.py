@@ -223,7 +223,7 @@ def get_landing_url(sending_profile, subscription):
     if subscription.get("landing_domain"):
         return f"http://{subscription['landing_domain']}"
 
-    return f"http://{sending_profile['landing_page_domain']}"
+    return f"http://{sending_profile.get('landing_page_domain', '')}"
 
 
 def get_tracking_info(sending_profile, cycle_id, target_id, subscription):
