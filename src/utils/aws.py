@@ -1,13 +1,13 @@
 """Aws clients."""
-# Standard Python Libraries
-import logging
-
 # Third-Party Libraries
 import boto3
 from botocore.exceptions import ClientError
 
 # cisagov Libraries
 from api.config.environment import COGNITO_CLIENT_ID, COGNITO_USER_POOL_ID
+from utils.logging import setLogger
+
+logger = setLogger(__name__)
 
 
 class AWS:
@@ -157,5 +157,5 @@ class SES(AWS):
         try:
             return self.client.send_raw_email(RawMessage={"Data": message})
         except ClientError as e:
-            logging.exception(e)
+            logger.exception(e)
             return e.response["Error"]

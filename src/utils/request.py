@@ -1,14 +1,16 @@
 """Flask request helpers."""
 # Standard Python Libraries
 from datetime import datetime
-import logging
 
 # Third-Party Libraries
 from flask import request
 
 # cisagov Libraries
 from api.manager import LandingPageManager, TemplateManager
+from utils.logging import setLogger
 from utils.maxmind import get_asn_org, get_city_country
+
+logger = setLogger(__name__)
 
 landing_page_manager = LandingPageManager()
 template_manager = TemplateManager()
@@ -54,10 +56,10 @@ def get_landing_page(subscription, template_id):
 
     if subscription.get("landing_page_id"):
         landing_page_id = subscription["landing_page_id"]
-        logging.info(f"Subscription landing page has been set with {landing_page_id}")
+        logger.info(f"Subscription landing page has been set with {landing_page_id}")
     elif template.get("landing_page_id"):
         landing_page_id = template["landing_page_id"]
-        logging.info(f"Template landing page has been set with {landing_page_id}")
+        logger.info(f"Template landing page has been set with {landing_page_id}")
 
     kwargs = (
         {"document_id": landing_page_id}

@@ -5,6 +5,9 @@ from flask.views import MethodView
 
 # cisagov Libraries
 from api.manager import LoggingManager
+from utils.logging import setLogger
+
+logger = setLogger(__name__)
 
 logging_manager = LoggingManager()
 

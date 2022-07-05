@@ -1,30 +1,42 @@
 # This file specifies intentionally untracked files that Git should ignore.
 # Files already tracked by Git are not affected.
 # See: https://git-scm.com/docs/gitignore
+
+## Amazon Web Services ##
+.lambda
+.lambda_other
+.lambda_scikit
+local_testing.py
+
+## Docker ##
+Dockerfile-x
+
+## Editors ##
+.idea
+.vs
+.vscode
+.vsenv
+
+## Environment ##
+.env
+.venv
+config.ini
+old.env
+
+## Node.js ##
+node_modules
+
+## Other ##
+*.mmdb
+.geoipupdate.lock
+.profile-data
+created_dummy_data_*.json
+src/staticfiles
+
+## Python ##
+__pycache__
+.coverage
 .mypy_cache
 .pytest_cache
 .python-version
-__pycache__
-.venv
-.lambda_other
-.lambda_scikit
-.lambda
-.vs
 htmlcov
-local_testing.py
-
-.vscode
-
-.profile-data
-
-.env
-old.env
-src/staticfiles
-created_dummy_data_*.json
-node_modules
-/.vsenv
-
-*.mmdb
-.geoipupdate.lock
-config.ini
-Dockerfile-x
