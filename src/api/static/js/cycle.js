@@ -93,7 +93,6 @@ function clickRateTimeIntervalChart() {
   const timeStats = JSON.parse(
     document.getElementById("timeIntervalStats").innerText
   );
-  console.log(timeStats)
   const clicked = timeStats.clicked;
   const data = {
     labels: [
@@ -175,7 +174,7 @@ function clickRateTimeIntervalChart() {
     },
   };
 
-  const chart = new Chart(ctx, {
+  new Chart(ctx, {
     type: "bar",
     data: data,
     options: options,
@@ -220,7 +219,6 @@ function millisecondToTextDate(){
   if(remainingMills > 1000 ){
     seconds = Math.floor(remainingMills / 1000) ;
     retVal += (seconds + " seconds.")
-    remainingMills = remainingMills % 1000;
   }
   document
     .getElementById("timeIntervalClickInText")
