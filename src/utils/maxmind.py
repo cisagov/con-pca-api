@@ -31,6 +31,8 @@ def get_city_country(ip_address):
     """Get city from maxmind database."""
     try:
         with geoip2.database.Reader("GeoLite2-City.mmdb") as reader:
+            if "," in ip_address:
+                ip_address = ip_address.split(",")[1].strip()
             response = reader.city(ip_address)
             return response.city.name, response.country.name
     except geoip2.errors.AddressNotFoundError:
