@@ -216,9 +216,9 @@ function millisecondToTextDate() {
     retVal += minutes + " minutes" + (remainingMills > 1000 ? ", " : ".");
   }
   //seconds
-  if(remainingMills > 1000 ){
-    seconds = Math.floor(remainingMills / 1000) ;
-    retVal += (seconds + " seconds.")
+  if (remainingMills > 1000) {
+    seconds = Math.floor(remainingMills / 1000);
+    retVal += seconds + " seconds.";
   }
   document.getElementById("timeIntervalClickInText").textContent = retVal;
 
