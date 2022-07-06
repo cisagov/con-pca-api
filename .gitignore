@@ -23,6 +23,9 @@ Dockerfile-x
 config.ini
 old.env
 
+## Mac ##
+.DS_Store
+
 ## Node.js ##
 node_modules
 
