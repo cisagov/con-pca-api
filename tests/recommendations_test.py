@@ -3,6 +3,7 @@
 # Third-Party Libraries
 import pytest
 
+
 class Testrecommendations:
     """Test case for recommendation related views."""
 
@@ -35,7 +36,7 @@ class Testrecommendations:
             assert recommendation["created_by"] == "bot"
         except KeyError:
             pytest.fail("created_by property does not exist")
-            
+
         try:
             assert isinstance(recommendation["type"], str)
         except KeyError:
@@ -45,5 +46,3 @@ class Testrecommendations:
             assert isinstance(recommendation["description"], str)
         except KeyError:
             pytest.fail("description property does not exist")
-
-

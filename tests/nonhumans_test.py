@@ -3,6 +3,7 @@
 # Third-Party Libraries
 import pytest
 
+
 class TestNonhumans:
     """Test case for nonhuman related views."""
 
@@ -20,11 +21,9 @@ class TestNonhumans:
             assert isinstance(nonhuman[0], str)
         except KeyError:
             pytest.fail("expected a string")
-            
+
         try:
             assert isinstance(nonhuman, list)
             assert len(nonhuman) >= 3
         except KeyError:
             pytest.fail("expected a list of at least length 3")
-            
-
