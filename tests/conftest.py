@@ -12,7 +12,13 @@ import pytest
 # cisagov Libraries
 from api.commands.load_test_data import load_test_data
 from api.main import app
-from api.manager import SubscriptionManager
+from api.manager import (
+    CustomerManager,
+    CycleManager,
+    SendingProfileManager,
+    SubscriptionManager,
+    TemplateManager,
+)
 
 warnings.filterwarnings("ignore")
 
@@ -62,3 +68,39 @@ def subscription():
         subscription_manager = SubscriptionManager()
         subscriptions = subscription_manager.all()
         return subscriptions[0]
+
+
+@pytest.fixture()
+def cycle():
+    """Return a single cycle object from the test dataset."""
+    with app.app_context():
+        cycle_manager = CycleManager()
+        cycles = cycle_manager.all()
+        return cycles[0]
+
+
+@pytest.fixture()
+def template():
+    """Return a single template object from the test dataset."""
+    with app.app_context():
+        template_manager = TemplateManager()
+        templates = template_manager.all()
+        return templates[0]
+
+
+@pytest.fixture()
+def sending_profile():
+    """Return a single sending_profile object from the test dataset."""
+    with app.app_context():
+        sending_profile_manager = SendingProfileManager()
+        sending_profiles = sending_profile_manager.all()
+        return sending_profiles[0]
+
+
+@pytest.fixture()
+def customer():
+    """Return a single customer object from the test dataset."""
+    with app.app_context():
+        customer_manager = CustomerManager()
+        customers = customer_manager.all()
+        return customers[0]

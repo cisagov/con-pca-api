@@ -1,12 +1,7 @@
 """Test cases for subscription related features."""
 
-# Standard Python Libraries
-import logging
-
 # Third-Party Libraries
 import pytest
-
-log = logging.getLogger(__name__)
 
 
 class TestSubscriptions:
