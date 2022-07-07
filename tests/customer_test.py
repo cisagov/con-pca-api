@@ -3,6 +3,7 @@
 # Third-Party Libraries
 import pytest
 
+
 class TestCustomers:
     """Test case for customer related views."""
 
@@ -41,7 +42,7 @@ class TestCustomers:
             assert len(customer["contact_list"]) <= 1
         except KeyError:
             pytest.fail("contact_list property does not exist")
-            
+
         try:
             assert isinstance(customer["contact_list"][0]["email"], str)
         except KeyError:

@@ -3,6 +3,7 @@
 # Third-Party Libraries
 import pytest
 
+
 class TestSendingProfiles:
     """Test case for sending profile related views."""
 
@@ -40,4 +41,3 @@ class TestSendingProfiles:
             assert isinstance(sendingprofile["from_address"], str)
         except KeyError:
             pytest.fail("from_address property does not exist")
-

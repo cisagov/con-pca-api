@@ -3,6 +3,7 @@
 # Third-Party Libraries
 import pytest
 
+
 class TestTemplates:
     """Test case for template related views."""
 

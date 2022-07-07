@@ -3,6 +3,7 @@
 # Third-Party Libraries
 import pytest
 
+
 class TestCycles:
     """Test case for cycle related views."""
 

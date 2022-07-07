@@ -15,6 +15,7 @@ from api.main import app
 from api.manager import (
     CustomerManager,
     CycleManager,
+    RecommendationManager,
     SendingProfileManager,
     SubscriptionManager,
     TemplateManager,
@@ -104,3 +105,12 @@ def customer():
         customer_manager = CustomerManager()
         customers = customer_manager.all()
         return customers[0]
+
+
+@pytest.fixture()
+def recommendation():
+    """Return a single recommendation object from the test dataset."""
+    with app.app_context():
+        recommendation_manager = RecommendationManager()
+        recommendations = recommendation_manager.all()
+        return recommendations[0]
