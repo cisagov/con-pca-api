@@ -321,3 +321,272 @@ function createClickRateLineGraph() {
     plugins: [ChartDataLabels],
   });
 }
+
+function CapitalizeFirstLetter(input){
+  return input.charAt(0).toUpperCase() + input.slice(1);
+}
+
+function getIndicatorClickedData(data,group){
+  return data.filter(i => i['group'] == group).map(i => i['clicked']['ratio'] * 100)
+
+}
+
+//Not ideal but using chartjs requires some work arounds
+function setStringLength(string,length){
+  // console.log(length - string.length)
+  console.log((' '.repeat(length - string.length) + string).length)
+  return ' '.repeat(length - string.length) + string
+}
+
+function deceptionIndicatorBreakdownChart() {
+
+  var behavior_ctx = document.getElementById("deception-indicator-breakdown-behavior").getContext("2d");
+  var relevancy_ctx = document.getElementById("deception-indicator-breakdown-relevancy").getContext("2d");
+  var sender_ctx = document.getElementById("deception-indicator-breakdown-sender").getContext("2d");
+  var appearance_ctx = document.getElementById("deception-indicator-breakdown-appearance").getContext("2d");
+  
+  var cycleStats = JSON.parse(
+    document.getElementById("currentCycle").innerText
+  );
+  var indicators = JSON.parse(
+    document.getElementById("indicators").innerText
+  );
+  console.log(indicators)
+
+  var indicatorStats = cycleStats.stats.indicator_stats;
+
+  console.log(indicatorStats)
+
+  var labels = [
+    {display: 'Graphics - Visual Appeal', group:'appearance', indicator:'logo_graphics', label:'Visual Appeal'},
+    {display: 'Graphics - Plain Text', group:'appearance', indicator:'logo_graphics', label:'Plain Text'},
+    {display: 'Domain - Related/Spoofed', group:'appearance', indicator:'link_domain',label:'Related/Hidden/Spoofed'},
+    {display: 'Domain - Unrelated', group:'appearance', indicator:'link_domain',label:'Unrelated'},
+    {display: 'Proper Grammar', group:'appearance', indicator:'grammar', label:'Proper'},
+    {display: 'Decent Grammar', group:'appearance', indicator:'grammar', label:'Decent'},
+    {display: 'Poor Grammar', group:'appearance', indicator:'grammar', label:'Poor'},
+    
+    {display: 'Authoritative - Superior', group:'sender', indicator:'authoritative', label:'Superior'},
+    {display: 'Authoritative - Peer', group:'sender', indicator:'authoritative', label:'Peer'},
+    {display: 'Authoritative - None', group:'sender', indicator:'authoritative', label:'None'},
+    {display: 'External - Specified', group:'sender', indicator:'external', label:'Specified'},
+    {display: 'External - Unspecified', group:'sender', indicator:'external', label:'Not External/Unpsecified'},
+    {display: 'Internal - Spoofed', group:'sender', indicator:'internal', label:'Spoofed'},
+    {display: 'Internal - Generic', group:'sender', indicator:'internal', label:'Generic/Close'},
+    {display: 'Internal - Unspecified', group:'sender', indicator:'internal', label:'Not Internal/Unspecified'},
+    
+    {display: 'Public News', group:'relevancy', indicator:'public_news', label:'Yes'},
+    {display: 'Organization', group:'relevancy', indicator:'organization', label:'Yes'},
+    
+    {display: 'Greed', group:'behavior', indicator:'greed', label:'Yes'},
+    {display: 'Fear', group:'behavior', indicator:'fear', label:'Yes'},
+    {display: 'Curiosity', group:'behavior', indicator:'curiosity', label:'Yes'},
+    {display: 'Duty or Obligation', group:'behavior', indicator:'duty_obligation', label:'Yes'},
+
+
+  ]
+  
+  appearance_labels = []
+  sender_labels = []
+  relevancy_labels = []
+  behavior_labels = []
+
+  display_length = 0
+  labels.forEach(label => {
+    if(display_length < label['display'].length){
+      display_length = label['display'].length
+    }
+  })
+
+  labels.forEach(i => {
+    if(i['group'] == 'appearance'){
+      appearance_labels.push(i['display'])
+    }
+    else if(i['group'] == 'sender'){
+      sender_labels.push(i['display'])
+    }
+    else if(i['group'] == 'relevancy'){
+      relevancy_labels.push(i['display'])
+    }
+    else if(i['group'] == 'behavior'){
+      behavior_labels.push(i['display'])
+    }
+  })
+  console.log(appearance_labels)
+
+  var dataset_sender = [   
+    {
+      label: "Sender",
+      data: getIndicatorClickedData(indicatorStats,'sender'),
+      borderColor: "#00FFFF",
+      backgroundColor: "#4f76b0",
+    },    
+  ];
+  var dataset_appearance = [   
+    {
+      label: "Appearance",
+      data: getIndicatorClickedData(indicatorStats,'appearance'),
+      borderColor: "#00FF00",
+      backgroundColor: "#b7b7b7",
+    },    
+  ];
+  var dataset_relevancy = [   
+    {
+      label: "Relevancy",
+      data: getIndicatorClickedData(indicatorStats,'relevancy'),
+      borderColor: "#00FF00",
+      backgroundColor: "#e8844f",
+    },    
+  ];
+  var dataset_behavior = [   
+    {
+      label: "Behavior",
+      data: getIndicatorClickedData(indicatorStats,'behavior'),
+      borderColor: "#00FF00",
+      backgroundColor: "#705b94",
+    },    
+  ];
+
+  const data_sender = {
+    labels: sender_labels,
+    datasets: dataset_sender,
+  };
+  const data_appearance = {
+    labels: appearance_labels,
+    datasets: dataset_appearance,
+  };
+  const data_relevancy = {
+    labels: relevancy_labels,
+    datasets: dataset_relevancy,
+  };
+  const data_behavior = {
+    labels: behavior_labels,
+    datasets: dataset_behavior,
+  };
+
+  let maxVal = 0
+  indicatorStats.forEach(i => {
+    if((i.clicked.ratio * 100) > maxVal){
+      maxVal = i.clicked.ratio * 100
+    }
+  })
+  
+  options = {
+    barThickness: 18,
+    responsive: true,
+    maintainAspectRatio: false,
+    indexAxis: "y",
+    layout:{
+      padding:{
+        right: 36,
+        left: 30
+      }
+    },
+    plugins: {
+      legend: {
+        display: false,
+        position: "right",
+      },
+      datalabels: {
+        align: 'end',
+        anchor: 'end',       
+        formatter: function (value, ctx) {
+          return value + "%";
+        },
+      },
+    },
+    scales: {
+      yAxes: {
+        afterFit: function(scaleInstance) {
+          scaleInstance.width = 170; // sets the width to 100px
+        },
+          grid: {
+            drawBorder: false,
+            color: function(context,i) {
+              console.log(context)
+            if(!context.tick){
+              return
+            }
+            if (context.tick.value == 0) {
+              return '#FFFFFF';
+            }
+            //else if (context.tick.value < 2) {
+            //   return '#000000';
+            // }
+            return '#ffffff';
+          }
+        },
+      },
+      xAxes: {
+        max: maxVal,
+        ticks: {
+          callback: function (value, index, ticks) {
+            return value + "%";
+          },
+          maxTicksLimit: 7,
+          minTicksLimit: 7,
+        },
+        grid: {
+          drawBorder: false,
+          color: function(context,i) {
+            // console.log(context)
+          if(!context.tick){
+            // context.scale.ticks[context.scale.max].label = "TEST"
+            // console.log(context.scale._maxLength)
+            // context.scale._gridLineItems[0].color = "#FF0000"
+            return
+          }
+          if (context.tick.value == maxVal) {
+            return '#FFFFFF';
+          } else {
+            return '#000000';
+          }
+        }
+      },
+      },
+    },
+  };
+
+  var xAxisLabelHeight = 20
+  var rowHeight = 30
+  var padding = 20
+
+  document.getElementById("deception-indicator-breakdown-behavior").height = (rowHeight * 4) + padding
+  document.getElementById("deception-indicator-breakdown-relevancy").height = (rowHeight * 2) + padding
+  document.getElementById("deception-indicator-breakdown-sender").height = (rowHeight * 8) + padding
+  document.getElementById("deception-indicator-breakdown-appearance").height = (rowHeight * 7) + xAxisLabelHeight
+  
+  new Chart(appearance_ctx, {
+    type: "bar",
+    data: data_appearance,
+    options: options,
+    plugins: [ChartDataLabels],
+  });
+
+  options.scales.xAxes.ticks.display = false
+  options.layout ={
+    padding: {
+      right: 35,
+      left: 30
+    }
+  },
+
+  new Chart(behavior_ctx, {
+    type: "bar",
+    data: data_behavior,
+    options: options,
+    plugins: [ChartDataLabels],
+  });
+  new Chart(relevancy_ctx, {
+    type: "bar",
+    data: data_relevancy,
+    options: options,
+    plugins: [ChartDataLabels],
+  });
+  new Chart(sender_ctx, {
+    type: "bar",
+    data: data_sender,
+    options: options,
+    plugins: [ChartDataLabels],
+  });
+}
