@@ -805,6 +805,28 @@
       <p class="page-number">Page | 7 of {{ total_pages }}</p>
     </div>
 
+    <!-- Time Intervals -->
+    <div class="page">
+      <p class="page-header">5. Time Intervals</p>
+      <p class="indent">
+        The figure below shows the percentage of users who clicked during
+        certain time intervals in the first 24 hours of being sent a phish.
+        Overall, nearly {{ cycle.stats.time_stats.clicked.sixty_minutes.ratio *
+        100}} percent of all clicks occurred within one hour of receiving a
+        phishing email.
+        <span id="timeIntervalClickInText"></span>
+        <script>
+          millisecondToTextDate();
+        </script>
+      </p>
+      <canvas id="click-rate-time-interval">
+        <script>
+          clickRateTimeIntervalChart();
+        </script>
+      </canvas>
+      <p class="page-number">Page | 8 of {{ total_pages }}</p>
+    </div>
+
     <!-- Templates -->
     {% for template in stats.template_stats | sort(attribute="clicked.ratio",
     reverse=True) %}
@@ -922,7 +944,7 @@
         {% endif %}
       </div>
       <p class="page-number">
-        Page | {{ 7 + loop.index }} of {{ total_pages }}
+        Page | {{ 8 + loop.index }} of {{ total_pages }}
       </p>
     </div>
     {% endfor %}
