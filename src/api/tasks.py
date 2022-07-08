@@ -8,11 +8,13 @@ from uuid import uuid4
 from api.app import app
 from api.manager import (
     CycleManager,
+    FailedEmailManager,
     SendingProfileManager,
     SubscriptionManager,
     TemplateManager,
 )
 from utils.logging import setLogger
+from utils.mailgun import get_failed_email_events
 from utils.notifications import Notification
 from utils.safelist import generate_safelist_file
 from utils.subscriptions import start_subscription, stop_subscription
@@ -26,6 +28,7 @@ cycle_manager = CycleManager()
 sending_profile_manager = SendingProfileManager()
 subscription_manager = SubscriptionManager()
 template_manager = TemplateManager()
+failed_email_manager = FailedEmailManager()
 
 
 def tasks_job():
@@ -37,6 +40,25 @@ def tasks_job():
                 logger.info("No more subscription tasks to process.")
                 break
             process_subscription(subscription)
+
+
+def failed_emails_job():
+    """Job to gather failed emails every hour."""
+    with app.app_context():
+        events = get_failed_email_events()
+        for event in events:
+            if event["recipient"] not in [
+                failed_email["recipient"] for failed_email in failed_email_manager.all()
+            ]:
+                failed_email_manager.save(
+                    {
+                        "recipient": event["recipient"],
+                        "sent_time": datetime.fromtimestamp(event["timestamp"]),
+                        "reason": event["reason"],
+                        "message_id": event["message"]["headers"]["message-id"],
+                        "delivery_status": event["delivery-status"]["message"],
+                    }
+                )
 
 
 def get_subscription():
