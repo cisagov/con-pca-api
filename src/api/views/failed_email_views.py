@@ -18,4 +18,3 @@ class FailedEmailView(MethodView):
     def get(self):
         """Get."""
         return jsonify(failed_email_manager.all())
-    

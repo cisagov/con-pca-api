@@ -1,3 +1,4 @@
+"""Failed Email Schema."""
 # Third-Party Libraries
 from marshmallow import fields
 
