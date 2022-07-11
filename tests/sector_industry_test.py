@@ -14,7 +14,6 @@ class TestSectorIndustries:
 
         self.check_sector_industry_properties(resp.json)
 
-
     @staticmethod
     def check_sector_industry_properties(sectorindustry):
         """Check sectorindustry object for expected properties."""

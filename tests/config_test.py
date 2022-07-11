@@ -21,10 +21,8 @@ class TestConfig:
             assert isinstance(config, dict)
         except KeyError:
             pytest.fail("expected a dict")
-            
+
         try:
             assert isinstance(config["REPORTING_FROM_ADDRESS"], str)
         except KeyError:
             pytest.fail("expected a str")
-
-

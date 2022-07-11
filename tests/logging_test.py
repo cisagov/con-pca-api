@@ -21,14 +21,13 @@ class TestLogging:
             assert isinstance(logging, list)
         except KeyError:
             pytest.fail("expected a list")
-            
+
         try:
             assert isinstance(logging[0], dict)
         except KeyError:
             pytest.fail("expected a dict")
-            
+
         try:
             assert isinstance(logging[0]["error_message"], str)
         except KeyError:
             pytest.fail("expected a str")
-

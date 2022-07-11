@@ -14,7 +14,6 @@ class TestUsers:
 
         self.check_user_properties(resp.json[0])
 
-
     @staticmethod
     def check_user_properties(user):
         """Check user object for expected properties."""
@@ -22,7 +21,7 @@ class TestUsers:
             assert isinstance(user["username"], str)
         except KeyError:
             pytest.fail("username property does not exist")
-            
+
         try:
             assert isinstance(user["email"], str)
         except KeyError:
@@ -32,4 +31,3 @@ class TestUsers:
             assert isinstance(user["enabled"], bool)
         except KeyError:
             pytest.fail("enabled property does not exist")
-

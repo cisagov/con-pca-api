@@ -14,7 +14,6 @@ class TestSectorIndustries:
 
         self.check_sector_industry_properties(resp.json)
 
-
     @staticmethod
     def check_sector_industry_properties(reportsaggregate):
         """Check reportsaggregate object for expected properties."""
@@ -27,9 +26,8 @@ class TestSectorIndustries:
             assert isinstance(reportsaggregate["all_customer_stats"], dict)
         except KeyError:
             pytest.fail("expected a dict")
-            
+
         try:
             assert isinstance(reportsaggregate["yearly_reports_sent"], int)
         except KeyError:
             pytest.fail("expected an int")
-

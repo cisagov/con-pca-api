@@ -21,9 +21,8 @@ class TestRandomPassword:
             assert isinstance(randompassword, dict)
         except KeyError:
             pytest.fail("expected a dict")
-            
+
         try:
             assert isinstance(randompassword["password"], str)
         except KeyError:
             pytest.fail("expected a str")
-

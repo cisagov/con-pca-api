@@ -21,14 +21,13 @@ class TestTags:
             assert isinstance(tags, list)
         except KeyError:
             pytest.fail("expected a list")
-            
+
         try:
             assert isinstance(tags[0], dict)
         except KeyError:
             pytest.fail("expected a dict")
-            
+
         try:
             assert isinstance(tags[0]["description"], str)
         except KeyError:
             pytest.fail("expected a str")
-
