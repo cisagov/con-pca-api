@@ -129,9 +129,13 @@ class STS(AWS):
 
     def assume_role_client(self, service, role_arn):
         """Assume Role via STS."""
-        resp = self.client.assume_role(
-            RoleArn=role_arn, RoleSessionName=f"{service}_session"
-        )
+        try:
+            resp = self.client.assume_role(
+                RoleArn=role_arn, RoleSessionName=f"{service}_session"
+            )
+        except ClientError as e:
+            logger.error(e)
+            return
 
         return boto3.client(
             service,
@@ -154,6 +158,10 @@ class SES(AWS):
 
     def send_email(self, message):
         """Send email via SES."""
+        if not self.client:
+            logger.error("Error: There's an issue with the role assumed for SES")
+            return None
+
         try:
             return self.client.send_raw_email(RawMessage={"Data": message})
         except ClientError as e:
