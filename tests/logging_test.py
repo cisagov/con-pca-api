@@ -22,12 +22,13 @@ class TestLogging:
         except KeyError:
             pytest.fail("expected a list")
 
-        try:
-            assert isinstance(logging[0], dict)
-        except KeyError:
-            pytest.fail("expected a dict")
+        if len(logging) > 0:
+            try:
+                assert isinstance(logging[0], dict)
+            except KeyError:
+                pytest.fail("expected a dict")
 
-        try:
-            assert isinstance(logging[0]["error_message"], str)
-        except KeyError:
-            pytest.fail("expected a str")
+            try:
+                assert isinstance(logging[0]["error_message"], str)
+            except KeyError:
+                pytest.fail("expected a str")
