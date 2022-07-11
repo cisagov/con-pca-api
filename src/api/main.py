@@ -34,7 +34,7 @@ from api.views.cycle_views import (
     CyclesView,
     CycleView,
 )
-from api.views.failed_email_views import FailedEmailView
+from api.views.failed_email_views import FailedEmailsView, FailedEmailView
 from api.views.landing_domain_views import LandingDomainsView, LandingDomainView
 from api.views.landing_page_views import LandingPagesView, LandingPageView
 from api.views.logging_views import LoggingView
@@ -88,7 +88,8 @@ rules = [
     ("/cycle/<cycle_id>/reports/<report_type>/pdf/", ReportPdfView),
     ("/cycle/<cycle_id>/reports/<report_type>/email/", ReportEmailView),
     # Failed Email Views
-    ("/failedemails/", FailedEmailView),
+    ("/failedemails/", FailedEmailsView),
+    ("/failedemail/<failed_email_id>/", FailedEmailView),
     # Landing domains
     ("/landingdomains/", LandingDomainsView),
     ("/landingdomain/<landing_domain_id>", LandingDomainView),

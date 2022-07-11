@@ -15,3 +15,4 @@ class FailedEmailSchema(BaseSchema):
     reason = fields.Str()
     message_id = fields.Str()
     delivery_status = fields.Str()
+    removed = fields.Bool(missing=False)
