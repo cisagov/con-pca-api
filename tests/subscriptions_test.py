@@ -28,23 +28,22 @@ class TestSubscriptions:
     def check_subscription_properties(sub):
         """Check subscription object for expected properties."""
         try:
-            assert sub["name"] == "test_subscription"
+            assert isinstance(sub["name"], str)
         except KeyError:
             pytest.fail("name property does not exist")
 
         try:
-            assert sub["created_by"] == "bot"
+            assert isinstance(sub["created_by"], str)
         except KeyError:
             pytest.fail("created_by property does not exist")
 
         try:
-            assert sub["continuous_subscription"] is False
+            assert isinstance(sub["continuous_subscription"], bool)
         except KeyError:
             pytest.fail("continuous_subscription property does not exist")
 
         try:
             target_email_list = sub["target_email_list"]
             assert isinstance(target_email_list, list)
-            assert len(target_email_list) == 4
         except KeyError:
             pytest.fail("target_email_list property does not exist")

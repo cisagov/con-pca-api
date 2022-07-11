@@ -68,7 +68,7 @@ def subscription():
     with app.app_context():
         subscription_manager = SubscriptionManager()
         subscriptions = subscription_manager.all()
-        return subscriptions[0]
+        return subscriptions[-1]
 
 
 @pytest.fixture()
@@ -77,7 +77,7 @@ def cycle():
     with app.app_context():
         cycle_manager = CycleManager()
         cycles = cycle_manager.all()
-        return cycles[0]
+        return cycles[-1]
 
 
 @pytest.fixture()
@@ -86,7 +86,7 @@ def template():
     with app.app_context():
         template_manager = TemplateManager()
         templates = template_manager.all()
-        return templates[0]
+        return templates[-1]
 
 
 @pytest.fixture()
@@ -95,7 +95,7 @@ def sending_profile():
     with app.app_context():
         sending_profile_manager = SendingProfileManager()
         sending_profiles = sending_profile_manager.all()
-        return sending_profiles[0]
+        return sending_profiles[-1]
 
 
 @pytest.fixture()
@@ -104,7 +104,7 @@ def customer():
     with app.app_context():
         customer_manager = CustomerManager()
         customers = customer_manager.all()
-        return customers[0]
+        return customers[-1]
 
 
 @pytest.fixture()
@@ -113,4 +113,4 @@ def recommendation():
     with app.app_context():
         recommendation_manager = RecommendationManager()
         recommendations = recommendation_manager.all()
-        return recommendations[0]
+        return recommendations[-1]
