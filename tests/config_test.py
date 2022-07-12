@@ -19,3 +19,15 @@ class TestConfig:
         """Check config object for expected properties."""
         if not isinstance(config, dict):
             pytest.fail("expected a dict")
+
+        try:
+            if not isinstance(config["REPORTING_FROM_ADDRESS"], str):
+                pytest.fail("expected a string")
+        except KeyError:
+            pytest.fail("REPORTING_FROM_ADDRESS property does not exist")
+
+        try:
+            if not isinstance(config["REPORTING_INTERFACE_TYPE"], str):
+                pytest.fail("expected a string")
+        except KeyError:
+            pytest.fail("REPORTING_INTERFACE_TYPE property does not exist")
