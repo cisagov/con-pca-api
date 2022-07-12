@@ -30,21 +30,20 @@ def get_failed_email_events():
     sending_profiles = sending_profile_manager.all()
     events = []
     for sending_profile in sending_profiles:
-        match sending_profile["interface_type"]:
-            case "SES":
-                break
-            case "Mailgun":
-                resp = requests.get(
-                    f"https://api.mailgun.net/v3/{sending_profile['mailgun_domain']}/events",
-                    auth=("api", MAILGUN_API_KEY),
-                    params={"event": "failed"},
-                )
-            case "SMTP":
-                resp = requests.get(
-                    f"https://api.mailgun.net/v3/{sending_profile['smtp_host']}/events",
-                    auth=("api", MAILGUN_API_KEY),
-                    params={"event": "failed"},
-                )
+        if sending_profile["interface_type"] == "SES":
+            break
+        if sending_profile["interface_type"] == "Mailgun":
+            resp = requests.get(
+                f"https://api.mailgun.net/v3/{sending_profile['mailgun_domain']}/events",
+                auth=("api", MAILGUN_API_KEY),
+                params={"event": "failed"},
+            )
+        if sending_profile["interface_type"] == "SMTP":
+            resp = requests.get(
+                f"https://api.mailgun.net/v3/{sending_profile['smtp_host']}/events",
+                auth=("api", MAILGUN_API_KEY),
+                params={"event": "failed"},
+            )
         try:
             resp.raise_for_status()
         except HTTPError as e:
