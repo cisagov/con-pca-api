@@ -17,13 +17,11 @@ class TestNonhumans:
     @staticmethod
     def check_nonhuman_properties(nonhuman):
         """Check nonhuman object for expected properties."""
-        try:
-            assert isinstance(nonhuman[0], str)
-        except KeyError:
-            pytest.fail("expected a string")
+        if not isinstance(nonhuman, list):
+            pytest.fail("expected a list")
 
-        try:
-            assert isinstance(nonhuman, list)
+        if nonhuman:
+            if not isinstance(nonhuman[0], str):
+                pytest.fail("expected a string")
+
             assert len(nonhuman) >= 3
-        except KeyError:
-            pytest.fail("expected a list of at least length 3")

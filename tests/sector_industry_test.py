@@ -17,22 +17,21 @@ class TestSectorIndustries:
     @staticmethod
     def check_sector_industry_properties(sectorindustry):
         """Check sectorindustry object for expected properties."""
-        try:
-            assert isinstance(sectorindustry, list)
-        except KeyError:
+        if not isinstance(sectorindustry, list):
             pytest.fail("expected a list")
 
-        try:
-            assert isinstance(sectorindustry[0], dict)
-        except KeyError:
-            pytest.fail("sectorindustry list is empty")
+        if sectorindustry:
+            if not isinstance(sectorindustry[0], dict):
+                pytest.fail("expected a dictionary")
 
-        try:
-            assert isinstance(sectorindustry[0]["industries"], list)
-        except KeyError:
-            pytest.fail("industries property does not exist")
+            try:
+                if not isinstance(sectorindustry[0]["industries"], list):
+                    pytest.fail("expected a list")
+            except KeyError:
+                pytest.fail("industries property does not exist")
 
-        try:
-            assert isinstance(sectorindustry[0]["industries"][0]["name"], str)
-        except KeyError:
-            pytest.fail("name property does not exist")
+            try:
+                if not isinstance(sectorindustry[0]["industries"][0]["name"], str):
+                    pytest.fail("expected a string")
+            except KeyError:
+                pytest.fail("name property does not exist")

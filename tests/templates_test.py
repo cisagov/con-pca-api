@@ -28,22 +28,26 @@ class TestTemplates:
     def check_template_properties(template):
         """Check template object for expected properties."""
         try:
-            assert isinstance(template["name"], str)
+            if not isinstance(template["name"], str):
+                pytest.fail("expected a string")
         except KeyError:
             pytest.fail("name property does not exist")
 
         try:
-            assert template["created_by"] == "bot"
+            if not template["created_by"] == "bot":
+                pytest.fail("expected created_by value to be 'bot'")
         except KeyError:
             pytest.fail("created_by property does not exist")
 
         try:
-            assert isinstance(template["retired"], bool)
+            if not isinstance(template["retired"], bool):
+                pytest.fail("expected a boolean")
         except KeyError:
             pytest.fail("retired property does not exist")
 
         try:
-            assert isinstance(template["indicators"], dict)
+            if not isinstance(template["indicators"], dict):
+                pytest.fail("expected a dictionary")
             assert len(template["indicators"]) == 4
         except KeyError:
             pytest.fail("indicators property does not exist")

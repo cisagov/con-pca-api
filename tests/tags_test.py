@@ -17,17 +17,15 @@ class TestTags:
     @staticmethod
     def check_tags_properties(tags):
         """Check tags object for expected properties."""
-        try:
-            assert isinstance(tags, list)
-        except KeyError:
+        if not isinstance(tags, list):
             pytest.fail("expected a list")
 
-        try:
-            assert isinstance(tags[0], dict)
-        except KeyError:
-            pytest.fail("expected a dict")
+        if tags:
+            if not isinstance(tags[0], dict):
+                pytest.fail("expected a dict")
 
-        try:
-            assert isinstance(tags[0]["description"], str)
-        except KeyError:
-            pytest.fail("expected a str")
+            try:
+                if not isinstance(tags[0]["description"], str):
+                    pytest.fail("expected a string")
+            except KeyError:
+                pytest.fail("description property does not exist")

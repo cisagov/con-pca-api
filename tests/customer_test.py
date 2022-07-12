@@ -28,22 +28,26 @@ class TestCustomers:
     def check_customer_properties(customer):
         """Check customer object for expected properties."""
         try:
-            assert isinstance(customer["customer_type"], str)
+            if not isinstance(customer["customer_type"], str):
+                pytest.fail("expected a string")
         except KeyError:
             pytest.fail("customer_type property does not exist")
 
         try:
-            assert isinstance(customer["name"], str)
+            if not isinstance(customer["name"], str):
+                pytest.fail("expected a string")
         except KeyError:
             pytest.fail("name property does not exist")
 
         try:
-            assert isinstance(customer["contact_list"], list)
-            assert len(customer["contact_list"]) <= 1
+            if not isinstance(customer["contact_list"], list):
+                pytest.fail("expected a list")
+            assert len(customer["contact_list"]) >= 1
         except KeyError:
             pytest.fail("contact_list property does not exist")
 
         try:
-            assert isinstance(customer["contact_list"][0]["email"], str)
+            if not isinstance(customer["contact_list"][0]["email"], str):
+                pytest.fail("expected a string")
         except KeyError:
             pytest.fail("email property does not exist")

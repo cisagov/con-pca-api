@@ -17,17 +17,17 @@ class TestSectorIndustries:
     @staticmethod
     def check_sector_industry_properties(reportsaggregate):
         """Check reportsaggregate object for expected properties."""
-        try:
-            assert isinstance(reportsaggregate, dict)
-        except KeyError:
+        if not isinstance(reportsaggregate, dict):
             pytest.fail("expected a dict")
 
         try:
-            assert isinstance(reportsaggregate["all_customer_stats"], dict)
+            if not isinstance(reportsaggregate["all_customer_stats"], dict):
+                pytest.fail("expected a dict")
         except KeyError:
-            pytest.fail("expected a dict")
+            pytest.fail("all_customer_stats property does not exist")
 
         try:
-            assert isinstance(reportsaggregate["yearly_reports_sent"], int)
+            if not isinstance(reportsaggregate["yearly_reports_sent"], int):
+                pytest.fail("expected an integer")
         except KeyError:
-            pytest.fail("expected an int")
+            pytest.fail("yearly_reports_sent property does not exist")

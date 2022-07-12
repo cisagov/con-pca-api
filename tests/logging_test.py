@@ -17,18 +17,15 @@ class TestLogging:
     @staticmethod
     def check_logging_properties(logging):
         """Check logging object for expected properties."""
-        try:
-            assert isinstance(logging, list)
-        except KeyError:
+        if not isinstance(logging, list):
             pytest.fail("expected a list")
 
-        if len(logging) > 0:
-            try:
-                assert isinstance(logging[0], dict)
-            except KeyError:
+        if logging:
+            if not isinstance(logging[0], dict):
                 pytest.fail("expected a dict")
 
             try:
-                assert isinstance(logging[0]["error_message"], str)
+                if not isinstance(logging[0]["error_message"], str):
+                    pytest.fail("expected a str")
             except KeyError:
-                pytest.fail("expected a str")
+                pytest.fail("error_message property does not exist")

@@ -17,7 +17,5 @@ class TestConfig:
     @staticmethod
     def check_config_properties(config):
         """Check config object for expected properties."""
-        try:
-            assert isinstance(config, dict)
-        except KeyError:
+        if not isinstance(config, dict):
             pytest.fail("expected a dict")

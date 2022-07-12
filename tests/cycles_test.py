@@ -28,22 +28,27 @@ class TestCycles:
     def check_cycle_properties(cycle):
         """Check cycle object for expected properties."""
         try:
-            assert isinstance(cycle["subscription_id"], str)
+            if not isinstance(cycle["subscription_id"], str):
+                pytest.fail("expected a string")
         except KeyError:
             pytest.fail("subscription_id property does not exist")
 
         try:
-            assert isinstance(cycle["target_count"], int)
+            if not isinstance(cycle["target_count"], int):
+                pytest.fail("expected an integer")
         except KeyError:
             pytest.fail("target_count property does not exist")
 
         try:
-            assert isinstance(cycle["active"], bool)
+            if not isinstance(cycle["active"], bool):
+                pytest.fail("expected a boolean")
         except KeyError:
             pytest.fail("active property does not exist")
 
         try:
-            assert isinstance(cycle["template_ids"], list)
+            if not isinstance(cycle["template_ids"], list):
+                pytest.fail("expected a list")
+
             assert len(cycle["template_ids"]) <= 3
         except KeyError:
             pytest.fail("template_ids property does not exist")

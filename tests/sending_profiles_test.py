@@ -28,16 +28,19 @@ class TestSendingProfiles:
     def check_sending_profile_properties(sendingprofile):
         """Check sendingprofile object for expected properties."""
         try:
-            assert isinstance(sendingprofile["name"], str)
+            if not isinstance(sendingprofile["name"], str):
+                pytest.fail("expected a string")
         except KeyError:
             pytest.fail("name property does not exist")
 
         try:
-            assert isinstance(sendingprofile["interface_type"], str)
+            if not isinstance(sendingprofile["interface_type"], str):
+                pytest.fail("expected a string")
         except KeyError:
             pytest.fail("interface_type property does not exist")
 
         try:
-            assert isinstance(sendingprofile["from_address"], str)
+            if not isinstance(sendingprofile["from_address"], str):
+                pytest.fail("expected a string")
         except KeyError:
             pytest.fail("from_address property does not exist")

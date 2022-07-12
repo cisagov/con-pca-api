@@ -17,12 +17,11 @@ class TestRandomPassword:
     @staticmethod
     def check_random_password_properties(randompassword):
         """Check random password object for expected properties."""
-        try:
-            assert isinstance(randompassword, dict)
-        except KeyError:
+        if not isinstance(randompassword, dict):
             pytest.fail("expected a dict")
 
         try:
-            assert isinstance(randompassword["password"], str)
+            if not isinstance(randompassword["password"], str):
+                pytest.fail("expected a str")
         except KeyError:
-            pytest.fail("expected a str")
+            pytest.fail("password property does not exist")
