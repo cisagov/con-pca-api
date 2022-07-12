@@ -27,18 +27,24 @@ def get_message_events(domain, api_key, message_id):
 
 def get_failed_email_events():
     """Get failed email events from all domains from mailgun api."""
-    sending_profiles = sending_profile_manager.all(
-        params={
-            "interface_type": "Mailgun",
-        }
-    )
+    sending_profiles = sending_profile_manager.all()
     events = []
     for sending_profile in sending_profiles:
-        resp = requests.get(
-            f"https://api.mailgun.net/v3/{sending_profile['mailgun_domain']}/events",
-            auth=("api", MAILGUN_API_KEY),
-            params={"event": "failed"},
-        )
+        match sending_profile["interface_type"]:
+            case "SES":
+                break
+            case "Mailgun":
+                resp = requests.get(
+                    f"https://api.mailgun.net/v3/{sending_profile['mailgun_domain']}/events",
+                    auth=("api", MAILGUN_API_KEY),
+                    params={"event": "failed"},
+                )
+            case "SMTP":
+                resp = requests.get(
+                    f"https://api.mailgun.net/v3/{sending_profile['smtp_host']}/events",
+                    auth=("api", MAILGUN_API_KEY),
+                    params={"event": "failed"},
+                )
         try:
             resp.raise_for_status()
         except HTTPError as e:
