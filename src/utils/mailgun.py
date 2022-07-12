@@ -33,7 +33,7 @@ def get_failed_email_events():
         if sending_profile["interface_type"] == "SES":
             break
         if sending_profile["interface_type"] == "Mailgun":
-            if sending_profile['mailgun_domain']:
+            if sending_profile["mailgun_domain"]:
                 resp = requests.get(
                     f"https://api.mailgun.net/v3/{sending_profile['mailgun_domain']}/events",
                     auth=("api", MAILGUN_API_KEY),
