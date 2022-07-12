@@ -1,6 +1,6 @@
 """Failed Email views."""
 # Third-Party Libraries
-from flask import jsonify
+from flask import jsonify, request
 from flask.views import MethodView
 
 # cisagov Libraries
@@ -19,7 +19,13 @@ class FailedEmailsView(MethodView):
 
     def get(self):
         """Get."""
-        return jsonify(failed_email_manager.all())
+        # Allow querying a list of failed emails
+        parameters = failed_email_manager.get_query(request.args)
+        parameters["removed"] = {"$in": [False, None]}
+        if request.args.get("removed", "").lower() == "true":
+            parameters["removed"] = True
+
+        return jsonify(failed_email_manager.all(params=parameters))
 
 
 class FailedEmailView(MethodView):
