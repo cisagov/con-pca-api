@@ -129,13 +129,12 @@ tbody > tr:nth-child(even) {
   left: 40px;
 }
 
-.graph-label{
+.graph-label {
   transform: rotate(-90deg);
   display: inline-block;
   position: absolute;
   padding: 4em 0;
 }
-
 
 .indent {
   text-indent: 0.18in;

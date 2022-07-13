@@ -35,7 +35,9 @@
       <p id="timeIntervalStats">{{ json.dumps(stats.time_stats) }}</p>
       <p id="previousCycles">{{ json.dumps(previous_cycles, default=str) }}</p>
       <p id="currentCycle">{{ json.dumps(cycle, default=str) }}</p>
-      <p id="decep_level_stats">{{ json.dumps(stats.deception_level_stats, default=str) }}</p>
+      <p id="decep_level_stats">
+        {{ json.dumps(stats.deception_level_stats, default=str) }}
+      </p>
     </div>
 
     <!-- Cover Page -->
@@ -834,7 +836,6 @@
     </div>
 
     <div class="page">
-
       <p class="page-header">7. User Activity Metrics</p>
       <table class="recommendation-table">
         <thead>
@@ -866,13 +867,16 @@
           </tr>
           <tr>
             <td># Ratio of reports-to-clicks</td>
-            <td>{{cycle.stats.stats.all.reported.count / cycle.stats.stats.all.clicked.count}}</td>
+            <td>
+              {{cycle.stats.stats.all.reported.count /
+              cycle.stats.stats.all.clicked.count}}
+            </td>
           </tr>
           <tr>
             <td>Average time to first click</td>
             <td id="avgTimeToFirtClick">
               <script>
-                avgTimeToFirstClick()
+                avgTimeToFirstClick();
               </script>
             </td>
           </tr>
@@ -880,15 +884,15 @@
             <td>Average time to first report</td>
             <td id="avgTimeToFirtReport">
               <script>
-                avgTimeToFirstReport()
-              </script> 
+                avgTimeToFirstReport();
+              </script>
             </td>
           </tr>
           <tr>
             <td>Most clicked phishing template</td>
             <td id="mostClickedTemplate">
               <script>
-                mostClickedTemplate()
+                mostClickedTemplate();
               </script>
             </td>
           </tr>
@@ -899,7 +903,7 @@
     </div>
     <div class="page">
       <p class="page-header">8. Deception Indicator Breakdown</p>
-      <div class="graph-label" style="padding: 4em 0;margin-left: -14px">
+      <div class="graph-label" style="padding: 4em 0; margin-left: -14px">
         Behavior
       </div>
       <div class="graph-label" style="padding: 14em 0; margin-left: -18px">
@@ -911,36 +915,32 @@
       <div class="graph-label" style="padding: 39em 0; margin-left: -26px">
         Appearance
       </div>
-        <div style="height: auto; width: 100%">            
-          <canvas id="deception-indicator-breakdown-behavior">
-          </canvas>
-        </div>
-        <div style="height: auto; width: 100%">    
-          <canvas id="deception-indicator-breakdown-relevancy">
-          </canvas>
-        </div>
-        <div style="height: auto; width: 100%">            
-          <canvas id="deception-indicator-breakdown-sender">
-          </canvas>
-        </div>
-        <div style="height: auto; width: 100%">            
-          <canvas id="deception-indicator-breakdown-appearance">
-          </canvas>
-        </div>
-        <script> 
-          deceptionIndicatorBreakdownChart();
-        </script>
+      <div style="height: auto; width: 100%">
+        <canvas id="deception-indicator-breakdown-behavior"> </canvas>
+      </div>
+      <div style="height: auto; width: 100%">
+        <canvas id="deception-indicator-breakdown-relevancy"> </canvas>
+      </div>
+      <div style="height: auto; width: 100%">
+        <canvas id="deception-indicator-breakdown-sender"> </canvas>
+      </div>
+      <div style="height: auto; width: 100%">
+        <canvas id="deception-indicator-breakdown-appearance"> </canvas>
+      </div>
+      <script>
+        deceptionIndicatorBreakdownChart();
+      </script>
       <p class="page-number">Page | 10 of {{ total_pages }}</p>
     </div>
     <div class="page">
-      <p class="page-header">9. Clicks By Deception Level</p>  
+      <p class="page-header">9. Clicks By Deception Level</p>
       <canvas id="clicks-by-deception-level">
-        <script> 
+        <script>
           clicksByDeceptionLevel();
         </script>
       </canvas>
       <canvas id="total-clicks-by-deception-level">
-        <script> 
+        <script>
           totalClickCountByDeceptionLevel();
         </script>
       </canvas>

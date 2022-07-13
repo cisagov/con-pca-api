@@ -15,7 +15,7 @@ from api.manager import (
     TemplateManager,
 )
 from api.schemas.stats_schema import CycleStatsSchema
-from utils.templates import get_deception_level, get_indicators
+from utils.templates import get_indicators
 
 template_manager = TemplateManager()
 customer_manager = TemplateManager()
@@ -144,7 +144,6 @@ def generate_cycle_stats(cycle, targets, nonhuman=False):
                 "deception_level": target["deception_level"],
                 "deception_number": target["deception_level_int"],
             }
-        decep_level = target["deception_level_int"]
         timeline = target.get("timeline", [])
         if target["position"] not in target_stats:
             target_stats[target["position"]] = {
@@ -165,7 +164,6 @@ def generate_cycle_stats(cycle, targets, nonhuman=False):
         sent_time = target.get("send_date")
         opened = get_event(timeline, "opened")
         clicked = get_event(timeline, "clicked")
-        total_clicks = get_all_event(timeline,"clicked")
 
         reported, reported_time = get_reported_event(
             target["email"], cycle.get("manual_reports", [])
@@ -174,7 +172,7 @@ def generate_cycle_stats(cycle, targets, nonhuman=False):
         if clicked and not opened:
             opened = clicked
 
-        add_template_to_stats_by_level(stats_by_level,target,timeline)
+        add_template_to_stats_by_level(stats_by_level, target, timeline)
 
         if sent:
             stats["all"]["sent"]["count"] += 1
@@ -228,12 +226,14 @@ def generate_cycle_stats(cycle, targets, nonhuman=False):
             "indicator_stats": indicator_stats,
             "time_stats": time_stats,
             "recommendation_stats": recommendation_stats,
-            "deception_level_stats" : decep_level_stats,
+            "deception_level_stats": decep_level_stats,
             "target_stats": target_stats,
         }
     )
-def add_template_to_stats_by_level(stats,target,timeline):
-    """Add a target/timelines info to the stats by level object"""
+
+
+def add_template_to_stats_by_level(stats, target, timeline):
+    """Add a target/timelines info to the stats by level object."""
     sent = target.get("sent")
     opened = get_all_event(timeline, "opened")
     clicked = get_all_event(timeline, "clicked")
@@ -246,57 +246,70 @@ def add_template_to_stats_by_level(stats,target,timeline):
         for open in opened:
             diff = open["time"] - sent_time
             stats["all"]["opened"]["count"] += 1
-            stats["all"]["opened"]["diffs"].append({"time": diff, "target_id" : target['_id']})
+            stats["all"]["opened"]["diffs"].append(
+                {"time": diff, "target_id": target["_id"]}
+            )
             stats[str(target["deception_level_int"])]["opened"]["count"] += 1
-            stats[str(target["deception_level_int"])]["opened"]["diffs"].append({"time": diff, "target_id" : target['_id']})
+            stats[str(target["deception_level_int"])]["opened"]["diffs"].append(
+                {"time": diff, "target_id": target["_id"]}
+            )
     if clicked is not None:
         for click in clicked:
             diff = click["time"] - sent_time
             stats["all"]["clicked"]["count"] += 1
-            stats["all"]["clicked"]["diffs"].append({"time": diff, "target_id" : target['_id']})
+            stats["all"]["clicked"]["diffs"].append(
+                {"time": diff, "target_id": target["_id"]}
+            )
             stats[str(target["deception_level_int"])]["clicked"]["count"] += 1
-            stats[str(target["deception_level_int"])]["clicked"]["diffs"].append({"time": diff, "target_id" : target['_id']})
+            stats[str(target["deception_level_int"])]["clicked"]["diffs"].append(
+                {"time": diff, "target_id": target["_id"]}
+            )
 
 
 def get_deception_level_stats(stats: dict):
-    """Get the deception level based stats"""
-    total_unique_clicks =  []
-    for event in stats["all"]['clicked']["diffs"]:
-        if event['target_id'] not in total_unique_clicks:
-            total_unique_clicks.append(event['target_id'])
+    """Get the deception level based stats."""
+    total_unique_clicks = []
+    for event in stats["all"]["clicked"]["diffs"]:
+        if event["target_id"] not in total_unique_clicks:
+            total_unique_clicks.append(event["target_id"])
 
     decp_lev_stats = []
-    for level in [1,2,3,4,5,6]:
-        unique_click_array =  []
-        for event in stats[str(level)]['clicked']["diffs"]:
-            if event['target_id'] not in unique_click_array:
-                unique_click_array.append(event['target_id'])
+    for level in [1, 2, 3, 4, 5, 6]:
+        unique_click_array = []
+        for event in stats[str(level)]["clicked"]["diffs"]:
+            if event["target_id"] not in unique_click_array:
+                unique_click_array.append(event["target_id"])
         deception_level = {
-            "deception_level" : level,
-            "sent_count": stats[str(level)]['sent']['count'],
-            "unique_clicks" : len(unique_click_array),
-            "total_clicks" : len(stats[str(level)]['clicked']['diffs']),
-            "user_reports" : 0,
-            "unique_user_clicks" : get_unique_user_click_count(stats[str(level)]['clicked']["diffs"]),
-            "click_percentage_over_time" : get_unique_click_over_time(stats[str(level)]['clicked']["diffs"])
+            "deception_level": level,
+            "sent_count": stats[str(level)]["sent"]["count"],
+            "unique_clicks": len(unique_click_array),
+            "total_clicks": len(stats[str(level)]["clicked"]["diffs"]),
+            "user_reports": 0,
+            "unique_user_clicks": get_unique_user_click_count(
+                stats[str(level)]["clicked"]["diffs"]
+            ),
+            "click_percentage_over_time": get_unique_click_over_time(
+                stats[str(level)]["clicked"]["diffs"]
+            ),
         }
         decp_lev_stats.append(deception_level)
-    return decp_lev_stats;
+    return decp_lev_stats
+
 
 def get_unique_click_over_time(diffs):
-    """Get the unique click percentage over time"""
+    """Get the unique click percentage over time."""
     click_percentage_over_time = {
-        "one_minutes" : 0,
-        "three_minutes" : 0,
-        "five_minutes" : 0,
-        "fifteen_minutes" : 0,
-        "thirty_minutes" : 0,
-        "sixty_minutes" : 0,
-        "two_hours" : 0,
-        "three_hours" : 0,
-        "four_hours" : 0,
-        "one_day" : 0,
-    } 
+        "one_minutes": 0,
+        "three_minutes": 0,
+        "five_minutes": 0,
+        "fifteen_minutes": 0,
+        "thirty_minutes": 0,
+        "sixty_minutes": 0,
+        "two_hours": 0,
+        "three_hours": 0,
+        "four_hours": 0,
+        "one_day": 0,
+    }
     times = {
         "one_minutes": 1,
         "three_minutes": 3,
@@ -310,59 +323,58 @@ def get_unique_click_over_time(diffs):
         "one_day": 1440,
     }
 
-    unique_click_array =  []
+    unique_click_array = []
     for event in diffs:
-        if event['target_id'] not in unique_click_array:
-            unique_click_array.append(event['target_id'])
+        if event["target_id"] not in unique_click_array:
+            unique_click_array.append(event["target_id"])
     total = len(unique_click_array)
     for target in unique_click_array:
         clicks = list(filter(lambda x: x["target_id"] == target, diffs))
         click = clicks[0]
         for c in clicks:
-            if c['time'].total_seconds() < click['time'].total_seconds():
+            if c["time"].total_seconds() < click["time"].total_seconds():
                 click = c
 
         for t in times:
-            if click['time'].total_seconds() < times[t]:
+            if click["time"].total_seconds() < times[t]:
                 click_percentage_over_time[t] += 1
-    
+
     for click_count in click_percentage_over_time:
         click_percentage_over_time[click_count] = {
-            "count" : click_percentage_over_time[click_count],
-            "ratio" : get_ratio(click_percentage_over_time[click_count],total),
+            "count": click_percentage_over_time[click_count],
+            "ratio": get_ratio(click_percentage_over_time[click_count], total),
         }
 
-    
     return click_percentage_over_time
-                
-    
+
+
 def get_unique_user_click_count(diffs):
-    """Get how many tiems each unique user clicked"""
+    """Get how many tiems each unique user clicked."""
     unique_click_array = []
     for event in diffs:
-        if event['target_id'] not in unique_click_array:
-            unique_click_array.append(event['target_id'])
+        if event["target_id"] not in unique_click_array:
+            unique_click_array.append(event["target_id"])
 
     unique_user_clicks = {
-        "one_click" : 0,
-        "two_three_clicks" : 0,
-        "four_five_clicks" : 0,
-        "six_ten_clicks" : 0,
-        "ten_plus_clicks" : 0,
+        "one_click": 0,
+        "two_three_clicks": 0,
+        "four_five_clicks": 0,
+        "six_ten_clicks": 0,
+        "ten_plus_clicks": 0,
     }
 
     for target in unique_click_array:
-        times_clicked =  len(list(filter(lambda x: x["target_id"] == target, diffs)))
-        if times_clicked is 1:
-            unique_user_clicks['one_click'] += 1
+        times_clicked = len(list(filter(lambda x: x["target_id"] == target, diffs)))
+        if times_clicked == 1:
+            unique_user_clicks["one_click"] += 1
         elif times_clicked <= 3:
-            unique_user_clicks['two_three_clicks'] += 1
+            unique_user_clicks["two_three_clicks"] += 1
         elif times_clicked <= 5:
-            unique_user_clicks['four_five_clicks'] += 1
+            unique_user_clicks["four_five_clicks"] += 1
         elif times_clicked <= 10:
-            unique_user_clicks['six_ten_clicks'] += 1
+            unique_user_clicks["six_ten_clicks"] += 1
         else:
-            unique_user_clicks['ten_plus_clicks'] += 1
+            unique_user_clicks["ten_plus_clicks"] += 1
     return unique_user_clicks
 
 
@@ -465,6 +477,7 @@ def get_event(timeline, event):
     if events:
         return min(events, key=lambda x: x["time"])
     return None
+
 
 def get_all_event(timeline, event):
     """Get all event from timeline."""
