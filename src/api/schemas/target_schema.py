@@ -36,6 +36,7 @@ class TargetSchema(BaseSchema):
     last_name = fields.Str(required=False, allow_none=True)
     position = fields.Str(required=False, allow_none=True)
     deception_level = fields.Str(validate=validate.OneOf(["low", "moderate", "high"]))
+    deception_level_int = fields.Integer()
     send_date = DateTimeField()
     sent = fields.Bool(missing=False)
     sent_date = DateTimeField()
