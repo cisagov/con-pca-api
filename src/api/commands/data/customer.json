@@ -1,6 +1,6 @@
 {
   "address_1": "123 Main St",
-  "address_2": "",
+  "address_2": "#365",
   "city": "Brooklyn",
   "contact_list": [
     {
@@ -9,7 +9,7 @@
       "first_name": "Adam",
       "last_name": "West",
       "mobile_phone": "888-888-8888",
-      "notes": "",
+      "notes": "For emergencies, please call mobile phone",
       "office_phone": "999-999-9999",
       "title": "CEO"
     }
@@ -18,7 +18,7 @@
   "identifier": "test_customer",
   "industry": "Government",
   "name": "Test Customer",
-  "sector": "",
+  "sector": "Chemical",
   "state": "NY",
   "zip_code": "11207"
 }
