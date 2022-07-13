@@ -1,8 +1,15 @@
 {
   "from_address": "admin@example.com",
+  "headers": [
+    {
+      "key": "header_key",
+      "value": "header_value"
+    }
+  ],
   "interface_type": "SMTP",
   "landing_page_domain": "test.com",
   "name": "Test Sending Profile",
+  "sending_ips": "123.12.23.221, 123.12.23.222, 123.12.23.223",
   "smtp_host": "smtp.mailgun.org:587",
   "smtp_password": "abcdefg12345",
   "smtp_username": "postmaster@example.com"
