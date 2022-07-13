@@ -27,7 +27,7 @@ class LandingDomainView(MethodView):
 
     def get(self, landing_domain_id):
         """Get."""
-        return jsonify(landing_domain_manager.get(document=landing_domain_id))
+        return jsonify(landing_domain_manager.get(document_id=landing_domain_id))
 
     def put(self, landing_domain_id):
         """Put."""
