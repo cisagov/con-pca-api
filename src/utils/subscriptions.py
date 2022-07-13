@@ -80,6 +80,7 @@ def start_subscription(subscription_id, templates_selected=[]):
         # Assign deception level to target
         template = next(filter(lambda x: x["_id"] == target["template_id"], templates))
         target["deception_level"] = get_deception_level(template["deception_score"])
+        target["deception_level_int"] = template["deception_score"]
 
         targets.append(target)
         cycle["template_ids"].add(target["template_id"])
