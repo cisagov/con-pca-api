@@ -117,6 +117,7 @@ def generate_cycle_stats(cycle, targets, nonhuman=False):
         },
     }
     template_stats = {}
+    target_stats = {}
     nonhuman_orgs = get_nonhuman_orgs()
     for target in targets:
         if target["template_id"] not in template_stats:
@@ -145,6 +146,14 @@ def generate_cycle_stats(cycle, targets, nonhuman=False):
             }
         decep_level = target["deception_level_int"]
         timeline = target.get("timeline", [])
+        if target["position"] not in target_stats:
+            target_stats[target["position"]] = {
+                "group": target["position"],
+                "sent": {"count": 0},
+                "opened": {"count": 0},
+                "clicked": {"count": 0},
+                "reported": {"count": 0},
+            }
         if not nonhuman:
             timeline = list(
                 filter(
@@ -171,6 +180,7 @@ def generate_cycle_stats(cycle, targets, nonhuman=False):
             stats["all"]["sent"]["count"] += 1
             stats[target["deception_level"]]["sent"]["count"] += 1
             template_stats[target["template_id"]]["sent"]["count"] += 1
+            target_stats[target["position"]]["sent"]["count"] += 1
         if opened:
             stats["all"]["opened"]["count"] += 1
             stats[target["deception_level"]]["opened"]["count"] += 1
@@ -178,6 +188,7 @@ def generate_cycle_stats(cycle, targets, nonhuman=False):
             stats["all"]["opened"]["diffs"].append(diff)
             stats[target["deception_level"]]["opened"]["diffs"].append(diff)
             template_stats[target["template_id"]]["opened"]["count"] += 1
+            target_stats[target["position"]]["opened"]["count"] += 1
         if clicked:
             stats["all"]["clicked"]["count"] += 1
             stats[target["deception_level"]]["clicked"]["count"] += 1
@@ -185,6 +196,7 @@ def generate_cycle_stats(cycle, targets, nonhuman=False):
             stats["all"]["clicked"]["diffs"].append(diff)
             stats[target["deception_level"]]["clicked"]["diffs"].append(diff)
             template_stats[target["template_id"]]["clicked"]["count"] += 1
+            target_stats[target["position"]]["clicked"]["count"] += 1
         if reported:
             stats["all"]["reported"]["count"] += 1
             stats[target["deception_level"]]["reported"]["count"] += 1
@@ -193,6 +205,7 @@ def generate_cycle_stats(cycle, targets, nonhuman=False):
                 stats["all"]["reported"]["diffs"].append(diff)
             stats[target["deception_level"]]["reported"]["diffs"].append(diff)
             template_stats[target["template_id"]]["reported"]["count"] += 1
+            target_stats[target["position"]]["reported"]["count"] += 1
 
     process_time_stats(stats)
     process_ratios(stats)
@@ -205,6 +218,7 @@ def generate_cycle_stats(cycle, targets, nonhuman=False):
     recommendation_stats = get_recommendation_stats(template_stats)
     time_stats = get_time_stats(stats)
     decep_level_stats = get_deception_level_stats(stats_by_level)
+    target_stats = target_stats.values()
 
     return CycleStatsSchema().dump(
         {
@@ -215,6 +229,7 @@ def generate_cycle_stats(cycle, targets, nonhuman=False):
             "time_stats": time_stats,
             "recommendation_stats": recommendation_stats,
             "deception_level_stats" : decep_level_stats,
+            "target_stats": target_stats,
         }
     )
 def add_template_to_stats_by_level(stats,target,timeline):
@@ -382,7 +397,7 @@ def get_ratio(numerator, denominator):
 
 
 def process_time_stats(stats: dict):
-    """Process timedetla stats."""
+    """Process timedelta stats."""
     for key in stats.keys():
         for event in ["opened", "clicked", "reported"]:
             count = stats[key][event]["count"]
