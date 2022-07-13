@@ -310,27 +310,24 @@ function clickingUserTimelineChart() {
   });
 }
 
-
-function reportsToClickRatio(){
-  var cycle = JSON.parse(
-    document.getElementById("currentCycle").innerText
-  );
+function reportsToClickRatio() {
+  var cycle = JSON.parse(document.getElementById("currentCycle").innerText);
   num = cycle.stats.stats.all.reported.count;
   denum = cycle.stats.stats.all.clicked.count;
 
-  if(num == 0){
+  if (num == 0) {
     document.getElementById("reportsToClickRatio").textContent = "0";
     return;
   }
-  
-  if(!num || !denum){
+
+  if (!num || !denum) {
     document.getElementById("reportsToClickRatio").textContent = "N/A";
     return;
   }
 
-  document.getElementById("reportsToClickRatio").textContent = ((num / denum) * 100) + "%";
+  document.getElementById("reportsToClickRatio").textContent =
+    (num / denum) * 100 + "%";
 }
-
 
 function avgTimeToFirstClick() {
   var currentCycle = JSON.parse(
