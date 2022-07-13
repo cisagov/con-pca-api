@@ -126,7 +126,12 @@ def get_report_pdf(
 
 def _add_csv_attachments(writer: PdfFileWriter, stats: dict):
     """Add CSV attachments to PDF."""
-    csv_data = [_add_overall_stats_csv, _add_template_stats_csv, _add_time_stats_csv]
+    csv_data = [
+        _add_overall_stats_csv,
+        _add_template_stats_csv,
+        _add_time_stats_csv,
+        _user_group_stats_csv,
+    ]
 
     for func in csv_data:
         filename, headers, data = func(stats=stats)
@@ -175,6 +180,19 @@ def _add_overall_stats_csv(stats: dict):
     }
 
     return "overall_stats.csv", headers, data
+
+
+def _user_group_stats_csv(
+    stats: dict,
+):
+    """Add User Group Stats CSV attachment to PDF."""
+    _, headers, data = _add_overall_stats_csv(stats)
+
+    headers.append("user_group")
+
+    data["user_group"] = stats["target_stats"]
+
+    return "user_group_stats.csv", headers, data
 
 
 def _add_time_stats_csv(stats: dict):

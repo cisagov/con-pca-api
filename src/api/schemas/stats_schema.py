@@ -65,6 +65,12 @@ class IndicatorStatsSchema(CycleStatsEventsSchema):
     label = fields.Str()
 
 
+class TargetStatsSchema(CycleStatsEventsSchema):
+    """IndicatorStats."""
+
+    group = fields.Str()
+
+
 class TimeStatsSchema(Schema):
     """TimeStatsSchema."""
 
@@ -104,3 +110,4 @@ class CycleStatsSchema(Schema):
     recommendation_stats = fields.List(fields.Nested(RecommendationStatsSchema))
     time_stats = fields.Nested(TimeStatsTypeSchema)
     all_customer_stats = fields.Nested(CycleStatsLevelSchema)
+    target_stats = fields.Nested(TargetStatsSchema)
