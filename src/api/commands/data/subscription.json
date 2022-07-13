@@ -1,45 +1,53 @@
 {
   "admin_email": "john.smith@inl.gov",
+  "archived": false,
+  "buffer_time_minutes": 21600,
   "continuous_subscription": false,
   "cooldown_minutes": 2880,
   "cycle_length_minutes": 129600,
+  "landing_domain": "https://external.example.org",
+  "landing_page_url": "https://internal.example.org/phish-training",
   "name": "test_subscription",
+  "operator_email": "martha.jones@inl.gov",
+  "phish_header": "Y4th0R1tOL8tE2jsfJZIl9umbALitIEI",
   "primary_contact": {
     "active": true,
     "email": "john.smith@inl.gov",
     "first_name": "John",
     "last_name": "Smith",
-    "mobile_phone": "",
-    "notes": "",
-    "office_phone": "",
+    "mobile_phone": "888-888-8888",
+    "notes": "For emergencies, please call mobile phone",
+    "office_phone": "999-999-9999",
     "title": "CEO"
   },
+  "processing": false,
   "report_frequency_minutes": 43200,
+  "reporting_password": "badpassword",
   "status": "stopped",
   "target_domain": "@inl.gov",
   "target_email_list": [
     {
-      "email": "peter.griffin@inl.gov",
-      "first_name": "griffin",
-      "last_name": "peter",
+      "email": "rose.tyler@inl.gov",
+      "first_name": "Rose",
+      "last_name": "Tyler",
       "position": "engineer"
     },
     {
-      "email": "cleveland.brown@inl.gov",
-      "first_name": "brown",
-      "last_name": "cleveland",
+      "email": "martha.jones@inl.gov",
+      "first_name": "Martha",
+      "last_name": "Jones",
       "position": "manager"
     },
     {
-      "email": "joe.swanson@inl.gov",
-      "first_name": "swanson",
-      "last_name": "joe",
+      "email": "donna.noble@inl.gov",
+      "first_name": "Donna",
+      "last_name": "Noble",
       "position": "qa tester"
     },
     {
-      "email": "tom.tucker@inl.gov",
-      "first_name": "tom",
-      "last_name": "tucker",
+      "email": "wilfred.mott@inl.gov",
+      "first_name": "Wilfred",
+      "last_name": "Mott",
       "position": "news anchor"
     }
   ]

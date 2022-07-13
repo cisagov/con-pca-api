@@ -101,9 +101,9 @@ def load_subscription(customer_id, sending_profile_id, templates):
     template_ids = [t["_id"] for t in templates]
     load_data = read_json_file("subscription.json")
     logging.info("loading subscription test data...")
-    load_data["start_date"] = datetime.utcnow()
     load_data["customer_id"] = customer_id
     load_data["sending_profile_id"] = sending_profile_id
+    load_data["start_date"] = datetime.utcnow()
     load_data["templates_selected"] = template_ids
     subscription = subscription_manager.save(load_data)
 
@@ -115,13 +115,10 @@ def load_cycle(subscription_id: str, templates):
     logging.info("loading cycle test data...")
     load_data = read_json_file("cycle.json")
     load_data["subscription_id"] = subscription_id
+    load_data["template_ids"] = [t["_id"] for t in templates]
     load_data["start_date"] = datetime.utcnow()
     load_data["end_date"] = datetime.utcnow() + timedelta(days=90)
     load_data["send_by_date"] = datetime.utcnow() + timedelta(days=60)
-    load_data["template_ids"] = [t["_id"] for t in templates]
-    load_data["active"] = False
-    load_data["dirty_stats"] = True
-    load_data["target_count"] = random.randrange(3000, 12000)  # nosec
     cycle = cycle_manager.save(load_data)
     load_data["_id"] = cycle["_id"]
     return load_data
