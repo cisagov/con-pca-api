@@ -181,48 +181,236 @@ function clickRateTimeIntervalChart() {
   });
 }
 
-function millisecondToTextDate() {
+function order_time_vals(time_vals){
+  ret_val = []
+  times_in_order =[
+    "one_minutes",
+    "three_minutes",
+    "five_minutes",
+    "fifteen_minutes",
+    "thirty_minutes",
+    "sixty_minutes",
+    "two_hours",
+    "three_hours",
+    "four_hours",
+    "one_day"
+  ]
+  times_in_order.forEach((t) => {
+    ret_val.push(time_vals[t]["ratio"])
+  })
+  return ret_val
+}
+
+function clickingUserTimelineChart(){
+
+  var ctx = document.getElementById("clicking-user-timeline").getContext("2d");
+
+  var decep_stats = JSON.parse(
+    document.getElementById("decep_level_stats").innerText
+  );
+
+  labels = [
+    "1 minute",
+    "3 minutes",
+    "5 minutes",
+    "15 minutes",
+    "30 minutes",
+    "60 minutes",
+    "2 hours",
+    "3 hours",
+    "4 hours",
+    "1 day",
+    // "2 day",
+    // "3 day",
+    // "4 day",
+  ]
+
+  dataset = [
+    {
+      label: 'Level 1',
+      data: order_time_vals(decep_stats[0]['click_percentage_over_time']),
+      borderColor: '#456799',
+      backgroundColor: '#456799',
+    },
+    {
+      label: 'Level 2',
+      data: order_time_vals(decep_stats[1]['click_percentage_over_time']),
+      borderColor: '#95433f',
+      backgroundColor: '#95433f',
+    },
+    {
+      label: 'Level 3',
+      data: order_time_vals(decep_stats[2]['click_percentage_over_time']),
+      borderColor: '#839752',
+      backgroundColor: '#839752',
+    },
+    {
+      label: 'Level 4',
+      data: order_time_vals(decep_stats[3]['click_percentage_over_time']),
+      borderColor: '#705b94',
+      backgroundColor: '#705b94',
+    },
+    {
+      label: 'Level 5',
+      data: order_time_vals(decep_stats[4]['click_percentage_over_time']),
+      borderColor: '#5c9fbc',
+      backgroundColor: '#5c9fbc',
+    },
+    {
+      label: 'Level 6',
+      data: order_time_vals(decep_stats[5]['click_percentage_over_time']),
+      borderColor: '#cb8016',
+      backgroundColor: '#cb8016',
+    },
+  ]
+
+  let data = {
+    labels: labels,
+    datasets: dataset
+  }
+  let options=  {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'bottom',
+      },
+      datalabels: {
+        display:false
+        // align: 'end',
+        // anchor: 'end',     
+      },
+    },
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'Deception Level',
+        }
+      },
+      y: {
+        title: {
+          display: true,
+          text: '# of Unique Users',
+        },
+        ticks: {
+          callback: function (value, index, ticks) {
+            return value + "%";
+          },
+          stepSize: 25,
+          // maxTicksLimit: 7,
+        },
+      },
+    },
+  }
+
+  new Chart(ctx, {
+    type: "line",
+    data: data,
+    options: options,
+    plugins: [ChartDataLabels],
+  });
+
+}
+
+function test(){
+  return "mostly just mun stuff"
+}
+
+function avgTimeToFirstClick(){
   var currentCycle = JSON.parse(
     document.getElementById("currentCycle").innerText
   );
 
-  var remainingMills = currentCycle.stats.stats.all.clicked.median;
+  val = currentCycle.stats.stats.all.clicked.average
+  if (val == 0) {
+    document.getElementById("avgTimeToFirtClick").textContent = "N/A";
+    return;
+  }
+  
+  document.getElementById("avgTimeToFirtClick").textContent = secondToTextDate(val);
+}
+
+function avgTimeToFirstReport(){
+  var currentCycle = JSON.parse(
+  document.getElementById("currentCycle").innerText
+  );
+  
+  val = currentCycle.stats.stats.all.reported.average
+  if (val === 0) {
+    document.getElementById("avgTimeToFirtReport").textContent = "N/A";
+      return;
+  }
+  
+  document.getElementById("avgTimeToFirtReport").textContent = secondToTextDate(val);
+}
+
+function TimeIntervalText()
+{
+  var currentCycle = JSON.parse(
+    document.getElementById("currentCycle").innerText
+  );
+
+  val = currentCycle.stats.stats.all.clicked.median
+  if (val == 0) {
+    return "not found";
+  }
+  var retVal = "The median time to click was ";
+
+  retVal += secondToTextDate(val)
+  document.getElementById("timeIntervalClickInText").textContent = retVal;
+}
+
+function mostClickedTemplate(){
+
+  var currentCycle = JSON.parse(
+    document.getElementById("currentCycle").innerText
+  );
+
+  most_clicked_template = currentCycle.stats.template_stats[0]
+  currentCycle.stats.template_stats.forEach((t) => {
+    if(most_clicked_template['clicked']['count'] < t['clicked']['count']){
+      most_clicked_template = t
+    }
+  })
+
+  document.getElementById("mostClickedTemplate").textContent = most_clicked_template['template']['name'];
+}
+
+function secondToTextDate(val) {
+
+  var remainingSec = val;
   var days = 0;
   var hours = 0;
   var minutes = 0;
   var seconds = 0;
 
-  var retVal = "The median time to click was ";
-  if (remainingMills == 0) {
-    retVal += "not found";
-  }
-
+  retVal = ""
   //days
-  if (remainingMills > 86400000) {
-    days = Math.floor(remainingMills / 86400000);
-    retVal += days + " days" + (remainingMills > 3600000 ? ", " : ".");
-    remainingMills = remainingMills % 86400000;
+  if (remainingSec > 86400) {
+    days = Math.floor(remainingSec / 86400);
+    retVal += days + " days" + (remainingSec > 3600 ? ", " : ".");
+    remainingSec = remainingSec % 86400;
   }
   //hours
-  if (remainingMills > 3600000) {
-    hours = Math.floor(remainingMills / 3600000);
-    retVal += hours + " hours" + (remainingMills > 60000 ? ", " : ".");
-    remainingMills = remainingMills % 3600000;
+  if (remainingSec > 3600) {
+    hours = Math.floor(remainingSec / 3600);
+    retVal += hours + " hours" + (remainingSec > 60 ? ", " : ".");
+    remainingSec = remainingSec % 3600;
   }
   //minutes
-  if (remainingMills > 60000) {
-    minutes = Math.floor(remainingMills / 60000);
-    remainingMills = remainingMills % 60000;
-    retVal += minutes + " minutes" + (remainingMills > 1000 ? ", " : ".");
+  if (remainingSec > 60) {
+    minutes = Math.floor(remainingSec / 60);
+    remainingSec = remainingSec % 60;
+    retVal += minutes + " minutes" + (remainingSec > 1 ? ", " : ".");
   }
   //seconds
-  if(remainingMills > 1000 ){
-    seconds = Math.floor(remainingMills / 1000) ;
+  if(remainingSec > 1 ){
+    seconds = Math.floor(remainingSec / 1) ;
     retVal += (seconds + " seconds.")
   }
-  document.getElementById("timeIntervalClickInText").textContent = retVal;
+  
 
-  return;
+  return retVal;
 }
 
 function createClickRateLineGraph() {
@@ -230,7 +418,6 @@ function createClickRateLineGraph() {
   var currentCycle = JSON.parse(
     document.getElementById("currentCycle").innerText
   );
-  console.log(currentCycle);
   var cycles = JSON.parse(document.getElementById("previousCycles").innerText);
   cycles.reverse();
   cycles.push(currentCycle);
@@ -334,7 +521,6 @@ function getIndicatorClickedData(data,group){
 //Not ideal but using chartjs requires some work arounds
 function setStringLength(string,length){
   // console.log(length - string.length)
-  console.log((' '.repeat(length - string.length) + string).length)
   return ' '.repeat(length - string.length) + string
 }
 
@@ -351,11 +537,8 @@ function deceptionIndicatorBreakdownChart() {
   var indicators = JSON.parse(
     document.getElementById("indicators").innerText
   );
-  console.log(indicators)
 
   var indicatorStats = cycleStats.stats.indicator_stats;
-
-  console.log(indicatorStats)
 
   var labels = [
     {display: 'Graphics - Visual Appeal', group:'appearance', indicator:'logo_graphics', label:'Visual Appeal'},
@@ -412,7 +595,6 @@ function deceptionIndicatorBreakdownChart() {
       behavior_labels.push(i['display'])
     }
   })
-  console.log(appearance_labels)
 
   var dataset_sender = [   
     {
@@ -503,16 +685,12 @@ function deceptionIndicatorBreakdownChart() {
           grid: {
             drawBorder: false,
             color: function(context,i) {
-              console.log(context)
             if(!context.tick){
               return
             }
             if (context.tick.value == 0) {
               return '#FFFFFF';
             }
-            //else if (context.tick.value < 2) {
-            //   return '#000000';
-            // }
             return '#ffffff';
           }
         },
@@ -529,11 +707,7 @@ function deceptionIndicatorBreakdownChart() {
         grid: {
           drawBorder: false,
           color: function(context,i) {
-            // console.log(context)
           if(!context.tick){
-            // context.scale.ticks[context.scale.max].label = "TEST"
-            // console.log(context.scale._maxLength)
-            // context.scale._gridLineItems[0].color = "#FF0000"
             return
           }
           if (context.tick.value == maxVal) {
@@ -589,4 +763,194 @@ function deceptionIndicatorBreakdownChart() {
     options: options,
     plugins: [ChartDataLabels],
   });
+}
+
+function clicksByDeceptionLevel(){
+
+  var ctx = document.getElementById("clicks-by-deception-level").getContext("2d");
+
+  var decep_stats = JSON.parse(
+    document.getElementById("decep_level_stats").innerText
+  );
+
+  labels = [
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+  ]
+
+  dataset = [
+    {
+      label: 'Unique Clicks',
+      data: decep_stats.map(t => t['unique_clicks']),
+      borderColor: '#456799',
+      backgroundColor: '#456799',
+    },
+    {
+      label: 'Total Clicks',
+      data: decep_stats.map(t => t['total_clicks']),
+      borderColor: '#95433f',
+      backgroundColor: '#95433f',
+    },
+    {
+      label: 'User Reports',
+      data: decep_stats.map(t => t['user_reports']),
+      borderColor: '#839752',
+      backgroundColor: '#839752',
+    },
+  ]
+
+  let data = {
+    labels: labels,
+    datasets: dataset
+  }
+  let options=  {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'bottom',
+      },
+      datalabels: {
+        align: 'end',
+        anchor: 'end',     
+      },
+    },
+    layout: {
+      padding: {
+        top: 20,
+      },
+    },
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'Deception Level',
+        }
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Number of Clicks',
+        }
+      },
+    },
+  }
+
+  new Chart(ctx, {
+    type: "bar",
+    data: data,
+    options: options,
+    plugins: [ChartDataLabels],
+  });
+
+}
+
+function formatTotalClicks(decep_stats,val){
+  ret_val = []
+  decep_stats.forEach((t) => {
+    ret_val.push(t['unique_user_clicks'][val])
+  })
+  return ret_val
+}
+
+function totalClickCountByDeceptionLevel(){
+
+  var ctx = document.getElementById("total-clicks-by-deception-level").getContext("2d");
+
+  var decep_stats = JSON.parse(
+    document.getElementById("decep_level_stats").innerText
+  );
+
+  var c = JSON.parse(
+    document.getElementById("currentCycle").innerText
+  );
+
+  labels = [
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+  ]
+
+  dataset = [
+    {
+      label: '1 Click',
+      data: formatTotalClicks(decep_stats,"one_click"),
+      borderColor: '#456799',
+      backgroundColor: '#456799',
+    },
+    {
+      label: '2-3 Clicks',
+      data: formatTotalClicks(decep_stats,"two_three_clicks"),
+      borderColor: '#95433f',
+      backgroundColor: '#95433f',
+    },
+    {
+      label: '4-5 Clicks',
+      data: formatTotalClicks(decep_stats,"four_five_clicks"),
+      borderColor: '#839752',
+      backgroundColor: '#839752',
+    },
+    {
+      label: '6-10 Clicks',
+      data: formatTotalClicks(decep_stats,"six_ten_clicks"),
+      borderColor: '#705b94',
+      backgroundColor: '#705b94',
+    },
+    {
+      label: '>10 Clicks',
+      data: formatTotalClicks(decep_stats,"ten_plus_clicks"),
+      borderColor: '#5c9fbc',
+      backgroundColor: '#5c9fbc',
+    },
+  ]
+
+  let data = {
+    labels: labels,
+    datasets: dataset
+  }
+  let options=  {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'bottom',
+      },
+      datalabels: {
+        align: 'end',
+        anchor: 'end',     
+      },
+    },
+    layout: {
+      padding: {
+        top: 20,
+      },
+    },
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'Deception Level',
+        }
+      },
+      y: {
+        title: {
+          display: true,
+          text: '# of Unique Users',
+        }
+      },
+    },
+  }
+
+  new Chart(ctx, {
+    type: "bar",
+    data: data,
+    options: options,
+    plugins: [ChartDataLabels],
+  });
+
 }

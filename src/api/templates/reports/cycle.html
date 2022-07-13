@@ -24,7 +24,7 @@
   <body class="mat-typography">
     <!-- Global Variables Needed -->
     <!-- Set total pages -->
-    {% set total_pages = 16 + (stats.template_stats | length) %}
+    {% set total_pages = 17 + (stats.template_stats | length) %}
     <!-- Set previous cycle -->
     {% if previous_cycles %} {% set previous_cycle = previous_cycles[0] %} {%
     else %} {% set previous_cycle = None %} {% endif %}
@@ -35,6 +35,7 @@
       <p id="timeIntervalStats">{{ json.dumps(stats.time_stats) }}</p>
       <p id="previousCycles">{{ json.dumps(previous_cycles, default=str) }}</p>
       <p id="currentCycle">{{ json.dumps(cycle, default=str) }}</p>
+      <p id="decep_level_stats">{{ json.dumps(stats.deception_level_stats, default=str) }}</p>
     </div>
 
     <!-- Cover Page -->
@@ -817,12 +818,17 @@
         of receiving a phishing email.
         <span id="timeIntervalClickInText"></span>
         <script>
-          millisecondToTextDate();
+          TimeIntervalText();
         </script>
       </p>
       <canvas id="click-rate-time-interval">
         <script>
           clickRateTimeIntervalChart();
+        </script>
+      </canvas>
+      <canvas id="clicking-user-timeline">
+        <script>
+          clickingUserTimelineChart();
         </script>
       </canvas>
       <p class="page-number">Page | 8 of {{ total_pages }}</p>
@@ -831,7 +837,6 @@
     <div class="page">
 
       <p class="page-header">7. User Activity Metrics</p>
-
       <table class="recommendation-table">
         <thead>
           <tr>
@@ -842,39 +847,51 @@
         <tbody>
           <tr>
             <td>Total users targeted for phishing</td>
-            <td></td>
+            <td>{{cycle.target_count}}</td>
           </tr>
           <tr>
             <td># of emails (phishing attempts) sent overall</td>
-            <td></td>
+            <td>{{cycle.stats.stats.all.sent.count}}</td>
           </tr>
           <tr>
             <td># of clicked emails (successful phishing attemps) overall</td>
-            <td></td>
+            <td>{{cycle.stats.stats.all.clicked.count}}</td>
           </tr>
           <tr>
             <td># of phishing users overall</td>
-            <td></td>
+            <td>{{cycle.target_count}}</td>
           </tr>
           <tr>
             <td># of user reports sent to helpdesk overall</td>
-            <td></td>
+            <td>{{cycle.stats.stats.all.reported.count}}</td>
           </tr>
           <tr>
             <td># Ratio of reports-to-clicks</td>
-            <td></td>
+            <td>{{cycle.stats.stats.all.reported.count / cycle.stats.stats.all.clicked.count}}</td>
           </tr>
           <tr>
             <td>Average time to first click</td>
-            <td></td>
+            <td id="avgTimeToFirtClick">
+              <script>
+                avgTimeToFirstClick()
+              </script>
+            </td>
           </tr>
           <tr>
             <td>Average time to first report</td>
-            <td></td>
+            <td id="avgTimeToFirtReport">
+              <script>
+                avgTimeToFirstReport()
+              </script> 
+            </td>
           </tr>
           <tr>
-            <td>Average time to first report</td>
-            <td></td>
+            <td>Most clicked phishing template</td>
+            <td id="mostClickedTemplate">
+              <script>
+                mostClickedTemplate()
+              </script>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -916,13 +933,27 @@
         </script>
       <p class="page-number">Page | 10 of {{ total_pages }}</p>
     </div>
+    <div class="page">
+      <p class="page-header">9. Clicks By Deception Level</p>  
+      <canvas id="clicks-by-deception-level">
+        <script> 
+          clicksByDeceptionLevel();
+        </script>
+      </canvas>
+      <canvas id="total-clicks-by-deception-level">
+        <script> 
+          totalClickCountByDeceptionLevel();
+        </script>
+      </canvas>
+      <p class="page-number">Page | 11 of {{ total_pages }}</p>
+    </div>
 
     <!-- Templates -->
     {% for template in stats.template_stats | sort(attribute="clicked.ratio",
     reverse=True) %}
     <div class="page">
       {% if loop.index == 1 %}
-      <p class="page-header">9. Phishing Templates for this Cycle</p>
+      <p class="page-header">10. Phishing Templates for this Cycle</p>
       {% endif %}
       <div>
         <b>Template #{{ loop.index }} - {{ template.template.name }}</b>
@@ -1034,14 +1065,14 @@
         {% endif %}
       </div>
       <p class="page-number">
-        Page | {{ 10 + loop.index }} of {{ total_pages }}
+        Page | {{ 11 + loop.index }} of {{ total_pages }}
       </p>
     </div>
     {% endfor %}
 
     <!-- Attachments -->
     <div class="page">
-      <p class="page-header">10. Attachments</p>
+      <p class="page-header">11. Attachments</p>
       <p>
         The raw data presented in this report are attached to this pdf in CSV
         format
@@ -1066,7 +1097,7 @@
 
     <!-- Summary -->
     <div class="page">
-      <div class="page-header">11. Summary</div>
+      <div class="page-header">12. Summary</div>
       <p style="margin-top: 0.25in">
         Under this Con-PCA attack scenario, CISA measured {{ customer.name }}
         information system user susceptibility to a successful email phishing

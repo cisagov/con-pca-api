@@ -15,7 +15,7 @@ from api.manager import (
     TemplateManager,
 )
 from api.schemas.stats_schema import CycleStatsSchema
-from utils.templates import get_indicators
+from utils.templates import get_deception_level, get_indicators
 
 template_manager = TemplateManager()
 customer_manager = TemplateManager()
@@ -72,6 +72,50 @@ def generate_cycle_stats(cycle, targets, nonhuman=False):
             "reported": {"count": 0, "diffs": []},
         },
     }
+    stats_by_level = {
+        "all": {
+            "sent": {"count": 0},
+            "opened": {"count": 0, "diffs": []},
+            "clicked": {"count": 0, "diffs": []},
+            "reported": {"count": 0, "diffs": []},
+        },
+        "1": {
+            "sent": {"count": 0},
+            "opened": {"count": 0, "diffs": []},
+            "clicked": {"count": 0, "diffs": []},
+            "reported": {"count": 0, "diffs": []},
+        },
+        "2": {
+            "sent": {"count": 0},
+            "opened": {"count": 0, "diffs": []},
+            "clicked": {"count": 0, "diffs": []},
+            "reported": {"count": 0, "diffs": []},
+        },
+        "3": {
+            "sent": {"count": 0},
+            "opened": {"count": 0, "diffs": []},
+            "clicked": {"count": 0, "diffs": []},
+            "reported": {"count": 0, "diffs": []},
+        },
+        "4": {
+            "sent": {"count": 0},
+            "opened": {"count": 0, "diffs": []},
+            "clicked": {"count": 0, "diffs": []},
+            "reported": {"count": 0, "diffs": []},
+        },
+        "5": {
+            "sent": {"count": 0},
+            "opened": {"count": 0, "diffs": []},
+            "clicked": {"count": 0, "diffs": []},
+            "reported": {"count": 0, "diffs": []},
+        },
+        "6": {
+            "sent": {"count": 0},
+            "opened": {"count": 0, "diffs": []},
+            "clicked": {"count": 0, "diffs": []},
+            "reported": {"count": 0, "diffs": []},
+        },
+    }
     template_stats = {}
     nonhuman_orgs = get_nonhuman_orgs()
     for target in targets:
@@ -97,7 +141,9 @@ def generate_cycle_stats(cycle, targets, nonhuman=False):
                     ],
                 ),
                 "deception_level": target["deception_level"],
+                "deception_number": target["deception_level_int"],
             }
+        decep_level = target["deception_level_int"]
         timeline = target.get("timeline", [])
         if not nonhuman:
             timeline = list(
@@ -110,12 +156,16 @@ def generate_cycle_stats(cycle, targets, nonhuman=False):
         sent_time = target.get("send_date")
         opened = get_event(timeline, "opened")
         clicked = get_event(timeline, "clicked")
+        total_clicks = get_all_event(timeline,"clicked")
+
         reported, reported_time = get_reported_event(
             target["email"], cycle.get("manual_reports", [])
         )
 
         if clicked and not opened:
             opened = clicked
+
+        add_template_to_stats_by_level(stats_by_level,target,timeline)
 
         if sent:
             stats["all"]["sent"]["count"] += 1
@@ -154,6 +204,7 @@ def generate_cycle_stats(cycle, targets, nonhuman=False):
     indicator_stats = get_indicator_stats(template_stats)
     recommendation_stats = get_recommendation_stats(template_stats)
     time_stats = get_time_stats(stats)
+    decep_level_stats = get_deception_level_stats(stats_by_level)
 
     return CycleStatsSchema().dump(
         {
@@ -163,8 +214,141 @@ def generate_cycle_stats(cycle, targets, nonhuman=False):
             "indicator_stats": indicator_stats,
             "time_stats": time_stats,
             "recommendation_stats": recommendation_stats,
+            "deception_level_stats" : decep_level_stats,
         }
     )
+def add_template_to_stats_by_level(stats,target,timeline):
+    """Add a target/timelines info to the stats by level object"""
+    sent = target.get("sent")
+    opened = get_all_event(timeline, "opened")
+    clicked = get_all_event(timeline, "clicked")
+    sent_time = target.get("send_date")
+
+    if sent:
+        stats["all"]["sent"]["count"] += 1
+        stats[str(target["deception_level_int"])]["sent"]["count"] += 1
+    if opened is not None:
+        for open in opened:
+            diff = open["time"] - sent_time
+            stats["all"]["opened"]["count"] += 1
+            stats["all"]["opened"]["diffs"].append({"time": diff, "target_id" : target['_id']})
+            stats[str(target["deception_level_int"])]["opened"]["count"] += 1
+            stats[str(target["deception_level_int"])]["opened"]["diffs"].append({"time": diff, "target_id" : target['_id']})
+    if clicked is not None:
+        for click in clicked:
+            diff = click["time"] - sent_time
+            stats["all"]["clicked"]["count"] += 1
+            stats["all"]["clicked"]["diffs"].append({"time": diff, "target_id" : target['_id']})
+            stats[str(target["deception_level_int"])]["clicked"]["count"] += 1
+            stats[str(target["deception_level_int"])]["clicked"]["diffs"].append({"time": diff, "target_id" : target['_id']})
+
+
+def get_deception_level_stats(stats: dict):
+    """Get the deception level based stats"""
+    total_unique_clicks =  []
+    for event in stats["all"]['clicked']["diffs"]:
+        if event['target_id'] not in total_unique_clicks:
+            total_unique_clicks.append(event['target_id'])
+
+    decp_lev_stats = []
+    for level in [1,2,3,4,5,6]:
+        unique_click_array =  []
+        for event in stats[str(level)]['clicked']["diffs"]:
+            if event['target_id'] not in unique_click_array:
+                unique_click_array.append(event['target_id'])
+        deception_level = {
+            "deception_level" : level,
+            "sent_count": stats[str(level)]['sent']['count'],
+            "unique_clicks" : len(unique_click_array),
+            "total_clicks" : len(stats[str(level)]['clicked']['diffs']),
+            "user_reports" : 0,
+            "unique_user_clicks" : get_unique_user_click_count(stats[str(level)]['clicked']["diffs"]),
+            "click_percentage_over_time" : get_unique_click_over_time(stats[str(level)]['clicked']["diffs"])
+        }
+        decp_lev_stats.append(deception_level)
+    return decp_lev_stats;
+
+def get_unique_click_over_time(diffs):
+    """Get the unique click percentage over time"""
+    click_percentage_over_time = {
+        "one_minutes" : 0,
+        "three_minutes" : 0,
+        "five_minutes" : 0,
+        "fifteen_minutes" : 0,
+        "thirty_minutes" : 0,
+        "sixty_minutes" : 0,
+        "two_hours" : 0,
+        "three_hours" : 0,
+        "four_hours" : 0,
+        "one_day" : 0,
+    } 
+    times = {
+        "one_minutes": 1,
+        "three_minutes": 3,
+        "five_minutes": 5,
+        "fifteen_minutes": 15,
+        "thirty_minutes": 30,
+        "sixty_minutes": 60,
+        "two_hours": 120,
+        "three_hours": 180,
+        "four_hours": 240,
+        "one_day": 1440,
+    }
+
+    unique_click_array =  []
+    for event in diffs:
+        if event['target_id'] not in unique_click_array:
+            unique_click_array.append(event['target_id'])
+    total = len(unique_click_array)
+    for target in unique_click_array:
+        clicks = list(filter(lambda x: x["target_id"] == target, diffs))
+        click = clicks[0]
+        for c in clicks:
+            if c['time'].total_seconds() < click['time'].total_seconds():
+                click = c
+
+        for t in times:
+            if click['time'].total_seconds() < times[t]:
+                click_percentage_over_time[t] += 1
+    
+    for click_count in click_percentage_over_time:
+        click_percentage_over_time[click_count] = {
+            "count" : click_percentage_over_time[click_count],
+            "ratio" : get_ratio(click_percentage_over_time[click_count],total),
+        }
+
+    
+    return click_percentage_over_time
+                
+    
+def get_unique_user_click_count(diffs):
+    """Get how many tiems each unique user clicked"""
+    unique_click_array = []
+    for event in diffs:
+        if event['target_id'] not in unique_click_array:
+            unique_click_array.append(event['target_id'])
+
+    unique_user_clicks = {
+        "one_click" : 0,
+        "two_three_clicks" : 0,
+        "four_five_clicks" : 0,
+        "six_ten_clicks" : 0,
+        "ten_plus_clicks" : 0,
+    }
+
+    for target in unique_click_array:
+        times_clicked =  len(list(filter(lambda x: x["target_id"] == target, diffs)))
+        if times_clicked is 1:
+            unique_user_clicks['one_click'] += 1
+        elif times_clicked <= 3:
+            unique_user_clicks['two_three_clicks'] += 1
+        elif times_clicked <= 5:
+            unique_user_clicks['four_five_clicks'] += 1
+        elif times_clicked <= 10:
+            unique_user_clicks['six_ten_clicks'] += 1
+        else:
+            unique_user_clicks['ten_plus_clicks'] += 1
+    return unique_user_clicks
 
 
 def rank_templates(template_stats: dict):
@@ -261,10 +445,17 @@ def get_reported_event(email, manual_reports):
 
 
 def get_event(timeline, event):
-    """Get event from timeline."""
+    """Get most recent event from timeline."""
     events = list(filter(lambda x: x["message"] == event, timeline))
     if events:
         return min(events, key=lambda x: x["time"])
+    return None
+
+def get_all_event(timeline, event):
+    """Get all event from timeline."""
+    events = list(filter(lambda x: x["message"] == event, timeline))
+    if events:
+        return events
     return None
 
 

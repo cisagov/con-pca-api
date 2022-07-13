@@ -93,6 +93,28 @@ class RecommendationStatsSchema(CycleStatsEventsSchema):
     recommendation = fields.Nested(RecommendationsSchema)
     templates = fields.List(fields.Nested(TemplateSchema))
 
+class ClickCountSchema(Schema):
+    """ClickCountBreakdownSchema"""
+
+    one_click = fields.Integer()
+    two_three_clicks = fields.Integer()
+    four_five_clicks = fields.Integer()
+    six_ten_clicks = fields.Integer()
+    ten_plus_clicks = fields.Integer()
+
+
+class DeceptionLevelStatsSchema(Schema):
+    """DeceptionLevelStatsSchema"""
+
+    deception_level = fields.Integer()
+    sent_count = fields.Integer()
+    unique_clicks = fields.Integer()
+    total_clicks = fields.Integer()
+    user_reports = fields.Integer()
+    unique_user_clicks = fields.Nested(ClickCountSchema)
+    click_percentage_over_time = fields.Nested(TimeStatsSchema)
+
+
 
 class CycleStatsSchema(Schema):
     """CycleStats."""
@@ -104,3 +126,6 @@ class CycleStatsSchema(Schema):
     recommendation_stats = fields.List(fields.Nested(RecommendationStatsSchema))
     time_stats = fields.Nested(TimeStatsTypeSchema)
     all_customer_stats = fields.Nested(CycleStatsLevelSchema)
+    deception_level_stats = fields.List(fields.Nested(DeceptionLevelStatsSchema))
+
+
