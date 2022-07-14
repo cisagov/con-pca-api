@@ -995,6 +995,11 @@
           "minimum": 430,
           "ratio": 1
         },
+        "recommendation": {
+          "description": "Using a subject line or content that inspires feelings of fear or duty/obilgation to respond to motivate a response. A cybercriminal may use a range of emotions to help persuade a user to click a link or open an attachment without examining it first.",
+          "title": "Emotional triggers (FEAR/DUTY)",
+          "type": "sophisticated"
+        },
         "reported": {
           "average": 0,
           "count": 0,
@@ -1005,11 +1010,6 @@
         },
         "sent": {
           "count": 1000
-        },
-        "recommendation": {
-          "title":"Emotional triggers (FEAR/DUTY)",
-          "type":"sophisticated",
-          "description":"Using a subject line or content that inspires feelings of fear or duty/obilgation to respond to motivate a response. A cybercriminal may use a range of emotions to help persuade a user to click a link or open an attachment without examining it first."
         },
         "templates": [
           {
@@ -1067,6 +1067,11 @@
           "minimum": 430,
           "ratio": 1
         },
+        "recommendation": {
+          "description": "Professional formatting and proper spelling and grammar to imitate reputable institutions that have dedicated personnel that produce, verify, and proofread correspondence. ",
+          "title": "Spelling and layout",
+          "type": "sophisticated"
+        },
         "reported": {
           "average": 0,
           "count": 0,
@@ -1077,11 +1082,6 @@
         },
         "sent": {
           "count": 1000
-        },
-        "recommendation": {
-          "title":"Spelling and layout",
-          "type":"sophisticated",
-          "description":"Professional formatting and proper spelling and grammar to imitate reputable institutions that have dedicated personnel that produce, verify, and proofread correspondence. "
         },
         "templates": [
           {
@@ -1139,6 +1139,11 @@
           "minimum": 430,
           "ratio": 1
         },
+        "recommendation": {
+          "description": "Providing information throughout the message, in the display name, and the signature block that are inconsistent or contradictory.",
+          "title": "Content irregularities",
+          "type": "red_flag"
+        },
         "reported": {
           "average": 0,
           "count": 0,
@@ -1149,11 +1154,6 @@
         },
         "sent": {
           "count": 1000
-        },
-        "recommendation": {
-          "title":"Content irregularities",
-          "type":"red_flag",
-          "description":"Providing information throughout the message, in the display name, and the signature block that are inconsistent or contradictory."
         },
         "templates": [
           {
