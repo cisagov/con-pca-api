@@ -162,6 +162,11 @@ def generate_cycle_stats(cycle, targets, nonhuman=False):
             target["email"], cycle.get("manual_reports", [])
         )
 
+        if not target.get("deception_level_int"):
+            target["deception_level_int"] = template_stats[target["template_id"]][
+                "template"
+            ]["deception_score"]
+
         if clicked and not opened:
             opened = clicked
 
