@@ -6,6 +6,7 @@ from flask.views import MethodView
 # cisagov Libraries
 from api.manager import FailedEmailManager, SubscriptionManager, TargetManager
 from utils.logging import setLogger
+from utils.mailgun import get_failed_email_events
 
 logger = setLogger(__name__)
 
@@ -19,6 +20,7 @@ class FailedEmailsView(MethodView):
 
     def get(self):
         """Get."""
+        get_failed_email_events()
         # Allow querying a list of failed emails
         parameters = failed_email_manager.get_query(request.args)
         parameters["removed"] = {"$in": [False, None]}

@@ -12,7 +12,7 @@ class FailedEmailSchema(BaseSchema):
 
     recipient = fields.Str()
     sent_time = DateTimeField()
-    reason = fields.Str()
+    error_type = fields.Str()
     message_id = fields.Str()
-    delivery_status = fields.Str()
+    reason = fields.Str()
     removed = fields.Bool(missing=False)
