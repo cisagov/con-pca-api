@@ -36,6 +36,7 @@ class FailedEmailView(MethodView):
     def delete(self, failed_email_id):
         """Delete."""
         failed_email = failed_email_manager.get(document_id=failed_email_id)
+        failed_email["removed"] = True
         subscriptions = subscription_manager.all(
             params={
                 "target_email_list": {
@@ -60,7 +61,6 @@ class FailedEmailView(MethodView):
                     field="target_email_list",
                     data=target,
                 )
-                failed_email["removed"] = True
             except Exception as e:
                 logger.exception(e)
                 failed_email["removed"] = False
