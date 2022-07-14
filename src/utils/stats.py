@@ -121,28 +121,29 @@ def generate_cycle_stats(cycle, targets, nonhuman=False):
     nonhuman_orgs = get_nonhuman_orgs()
     for target in targets:
         if target["template_id"] not in template_stats:
+            template = template_manager.get(
+                document_id=target["template_id"],
+                fields=[
+                    "_id",
+                    "name",
+                    "subject",
+                    "indicators",
+                    "html",
+                    "from_address",
+                    "deception_score",
+                    "sophisticated",
+                    "red_flag",
+                ],
+            )
             template_stats[target["template_id"]] = {
                 "sent": {"count": 0},
                 "opened": {"count": 0},
                 "clicked": {"count": 0},
                 "reported": {"count": 0},
                 "template_id": target["template_id"],
-                "template": template_manager.get(
-                    document_id=target["template_id"],
-                    fields=[
-                        "_id",
-                        "name",
-                        "subject",
-                        "indicators",
-                        "html",
-                        "from_address",
-                        "deception_score",
-                        "sophisticated",
-                        "red_flag",
-                    ],
-                ),
+                "template": template,
                 "deception_level": target["deception_level"],
-                "deception_number": target["deception_level_int"],
+                "deception_number": template["deception_score"],
             }
         timeline = target.get("timeline", [])
         if not nonhuman:
