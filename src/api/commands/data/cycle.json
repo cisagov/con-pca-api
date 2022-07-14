@@ -6,104 +6,196 @@
   "stats": {
     "all_customer_stats": {
       "all": {
-        "clicked": 2350,
-        "opened": 35920,
-        "reported": 19620,
-        "sent": 10000000
+        "clicked": {
+          "average": 1140,
+          "count": 210,
+          "maximum": 1600,
+          "median": 1200,
+          "minimum": 520,
+          "ratio": 0.21
+        },
+        "opened": {
+          "average": 1020,
+          "count": 1000,
+          "maximum": 1610,
+          "median": 1020,
+          "minimum": 430,
+          "ratio": 1
+        },
+        "reported": {
+          "average": 0,
+          "count": 0,
+          "maximum": 0,
+          "median": 0,
+          "minimum": 0,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 1000
+        }
       },
       "high": {
-        "clicked": 1420,
-        "opened": 16710,
-        "reported": 10030,
-        "sent": 2500000
+        "clicked": {
+          "average": 0,
+          "count": 0,
+          "maximum": 0,
+          "median": 0,
+          "minimum": 0,
+          "ratio": 0
+        },
+        "opened": {
+          "average": 0,
+          "count": 0,
+          "maximum": 0,
+          "median": 0,
+          "minimum": 0,
+          "ratio": 0
+        },
+        "reported": {
+          "average": 0,
+          "count": 0,
+          "maximum": 0,
+          "median": 0,
+          "minimum": 0,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 0
+        }
       },
       "low": {
-        "clicked": 560,
-        "opened": 11000,
-        "reported": 3280,
-        "sent": 5000000
+        "clicked": {
+          "average": 1140,
+          "count": 210,
+          "maximum": 1600,
+          "median": 1200,
+          "minimum": 520,
+          "ratio": 0.21
+        },
+        "opened": {
+          "average": 1020,
+          "count": 1000,
+          "maximum": 1610,
+          "median": 1020,
+          "minimum": 430,
+          "ratio": 1
+        },
+        "reported": {
+          "average": 0,
+          "count": 0,
+          "maximum": 0,
+          "median": 0,
+          "minimum": 0,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 1000
+        }
       },
       "moderate": {
-        "clicked": 370,
-        "opened": 8210,
-        "reported": 6310,
-        "sent": 2500000
+        "clicked": {
+          "average": 0,
+          "count": 0,
+          "maximum": 0,
+          "median": 0,
+          "minimum": 0,
+          "ratio": 0
+        },
+        "opened": {
+          "average": 0,
+          "count": 0,
+          "maximum": 0,
+          "median": 0,
+          "minimum": 0,
+          "ratio": 0
+        },
+        "reported": {
+          "average": 0,
+          "count": 0,
+          "maximum": 0,
+          "median": 0,
+          "minimum": 0,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 0
+        }
       }
     },
     "deception_level_stats": [
       {
         "click_percentage_over_time": {
           "fifteen_minutes": {
-            "average": 72,
-            "count": 72,
-            "maximum": 72,
-            "median": 72,
-            "minimum": 72,
-            "rank": 4,
-            "ratio": 7.2e-05
+            "average": 7,
+            "count": 7,
+            "maximum": 7,
+            "median": 7,
+            "minimum": 7,
+            "rank": 1,
+            "ratio": 0.07
           },
           "five_minutes": {
-            "average": 48,
-            "count": 48,
-            "maximum": 48,
-            "median": 48,
-            "minimum": 48,
-            "rank": 3,
-            "ratio": 4.8e-05
+            "average": 8,
+            "count": 8,
+            "maximum": 8,
+            "median": 8,
+            "minimum": 8,
+            "rank": 2,
+            "ratio": 0.08
           },
           "four_hours": {
-            "average": 189,
-            "count": 189,
-            "maximum": 189,
-            "median": 189,
-            "minimum": 189,
-            "rank": 9,
-            "ratio": 0.000189
+            "average": 9,
+            "count": 9,
+            "maximum": 9,
+            "median": 9,
+            "minimum": 9,
+            "rank": 3,
+            "ratio": 0.09
           },
           "one_day": {
-            "average": 213,
-            "count": 213,
-            "maximum": 213,
-            "median": 213,
-            "minimum": 213,
-            "rank": 10,
-            "ratio": 0.000213
+            "average": 13,
+            "count": 13,
+            "maximum": 13,
+            "median": 13,
+            "minimum": 13,
+            "rank": 4,
+            "ratio": 0.13
           },
           "one_minutes": {
-            "average": 12,
-            "count": 12,
-            "maximum": 12,
-            "median": 12,
-            "minimum": 12,
-            "rank": 1,
-            "ratio": 1.2e-05
+            "average": 14,
+            "count": 14,
+            "maximum": 14,
+            "median": 14,
+            "minimum": 14,
+            "rank": 5,
+            "ratio": 0.14
           },
           "sixty_minutes": {
-            "average": 123,
-            "count": 123,
-            "maximum": 123,
-            "median": 123,
-            "minimum": 123,
+            "average": 23,
+            "count": 23,
+            "maximum": 23,
+            "median": 23,
+            "minimum": 23,
             "rank": 6,
-            "ratio": 0.000123
+            "ratio": 0.23
           },
           "thirty_minutes": {
-            "average": 101,
-            "count": 101,
-            "maximum": 101,
-            "median": 101,
-            "minimum": 101,
-            "rank": 5,
-            "ratio": 0.000101
+            "average": 24,
+            "count": 24,
+            "maximum": 24,
+            "median": 24,
+            "minimum": 24,
+            "rank": 7,
+            "ratio": 0.24
           },
           "three_hours": {
-            "average": 171,
-            "count": 171,
-            "maximum": 171,
-            "median": 171,
-            "minimum": 171,
+            "average": 25,
+            "count": 25,
+            "maximum": 25,
+            "median": 25,
+            "minimum": 25,
             "rank": 8,
-            "ratio": 0.000171
+            "ratio": 0.25
           },
           "three_minutes": {
             "average": 37,
@@ -111,21 +203,21 @@
             "maximum": 37,
             "median": 37,
             "minimum": 37,
-            "rank": 2,
-            "ratio": 3.7e-05
+            "rank": 9,
+            "ratio": 0.37
           },
           "two_hours": {
-            "average": 156,
-            "count": 156,
-            "maximum": 156,
-            "median": 156,
-            "minimum": 156,
-            "rank": 7,
-            "ratio": 0.000156
+            "average": 56,
+            "count": 56,
+            "maximum": 56,
+            "median": 56,
+            "minimum": 56,
+            "rank": 10,
+            "ratio": 0.56
           }
         },
         "deception_level": 0,
-        "sent_count": 10000,
+        "sent_count": 100,
         "total_clicks": 6842,
         "unique_clicks": 3421,
         "unique_user_clicks": {
@@ -135,81 +227,81 @@
           "ten_plus_clicks": 56,
           "two_three_clicks": 921
         },
-        "user_reports": 2452
+        "user_reports": 24
       },
       {
         "click_percentage_over_time": {
           "fifteen_minutes": {
-            "average": 72,
-            "count": 72,
-            "maximum": 72,
-            "median": 72,
-            "minimum": 72,
-            "rank": 4,
-            "ratio": 7.2e-05
+            "average": 7,
+            "count": 7,
+            "maximum": 7,
+            "median": 7,
+            "minimum": 7,
+            "rank": 1,
+            "ratio": 0.07
           },
           "five_minutes": {
-            "average": 48,
-            "count": 48,
-            "maximum": 48,
-            "median": 48,
-            "minimum": 48,
-            "rank": 3,
-            "ratio": 4.8e-05
+            "average": 8,
+            "count": 8,
+            "maximum": 8,
+            "median": 8,
+            "minimum": 8,
+            "rank": 2,
+            "ratio": 0.08
           },
           "four_hours": {
-            "average": 189,
-            "count": 189,
-            "maximum": 189,
-            "median": 189,
-            "minimum": 189,
-            "rank": 9,
-            "ratio": 0.000189
+            "average": 9,
+            "count": 9,
+            "maximum": 9,
+            "median": 9,
+            "minimum": 9,
+            "rank": 3,
+            "ratio": 0.09
           },
           "one_day": {
-            "average": 213,
-            "count": 213,
-            "maximum": 213,
-            "median": 213,
-            "minimum": 213,
-            "rank": 10,
-            "ratio": 0.000213
+            "average": 13,
+            "count": 13,
+            "maximum": 13,
+            "median": 13,
+            "minimum": 13,
+            "rank": 4,
+            "ratio": 0.13
           },
           "one_minutes": {
-            "average": 12,
-            "count": 12,
-            "maximum": 12,
-            "median": 12,
-            "minimum": 12,
-            "rank": 1,
-            "ratio": 1.2e-05
+            "average": 14,
+            "count": 14,
+            "maximum": 14,
+            "median": 14,
+            "minimum": 14,
+            "rank": 5,
+            "ratio": 0.14
           },
           "sixty_minutes": {
-            "average": 123,
-            "count": 123,
-            "maximum": 123,
-            "median": 123,
-            "minimum": 123,
+            "average": 23,
+            "count": 23,
+            "maximum": 23,
+            "median": 23,
+            "minimum": 23,
             "rank": 6,
-            "ratio": 0.000123
+            "ratio": 0.23
           },
           "thirty_minutes": {
-            "average": 101,
-            "count": 101,
-            "maximum": 101,
-            "median": 101,
-            "minimum": 101,
-            "rank": 5,
-            "ratio": 0.000101
+            "average": 24,
+            "count": 24,
+            "maximum": 24,
+            "median": 24,
+            "minimum": 24,
+            "rank": 7,
+            "ratio": 0.24
           },
           "three_hours": {
-            "average": 171,
-            "count": 171,
-            "maximum": 171,
-            "median": 171,
-            "minimum": 171,
+            "average": 25,
+            "count": 25,
+            "maximum": 25,
+            "median": 25,
+            "minimum": 25,
             "rank": 8,
-            "ratio": 0.000171
+            "ratio": 0.25
           },
           "three_minutes": {
             "average": 37,
@@ -217,105 +309,105 @@
             "maximum": 37,
             "median": 37,
             "minimum": 37,
-            "rank": 2,
-            "ratio": 3.7e-05
+            "rank": 9,
+            "ratio": 0.37
           },
           "two_hours": {
-            "average": 156,
-            "count": 156,
-            "maximum": 156,
-            "median": 156,
-            "minimum": 156,
-            "rank": 7,
-            "ratio": 0.000156
+            "average": 56,
+            "count": 56,
+            "maximum": 56,
+            "median": 56,
+            "minimum": 56,
+            "rank": 10,
+            "ratio": 0.56
           }
         },
         "deception_level": 1,
-        "sent_count": 10000,
-        "total_clicks": 9446,
-        "unique_clicks": 4723,
+        "sent_count": 100,
+        "total_clicks": 6842,
+        "unique_clicks": 3421,
         "unique_user_clicks": {
-          "four_five_clicks": 341,
-          "one_click": 2934,
-          "six_ten_clicks": 139,
-          "ten_plus_clicks": 99,
-          "two_three_clicks": 1210
+          "four_five_clicks": 241,
+          "one_click": 2131,
+          "six_ten_clicks": 72,
+          "ten_plus_clicks": 56,
+          "two_three_clicks": 921
         },
-        "user_reports": 2196
+        "user_reports": 24
       },
       {
         "click_percentage_over_time": {
           "fifteen_minutes": {
-            "average": 72,
-            "count": 72,
-            "maximum": 72,
-            "median": 72,
-            "minimum": 72,
-            "rank": 4,
-            "ratio": 7.2e-05
+            "average": 7,
+            "count": 7,
+            "maximum": 7,
+            "median": 7,
+            "minimum": 7,
+            "rank": 1,
+            "ratio": 0.07
           },
           "five_minutes": {
-            "average": 48,
-            "count": 48,
-            "maximum": 48,
-            "median": 48,
-            "minimum": 48,
-            "rank": 3,
-            "ratio": 4.8e-05
+            "average": 8,
+            "count": 8,
+            "maximum": 8,
+            "median": 8,
+            "minimum": 8,
+            "rank": 2,
+            "ratio": 0.08
           },
           "four_hours": {
-            "average": 189,
-            "count": 189,
-            "maximum": 189,
-            "median": 189,
-            "minimum": 189,
-            "rank": 9,
-            "ratio": 0.000189
+            "average": 9,
+            "count": 9,
+            "maximum": 9,
+            "median": 9,
+            "minimum": 9,
+            "rank": 3,
+            "ratio": 0.09
           },
           "one_day": {
-            "average": 213,
-            "count": 213,
-            "maximum": 213,
-            "median": 213,
-            "minimum": 213,
-            "rank": 10,
-            "ratio": 0.000213
+            "average": 13,
+            "count": 13,
+            "maximum": 13,
+            "median": 13,
+            "minimum": 13,
+            "rank": 4,
+            "ratio": 0.13
           },
           "one_minutes": {
-            "average": 12,
-            "count": 12,
-            "maximum": 12,
-            "median": 12,
-            "minimum": 12,
-            "rank": 1,
-            "ratio": 1.2e-05
+            "average": 14,
+            "count": 14,
+            "maximum": 14,
+            "median": 14,
+            "minimum": 14,
+            "rank": 5,
+            "ratio": 0.14
           },
           "sixty_minutes": {
-            "average": 123,
-            "count": 123,
-            "maximum": 123,
-            "median": 123,
-            "minimum": 123,
+            "average": 23,
+            "count": 23,
+            "maximum": 23,
+            "median": 23,
+            "minimum": 23,
             "rank": 6,
-            "ratio": 0.000123
+            "ratio": 0.23
           },
           "thirty_minutes": {
-            "average": 101,
-            "count": 101,
-            "maximum": 101,
-            "median": 101,
-            "minimum": 101,
-            "rank": 5,
-            "ratio": 0.000101
+            "average": 24,
+            "count": 24,
+            "maximum": 24,
+            "median": 24,
+            "minimum": 24,
+            "rank": 7,
+            "ratio": 0.24
           },
           "three_hours": {
-            "average": 171,
-            "count": 171,
-            "maximum": 171,
-            "median": 171,
-            "minimum": 171,
+            "average": 25,
+            "count": 25,
+            "maximum": 25,
+            "median": 25,
+            "minimum": 25,
             "rank": 8,
-            "ratio": 0.000171
+            "ratio": 0.25
           },
           "three_minutes": {
             "average": 37,
@@ -323,31 +415,31 @@
             "maximum": 37,
             "median": 37,
             "minimum": 37,
-            "rank": 2,
-            "ratio": 3.7e-05
+            "rank": 9,
+            "ratio": 0.37
           },
           "two_hours": {
-            "average": 156,
-            "count": 156,
-            "maximum": 156,
-            "median": 156,
-            "minimum": 156,
-            "rank": 7,
-            "ratio": 0.000156
+            "average": 56,
+            "count": 56,
+            "maximum": 56,
+            "median": 56,
+            "minimum": 56,
+            "rank": 10,
+            "ratio": 0.56
           }
         },
         "deception_level": 2,
-        "sent_count": 10000,
-        "total_clicks": 2904,
-        "unique_clicks": 1452,
+        "sent_count": 100,
+        "total_clicks": 6842,
+        "unique_clicks": 3421,
         "unique_user_clicks": {
-          "four_five_clicks": 156,
-          "one_click": 834,
-          "six_ten_clicks": 122,
-          "ten_plus_clicks": 51,
-          "two_three_clicks": 289
+          "four_five_clicks": 241,
+          "one_click": 2131,
+          "six_ten_clicks": 72,
+          "ten_plus_clicks": 56,
+          "two_three_clicks": 921
         },
-        "user_reports": 1667
+        "user_reports": 24
       }
     ],
     "indicator_stats": [
@@ -843,14 +935,14 @@
           "Gotham",
           "BumbleyBurg"
         ],
-        "clicks": 1000000,
+        "clicks": 21,
         "ips": [
           "123.23.12.231",
           "123.12.23.231",
           "231.23.12.123"
         ],
         "is_nonhuman": true,
-        "opens": 1000000
+        "opens": 100
       },
       {
         "asn_org": "Microsoft",
@@ -859,14 +951,14 @@
           "Rohan",
           "Rivendell"
         ],
-        "clicks": 1000000,
+        "clicks": 33,
         "ips": [
           "123.23.12.231",
           "123.12.23.231",
           "231.23.12.123"
         ],
         "is_nonhuman": true,
-        "opens": 1000000
+        "opens": 100
       },
       {
         "asn_org": "AMAZON-AES",
@@ -875,174 +967,350 @@
           "Beta Colony",
           "Jackson's Whole"
         ],
-        "clicks": 1000000,
+        "clicks": 26,
         "ips": [
           "12.2.1.23",
           "12.12.23.23",
           "31.23.12.123"
         ],
         "is_nonhuman": true,
-        "opens": 1000000
+        "opens": 100
       }
     ],
     "recommendation_stats": [
       {
-        "recommendation": "Emotional triggers (FEAR/DUTY)",
+        "clicked": {
+          "average": 1140,
+          "count": 210,
+          "maximum": 1600,
+          "median": 1200,
+          "minimum": 520,
+          "ratio": 0.21
+        },
+        "opened": {
+          "average": 1020,
+          "count": 1000,
+          "maximum": 1610,
+          "median": 1020,
+          "minimum": 430,
+          "ratio": 1
+        },
+        "reported": {
+          "average": 0,
+          "count": 0,
+          "maximum": 0,
+          "median": 0,
+          "minimum": 0,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 1000
+        },
+        "recommendation": {
+          "title":"Emotional triggers (FEAR/DUTY)",
+          "type":"sophisticated",
+          "description":"Using a subject line or content that inspires feelings of fear or duty/obilgation to respond to motivate a response. A cybercriminal may use a range of emotions to help persuade a user to click a link or open an attachment without examining it first."
+        },
         "templates": [
           {
-            "template": {
-              "deception_score": 2,
-              "from_address": "no-reply <no-reply@domain.com>",
-              "html": "You have two (2) Unread messages from the Finance Department&nbsp;<div><br></div><div><a href=\"{{url}}\">Login</a> to your account to read\n\nmore.\n\nThank you.</div>",
-              "indicators": {
-                "appearance": {
-                  "grammar": 1,
-                  "link_domain": 1,
-                  "logo_graphics": 0
-                },
-                "behavior": {
-                  "curiosity": 0,
-                  "duty_obligation": 0,
-                  "fear": 0,
-                  "greed": 0
-                },
-                "relevancy": {
-                  "organization": 0,
-                  "public_news": 0
-                },
-                "sender": {
-                  "authoritative": 0,
-                  "external": 0,
-                  "internal": 0
-                }
+            "deception_score": 2,
+            "from_address": "no-reply <no-reply@domain.com>",
+            "html": "You have two (2) Unread messages from the Finance Department&nbsp;<div><br></div><div><a href=\"{{url}}\">Login</a> to your account to read\n\nmore.\n\nThank you.</div>",
+            "indicators": {
+              "appearance": {
+                "grammar": 1,
+                "link_domain": 1,
+                "logo_graphics": 0
               },
-              "landing_page_id": "",
-              "name": "Urgent Message from the Finance Department",
-              "red_flag": [],
-              "retired": false,
-              "retired_description": "",
-              "sending_profile_id": "",
-              "sophisticated": [],
-              "subject": "Urgent Message from the Finance Department",
-              "text": "You have two (2) Unread messages from the Finance Department\u00a0\n\n\nLogin to your account to read more. Thank you."
+              "behavior": {
+                "curiosity": 0,
+                "duty_obligation": 0,
+                "fear": 0,
+                "greed": 0
+              },
+              "relevancy": {
+                "organization": 0,
+                "public_news": 0
+              },
+              "sender": {
+                "authoritative": 0,
+                "external": 0,
+                "internal": 0
+              }
             },
-            "template_id": "62cef3cb2037943ba360db85"
+            "landing_page_id": "",
+            "name": "Urgent Message from the Finance Department",
+            "red_flag": [],
+            "retired": false,
+            "retired_description": "",
+            "sending_profile_id": "",
+            "sophisticated": [],
+            "subject": "Urgent Message from the Finance Department",
+            "text": "You have two (2) Unread messages from the Finance Department\u00a0\n\n\nLogin to your account to read more. Thank you."
           }
         ]
       },
       {
-        "recommendation": "Authoritative tone",
+        "clicked": {
+          "average": 1140,
+          "count": 210,
+          "maximum": 1600,
+          "median": 1200,
+          "minimum": 520,
+          "ratio": 0.21
+        },
+        "opened": {
+          "average": 1020,
+          "count": 1000,
+          "maximum": 1610,
+          "median": 1020,
+          "minimum": 430,
+          "ratio": 1
+        },
+        "reported": {
+          "average": 0,
+          "count": 0,
+          "maximum": 0,
+          "median": 0,
+          "minimum": 0,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 1000
+        },
+        "recommendation": {
+          "title":"Spelling and layout",
+          "type":"sophisticated",
+          "description":"Professional formatting and proper spelling and grammar to imitate reputable institutions that have dedicated personnel that produce, verify, and proofread correspondence. "
+        },
         "templates": [
           {
-            "template": {
-              "deception_score": 5,
-              "from_address": "{{customer['identifier']}}-HR <hr@domain.com>",
-              "html": "Attention:<div><br>You have an important email from the Human Resources Department with regards to the&nbsp;{{time.current_month_long()}} {{time.current_year_long()}} paycheck.<br><br>This email is enclosed in the&nbsp;{{customer['name']}} secure network. Access the documents here: <a href=\"{{url}}\">https://salarynotice.be/983628201983</a></div><div><br></div><div><b>Ensure your login credentials are correct to avoid cancellations.</b><br><br>Respectfully,<br>Human Resources<div>{{customer['name']}}<br></div></div>",
-              "indicators": {
-                "appearance": {
-                  "grammar": 2,
-                  "link_domain": 1,
-                  "logo_graphics": 0
-                },
-                "behavior": {
-                  "curiosity": 1,
-                  "duty_obligation": 1,
-                  "fear": 0,
-                  "greed": 0
-                },
-                "relevancy": {
-                  "organization": 1,
-                  "public_news": 0
-                },
-                "sender": {
-                  "authoritative": 0,
-                  "external": 0,
-                  "internal": 1
-                }
+            "deception_score": 5,
+            "from_address": "{{customer['identifier']}}-HR <hr@domain.com>",
+            "html": "Attention:<div><br>You have an important email from the Human Resources Department with regards to the&nbsp;{{time.current_month_long()}} {{time.current_year_long()}} paycheck.<br><br>This email is enclosed in the&nbsp;{{customer['name']}} secure network. Access the documents here: <a href=\"{{url}}\">https://salarynotice.be/983628201983</a></div><div><br></div><div><b>Ensure your login credentials are correct to avoid cancellations.</b><br><br>Respectfully,<br>Human Resources<div>{{customer['name']}}<br></div></div>",
+            "indicators": {
+              "appearance": {
+                "grammar": 2,
+                "link_domain": 1,
+                "logo_graphics": 0
               },
-              "landing_page_id": "",
-              "name": "Salary Notification",
-              "red_flag": [],
-              "retired": false,
-              "retired_description": "",
-              "sending_profile_id": "",
-              "sophisticated": [],
-              "subject": "URGENT: Your New Salary Notification",
-              "text": "Attention:You have an important email from the Human Resources Department with regards to the\u00a0{{time.current_month_long()}} {{time.current_year_long()}} paycheck.This email is enclosed in the\u00a0{{customer['name']}} secure network. Access the documents here: https://salarynotice.be/983628201983Ensure your login credentials are correct to avoid cancellations.Respectfully,Human Resources{{customer['name']}}"
+              "behavior": {
+                "curiosity": 1,
+                "duty_obligation": 1,
+                "fear": 0,
+                "greed": 0
+              },
+              "relevancy": {
+                "organization": 1,
+                "public_news": 0
+              },
+              "sender": {
+                "authoritative": 0,
+                "external": 0,
+                "internal": 1
+              }
             },
-            "template_id": "62cef3cb2037943ba360db84"
+            "landing_page_id": "",
+            "name": "Salary Notification",
+            "red_flag": [],
+            "retired": false,
+            "retired_description": "",
+            "sending_profile_id": "",
+            "sophisticated": [],
+            "subject": "URGENT: Your New Salary Notification",
+            "text": "Attention:You have an important email from the Human Resources Department with regards to the\u00a0{{time.current_month_long()}} {{time.current_year_long()}} paycheck.This email is enclosed in the\u00a0{{customer['name']}} secure network. Access the documents here: https://salarynotice.be/983628201983Ensure your login credentials are correct to avoid cancellations.Respectfully,Human Resources{{customer['name']}}"
           }
         ]
       },
       {
-        "recommendation": "Content irregularities",
+        "clicked": {
+          "average": 1140,
+          "count": 210,
+          "maximum": 1600,
+          "median": 1200,
+          "minimum": 520,
+          "ratio": 0.21
+        },
+        "opened": {
+          "average": 1020,
+          "count": 1000,
+          "maximum": 1610,
+          "median": 1020,
+          "minimum": 430,
+          "ratio": 1
+        },
+        "reported": {
+          "average": 0,
+          "count": 0,
+          "maximum": 0,
+          "median": 0,
+          "minimum": 0,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 1000
+        },
+        "recommendation": {
+          "title":"Content irregularities",
+          "type":"red_flag",
+          "description":"Providing information throughout the message, in the display name, and the signature block that are inconsistent or contradictory."
+        },
         "templates": [
           {
-            "template": {
-              "deception_score": 3,
-              "from_address": "IT Help Desk <helpdesk@domain.com>",
-              "html": "<div>Hello,</div><div><br></div>Your domain password will expire in 3 days! To ensure your account not locked out, please click <a href=\"{{url}}\">here</a> to set a new password.<br><br>IT Help Desk Service<br><br><font size=\"1\">***** Email confidentiality notice *****<br>This message is private and confidential. If you have received this message in error, please <a href=\"{{url}}\">notify us</a> and remove it from your system.</font><br>",
-              "indicators": {
-                "appearance": {
-                  "grammar": 1,
-                  "link_domain": 1,
-                  "logo_graphics": 0
-                },
-                "behavior": {
-                  "curiosity": 1,
-                  "duty_obligation": 0,
-                  "fear": 0,
-                  "greed": 0
-                },
-                "relevancy": {
-                  "organization": 0,
-                  "public_news": 0
-                },
-                "sender": {
-                  "authoritative": 1,
-                  "external": 0,
-                  "internal": 0
-                }
+            "deception_score": 3,
+            "from_address": "IT Help Desk <helpdesk@domain.com>",
+            "html": "<div>Hello,</div><div><br></div>Your domain password will expire in 3 days! To ensure your account not locked out, please click <a href=\"{{url}}\">here</a> to set a new password.<br><br>IT Help Desk Service<br><br><font size=\"1\">***** Email confidentiality notice *****<br>This message is private and confidential. If you have received this message in error, please <a href=\"{{url}}\">notify us</a> and remove it from your system.</font><br>",
+            "indicators": {
+              "appearance": {
+                "grammar": 1,
+                "link_domain": 1,
+                "logo_graphics": 0
               },
-              "landing_page_id": "",
-              "name": "Password Expiration",
-              "red_flag": [],
-              "retired": false,
-              "retired_description": "",
-              "sending_profile_id": "",
-              "sophisticated": [],
-              "subject": "IT Help Desk Service: Password Expiration",
-              "text": "Hello,\n\n\nYour domain password will expire in 3 days! To ensure your account not locked out, please click here to set a new password.\n\nIT Help Desk Service\n\n***** Email confidentiality notice *****\nThis message is private and confidential. If you have received this message in error, please notify us and remove it from your system."
+              "behavior": {
+                "curiosity": 1,
+                "duty_obligation": 0,
+                "fear": 0,
+                "greed": 0
+              },
+              "relevancy": {
+                "organization": 0,
+                "public_news": 0
+              },
+              "sender": {
+                "authoritative": 1,
+                "external": 0,
+                "internal": 0
+              }
             },
-            "template_id": "62cef3cb2037943ba360db83"
+            "landing_page_id": "",
+            "name": "Password Expiration",
+            "red_flag": [],
+            "retired": false,
+            "retired_description": "",
+            "sending_profile_id": "",
+            "sophisticated": [],
+            "subject": "IT Help Desk Service: Password Expiration",
+            "text": "Hello,\n\n\nYour domain password will expire in 3 days! To ensure your account not locked out, please click here to set a new password.\n\nIT Help Desk Service\n\n***** Email confidentiality notice *****\nThis message is private and confidential. If you have received this message in error, please notify us and remove it from your system."
           }
         ]
       }
     ],
     "stats": {
       "all": {
-        "clicked": 235,
-        "opened": 3592,
-        "reported": 1962,
-        "sent": 1000000
+        "clicked": {
+          "average": 114,
+          "count": 21,
+          "maximum": 160,
+          "median": 120,
+          "minimum": 52,
+          "ratio": 0.21
+        },
+        "opened": {
+          "average": 102,
+          "count": 100,
+          "maximum": 161,
+          "median": 102,
+          "minimum": 43,
+          "ratio": 1
+        },
+        "reported": {
+          "average": 0,
+          "count": 0,
+          "maximum": 0,
+          "median": 0,
+          "minimum": 0,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 100
+        }
       },
       "high": {
-        "clicked": 142,
-        "opened": 1671,
-        "reported": 1003,
-        "sent": 250000
+        "clicked": {
+          "average": 0,
+          "count": 0,
+          "maximum": 0,
+          "median": 0,
+          "minimum": 0,
+          "ratio": 0
+        },
+        "opened": {
+          "average": 0,
+          "count": 0,
+          "maximum": 0,
+          "median": 0,
+          "minimum": 0,
+          "ratio": 0
+        },
+        "reported": {
+          "average": 0,
+          "count": 0,
+          "maximum": 0,
+          "median": 0,
+          "minimum": 0,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 0
+        }
       },
       "low": {
-        "clicked": 56,
-        "opened": 1100,
-        "reported": 328,
-        "sent": 500000
+        "clicked": {
+          "average": 114,
+          "count": 21,
+          "maximum": 160,
+          "median": 120,
+          "minimum": 52,
+          "ratio": 0.21
+        },
+        "opened": {
+          "average": 102,
+          "count": 100,
+          "maximum": 161,
+          "median": 102,
+          "minimum": 43,
+          "ratio": 1
+        },
+        "reported": {
+          "average": 0,
+          "count": 0,
+          "maximum": 0,
+          "median": 0,
+          "minimum": 0,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 100
+        }
       },
       "moderate": {
-        "clicked": 37,
-        "opened": 821,
-        "reported": 631,
-        "sent": 250000
+        "clicked": {
+          "average": 0,
+          "count": 0,
+          "maximum": 0,
+          "median": 0,
+          "minimum": 0,
+          "ratio": 0
+        },
+        "opened": {
+          "average": 0,
+          "count": 0,
+          "maximum": 0,
+          "median": 0,
+          "minimum": 0,
+          "ratio": 0
+        },
+        "reported": {
+          "average": 0,
+          "count": 0,
+          "maximum": 0,
+          "median": 0,
+          "minimum": 0,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 0
+        }
       }
     },
     "target_stats": {
@@ -1050,7 +1318,25 @@
     },
     "template_stats": [
       {
-        "deception_level": "Average",
+        "clicked": {
+          "count": 21,
+          "rank": 1,
+          "ratio": 0.21
+        },
+        "deception_level": "moderate",
+        "opened": {
+          "count": 100,
+          "rank": 1,
+          "ratio": 1
+        },
+        "reported": {
+          "count": 0,
+          "rank": 1,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 100
+        },
         "template": {
           "deception_score": 3,
           "from_address": "IT Help Desk <helpdesk@domain.com>",
@@ -1090,7 +1376,25 @@
         "template_id": "62cef3cb2037943ba360db83"
       },
       {
-        "deception_level": "Average",
+        "clicked": {
+          "count": 21,
+          "rank": 1,
+          "ratio": 0.21
+        },
+        "deception_level": "high",
+        "opened": {
+          "count": 100,
+          "rank": 1,
+          "ratio": 1
+        },
+        "reported": {
+          "count": 0,
+          "rank": 1,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 100
+        },
         "template": {
           "deception_score": 5,
           "from_address": "{{customer['identifier']}}-HR <hr@domain.com>",
@@ -1130,7 +1434,25 @@
         "template_id": "62cef3cb2037943ba360db84"
       },
       {
-        "deception_level": "Average",
+        "clicked": {
+          "count": 21,
+          "rank": 1,
+          "ratio": 0.21
+        },
+        "deception_level": "low",
+        "opened": {
+          "count": 100,
+          "rank": 1,
+          "ratio": 1
+        },
+        "reported": {
+          "count": 0,
+          "rank": 1,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 100
+        },
         "template": {
           "deception_score": 2,
           "from_address": "no-reply <no-reply@domain.com>",
@@ -1357,5 +1679,5 @@
       }
     }
   },
-  "target_count": 1000000
+  "target_count": 100
 }
