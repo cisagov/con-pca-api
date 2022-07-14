@@ -352,22 +352,487 @@
     ],
     "indicator_stats": [
       {
-        "group": "group1",
-        "indicator": "indicator1",
-        "label": "label1",
+        "clicked": {
+          "count": 0,
+          "ratio": 0
+        },
+        "group": "appearance",
+        "indicator": "grammar",
+        "label": "Poor",
+        "opened": {
+          "count": 0,
+          "ratio": 0
+        },
+        "reported": {
+          "count": 0,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 0
+        },
+        "value": 0
+      },
+      {
+        "clicked": {
+          "count": 21,
+          "ratio": 0.21
+        },
+        "group": "appearance",
+        "indicator": "grammar",
+        "label": "Decent",
+        "opened": {
+          "count": 100,
+          "ratio": 1
+        },
+        "reported": {
+          "count": 0,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 100
+        },
         "value": 1
       },
       {
-        "group": "group2",
-        "indicator": "indicator2",
-        "label": "label2",
+        "clicked": {
+          "count": 0,
+          "ratio": 0
+        },
+        "group": "appearance",
+        "indicator": "grammar",
+        "label": "Proper",
+        "opened": {
+          "count": 0,
+          "ratio": 0
+        },
+        "reported": {
+          "count": 0,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 0
+        },
         "value": 2
       },
       {
-        "group": "group3",
-        "indicator": "indicator3",
-        "label": "label3",
-        "value": 3
+        "clicked": {
+          "count": 21,
+          "ratio": 0.21
+        },
+        "group": "appearance",
+        "indicator": "link_domain",
+        "label": "Unrelated",
+        "opened": {
+          "count": 100,
+          "ratio": 1
+        },
+        "reported": {
+          "count": 0,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 100
+        },
+        "value": 0
+      },
+      {
+        "clicked": {
+          "count": 0,
+          "ratio": 0
+        },
+        "group": "appearance",
+        "indicator": "link_domain",
+        "label": "Related/Hidden/Spoofed",
+        "opened": {
+          "count": 0,
+          "ratio": 0
+        },
+        "reported": {
+          "count": 0,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 0
+        },
+        "value": 1
+      },
+      {
+        "clicked": {
+          "count": 21,
+          "ratio": 0.21
+        },
+        "group": "appearance",
+        "indicator": "logo_graphics",
+        "label": "Plain Text",
+        "opened": {
+          "count": 100,
+          "ratio": 1
+        },
+        "reported": {
+          "count": 0,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 100
+        },
+        "value": 0
+      },
+      {
+        "clicked": {
+          "count": 0,
+          "ratio": 0
+        },
+        "group": "appearance",
+        "indicator": "logo_graphics",
+        "label": "Visual Appeal",
+        "opened": {
+          "count": 0,
+          "ratio": 0
+        },
+        "reported": {
+          "count": 0,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 0
+        },
+        "value": 1
+      },
+      {
+        "clicked": {
+          "count": 0,
+          "ratio": 0
+        },
+        "group": "behavior",
+        "indicator": "curiosity",
+        "label": "Yes",
+        "opened": {
+          "count": 0,
+          "ratio": 0
+        },
+        "reported": {
+          "count": 0,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 0
+        },
+        "value": 1
+      },
+      {
+        "clicked": {
+          "count": 0,
+          "ratio": 0
+        },
+        "group": "behavior",
+        "indicator": "duty_obligation",
+        "label": "Yes",
+        "opened": {
+          "count": 0,
+          "ratio": 0
+        },
+        "reported": {
+          "count": 0,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 0
+        },
+        "value": 1
+      },
+      {
+        "clicked": {
+          "count": 0,
+          "ratio": 0
+        },
+        "group": "behavior",
+        "indicator": "fear",
+        "label": "Yes",
+        "opened": {
+          "count": 0,
+          "ratio": 0
+        },
+        "reported": {
+          "count": 0,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 0
+        },
+        "value": 1
+      },
+      {
+        "clicked": {
+          "count": 0,
+          "ratio": 0
+        },
+        "group": "behavior",
+        "indicator": "greed",
+        "label": "Yes",
+        "opened": {
+          "count": 0,
+          "ratio": 0
+        },
+        "reported": {
+          "count": 0,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 0
+        },
+        "value": 1
+      },
+      {
+        "clicked": {
+          "count": 21,
+          "ratio": 0.21
+        },
+        "group": "relevancy",
+        "indicator": "organization",
+        "label": "No",
+        "opened": {
+          "count": 100,
+          "ratio": 1
+        },
+        "reported": {
+          "count": 0,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 100
+        },
+        "value": 0
+      },
+      {
+        "clicked": {
+          "count": 0,
+          "ratio": 0
+        },
+        "group": "relevancy",
+        "indicator": "organization",
+        "label": "Yes",
+        "opened": {
+          "count": 0,
+          "ratio": 0
+        },
+        "reported": {
+          "count": 0,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 0
+        },
+        "value": 1
+      },
+      {
+        "clicked": {
+          "count": 21,
+          "ratio": 0.21
+        },
+        "group": "relevancy",
+        "indicator": "public_news",
+        "label": "No",
+        "opened": {
+          "count": 100,
+          "ratio": 1
+        },
+        "reported": {
+          "count": 0,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 100
+        },
+        "value": 0
+      },
+      {
+        "clicked": {
+          "count": 0,
+          "ratio": 0
+        },
+        "group": "relevancy",
+        "indicator": "public_news",
+        "label": "Yes",
+        "opened": {
+          "count": 0,
+          "ratio": 0
+        },
+        "reported": {
+          "count": 0,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 0
+        },
+        "value": 1
+      },
+      {
+        "clicked": {
+          "count": 21,
+          "ratio": 0.21
+        },
+        "group": "sender",
+        "indicator": "authoritative",
+        "label": "None",
+        "opened": {
+          "count": 100,
+          "ratio": 1
+        },
+        "reported": {
+          "count": 0,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 100
+        },
+        "value": 0
+      },
+      {
+        "clicked": {
+          "count": 0,
+          "ratio": 0
+        },
+        "group": "sender",
+        "indicator": "authoritative",
+        "label": "Peer",
+        "opened": {
+          "count": 0,
+          "ratio": 0
+        },
+        "reported": {
+          "count": 0,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 0
+        },
+        "value": 1
+      },
+      {
+        "clicked": {
+          "count": 0,
+          "ratio": 0
+        },
+        "group": "sender",
+        "indicator": "authoritative",
+        "label": "Superior",
+        "opened": {
+          "count": 0,
+          "ratio": 0
+        },
+        "reported": {
+          "count": 0,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 0
+        },
+        "value": 2
+      },
+      {
+        "clicked": {
+          "count": 21,
+          "ratio": 0.21
+        },
+        "group": "sender",
+        "indicator": "external",
+        "label": "Not External/Unpsecified",
+        "opened": {
+          "count": 100,
+          "ratio": 1
+        },
+        "reported": {
+          "count": 0,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 100
+        },
+        "value": 0
+      },
+      {
+        "clicked": {
+          "count": 0,
+          "ratio": 0
+        },
+        "group": "sender",
+        "indicator": "external",
+        "label": "Specified",
+        "opened": {
+          "count": 0,
+          "ratio": 0
+        },
+        "reported": {
+          "count": 0,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 0
+        },
+        "value": 1
+      },
+      {
+        "clicked": {
+          "count": 21,
+          "ratio": 0.21
+        },
+        "group": "sender",
+        "indicator": "internal",
+        "label": "Not Internal/Unspecified",
+        "opened": {
+          "count": 100,
+          "ratio": 1
+        },
+        "reported": {
+          "count": 0,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 100
+        },
+        "value": 0
+      },
+      {
+        "clicked": {
+          "count": 0,
+          "ratio": 0
+        },
+        "group": "sender",
+        "indicator": "internal",
+        "label": "Generic/Close",
+        "opened": {
+          "count": 0,
+          "ratio": 0
+        },
+        "reported": {
+          "count": 0,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 0
+        },
+        "value": 1
+      },
+      {
+        "clicked": {
+          "count": 0,
+          "ratio": 0
+        },
+        "group": "sender",
+        "indicator": "internal",
+        "label": "Spoofed",
+        "opened": {
+          "count": 0,
+          "ratio": 0
+        },
+        "reported": {
+          "count": 0,
+          "ratio": 0
+        },
+        "sent": {
+          "count": 0
+        },
+        "value": 2
       }
     ],
     "maxmind_stats": [
@@ -892,5 +1357,5 @@
       }
     }
   },
-  "target_count": 2500
+  "target_count": 1000000
 }
