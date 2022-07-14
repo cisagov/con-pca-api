@@ -190,7 +190,7 @@ def _user_group_stats_csv(
 
     headers.append("user_group")
 
-    data["user_group"] = stats["target_stats"]
+    data["user_group"] = stats.get("target_stats", {})
 
     return "user_group_stats.csv", headers, data
 
