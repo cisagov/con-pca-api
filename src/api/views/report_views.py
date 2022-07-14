@@ -34,7 +34,16 @@ class ReportHtmlView(MethodView):
         nonhuman = False
         if request.args.get("nonhuman", "") == "true":
             nonhuman = True
-        return get_report(cycle_id, report_type, nonhuman), 200
+
+        resp_code = 200
+        try:
+            resp = get_report(cycle_id, report_type, nonhuman)
+        except Exception as e:
+            logger.exception(f"{report_type} report error: {str(e)}")
+            resp = {"error": f"{report_type} report html failed"}
+            resp_code = 400
+
+        return resp, resp_code
 
 
 class ReportPdfView(MethodView):
