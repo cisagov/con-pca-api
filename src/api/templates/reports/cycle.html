@@ -867,9 +867,10 @@
           </tr>
           <tr>
             <td># Ratio of reports-to-clicks</td>
-            <td>
-              {{cycle.stats.stats.all.reported.count /
-              cycle.stats.stats.all.clicked.count}}
+            <td id="reportsToClickRatio">
+              <script>
+                reportsToClickRatio();
+              </script>
             </td>
           </tr>
           <tr>
