@@ -218,14 +218,14 @@
         },
         "deception_level": 0,
         "sent_count": 100,
-        "total_clicks": 6842,
-        "unique_clicks": 3421,
+        "total_clicks": 68,
+        "unique_clicks": 34,
         "unique_user_clicks": {
-          "four_five_clicks": 241,
-          "one_click": 2131,
-          "six_ten_clicks": 72,
-          "ten_plus_clicks": 56,
-          "two_three_clicks": 921
+          "four_five_clicks": 13,
+          "one_click": 14,
+          "six_ten_clicks": 5,
+          "ten_plus_clicks": 17,
+          "two_three_clicks": 19
         },
         "user_reports": 24
       },
@@ -324,14 +324,14 @@
         },
         "deception_level": 1,
         "sent_count": 100,
-        "total_clicks": 6842,
-        "unique_clicks": 3421,
+        "total_clicks": 68,
+        "unique_clicks": 34,
         "unique_user_clicks": {
-          "four_five_clicks": 241,
-          "one_click": 2131,
-          "six_ten_clicks": 72,
-          "ten_plus_clicks": 56,
-          "two_three_clicks": 921
+          "four_five_clicks": 13,
+          "one_click": 14,
+          "six_ten_clicks": 5,
+          "ten_plus_clicks": 17,
+          "two_three_clicks": 19
         },
         "user_reports": 24
       },
@@ -430,14 +430,14 @@
         },
         "deception_level": 2,
         "sent_count": 100,
-        "total_clicks": 6842,
-        "unique_clicks": 3421,
+        "total_clicks": 684,
+        "unique_clicks": 34,
         "unique_user_clicks": {
-          "four_five_clicks": 241,
-          "one_click": 2131,
-          "six_ten_clicks": 72,
-          "ten_plus_clicks": 56,
-          "two_three_clicks": 921
+          "four_five_clicks": 13,
+          "one_click": 14,
+          "six_ten_clicks": 5,
+          "ten_plus_clicks": 17,
+          "two_three_clicks": 19
         },
         "user_reports": 24
       }
