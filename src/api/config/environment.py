@@ -21,6 +21,10 @@ COGNITO_USER_POOL_ID = os.environ.get("AWS_COGNITO_USER_POOL_ID")
 DELAY_MINUTES = int(os.environ.get("DELAY_MINUTES", 3))
 EMAIL_MINUTES = int(os.environ.get("EMAIL_MINUTES", 1))
 TASK_MINUTES = int(os.environ.get("TASK_MINUTES", 5))
+FAILED_EMAIL_MINUTES = int(os.environ.get("FAILED_EMAIL_MINUTES", 1440))
+
+# mailgun API
+MAILGUN_API_KEY = str(os.environ.get("MAILGUN_API_KEY"))
 
 # https://bandit.readthedocs.io/en/latest/plugins/b104_hardcoded_bind_all_interfaces.html
 API_HOST = os.environ.get("API_HOST", "0.0.0.0")  # nosec

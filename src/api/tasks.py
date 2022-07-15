@@ -13,6 +13,7 @@ from api.manager import (
     TemplateManager,
 )
 from utils.logging import setLogger
+from utils.mailgun import get_failed_email_events
 from utils.notifications import Notification
 from utils.safelist import generate_safelist_file
 from utils.subscriptions import start_subscription, stop_subscription
@@ -37,6 +38,12 @@ def tasks_job():
                 logger.info("No more subscription tasks to process.")
                 break
             process_subscription(subscription)
+
+
+def failed_emails_job():
+    """Job to gather failed emails every hour."""
+    with app.app_context():
+        get_failed_email_events()
 
 
 def get_subscription():
