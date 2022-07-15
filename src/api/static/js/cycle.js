@@ -758,7 +758,6 @@ function deceptionIndicatorBreakdownChart() {
   indicatorStats.forEach((i) => {
     if (i.clicked.ratio * 100 > maxVal) {
       maxVal = Math.floor(i.clicked.ratio * 100);
-      x;
     }
   });
 
