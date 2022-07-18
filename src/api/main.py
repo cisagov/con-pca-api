@@ -12,14 +12,14 @@ from marshmallow.exceptions import ValidationError
 # cisagov Libraries
 from api.app import app
 from api.commands.load_test_data import load_test_data
-from api.config.environment import EMAIL_MINUTES, TASK_MINUTES
+from api.config.environment import EMAIL_MINUTES, FAILED_EMAIL_MINUTES, TASK_MINUTES
 from api.initialize import (
     initialize_nonhumans,
     initialize_recommendations,
     initialize_templates,
 )
 from api.phish import emails_job
-from api.tasks import tasks_job
+from api.tasks import failed_emails_job, tasks_job
 from api.views.auth_views import (
     LoginView,
     RefreshTokenView,
@@ -34,6 +34,7 @@ from api.views.cycle_views import (
     CyclesView,
     CycleView,
 )
+from api.views.failed_email_views import FailedEmailsView, FailedEmailView
 from api.views.landing_domain_views import LandingDomainsView, LandingDomainView
 from api.views.landing_page_views import LandingPagesView, LandingPageView
 from api.views.logging_views import LoggingView
@@ -86,6 +87,9 @@ rules = [
     ("/cycle/<cycle_id>/reports/<report_type>/", ReportHtmlView),
     ("/cycle/<cycle_id>/reports/<report_type>/pdf/", ReportPdfView),
     ("/cycle/<cycle_id>/reports/<report_type>/email/", ReportEmailView),
+    # Failed Email Views
+    ("/failedemails/", FailedEmailsView),
+    ("/failedemail/<failed_email_id>/", FailedEmailView),
     # Landing domains
     ("/landingdomains/", LandingDomainsView),
     ("/landingdomain/<landing_domain_id>", LandingDomainView),
@@ -161,6 +165,7 @@ logger = setLogger(__name__)
 sched = BackgroundScheduler()
 sched.add_job(emails_job, "interval", minutes=EMAIL_MINUTES, max_instances=3)
 sched.add_job(tasks_job, "interval", minutes=TASK_MINUTES)
+sched.add_job(failed_emails_job, "interval", minutes=FAILED_EMAIL_MINUTES)
 sched.start()
 
 # Initialize Database
