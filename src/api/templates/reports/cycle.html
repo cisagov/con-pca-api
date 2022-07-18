@@ -867,9 +867,10 @@
           </tr>
           <tr>
             <td># Ratio of reports-to-clicks</td>
-            <td>
-              {{cycle.stats.stats.all.reported.count /
-              cycle.stats.stats.all.clicked.count}}
+            <td id="reportsToClickRatio">
+              <script>
+                reportsToClickRatio();
+              </script>
             </td>
           </tr>
           <tr>
@@ -1121,7 +1122,7 @@
         percent when analyzing all emails clicked across all levels of
         deception.
       </p>
-
+      {% if stats.template_stats | length > 1 %}
       <p style="margin-top: 0.25in">
         The email template that had the second highest unique user click rate {{
         percent(stats.template_stats[1].clicked.ratio) }}% was the {{
@@ -1129,6 +1130,7 @@
         deception email with the subject line “{{
         stats.template_stats[1].template.subject }}”
       </p>
+      {% endif %}
       <p style="margin-top: 0.25in">
         CISA appreciates any comments to improve this report or service as a
         whole. For questions about this report or for future engagements with

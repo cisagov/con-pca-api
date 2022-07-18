@@ -310,8 +310,23 @@ function clickingUserTimelineChart() {
   });
 }
 
-function test() {
-  return "mostly just mun stuff";
+function reportsToClickRatio() {
+  var cycle = JSON.parse(document.getElementById("currentCycle").innerText);
+  num = cycle.stats.stats.all.reported.count;
+  denum = cycle.stats.stats.all.clicked.count;
+
+  if (num == 0) {
+    document.getElementById("reportsToClickRatio").textContent = "0";
+    return;
+  }
+
+  if (!num || !denum) {
+    document.getElementById("reportsToClickRatio").textContent = "N/A";
+    return;
+  }
+
+  document.getElementById("reportsToClickRatio").textContent =
+    (num / denum) * 100 + "%";
 }
 
 function avgTimeToFirstClick() {
@@ -742,7 +757,7 @@ function deceptionIndicatorBreakdownChart() {
   let maxVal = 0;
   indicatorStats.forEach((i) => {
     if (i.clicked.ratio * 100 > maxVal) {
-      maxVal = i.clicked.ratio * 100;
+      maxVal = Math.floor(i.clicked.ratio * 100);
     }
   });
 
