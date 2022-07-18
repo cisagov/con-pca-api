@@ -100,7 +100,8 @@ class Manager:
             self.db.create_index(index, unique=False)
         for index in self.ttl_indexes:
             if (
-                self.db.index_information()[index + "_1"]["expireAfterSeconds"]
+                self.db.index_information()
+                and self.db.index_information()[index + "_1"]["expireAfterSeconds"]
                 != ttl_in_seconds
             ):
                 try:
