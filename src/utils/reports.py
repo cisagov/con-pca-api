@@ -24,9 +24,12 @@ from api.manager import (
 )
 from utils import time
 from utils.emails import get_email_context, get_from_address
+from utils.logging import setLogger
 from utils.pdf import append_attachment
 from utils.stats import get_all_customer_stats, get_cycle_stats
 from utils.templates import get_indicators
+
+logger = setLogger(__name__)
 
 customer_manager = CustomerManager()
 cycle_manager = CycleManager()
@@ -103,6 +106,7 @@ def get_report_pdf(
     new_filepath = f"/var/www/new-{filename}"
 
     if not os.path.exists(filepath):
+        logger.error(f"Expected path {filepath} does not exist")
         raise Exception("Reporting Exception - Check Logs")
 
     writer = PdfFileWriter()
