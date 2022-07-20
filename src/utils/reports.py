@@ -186,15 +186,22 @@ def _add_overall_stats_csv(stats: dict):
     return "overall_stats.csv", headers, data
 
 
-def _user_group_stats_csv(
-    stats: dict,
-):
+def _user_group_stats_csv(stats):
     """Add User Group Stats CSV attachment to PDF."""
-    _, headers, data = _add_overall_stats_csv(stats)
+    headers = ["group", "sent", "clicked", "opened", "reported"]
 
-    headers.append("user_group")
+    if not stats.get("target_stats"):
+        return "user_group_stats.csv", headers, {}
 
-    data["user_group"] = stats.get("target_stats", {})
+    data = [
+        {
+            "group": t["group"] if t["group"] else "not grouped",
+            "sent": t["sent"]["count"],
+            "clicked": t["clicked"]["count"],
+            "opened": t["opened"]["count"],
+        }
+        for t in stats.get("target_stats")
+    ]
 
     return "user_group_stats.csv", headers, data
 
