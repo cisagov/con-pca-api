@@ -199,22 +199,23 @@ def generate_cycle_stats(cycle, targets, nonhuman=False):
             stats[target["deception_level"]]["reported"]["diffs"].append(diff)
             template_stats[target["template_id"]]["reported"]["count"] += 1
 
-    if target["position"] not in target_stats:
-        target_stats[target["position"]] = {
-            "group": target["position"],
-            "sent": {"count": 0},
-            "opened": {"count": 0},
-            "clicked": {"count": 0},
-            "reported": {"count": 0},
-        }
-    if sent:
-        target_stats[target["position"]]["sent"]["count"] += 1
-    if opened:
-        target_stats[target["position"]]["opened"]["count"] += 1
-    if clicked:
-        target_stats[target["position"]]["clicked"]["count"] += 1
-    if reported:
-        target_stats[target["position"]]["reported"]["count"] += 1
+        if target["position"] not in target_stats:
+            target_stats[target["position"]] = {
+                "group": target["position"],
+                "sent": {"count": 0},
+                "opened": {"count": 0},
+                "clicked": {"count": 0},
+                "reported": {"count": 0},
+            }
+        if sent:
+            target_stats[target["position"]]["sent"]["count"] += 1
+        if opened:
+            target_stats[target["position"]]["opened"]["count"] += 1
+        if clicked:
+            target_stats[target["position"]]["clicked"]["count"] += 1
+        if reported:
+            target_stats[target["position"]]["reported"]["count"] += 1
+
     process_time_stats(stats)
     process_ratios(stats)
     process_ratios(template_stats)
