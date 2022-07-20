@@ -41,7 +41,26 @@ def initialize_templates():
 
 def initialize_nonhumans():
     """Create initial set of non-human ASN orgs."""
-    initial_orgs = ["GOOGLE", "AMAZON-02", "MICROSOFT-CORP-MSN-AS-BLOCK"]
+    initial_orgs = [
+        "PAN0001",
+        "Green Floid LLC",
+        "DIGITALOCEAN-ASN",
+        "AMAZON-02",
+        "AS-CHOOPA",
+        "GOOGLE",
+        "AMAZON-AES",
+        "H4Y-TECHNOLOGIES",
+        "OVH SAS",
+        "MICROSOFT-CORP-MSN-AS-BLOCK",
+        "HostRoyale Technologies Pvt Ltd",
+        "DMIT",
+        "GOOGLE-IT",
+        "CLOUDFLARENET",
+        "GOOGLE-CLOUD-PLATFORM",
+        "OPENDNS",
+        "LEASEWEB-USA-NYC",
+        "M247 Ltd",
+    ]
 
     current_orgs = [o["asn_org"] for o in nonhuman_manager.all()]
     if len(current_orgs) > len(set(current_orgs)):
