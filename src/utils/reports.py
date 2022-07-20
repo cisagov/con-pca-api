@@ -200,7 +200,7 @@ def _user_group_stats_csv(stats):
             "clicked": t["clicked"]["count"],
             "opened": t["opened"]["count"],
         }
-        for t in stats.get("target_stats")
+        for t in stats["target_stats"]
     ]
 
     return "user_group_stats.csv", headers, data
