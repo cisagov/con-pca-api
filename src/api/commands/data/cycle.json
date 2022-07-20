@@ -1313,9 +1313,20 @@
         }
       }
     },
-    "target_stats": {
-      "group": "red-flag"
-    },
+    "target_stats": [
+      {
+        "clicked": {
+          "count": 1
+        },
+        "group": "engineer"
+      },
+      {
+        "clicked": {
+          "count": 0
+        },
+        "group": "manager"
+      }
+    ],
     "template_stats": [
       {
         "clicked": {

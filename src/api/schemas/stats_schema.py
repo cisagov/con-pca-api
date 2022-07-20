@@ -133,4 +133,4 @@ class CycleStatsSchema(Schema):
     time_stats = fields.Nested(TimeStatsTypeSchema)
     all_customer_stats = fields.Nested(CycleStatsLevelSchema)
     deception_level_stats = fields.List(fields.Nested(DeceptionLevelStatsSchema))
-    target_stats = fields.Nested(TargetStatsSchema)
+    target_stats = fields.List(fields.Nested(TargetStatsSchema))

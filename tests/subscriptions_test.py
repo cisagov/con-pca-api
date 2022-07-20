@@ -1,12 +1,7 @@
 """Test cases for subscription related features."""
 
-# Standard Python Libraries
-import logging
-
 # Third-Party Libraries
 import pytest
-
-log = logging.getLogger(__name__)
 
 
 class TestSubscriptions:
@@ -33,23 +28,25 @@ class TestSubscriptions:
     def check_subscription_properties(sub):
         """Check subscription object for expected properties."""
         try:
-            assert sub["name"] == "test_subscription"
+            if not isinstance(sub["name"], str):
+                pytest.fail("expected a string")
         except KeyError:
             pytest.fail("name property does not exist")
 
         try:
-            assert sub["created_by"] == "bot"
+            if not isinstance(sub["created_by"], str):
+                pytest.fail("expected a string")
         except KeyError:
             pytest.fail("created_by property does not exist")
 
         try:
-            assert sub["continuous_subscription"] is False
+            if not isinstance(sub["continuous_subscription"], bool):
+                pytest.fail("expected a boolean")
         except KeyError:
             pytest.fail("continuous_subscription property does not exist")
 
         try:
-            target_email_list = sub["target_email_list"]
-            assert isinstance(target_email_list, list)
-            assert len(target_email_list) == 4
+            if not isinstance(sub["target_email_list"], list):
+                pytest.fail("expected a list")
         except KeyError:
             pytest.fail("target_email_list property does not exist")
