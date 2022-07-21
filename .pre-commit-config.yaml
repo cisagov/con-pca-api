@@ -49,6 +49,13 @@ repos:
         args:
           - --strict
 
+  # GitHub Actions hooks
+  - repo: https://github.com/python-jsonschema/check-jsonschema
+    rev: 0.14.2
+    hooks:
+      - id: check-github-actions
+      - id: check-github-workflows
+
   # pre-commit hooks
   - repo: https://github.com/pre-commit/pre-commit
     rev: v2.17.0
@@ -115,18 +122,15 @@ repos:
       - id: pyupgrade
 
   # Ansible hooks
-  # Disabling this hook due to this error:
-  # UnicodeDecodeError: 'utf-8' codec can't decode byte 0x86 in position 23:
-  # invalid start byte
-  # - repo: https://github.com/ansible-community/ansible-lint
-  #   rev: v6.0.2
-  #   hooks:
-  #     - id: ansible-lint
-  #     # files: molecule/default/playbook.yml
+  - repo: https://github.com/ansible-community/ansible-lint
+    rev: v5.4.0
+    hooks:
+      - id: ansible-lint
+      # files: molecule/default/playbook.yml
 
   # Terraform hooks
   - repo: https://github.com/antonbabenko/pre-commit-terraform
-    rev: v1.64.1
+    rev: v1.64.0
     hooks:
       - id: terraform_fmt
       - id: terraform_validate

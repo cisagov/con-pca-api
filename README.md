@@ -41,7 +41,7 @@ docker run cisagov/con-pca-api:0.0.1
             source: <your_log_dir>
             target: /var/log
         environment:
-          - ECHO_MESSAGE="Hello from docker-compose"
+          - ECHO_MESSAGE="Hello from docker compose"
         ports:
           - target: 8080
             published: 8080
@@ -51,7 +51,7 @@ docker run cisagov/con-pca-api:0.0.1
 1. Start the container and detach:
 
     ```console
-    docker-compose up --detach
+    docker compose up --detach
     ```
 
 ## Using secrets with your container ##
@@ -86,7 +86,7 @@ environment variables.  See the
             source: <your_log_dir>
             target: /var/log
         environment:
-          - ECHO_MESSAGE="Hello from docker-compose"
+          - ECHO_MESSAGE="Hello from docker compose"
         ports:
           - target: 8080
             published: 8080
@@ -103,13 +103,13 @@ environment variables.  See the
 1. Pull the new image from Docker Hub:
 
     ```console
-    docker-compose pull
+    docker compose pull
     ```
 
 1. Recreate the running container by following the [previous instructions](#running-with-docker-compose):
 
     ```console
-    docker-compose up --detach
+    docker compose up --detach
     ```
 
 ### Docker ###
