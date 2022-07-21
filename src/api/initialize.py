@@ -42,10 +42,11 @@ def initialize_templates():
 def initialize_nonhumans():
     """Create initial set of non-human ASN orgs."""
     initial_orgs = [
-        "PAN0001",
         "Green Floid LLC",
-        "DIGITALOCEAN-ASN",
+        "CLOUDFLARENET",
         "AMAZON-02",
+        "PAN0001",
+        "DIGITALOCEAN-ASN",
         "AS-CHOOPA",
         "GOOGLE",
         "AMAZON-AES",
@@ -55,10 +56,13 @@ def initialize_nonhumans():
         "HostRoyale Technologies Pvt Ltd",
         "DMIT",
         "GOOGLE-IT",
-        "CLOUDFLARENET",
+        "Shanghai Anchang Network Security Technology Co.,Ltd.",
         "GOOGLE-CLOUD-PLATFORM",
         "OPENDNS",
-        "LEASEWEB-USA-NYC",
+        "LEASEWEB-USA-SFO",
+        "LEASEWEB-USA-NYC" "UK Dedicated Servers Limited",
+        "NETPROTECT-PHX",
+        "Leaseweb Deutschland GmbH",
         "M247 Ltd",
     ]
 
