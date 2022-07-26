@@ -483,7 +483,7 @@ def preview_template(data, customer):
 
 def percent(ratio):
     """Get percentage from ratio."""
-    return round(ratio * 100)
+    return round(ratio * 100, 1)
 
 
 def compare_svg(
