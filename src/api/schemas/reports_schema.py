@@ -20,6 +20,7 @@ class AggregateReportsSchema(Schema):
     """AggregateStatsSchema."""
 
     customers_enrolled = fields.Integer()
+    customers_active = fields.Integer()
     status_reports_sent = fields.Integer()
     cycle_reports_sent = fields.Integer()
     yearly_reports_sent = fields.Integer()
