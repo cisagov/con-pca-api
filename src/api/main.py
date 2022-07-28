@@ -214,10 +214,11 @@ def handle_validation_error(e):
 @app.route("/")
 def api_map():
     """List endpoints for api."""
+    # each value in _rules_by_endpoint is a list with one element.
+    # first index is pulled for quick access to the value's properties
     endpoints = {
-        endpoint.rule: endpoint.methods
-        for endpoint in app.url_map.__dict__["_rules"]
-        if endpoint.rule not in ["/static/<path:filename>", "/"]
+        k: f"{v[0].methods}  {v[0].rule}"
+        for k, v in app.url_map.__dict__["_rules_by_endpoint"].items()
     }
     return render_template("index.html", endpoints=endpoints)
 
