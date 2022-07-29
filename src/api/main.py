@@ -222,6 +222,7 @@ def api_map():
     endpoints = {
         k: f"{v[0].methods}  {v[0].rule}"
         for k, v in app.url_map.__dict__["_rules_by_endpoint"].items()
+        if k not in ["static", "api_map"]
     }
     return render_template("index.html", endpoints=endpoints)
 
