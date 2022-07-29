@@ -40,3 +40,5 @@ class CustomerSchema(BaseSchema):
     sector = fields.Str(required=False, allow_none=True)
     domain = fields.Str(required=False, allow_none=True)
     appendix_a_date = DateTimeField()
+    archived = fields.Bool(missing=False)
+    archived_description = fields.Str(default="", allow_none=True)
