@@ -148,6 +148,9 @@ login_rules = [
     ("/auth/resetpassword/<username>/", ResetPasswordView),
 ]
 
+# Disable forcing slashes on all routes
+app.url_map.strict_slashes = False
+
 for rule in rules:
     url = f"{url_prefix}{rule[0]}"
     if not rule[1].decorators:  # type: ignore
