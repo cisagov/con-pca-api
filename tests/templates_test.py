@@ -19,7 +19,7 @@ class TestTemplates:
         template_id = template.get("_id")
         assert template_id is not None
 
-        resp = client.get(f"/api/template/{template_id}")
+        resp = client.get(f"/api/template/{template_id}/")
         assert resp.status_code == 200
 
         self.check_template_properties(resp.json)
