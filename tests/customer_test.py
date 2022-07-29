@@ -19,7 +19,7 @@ class TestCustomers:
         customer_id = customer.get("_id")
         assert customer_id is not None
 
-        resp = client.get(f"/api/customer/{customer_id}")
+        resp = client.get(f"/api/customer/{customer_id}/")
         assert resp.status_code == 200
 
         self.check_customer_properties(resp.json)

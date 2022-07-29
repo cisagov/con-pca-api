@@ -19,7 +19,7 @@ class Testrecommendations:
         recommendation_id = recommendation.get("_id")
         assert recommendation_id is not None
 
-        resp = client.get(f"/api/recommendation/{recommendation_id}")
+        resp = client.get(f"/api/recommendation/{recommendation_id}/")
         assert resp.status_code == 200
 
         self.check_recommendation_properties(resp.json)
