@@ -19,7 +19,7 @@ class TestSubscriptions:
         sub_id = subscription.get("_id")
         assert sub_id is not None
 
-        resp = client.get(f"/api/subscription/{sub_id}")
+        resp = client.get(f"/api/subscription/{sub_id}/")
         assert resp.status_code == 200
 
         self.check_subscription_properties(resp.json)
