@@ -19,7 +19,7 @@ class TestSendingProfiles:
         sending_profile_id = sending_profile.get("_id")
         assert sending_profile_id is not None
 
-        resp = client.get(f"/api/sendingprofile/{sending_profile_id}")
+        resp = client.get(f"/api/sendingprofile/{sending_profile_id}/")
         assert resp.status_code == 200
 
         self.check_sending_profile_properties(resp.json)
