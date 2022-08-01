@@ -19,7 +19,7 @@ class TestCycles:
         cycle_id = cycle.get("_id")
         assert cycle_id is not None
 
-        resp = client.get(f"/api/cycle/{cycle_id}")
+        resp = client.get(f"/api/cycle/{cycle_id}/")
         assert resp.status_code == 200
 
         self.check_cycle_properties(resp.json)

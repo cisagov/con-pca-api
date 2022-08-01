@@ -16,9 +16,12 @@ class CustomersView(MethodView):
 
     def get(self):
         """Get."""
-        return jsonify(
-            customer_manager.all(params=customer_manager.get_query(request.args))
-        )
+        parameters = customer_manager.get_query(request.args)
+        parameters["archived"] = {"$in": [False, None]}
+        if request.args.get("archived", "").lower() == "true":
+            parameters["archived"] = True
+
+        return jsonify(customer_manager.all(params=parameters))
 
     def post(self):
         """Post."""
