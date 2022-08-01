@@ -12,6 +12,7 @@ from api.schemas.reports_schema import AggregateReportsSchema
 from utils.logging import setLogger
 from utils.notifications import Notification
 from utils.reports import (
+    get_customers_active,
     get_report,
     get_report_pdf,
     get_reports_sent,
@@ -111,6 +112,7 @@ class AggregateReportView(MethodView):
             subscriptions
         )
         context["all_customer_stats"] = get_all_customer_stats()
+        context["customers_active"] = get_customers_active()
         context["new_subscriptions"] = new_subs
         context["ongoing_subscriptions"] = ongoing_subs
         context["stopped_subscriptions"] = stopped_subs
