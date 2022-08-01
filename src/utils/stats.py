@@ -667,10 +667,14 @@ def get_all_customer_stats():
             if action != "sent":
                 ratios = all_stats[level][action]["ratios"]
                 length = len(ratios)
-                all_stats[level][action]["average"] = sum(ratios) / length
-                all_stats[level][action]["minimum"] = min(ratios)
-                all_stats[level][action]["maximum"] = max(ratios)
-                all_stats[level][action]["median"] = statistics.median(ratios)
+                all_stats[level][action]["average"] = (
+                    sum(ratios) / length if length != 0 else 0
+                )
+                all_stats[level][action]["minimum"] = min(ratios) if ratios else 0
+                all_stats[level][action]["maximum"] = max(ratios) if ratios else 0
+                all_stats[level][action]["median"] = (
+                    statistics.median(ratios) if ratios else 0
+                )
 
     process_ratios(all_stats)
     return all_stats
