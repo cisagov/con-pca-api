@@ -415,7 +415,9 @@ def process_ratios(stats: dict):
 def get_ratio(numerator, denominator):
     """Get ratio from numerator and denominator."""
     return (
-        0 if not denominator else round(float(numerator or 0) / float(denominator), 2)
+        0
+        if not denominator
+        else round(float(numerator or 0) / float(denominator), ndigits=3)
     )
 
 
