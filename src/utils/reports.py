@@ -356,6 +356,17 @@ def get_reports_sent(subscriptions):
     return response
 
 
+def get_customers_active():
+    """Get number of customers with at least one active subscription."""
+    active_subscriptions = subscription_manager.all(
+        {"status": {"$in": ["queued", "running"]}}
+    )
+    customers_active = len(
+        {subscription["customer_id"] for subscription in active_subscriptions}
+    )
+    return customers_active
+
+
 def get_sector_industry_report():
     """Get reports on sector industries."""
     response = {
