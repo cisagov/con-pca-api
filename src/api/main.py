@@ -129,7 +129,7 @@ rules = [
     # Template Views
     ("/templates/", TemplatesView),
     ("/templates/import/", TemplateImportView),
-    ("/templates/select/", TemplatesSelectView),
+    ("/templates/select/<subscription_id>/", TemplatesSelectView),
     ("/template/<template_id>/", TemplateView),
     ("/template/<template_id>/duplicate/", TemplateDuplicateView),
     # User Views

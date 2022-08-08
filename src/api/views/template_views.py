@@ -131,9 +131,24 @@ class TemplateImportView(MethodView):
 class TemplatesSelectView(MethodView):
     """TemplateSelectView."""
 
-    def get(self):
+    def get(self, subscription_id):
         """Get."""
-        templates = template_manager.all({"retired": False})
+        cycles = cycle_manager.all(
+            params={
+                "subscription_id": subscription_id,
+            },
+            fields=["template_ids"],
+        )
+        previous_template_ids = {
+            template_id
+            for list in [cycle["template_ids"] for cycle in cycles]
+            for template_id in list
+        }
+        templates = [
+            t
+            for t in template_manager.all({"retired": False})
+            if t["_id"] not in previous_template_ids
+        ]
         return jsonify(select_templates(templates))
 
 
