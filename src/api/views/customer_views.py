@@ -16,12 +16,15 @@ class CustomersView(MethodView):
 
     def get(self):
         """Get."""
-        parameters = customer_manager.get_query(request.args)
-        parameters["archived"] = {"$in": [False, None]}
-        if request.args.get("archived", "").lower() == "true":
-            parameters["archived"] = True
+        if "archived" not in request.args:
+            return jsonify(customer_manager.all())
+        else:
+            parameters = customer_manager.get_query(request.args)
+            parameters["archived"] = {"$in": [False, None]}
+            if request.args.get("archived", "").lower() == "true":
+                parameters["archived"] = True
 
-        return jsonify(customer_manager.all(params=parameters))
+            return jsonify(customer_manager.all(params=parameters))
 
     def post(self):
         """Post."""
