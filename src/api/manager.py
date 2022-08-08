@@ -312,6 +312,14 @@ class Manager:
         """Select a random record from collection."""
         return list(self.db.aggregate([{"$sample": {"size": count}}]))
 
+    def count(self, query={}):
+        """Count the number of documents matching the query in a collection."""
+        return self.db.count_documents(query)
+
+    def aggregate(self, pipeline=[]):
+        """Aggregate the quantity according to the aggregation pipeline."""
+        return list(self.db.aggregate(pipeline))
+
     def exists(self, parameters=None):
         """Check if record exists."""
         fields = self.convert_fields(["_id"])

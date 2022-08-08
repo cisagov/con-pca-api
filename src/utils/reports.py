@@ -342,17 +342,37 @@ def _add_template_stats_csv(stats: dict):
     return "template_stats.csv", headers, data
 
 
-def get_reports_sent(subscriptions):
+def get_reports_sent():
     """Get reports sent."""
     response = {
         "status_reports_sent": 0,
         "cycle_reports_sent": 0,
         "yearly_reports_sent": 0,
     }
-    for subscription in subscriptions:
-        for notification in subscription.get("notification_history", []):
-            if f"{notification['message_type']}s_sent" in response:
-                response[f"{notification['message_type']}s_sent"] += 1
+
+    pipeline = [
+        {"$unwind": "$notification_history"},
+        {"$group": {"_id": "$notification_history.message_type", "count": {"$sum": 1}}},
+        {
+            "$group": {
+                "_id": None,
+                "message_type": {"$push": {"k": "$_id", "v": "$count"}},
+            }
+        },
+        {"$replaceRoot": {"newRoot": {"$arrayToObject": "$message_type"}}},
+    ]
+
+    data = subscription_manager.aggregate(pipeline)
+    if data:
+        data = data[0]
+        if "status_report" in data:
+            data["status_reports_sent"] = data.pop("status_report")
+        if "cycle_report" in data:
+            data["cycle_reports_sent"] = data.pop("cycle_report")
+        if "yearly_report" in data:
+            data["yearly_reports_sent"] = data.pop("yearly_report")
+        response.update(data)
+
     return response
 
 
@@ -395,6 +415,7 @@ def get_sector_industry_report():
             "emails_clicked_ratio": 0,
         },
     }
+
     customers = customer_manager.all(fields=["_id", "customer_type"])
     for customer in customers:
         stat = f"{customer['customer_type'].lower()}_stats"
