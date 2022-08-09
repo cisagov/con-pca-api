@@ -1,7 +1,7 @@
 """Report utils."""
 # Standard Python Libraries
 import csv
-from datetime import datetime
+from datetime import datetime, timedelta
 from io import StringIO
 import json
 import os
@@ -53,6 +53,7 @@ def get_report(cycle_id: str, report_type: str, nonhuman: bool = False):
             "primary_contact",
             "admin_email",
             "status",
+            "buffer_time_minutes",
         ],
     )
     customer = customer_manager.get(document_id=subscription["customer_id"])
@@ -76,9 +77,11 @@ def get_report(cycle_id: str, report_type: str, nonhuman: bool = False):
         "all_customer_stats": all_customer_stats,
         "indicators": get_indicators(),
         "datetime": datetime,
+        "timedelta": timedelta,
         "json": json,
         "str": str,
         "time": time,
+        "getMostClickedTemplateLevel": getMostClickedTemplateLevel,
     }
     return render_template(f"reports/{report_type}.html", **context)
 
@@ -463,6 +466,16 @@ def get_previous_cycles(current_cycle):
         get_cycle_stats(cycle)
 
     return cycles
+
+
+def getMostClickedTemplateLevel(low_ratio, moderate_ratio, high_ratio):
+    """Get Most Clicked Template Level for report."""
+    levels = {
+        "Low": low_ratio,
+        "Moderate": moderate_ratio,
+        "High": high_ratio,
+    }
+    return max(levels, key=levels.get)
 
 
 def preview_from_address(template, subscription, customer):
