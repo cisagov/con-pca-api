@@ -307,7 +307,24 @@
               {% if previous_cycle %} {{ compare_svg(cycle.target_count,
               previous_cycle.target_count ) | safe }}{% endif %}
               <b>{{ cycle.target_count }} </b>
-              Targets
+              Targets, <b>{{ cycle.stats.stats.all.sent.count }} </b> Emails
+              Successful
+            </div>
+            <div class="report-card-changes-text">
+              {% if previous_cycle %} {{ compare_svg(cycle.target_count,
+              previous_cycle.target_count ) | safe }}{% endif %}
+              <b
+                >{{ cycle.target_count - cycle.stats.stats.all.sent.count }}
+              </b>
+              Emails Bounced
+            </div>
+            <div class="report-card-changes-text">
+              {% if previous_cycle %} {{
+              compare_svg(percent(cycle.stats.stats.all.clicked.ratio),
+              percent(previous_cycle.stats.stats.all.clicked.ratio),
+              up_color="bad", down_color="good", neutral_color="neutral") | safe
+              }} {% endif %}
+              <b>{{ cycle.stats.stats.all.clicked.count }}</b> Total Clicks
             </div>
             <div class="report-card-changes-text">
               {% if previous_cycle %} {{
@@ -322,13 +339,12 @@
               {% if previous_cycle %} {{
               compare_svg(cycle.stats.stats.all.clicked.average,
               previous_cycle.stats.stats.all.clicked.average ) | safe }} {%
-              endif %}
+              endif %} Average First Click Time:
               <b
                 >{{
                 time.convert_seconds(cycle.stats.stats.all.clicked.average).long
                 }}</b
               ><br />
-              Average First Click Time
             </div>
             <div class="report-card-changes-text" style="margin-top: 0.545in">
               {% if previous_cycle %} {{ compare_svg((cycle.stats.template_stats
@@ -359,8 +375,21 @@
               <b>Ended,</b> {{ previous_cycle.end_date.strftime('%B %d, %Y') }}
             </div>
             <div class="report-card-changes-text">
-              <b>{{ previous_cycle.target_count }}</b>
-              Targets
+              <b>{{ previous_cycle.target_count }} </b>
+              Targets,
+              <b>{{ previous_cycle.stats.stats.all.sent.count }} </b> Emails
+              Successful
+            </div>
+            <div class="report-card-changes-text">
+              <b
+                >{{ previous_cycle.target_count -
+                previous_cycle.stats.stats.all.sent.count }}
+              </b>
+              Emails Bounced
+            </div>
+            <div class="report-card-changes-text">
+              <b>{{ previous_cycle.stats.stats.all.clicked.count }}</b> Total
+              Clicks
             </div>
             <div class="report-card-changes-text">
               <b
@@ -369,12 +398,12 @@
               Click Rate
             </div>
             <div class="report-card-changes-text" style="font-size: 12pt">
+              Average First Click Time:
               <b
                 >{{
                 time.convert_seconds(previous_cycle.stats.stats.all.clicked.average).long
                 }}</b
               ><br />
-              Average First Click Time
             </div>
             <div class="report-card-changes-text" style="margin-top: 0.545in">
               <b
