@@ -24,7 +24,7 @@
   <body class="mat-typography">
     <!-- Global Variables Needed -->
     <!-- Set total pages -->
-    {% set total_pages = 17 + (stats.template_stats | length) %}
+    {% set total_pages = 14 + (stats.template_stats | length) %}
     <!-- Set previous cycle -->
     {% if previous_cycles %} {% set previous_cycle = previous_cycles[0] %} {%
     else %} {% set previous_cycle = None %} {% endif %}
@@ -919,7 +919,7 @@
 
       <p class="page-number">Page | 9 of {{ total_pages }}</p>
     </div>
-    <div class="page">
+    <!--<div class="page">
       <p class="page-header">8. Deception Indicator Breakdown</p>
       <div class="graph-label" style="padding: 4em 0; margin-left: -14px">
         Behavior
@@ -949,8 +949,8 @@
         deceptionIndicatorBreakdownChart();
       </script>
       <p class="page-number">Page | 10 of {{ total_pages }}</p>
-    </div>
-    <div class="page">
+    </div>-->
+    <!--<div class="page">
       <p class="page-header">9. Clicks By Deception Level</p>
       <canvas id="clicks-by-deception-level">
         <script>
@@ -963,7 +963,7 @@
         </script>
       </canvas>
       <p class="page-number">Page | 11 of {{ total_pages }}</p>
-    </div>
+    </div>-->
 
     <!-- Templates -->
     {% for template in stats.template_stats | sort(attribute="clicked.ratio",
@@ -1000,10 +1000,7 @@
       <div style="margin-top: 0.1875in">
         <div class="d-flex flex-row">
           <div class="template-stats-label"><b>Deception Level:</b></div>
-          <div>
-            {{ template.template.deception_score }} ({{ template.deception_level
-            | title }})
-          </div>
+          <div>{{ template.deception_level | title }}</div>
         </div>
         <div class="d-flex flex-row">
           <div class="template-stats-label"><b>Total Sent:</b></div>
@@ -1085,38 +1082,13 @@
         {% endif %}
       </div>
       <p class="page-number">
-        Page | {{ 11 + loop.index }} of {{ total_pages }}
+        Page | {{ 9 + loop.index }} of {{ total_pages }}
       </p>
     </div>
     {% endfor %}
 
-    <!-- Attachments -->
-    <div class="page">
-      <p class="page-header">11. Attachments</p>
-      <p>
-        The raw data presented in this report are attached to this pdf in CSV
-        format
-      </p>
-      <p>
-        You can access the CSV files attached to this report by following these
-        steps:
-      </p>
-      <ul>
-        <li>Install Adobe Acrobat DC Reader on your machine</li>
-        <li>Open this report PDF file in Adobe Acrobat DC Reader</li>
-        <li>Click on Attachments in the left pane</li>
-        <li>
-          You should now be able to access CSV files attached to this report
-          pdf.
-        </li>
-      </ul>
-      <p class="page-number">
-        Page | {{ total_pages - 5 }} of {{ total_pages }}
-      </p>
-    </div>
-
     <!-- Summary -->
-    <div class="page">
+    <!--<div class="page">
       <div class="page-header">12. Summary</div>
       <p style="margin-top: 0.25in">
         Under this Con-PCA attack scenario, CISA measured {{ customer.name }}
@@ -1162,7 +1134,7 @@
       <div class="page-number">
         Page | {{ total_pages - 4 }} of {{ total_pages }}
       </div>
-    </div>
+    </div> -->
 
     <!-- Appendix A: Definitions -->
     <div class="page">
@@ -1171,7 +1143,7 @@
         The following are definitions for terms found within the report.
       </p>
       <ul>
-        <li>
+        <li style="margin: 15px 0">
           <b>Click Rate</b> is the total number of emails with "malicious" links
           that targets clicked at least once, divided by the total numbers of
           emails sent. Of the {{ cycle.stats.stats.all.sent.count }} emails
@@ -1184,18 +1156,18 @@
           <b>Report Rate</b> is the total number of user reports that were sent
           to the helpdesk, divided by the total phishing emails sent.
         </li> -->
-        <li>
+        <li style="margin: 15px 0">
           <b>Click Time</b> is the time CISA sent the phishing email minus the
           time the user clicked the link within the email.
         </li>
-        <li>
+        <li style="margin: 15px 0">
           <b>Average time to first click</b> is the average click time of the
           click time for each target that clicked a "malicious" link.
         </li>
       </ul>
 
       <div class="page-number">
-        Page | {{ total_pages - 3 }} of {{ total_pages }}
+        Page | {{ total_pages - 4 }} of {{ total_pages }}
       </div>
     </div>
 
@@ -1208,12 +1180,14 @@
       <ul>
         {% if recommendations %} {% for rec in recommendations |
         sort(attribute="title") %} {% if rec.type == 'red_flag' %}
-        <li><b>{{ rec.title }} -</b> {{ rec.description }}</li>
+        <li style="margin: 15px 0">
+          <b>{{ rec.title }} -</b> {{ rec.description }}
+        </li>
         {% endif %} {% endfor %}{% endif %}
       </ul>
 
       <div class="page-number">
-        Page | {{ total_pages - 2 }} of {{ total_pages }}
+        Page | {{ total_pages - 3 }} of {{ total_pages }}
       </div>
     </div>
 
@@ -1226,17 +1200,44 @@
       <ul>
         {% if recommendations %} {% for rec in recommendations |
         sort(attribute="title") %} {% if rec.type == 'sophisticated' %}
-        <li><b>{{ rec.title }} -</b> {{ rec.description }}</li>
+        <li style="margin: 15px 0">
+          <b>{{ rec.title }} -</b> {{ rec.description }}
+        </li>
         {% endif %} {% endfor %}{% endif %}
       </ul>
       <div class="page-number">
-        Page | {{ total_pages - 1 }} of {{ total_pages }}
+        Page | {{ total_pages - 2 }} of {{ total_pages }}
       </div>
     </div>
 
-    <!-- Appendix B: BOD -->
+    <!-- Appendix D: Attachments -->
     <div class="page">
-      <div class="page-header">Appendix C: Binding Operational Directive</div>
+      <p class="page-header">Appendix D: Attachments</p>
+      <p>
+        The raw data presented in this report are attached to this pdf in CSV
+        format
+      </p>
+      <p>
+        You can access the CSV files attached to this report by following these
+        steps:
+      </p>
+      <ul>
+        <li>Install Adobe Acrobat DC Reader on your machine</li>
+        <li>Open this report PDF file in Adobe Acrobat DC Reader</li>
+        <li>Click on Attachments in the left pane</li>
+        <li>
+          You should now be able to access CSV files attached to this report
+          pdf.
+        </li>
+      </ul>
+      <p class="page-number">
+        Page | {{ total_pages - 1 }} of {{ total_pages }}
+      </p>
+    </div>
+
+    <!-- Appendix E: BOD -->
+    <div class="page">
+      <div class="page-header">Appendix E: Binding Operational Directive</div>
       <div
         style="
           width: 100%;
