@@ -24,7 +24,7 @@
   <body class="mat-typography">
     <!-- Global Variables Needed -->
     <!-- Set total pages -->
-    {% set total_pages = 14 + (stats.template_stats | length) %}
+    {% set total_pages = 13 + (stats.template_stats | length) %}
     <!-- Set previous cycle -->
     {% if previous_cycles %} {% set previous_cycle = previous_cycles[0] %} {%
     else %} {% set previous_cycle = None %} {% endif %}
@@ -115,27 +115,31 @@
           <dd>7</dd>
         </dl>
         <dl>
-          <dt><span>6.</span> PHISHING TEMPLATES FOR THIS CYCLE</dt>
+          <dt><span>6.</span> TIME INTERVALS</dt>
           <dd>8</dd>
         </dl>
         <dl>
-          <dt><span>7.</span> ATTACHMENTS</dt>
-          <dd>{{ total_pages - 4 }}</dd>
+          <dt><span>7.</span> PHISHING TEMPLATES FOR THIS CYCLE</dt>
+          <dd>9</dd>
         </dl>
         <dl>
           <dt><span>Appendix A:</span> Definitions</dt>
-          <dd>{{ total_pages - 3 }}</dd>
+          <dd>{{ total_pages - 4 }}</dd>
         </dl>
         <dl>
           <dt><span>Appendix B:</span> Red Flag Indicators</dt>
-          <dd>{{ total_pages - 2 }}</dd>
+          <dd>{{ total_pages - 3 }}</dd>
         </dl>
         <dl>
           <dt><span>Appendix C:</span> Sophisticated Techniques</dt>
+          <dd>{{ total_pages - 2 }}</dd>
+        </dl>
+        <dl>
+          <dt><span>Appendix D:</span> ATTACHMENTS</dt>
           <dd>{{ total_pages - 1 }}</dd>
         </dl>
         <dl>
-          <dt><span>Appendix D:</span> Binding Operational Directive</dt>
+          <dt><span>Appendix E:</span> Binding Operational Directive</dt>
           <dd>{{ total_pages }}</dd>
         </dl>
       </div>
@@ -849,7 +853,7 @@
       <p class="page-number">Page | 8 of {{ total_pages }}</p>
     </div>
 
-    <div class="page">
+    <!--<div class="page">
       <p class="page-header">7. User Activity Metrics</p>
       <table class="recommendation-table">
         <thead>
@@ -875,12 +879,12 @@
             <td># of phishing users overall</td>
             <td>{{cycle.target_count}}</td>
           </tr>
-          <!--
+          <!- -
           <tr>
             <td># of user reports sent to helpdesk overall</td>
             <td>{{cycle.stats.stats.all.reported.count}}</td>
-          </tr> -->
-          <!--
+          </tr> - ->
+          <!- -
           <tr>
             <td># Ratio of reports-to-clicks</td>
             <td id="reportsToClickRatio">
@@ -888,7 +892,7 @@
                 reportsToClickRatio();
               </script>
             </td>
-          </tr> -->
+          </tr> - ->
           <tr>
             <td>Average time to first click</td>
             <td id="avgTimeToFirtClick">
@@ -897,7 +901,7 @@
               </script>
             </td>
           </tr>
-          <!--
+          <!- -
           <tr>
             <td>Average time to first report</td>
             <td id="avgTimeToFirtReport">
@@ -905,7 +909,7 @@
                 avgTimeToFirstReport();
               </script>
             </td>
-          </tr> -->
+          </tr> - ->
           <tr>
             <td>Most clicked phishing template</td>
             <td id="mostClickedTemplate">
@@ -918,7 +922,7 @@
       </table>
 
       <p class="page-number">Page | 9 of {{ total_pages }}</p>
-    </div>
+    </div> -->
     <!--<div class="page">
       <p class="page-header">8. Deception Indicator Breakdown</p>
       <div class="graph-label" style="padding: 4em 0; margin-left: -14px">
@@ -970,7 +974,7 @@
     reverse=True) %}
     <div class="page">
       {% if loop.index == 1 %}
-      <p class="page-header">10. Phishing Templates for this Cycle</p>
+      <p class="page-header">7. Phishing Templates for this Cycle</p>
       {% endif %}
       <div>
         <b>Template #{{ loop.index }} - {{ template.template.name }}</b>
@@ -1082,7 +1086,7 @@
         {% endif %}
       </div>
       <p class="page-number">
-        Page | {{ 9 + loop.index }} of {{ total_pages }}
+        Page | {{ 8 + loop.index }} of {{ total_pages }}
       </p>
     </div>
     {% endfor %}
