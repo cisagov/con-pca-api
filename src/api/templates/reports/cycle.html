@@ -211,7 +211,9 @@
           <b>Send an updated target list.</b> If you’ve experienced personnel
           changes since the start of this last cycle, send an updated email
           target list to vulnerability@cisa.dhs.gov prior to the start of your
-          next phishing cycle on {{ cycle.end_date.strftime('%B %d, %Y') }}.
+          next phishing cycle on {{ (cycle.end_date +
+          timedelta(minutes=subscription.buffer_time_minutes)).strftime('%B %d,
+          %Y') }}.
         </li>
       </ol>
       <p>
@@ -292,16 +294,16 @@
               <b>Current Cycle</b>
             </div>
             <div class="report-card-changes-text">
-              <b>Started,</b> {{ cycle.start_date.strftime('%b, %d, %Y') }}
+              <b>Started </b> {{ cycle.start_date.strftime('%B, %d, %Y') }}
             </div>
             <div class="report-card-changes-text" style="margin-top: 0">
-              <b>Ended,</b> {{ cycle.end_date.strftime('%b, %d, %Y') }}
+              <b>Ended </b> {{ cycle.end_date.strftime('%B, %d, %Y') }}
             </div>
             <div class="report-card-changes-text">
               {% if previous_cycle %} {{ compare_svg(cycle.target_count,
               previous_cycle.target_count ) | safe }}{% endif %}
               <b>{{ cycle.target_count }} </b>
-              targets
+              Targets
             </div>
             <div class="report-card-changes-text">
               {% if previous_cycle %} {{
@@ -319,21 +321,26 @@
               endif %}
               <b
                 >{{
-                time.convert_seconds(cycle.stats.stats.all.clicked.average).short
+                time.convert_seconds(cycle.stats.stats.all.clicked.average).long
                 }}</b
-              >
-              Click Time
+              ><br />
+              Average First Click Time
             </div>
-            <div class="report-card-changes-text">
+            <div class="report-card-changes-text" style="margin-top: 0.545in">
               {% if previous_cycle %} {{ compare_svg((cycle.stats.template_stats
               | length), (previous_cycle.stats.template_stats | length) ) | safe
               }} {% endif %}
-              <b>{{ cycle.stats.template_stats | length }} </b> Templates Used
+              <b
+                >{{ getMostClickedTemplateLevel(stats.stats.low.clicked.ratio,
+                stats.stats.moderate.clicked.ratio,
+                stats.stats.high.clicked.ratio) }}
+              </b>
+              Template With Most Clicks
             </div>
           </div>
           <div
             class="d-flex flex-column"
-            style="margin-left: 0.65in; margin-right: 0.65in"
+            style="margin-left: 0.5in; margin-right: 0in"
           >
             <div style="font-size: 18pt; color: white">Changes</div>
             <div style="font-size: 14pt; margin-top: 0.125in">
@@ -357,17 +364,21 @@
               >
               Click Rate
             </div>
-            <div class="report-card-changes-text">
+            <div class="report-card-changes-text" style="font-size: 12pt">
               <b
                 >{{
-                time.convert_seconds(previous_cycle.stats.stats.all.clicked.average).short
+                time.convert_seconds(previous_cycle.stats.stats.all.clicked.average).long
                 }}</b
-              >
-              Click Time
+              ><br />
+              Average First Click Time
             </div>
-            <div class="report-card-changes-text">
-              <b>{{ previous_cycle.stats.template_stats | length }}</b>
-              Templates Used
+            <div class="report-card-changes-text" style="margin-top: 0.545in">
+              <b
+                >{{ getMostClickedTemplateLevel(stats.stats.low.clicked.ratio,
+                stats.stats.moderate.clicked.ratio,
+                stats.stats.high.clicked.ratio) }}</b
+              >
+              Template With Most Clicks
             </div>
             {% else %}
             <p style="width: 160px" class="report-card-changes-text">
@@ -379,7 +390,7 @@
           <div id="report-card-vertical-divider"></div>
           <div class="d-flex flex-column flex-fill" style="align-items: center">
             <div style="font-size: 18pt; text-align: center" class="dhs-blue">
-              AVERAGE<br />CLICK TIME
+              AVERAGE<br />TIME
             </div>
             <div
               style="font-size: 14pt; text-align: center; margin-top: 0.0625in"
@@ -406,6 +417,9 @@
             {% set avg_time =
             time.convert_seconds(cycle.stats.stats.all.clicked.average) %}
             <div>
+              <div style="font-size: 18pt; margin-top: 9px">
+                {{ avg_time.days }} Days
+              </div>
               <div style="font-size: 18pt; margin-top: 9px">
                 {{ avg_time.hours }} Hours
               </div>
