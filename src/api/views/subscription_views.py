@@ -1,5 +1,6 @@
 """Subscription Views."""
 # Standard Python Libraries
+from collections import OrderedDict
 import os
 
 # Third-Party Libraries
@@ -78,7 +79,11 @@ class SubscriptionsView(MethodView):
             ],
         )
         if request.args.get("overview"):
-            cycles = cycle_manager.all(fields=["subscription_id", "end_date", "active"])
+            # import ipdb
+            # ipdb.set_trace()
+            cycles = cycle_manager.all(
+                fields=["subscription_id", "start_date", "end_date", "active"]
+            )
             subscriptions = [
                 dict(
                     s,
@@ -92,14 +97,15 @@ class SubscriptionsView(MethodView):
                 for s in subscriptions
                 if c["subscription_id"] == s["_id"]
             ]
-            subscriptions = filter(
-                lambda s: s["status"] == "stopped" or s["active"] is True, subscriptions
-            )
             for s in subscriptions:
                 c = customer_manager.get(
                     document_id=s["customer_id"], fields=["_id", "appendix_a_date"]
                 )
                 s["appendix_a_date"] = c["appendix_a_date"]
+            subscriptions = sorted(subscriptions, key=lambda d: d["cycle_start_date"])
+            subscriptions = list(
+                OrderedDict((d["name"], d) for d in subscriptions).values()
+            )
 
         return jsonify(subscriptions)
 
