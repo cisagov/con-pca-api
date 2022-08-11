@@ -19,7 +19,7 @@ class SendingProfileSchema(BaseSchema):
 
     name = fields.Str(required=True)
     interface_type = fields.Str(
-        default="SMTP",
+        dump_default="SMTP",
         validate=validate.OneOf(
             [
                 "SMTP",
