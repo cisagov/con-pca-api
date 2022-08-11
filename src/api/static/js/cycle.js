@@ -11,9 +11,9 @@ function createClickRateOverTime() {
   var datasets = [
     {
       data: [
-        currentCycle.stats.stats.low.clicked.ratio * 100,
-        currentCycle.stats.stats.moderate.clicked.ratio * 100,
-        currentCycle.stats.stats.high.clicked.ratio * 100,
+        (currentCycle.stats.stats.low.clicked.ratio * 100).toFixed(1),
+        (currentCycle.stats.stats.moderate.clicked.ratio * 100).toFixed(1),
+        (currentCycle.stats.stats.high.clicked.ratio * 100).toFixed(1),
       ],
       label: `Report Cycle`,
       backgroundColor: "#064875",
@@ -27,9 +27,11 @@ function createClickRateOverTime() {
       if (i < 2) {
         datasets.push({
           data: [
-            previousCycles[i].stats.stats.low.clicked.ratio * 100,
-            previousCycles[i].stats.stats.moderate.clicked.ratio * 100,
-            previousCycles[i].stats.stats.high.clicked.ratio * 100,
+            (previousCycles[i].stats.stats.low.clicked.ratio * 100).toFixed(1),
+            (
+              previousCycles[i].stats.stats.moderate.clicked.ratio * 100
+            ).toFixed(1),
+            (previousCycles[i].stats.stats.high.clicked.ratio * 100).toFixed(1),
           ],
           label: `Cycle #${i + 2}`,
           backgroundColor: colors[i],
@@ -80,7 +82,7 @@ function createClickRateOverTime() {
 }
 
 function getClickRateFromCycle(cycle, level) {
-  return cycle.stats.stats[level].clicked.ratio * 100;
+  return (cycle.stats.stats[level].clicked.ratio * 100).toFixed(1);
 }
 
 function clickRateTimeIntervalChart() {

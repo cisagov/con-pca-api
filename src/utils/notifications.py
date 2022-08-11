@@ -195,16 +195,29 @@ class Notification:
             from_address = config["REPORTING_FROM_ADDRESS"]
             if from_address:
                 email = Email(sending_profile)
-                email.send(
-                    from_email=from_address,
-                    to_recipients=addresses.get("to"),
-                    bcc_recipients=addresses.get("bcc"),
-                    message_type=self.message_type,
-                    subscription_name=self.subscription.get("name"),
-                    subject=report["subject"],
-                    body=report["html"],
-                    attachments=attachments,
-                )
+                if self.message_type in ["status_report", "cycle_report"]:
+                    email.send(
+                        from_email=from_address,
+                        to_recipients=addresses.get("to"),
+                        bcc_recipients=addresses.get("bcc"),
+                        message_type=self.message_type,
+                        subscription_name=self.subscription.get("name"),
+                        subject=report["subject"],
+                        body=report["html"],
+                        attachments=attachments,
+                        cycle_id=self.cycle["_id"],
+                    )
+                else:
+                    email.send(
+                        from_email=from_address,
+                        to_recipients=addresses.get("to"),
+                        bcc_recipients=addresses.get("bcc"),
+                        message_type=self.message_type,
+                        subscription_name=self.subscription.get("name"),
+                        subject=report["subject"],
+                        body=report["html"],
+                        attachments=attachments,
+                    )
 
                 self.add_notification_history(addresses, from_address)
         except Exception as e:

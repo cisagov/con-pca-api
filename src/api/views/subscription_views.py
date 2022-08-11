@@ -79,6 +79,7 @@ class SubscriptionsView(MethodView):
             ],
         )
         if request.args.get("overview"):
+
             cycles = cycle_manager.all(
                 fields=["subscription_id", "start_date", "end_date", "active"]
             )
