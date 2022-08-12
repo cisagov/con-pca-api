@@ -295,84 +295,15 @@
           <div class="d-flex flex-column">
             <div style="font-size: 18pt" class="dhs-blue">CHANGES</div>
             <div style="font-size: 14pt; margin-top: 0.125in">
-              <b>Current Cycle</b>
-            </div>
-            <div class="report-card-changes-text">
-              <b>Started </b> {{ cycle.start_date.strftime('%B, %d, %Y') }}
-            </div>
-            <div class="report-card-changes-text" style="margin-top: 0">
-              <b>Ended </b> {{ cycle.end_date.strftime('%B, %d, %Y') }}
-            </div>
-            <div class="report-card-changes-text">
-              {% if previous_cycle %} {{ compare_svg(cycle.target_count,
-              previous_cycle.target_count ) | safe }}{% endif %}
-              <b>{{ cycle.target_count }} </b>
-              Targets, <b>{{ cycle.stats.stats.all.sent.count }} </b> Emails
-              Successful
-            </div>
-            <div class="report-card-changes-text">
-              {% if previous_cycle %} {{ compare_svg(cycle.target_count,
-              previous_cycle.target_count ) | safe }}{% endif %}
-              <b
-                >{{ cycle.target_count - cycle.stats.stats.all.sent.count }}
-              </b>
-              Emails Bounced
-            </div>
-            <div class="report-card-changes-text">
-              {% if previous_cycle %} {{
-              compare_svg(percent(cycle.stats.stats.all.clicked.ratio),
-              percent(previous_cycle.stats.stats.all.clicked.ratio),
-              up_color="bad", down_color="good", neutral_color="neutral") | safe
-              }} {% endif %}
-              <b>{{ cycle.stats.stats.all.clicked.count }}</b> Total Clicks
-            </div>
-            <div class="report-card-changes-text">
-              {% if previous_cycle %} {{
-              compare_svg(percent(cycle.stats.stats.all.clicked.ratio),
-              percent(previous_cycle.stats.stats.all.clicked.ratio),
-              up_color="bad", down_color="good", neutral_color="neutral") | safe
-              }} {% endif %}
-              <b>{{ percent(cycle.stats.stats.all.clicked.ratio) }}%</b> Click
-              Rate
-            </div>
-            <div class="report-card-changes-text">
-              {% if previous_cycle %} {{
-              compare_svg(cycle.stats.stats.all.clicked.average,
-              previous_cycle.stats.stats.all.clicked.average ) | safe }} {%
-              endif %} Average First Click Time:
-              <b
-                >{{
-                time.convert_seconds(cycle.stats.stats.all.clicked.average).long
-                }}</b
-              ><br />
-            </div>
-            <div class="report-card-changes-text" style="margin-top: 0.545in">
-              {% if previous_cycle %} {{ compare_svg((cycle.stats.template_stats
-              | length), (previous_cycle.stats.template_stats | length) ) | safe
-              }} {% endif %}
-              <b
-                >{{ getMostClickedTemplateLevel(stats.stats.low.clicked.ratio,
-                stats.stats.moderate.clicked.ratio,
-                stats.stats.high.clicked.ratio) }}
-              </b>
-              Template With Most Clicks
-            </div>
-          </div>
-          <div
-            class="d-flex flex-column"
-            style="margin-left: 0.5in; margin-right: 0in"
-          >
-            <div style="font-size: 18pt; color: white">Changes</div>
-            <div style="font-size: 14pt; margin-top: 0.125in">
               <b>Previous Cycle</b>
             </div>
             {% if previous_cycle %}
             <div class="report-card-changes-text">
-              <b>Started,</b> {{ previous_cycle.start_date.strftime('%B %d, %Y')
-              }}
+              <b>Started </b> {{ previous_cycle.start_date.strftime('%B, %d,
+              %Y') }}
             </div>
             <div class="report-card-changes-text" style="margin-top: 0">
-              <b>Ended,</b> {{ previous_cycle.end_date.strftime('%B %d, %Y') }}
+              <b>Ended </b> {{ previous_cycle.end_date.strftime('%B, %d, %Y') }}
             </div>
             <div class="report-card-changes-text">
               <b>{{ previous_cycle.target_count }} </b>
@@ -397,7 +328,7 @@
               >
               Click Rate
             </div>
-            <div class="report-card-changes-text" style="font-size: 12pt">
+            <div class="report-card-changes-text">
               Average First Click Time:
               <b
                 >{{
@@ -407,10 +338,11 @@
             </div>
             <div class="report-card-changes-text" style="margin-top: 0.545in">
               <b
-                >{{ getMostClickedTemplateLevel(stats.stats.low.clicked.ratio,
-                stats.stats.moderate.clicked.ratio,
-                stats.stats.high.clicked.ratio) }}</b
-              >
+                >{{
+                getMostClickedTemplateLevel(previous_cycle.stats.stats.low.clicked.ratio,
+                previous_cycle.stats.stats.moderate.clicked.ratio,
+                previous_cycle.stats.stats.high.clicked.ratio) }}
+              </b>
               Template With Most Clicks
             </div>
             {% else %}
@@ -419,7 +351,76 @@
             </p>
             {% endif %}
           </div>
-
+          <div
+            class="d-flex flex-column"
+            style="margin-left: 0.5in; margin-right: 0in"
+          >
+            <div style="font-size: 14pt; margin-top: 0.35in">
+              <b>Current Cycle</b>
+            </div>
+            <div class="report-card-changes-text">
+              <b>Started,</b> {{ cycle.start_date.strftime('%B %d, %Y') }}
+            </div>
+            <div class="report-card-changes-text" style="margin-top: 0">
+              <b>Ended,</b> {{ cycle.end_date.strftime('%B %d, %Y') }}
+            </div>
+            <div class="report-card-changes-text">
+              {% if previous_cycle %} {{
+              compare_svg(percent(cycle.stats.stats.all.sent.count /
+              cycle.target_count),
+              percent(previous_cycle.stats.stats.all.sent.count /
+              previous_cycle.target_count), up_color="good", down_color="bad",
+              neutral_color="neutral" ) | safe }}{% endif %}
+              <b>{{ cycle.target_count }} </b>
+              Targets,
+              <b>{{ cycle.stats.stats.all.sent.count }} </b> Emails Successful
+            </div>
+            <div class="report-card-changes-text">
+              {% if previous_cycle %}&emsp;&ensp;{% endif %}
+              <b
+                >{{ cycle.target_count - cycle.stats.stats.all.sent.count }}
+              </b>
+              Emails Bounced
+            </div>
+            <div class="report-card-changes-text">
+              {% if previous_cycle %} {{
+              compare_svg(percent(cycle.stats.stats.all.clicked.ratio),
+              percent(previous_cycle.stats.stats.all.clicked.ratio),
+              up_color="bad", down_color="good", neutral_color="neutral") | safe
+              }} {% endif %}
+              <b>{{ cycle.stats.stats.all.clicked.count }}</b> Total Clicks
+            </div>
+            <div class="report-card-changes-text">
+              {% if previous_cycle %} {{
+              compare_svg(percent(cycle.stats.stats.all.clicked.ratio),
+              percent(previous_cycle.stats.stats.all.clicked.ratio),
+              up_color="bad", down_color="good", neutral_color="neutral") | safe
+              }} {% endif %}
+              <b>{{ percent(cycle.stats.stats.all.clicked.ratio) }}%</b>
+              Click Rate
+            </div>
+            <div class="report-card-changes-text" style="font-size: 12pt">
+              {% if previous_cycle %} {{
+              compare_svg(cycle.stats.stats.all.clicked.average,
+              previous_cycle.stats.stats.all.clicked.average ) | safe }} {%
+              endif %} Average First Click Time:
+              <b
+                >{{
+                time.convert_seconds(cycle.stats.stats.all.clicked.average).long
+                }}</b
+              ><br />
+            </div>
+            <div class="report-card-changes-text" style="margin-top: 0.545in">
+              <b
+                >{{
+                getMostClickedTemplateLevel(cycle.stats.stats.low.clicked.ratio,
+                cycle.stats.stats.moderate.clicked.ratio,
+                cycle.stats.stats.high.clicked.ratio) }}</b
+              >
+              Template With Most Clicks
+            </div>
+          </div>
+          {% if not previous_cycle %}
           <div id="report-card-vertical-divider"></div>
           <div class="d-flex flex-column flex-fill" style="align-items: center">
             <div style="font-size: 18pt; text-align: center" class="dhs-blue">
@@ -464,6 +465,7 @@
               </div>
             </div>
           </div>
+          {% endif %}
         </div>
 
         <div
