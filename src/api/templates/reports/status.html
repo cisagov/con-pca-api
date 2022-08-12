@@ -155,7 +155,7 @@
           <div id="report-card-vertical-divider"></div>
           <div class="d-flex flex-column flex-fill" style="align-items: center">
             <div style="font-size: 18pt; text-align: center" class="dhs-blue">
-              AVERAGE<br />CLICK TIME
+              AVERAGE<br />TIME
             </div>
             <div
               style="font-size: 14pt; text-align: center; margin-top: 0.0625in"
@@ -182,6 +182,9 @@
             {% set avg_time =
             time.convert_seconds(cycle.stats.stats.all.clicked.average) %}
             <div>
+              <div style="font-size: 18pt; margin-top: 9px">
+                {{ avg_time.days }} Days
+              </div>
               <div style="font-size: 18pt; margin-top: 9px">
                 {{ avg_time.hours }} Hours
               </div>
