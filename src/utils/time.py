@@ -66,16 +66,18 @@ def get_yearly_minutes():
 
 def convert_seconds(seconds):
     """Convert seconds to hours, minutes and seconds."""
-    seconds = seconds % (24 * 3600)
+    day = seconds // 86400
+    seconds %= 86400
     hour = seconds // 3600
     seconds %= 3600
     minutes = seconds // 60
     seconds %= 60
     d = {
+        "days": day,
         "hours": hour,
         "minutes": minutes,
         "seconds": seconds,
-        "long": f"{hour} hours, {minutes} minutes, {seconds} seconds",
-        "short": f"{str(hour).zfill(2)}:{str(minutes).zfill(2)}:{str(seconds).zfill(2)}",
+        "long": f"{day} days, {hour} hours, {minutes} minutes, {seconds} seconds",
+        "short": f"{str(day).zfill(2)}:{str(hour).zfill(2)}:{str(minutes).zfill(2)}:{str(seconds).zfill(2)}",
     }
     return SimpleNamespace(**d)

@@ -16,12 +16,15 @@ class CustomersView(MethodView):
 
     def get(self):
         """Get."""
-        parameters = customer_manager.get_query(request.args)
-        parameters["archived"] = {"$in": [False, None]}
-        if request.args.get("archived", "").lower() == "true":
-            parameters["archived"] = True
+        if "archived" not in request.args:
+            return jsonify(customer_manager.all())
+        else:
+            parameters = customer_manager.get_query(request.args)
+            parameters["archived"] = {"$in": [False, None]}
+            if request.args.get("archived", "").lower() == "true":
+                parameters["archived"] = True
 
-        return jsonify(customer_manager.all(params=parameters))
+            return jsonify(customer_manager.all(params=parameters))
 
     def post(self):
         """Post."""
@@ -59,6 +62,21 @@ class CustomerView(MethodView):
             )
         customer_manager.delete(document_id=customer_id)
         return jsonify({"success": True})
+
+
+class ArchiveCustomerView(MethodView):
+    """ArchiveCustomerView."""
+
+    def put(self, customer_id):
+        """Put."""
+        active_subs = subscription_manager.count(
+            {"status": {"$in": ["queued", "running"]}, "customer_id": customer_id}
+        )
+        if active_subs == 0:
+            customer_manager.update(document_id=customer_id, data=request.json)
+            return jsonify({"success": True})
+        else:
+            return jsonify({"success": False})
 
 
 class SectorIndustryView(MethodView):

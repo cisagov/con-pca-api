@@ -68,7 +68,9 @@ class ReportPdfView(MethodView):
         try:
             logger.info(f"Sending file {filepath}")
             return send_file(
-                filepath, as_attachment=True, download_name=f"{report_type}.pdf"
+                filepath,
+                as_attachment=True,
+                download_name=f"{report_type}.pdf",
             )
         except Exception as e:
             logger.exception(

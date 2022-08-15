@@ -27,7 +27,12 @@ from api.views.auth_views import (
     ResetPasswordView,
 )
 from api.views.config_views import ConfigView
-from api.views.customer_views import CustomersView, CustomerView, SectorIndustryView
+from api.views.customer_views import (
+    ArchiveCustomerView,
+    CustomersView,
+    CustomerView,
+    SectorIndustryView,
+)
 from api.views.cycle_views import (
     CycleManualReportsView,
     CycleStatsView,
@@ -80,6 +85,7 @@ rules = [
     # Customer Views
     ("/customers/", CustomersView),
     ("/customer/<customer_id>/", CustomerView),
+    ("/archivecustomer/<customer_id>/", ArchiveCustomerView),
     # Cycle Views
     ("/cycles/", CyclesView),
     ("/cycle/<cycle_id>/", CycleView),
