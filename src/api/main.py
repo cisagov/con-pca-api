@@ -42,7 +42,6 @@ from api.views.nonhuman_views import NonHumansView
 from api.views.recommendation_views import RecommendationsView, RecommendationView
 from api.views.report_views import (
     AggregateReportView,
-    MongoAggregateReportView,
     ReportEmailView,
     ReportHtmlView,
     ReportPdfView,
@@ -106,7 +105,6 @@ rules = [
     ("/recommendation/<recommendation_id>/", RecommendationView),
     # Report Views
     ("/reports/aggregate/", AggregateReportView),
-    ("/reports/mongoaggregate/", MongoAggregateReportView),
     # Sector/Industry View
     ("/sectorindustry/", SectorIndustryView),
     # Sending Profile Views

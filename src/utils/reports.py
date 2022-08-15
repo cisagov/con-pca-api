@@ -376,17 +376,6 @@ def get_reports_sent():
     return response
 
 
-def get_customers_active():
-    """Get number of customers with at least one active subscription."""
-    active_subscriptions = subscription_manager.all(
-        {"status": {"$in": ["queued", "running"]}}
-    )
-    customers_active = len(
-        {subscription["customer_id"] for subscription in active_subscriptions}
-    )
-    return customers_active
-
-
 def get_sector_industry_report():
     """Get reports on sector industries."""
     response = {
@@ -426,7 +415,6 @@ def get_sector_industry_report():
             "emails_clicked_ratio": 0,
         },
     }
-
     customers = customer_manager.all(fields=["_id", "customer_type"])
     for customer in customers:
         stat = f"{customer['customer_type'].lower()}_stats"

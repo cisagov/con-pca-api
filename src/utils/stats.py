@@ -682,33 +682,6 @@ def get_all_customer_stats():
     return all_stats
 
 
-def get_all_customer_subscriptions(subscriptions):
-    """Get all customer subscriptions stats."""
-    new = len(
-        [
-            subscription
-            for subscription in subscriptions
-            if subscription["status"] == "created"
-        ]
-    )
-    ongoing = len(
-        [
-            subscription
-            for subscription in subscriptions
-            if subscription["status"] in ["queued", "running"]
-        ]
-    )
-    stopped = len(
-        [
-            subscription
-            for subscription in subscriptions
-            if subscription["status"] == "stopped"
-        ]
-    )
-
-    return new, ongoing, stopped
-
-
 def get_sending_profile_metrics(subscriptions, sending_profiles):
     """Get stats on Sending Profiles."""
     templates = template_manager.all(
