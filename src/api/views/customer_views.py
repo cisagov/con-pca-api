@@ -5,7 +5,10 @@ from flask.views import MethodView
 
 # cisagov Libraries
 from api.manager import CustomerManager, SubscriptionManager
+from utils.logging import setLogger
 from utils.sectors import SECTORS
+
+logger = setLogger(__name__)
 
 customer_manager = CustomerManager()
 subscription_manager = SubscriptionManager()
@@ -29,6 +32,19 @@ class CustomersView(MethodView):
     def post(self):
         """Post."""
         data = request.json
+        try:
+            if data["identifier"] not in customer_manager.distinct("unique_identifier"):
+                data["unique_identifier"] = data["identifier"]
+            else:
+                data["unique_identifier"] = (
+                    data["identifier"]
+                    + "("
+                    + "".join(data["name"].replace(" ", "_"))
+                    + ")"
+                )
+
+        except KeyError:
+            logger.error("identifier key does not exist")
         return jsonify(customer_manager.save(data))
 
 
@@ -41,6 +57,19 @@ class CustomerView(MethodView):
 
     def put(self, customer_id):
         """Put."""
+        data = request.json
+        try:
+            if data["identifier"] not in customer_manager.distinct("unique_identifier"):
+                data["unique_identifier"] = data["identifier"]
+            else:
+                data["unique_identifier"] = (
+                    data["identifier"]
+                    + "("
+                    + "".join(data["name"].replace(" ", "_"))
+                    + ")"
+                )
+        except KeyError:
+            logger.error("identifier key does not exist")
         customer_manager.update(document_id=customer_id, data=request.json)
         return jsonify({"success": True})
 

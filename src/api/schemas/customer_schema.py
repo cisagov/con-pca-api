@@ -24,6 +24,7 @@ class CustomerSchema(BaseSchema):
     """Customer Schema."""
 
     name = fields.Str(required=True)
+    unique_identifier = fields.Str(required=True)
     identifier = fields.Str(required=True)
     address_1 = fields.Str(required=False, allow_none=True)
     address_2 = fields.Str(required=False, allow_none=True)

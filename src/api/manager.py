@@ -316,6 +316,10 @@ class Manager:
         """Count the number of documents matching the query in a collection."""
         return self.db.count_documents(query)
 
+    def distinct(self, field, query={}):
+        """Return a list of unique elements for a field matching the query in a collection."""
+        return self.db.distinct(field, query)
+
     def exists(self, parameters=None):
         """Check if record exists."""
         fields = self.convert_fields(["_id"])
@@ -353,7 +357,7 @@ class CustomerManager(Manager):
         return super().__init__(
             collection="customer",
             schema=CustomerSchema,
-            unique_indexes=["name", "identifier"],
+            unique_indexes=["name", "unique_identifier"],
         )
 
 
