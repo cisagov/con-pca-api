@@ -190,20 +190,20 @@ def _add_overall_stats_csv(cycle: dict):
 def _user_group_stats_csv(cycle: dict):
     """Add User Group Stats CSV attachment to PDF."""
     stats = cycle["stats"]
-    headers = ["group", "sent", "clicked", "opened", "reported"]
 
     if not stats.get("target_stats"):
-        return "user_group_stats.csv", headers, {}
+        return "user_group_stats.csv", [], {}
 
     data = [
         {
-            "group": t["group"] if t["group"] else "not grouped",
-            "sent": t["sent"]["count"],
-            "clicked": t["clicked"]["count"],
-            "opened": t["opened"]["count"],
+            "Group": t["group"] if t["group"] else "not grouped",
+            "All Sent": t["sent"]["count"],
+            "All Opened": t["opened"]["count"],
+            "All Clicked": t["clicked"]["count"],
         }
         for t in stats["target_stats"]
     ]
+    headers = data[0].keys()
 
     return "user_group_stats.csv", headers, data
 
