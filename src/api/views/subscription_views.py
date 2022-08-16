@@ -79,7 +79,7 @@ class SubscriptionsView(MethodView):
             ],
         )
         if request.args.get("overview"):
-            # To be refactored to use mongo queries.
+            # TODO: refactor to leverage mongo queries.
             cycles = cycle_manager.all(
                 fields=["subscription_id", "start_date", "end_date", "active"]
             )
