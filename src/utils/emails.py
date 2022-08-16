@@ -50,11 +50,17 @@ class Email:
         to_recipients=[],
         bcc_recipients=[],
         attachments=[],
+        **kwargs,
     ):
         """Send email."""
         if message_type == "safelisting_reminder":
             attachment_filename = secure_filename(
                 f"CISA_PCA_Safelisting_Information_{subscription_name}_{datetime.today().strftime('%m%d%Y')}.xlsx"
+            )
+        elif message_type == "status_report" or message_type == "cycle_report":
+            cycle_id = kwargs["cycle_id"]
+            attachment_filename = secure_filename(
+                f"CISA_PCA_{message_type}_{subscription_name}_{datetime.today().strftime('%m%d%Y')}_{cycle_id}.pdf"
             )
         else:
             attachment_filename = secure_filename(

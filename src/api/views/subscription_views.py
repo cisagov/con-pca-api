@@ -1,5 +1,6 @@
 """Subscription Views."""
 # Standard Python Libraries
+from collections import OrderedDict
 import os
 
 # Third-Party Libraries
@@ -78,13 +79,32 @@ class SubscriptionsView(MethodView):
             ],
         )
         if request.args.get("overview"):
-            cycles = cycle_manager.all(fields=["subscription_id", "end_date"])
+            # TODO: refactor to leverage mongo queries.
+            cycles = cycle_manager.all(
+                fields=["subscription_id", "start_date", "end_date", "active"]
+            )
             subscriptions = [
-                dict(s, **{"end_date": c["end_date"]})
+                dict(
+                    s,
+                    **{
+                        "cycle_start_date": c["start_date"],
+                        "cycle_end_date": c["end_date"],
+                        "active": c["active"],
+                    },
+                )
                 for c in cycles
                 for s in subscriptions
                 if c["subscription_id"] == s["_id"]
             ]
+            for s in subscriptions:
+                c = customer_manager.get(
+                    document_id=s["customer_id"], fields=["_id", "appendix_a_date"]
+                )
+                s["appendix_a_date"] = c["appendix_a_date"]
+            subscriptions = sorted(subscriptions, key=lambda d: d["cycle_start_date"])
+            subscriptions = list(
+                OrderedDict((d["name"], d) for d in subscriptions).values()
+            )
 
         return jsonify(subscriptions)
 
