@@ -286,19 +286,6 @@ def _add_template_stats_csv(stats: dict):
         "deception_level",
         "subject",
         "from_address",
-        "deception_score",
-        "relevancy__public_news",
-        "relevancy__organization",
-        "behavior__fear",
-        "behavior__greed",
-        "behavior__curiosity",
-        "behavior__duty_obligation",
-        "appearance__grammar",
-        "appearance__logo_graphics",
-        "appearance__link_domain",
-        "sender__internal",
-        "sender__authoritative",
-        "sender__external",
     ]
 
     data = [
@@ -309,35 +296,6 @@ def _add_template_stats_csv(stats: dict):
             "deception_level": stat["deception_level"],
             "subject": stat["template"]["subject"],
             "from_address": stat["template"]["from_address"],
-            "deception_score": stat["template"]["deception_score"],
-            "relevancy__public_news": stat["template"]["indicators"]["relevancy"][
-                "public_news"
-            ],
-            "relevancy__organization": stat["template"]["indicators"]["relevancy"][
-                "organization"
-            ],
-            "behavior__fear": stat["template"]["indicators"]["behavior"]["fear"],
-            "behavior__greed": stat["template"]["indicators"]["behavior"]["greed"],
-            "behavior__curiosity": stat["template"]["indicators"]["behavior"][
-                "curiosity"
-            ],
-            "behavior__duty_obligation": stat["template"]["indicators"]["behavior"][
-                "duty_obligation"
-            ],
-            "appearance__grammar": stat["template"]["indicators"]["appearance"][
-                "grammar"
-            ],
-            "appearance__logo_graphics": stat["template"]["indicators"]["appearance"][
-                "logo_graphics"
-            ],
-            "appearance__link_domain": stat["template"]["indicators"]["appearance"][
-                "link_domain"
-            ],
-            "sender__internal": stat["template"]["indicators"]["sender"]["internal"],
-            "sender__authoritative": stat["template"]["indicators"]["sender"][
-                "authoritative"
-            ],
-            "sender__external": stat["template"]["indicators"]["sender"]["external"],
         }
         for stat in stats["template_stats"]
     ]
