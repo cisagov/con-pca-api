@@ -41,4 +41,4 @@ class CustomerSchema(BaseSchema):
     domain = fields.Str(required=False, allow_none=True)
     appendix_a_date = DateTimeField()
     archived = fields.Bool(missing=False)
-    archived_description = fields.Str(default="", allow_none=True)
+    archived_description = fields.Str(dump_default="", allow_none=True)
