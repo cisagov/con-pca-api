@@ -36,12 +36,19 @@ class CustomersView(MethodView):
             if data["identifier"] not in customer_manager.distinct("unique_identifier"):
                 data["unique_identifier"] = data["identifier"]
             else:
-                data["unique_identifier"] = (
-                    data["identifier"]
-                    + "("
-                    + "".join(data["name"].replace(" ", "_"))
-                    + ")"
-                )
+                data["unique_identifier"] = data["identifier"]
+                for c in customer_manager.all(fields=["_id", "unique_identifier"]):
+                    if (
+                        data["identifier"] == c["unique_identifier"]
+                        and data["_id"] != c["_id"]
+                    ):
+                        data["unique_identifier"] = (
+                            data["identifier"]
+                            + " ("
+                            + "".join(data["name"].strip())
+                            + ")"
+                        )
+                        break
 
         except KeyError:
             logger.error("identifier key does not exist")
@@ -62,16 +69,23 @@ class CustomerView(MethodView):
             if data["identifier"] not in customer_manager.distinct("unique_identifier"):
                 data["unique_identifier"] = data["identifier"]
             else:
-                data["unique_identifier"] = (
-                    data["identifier"]
-                    + "("
-                    + "".join(data["name"].replace(" ", "_"))
-                    + ")"
-                )
+                data["unique_identifier"] = data["identifier"]
+                for c in customer_manager.all(fields=["_id", "unique_identifier"]):
+                    if (
+                        data["identifier"] == c["unique_identifier"]
+                        and data["_id"] != c["_id"]
+                    ):
+                        data["unique_identifier"] = (
+                            data["identifier"]
+                            + " ("
+                            + "".join(data["name"].strip())
+                            + ")"
+                        )
+                        break
+
         except KeyError:
             logger.error("identifier key does not exist")
-        customer_manager.update(document_id=customer_id, data=request.json)
-        return jsonify({"success": True})
+        return jsonify(customer_manager.update(document_id=customer_id, data=data))
 
     def delete(self, customer_id):
         """Delete."""
