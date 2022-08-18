@@ -418,38 +418,66 @@ def get_sector_industry_report():
             "emails_clicked_ratio": 0,
         },
     }
-    customers = customer_manager.all(fields=["_id", "customer_type"])
-    for customer in customers:
-        stat = f"{customer['customer_type'].lower()}_stats"
-        subscriptions = subscription_manager.all(
-            params={"customer_id": customer["_id"]},
-            fields=["_id"],
-        )
-        cycles = cycle_manager.all(
-            params={"subscription_id": {"$in": [s["_id"] for s in subscriptions]}},
-            fields=["_id", "stats"],
-        )
-        response[stat]["subscription_count"] += len(subscriptions)
-        response[stat]["cycle_count"] += len(cycles)
-        response[stat]["emails_sent"] = sum(
-            cycle["stats"]["stats"]["all"]["sent"]["count"]
-            for cycle in cycles
-            if cycle.get("stats")
-        )
-        response[stat]["emails_clicked"] = sum(
-            cycle["stats"]["stats"]["all"]["clicked"]["count"]
-            for cycle in cycles
-            if cycle.get("stats")
-        )
 
-        try:
-            clicked_ratio = (
-                response[stat]["emails_clicked"] / response[stat]["emails_sent"]
+    for stat in response.keys():
+        customers = [
+            c["_id"]
+            for c in customer_manager.all(
+                params={"customer_type": stat.split("_")[0].capitalize()},
+                fields=["_id"],
             )
-        except ZeroDivisionError:
-            clicked_ratio = 0
+        ]
+        subscriptions = [
+            s["_id"]
+            for s in subscription_manager.all(
+                params={"customer_id": {"$in": customers}}, fields=["_id"]
+            )
+        ]
+        if subscriptions:
+            response[stat]["subscription_count"] = subscription_manager.count(
+                {"customer_id": {"$in": customers}}
+            )
+            response[stat]["cycle_count"] = cycle_manager.count(
+                {"subscription_id": {"$in": subscriptions}}
+            )
+            sent_aggregate = cycle_manager.aggregate(
+                [
+                    {"$match": {"subscription_id": {"$in": subscriptions}}},
+                    {
+                        "$group": {
+                            "_id": None,
+                            "sent": {"$sum": "$stats.stats.all.sent.count"},
+                        }
+                    },
+                ]
+            )
+            try:
+                response[stat]["emails_sent"] = sent_aggregate[0]["sent"]
+            except IndexError:
+                response[stat]["emails_sent"] = 0
+            clicked_aggregate = cycle_manager.aggregate(
+                [
+                    {"$match": {"subscription_id": {"$in": subscriptions}}},
+                    {
+                        "$group": {
+                            "_id": None,
+                            "clicked": {"$sum": "$stats.stats.all.clicked.count"},
+                        }
+                    },
+                ]
+            )
+            try:
+                response[stat]["emails_clicked"] = clicked_aggregate[0]["clicked"]
+            except IndexError:
+                response[stat]["emails_clicked"] = 0
+            try:
+                clicked_ratio = (
+                    response[stat]["emails_clicked"] / response[stat]["emails_sent"]
+                )
+            except ZeroDivisionError:
+                clicked_ratio = 0
 
-        response[stat]["emails_clicked_ratio"] = round(clicked_ratio * 100, 2)
+            response[stat]["emails_clicked_ratio"] = round(clicked_ratio * 100, 2)
 
     return response
 
