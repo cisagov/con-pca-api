@@ -121,7 +121,7 @@ def get_report_pdf(
 
     if report_type == "cycle":
         # add csv pages
-        _add_csv_attachments(writer=writer, stats=cycle["stats"])
+        _add_csv_attachments(writer=writer, cycle=cycle)
 
     output = open(new_filepath, "wb")
     writer.write(output)
@@ -131,7 +131,7 @@ def get_report_pdf(
     return new_filepath
 
 
-def _add_csv_attachments(writer: PdfFileWriter, stats: dict):
+def _add_csv_attachments(writer: PdfFileWriter, cycle: dict):
     """Add CSV attachments to PDF."""
     csv_data = [
         _add_overall_stats_csv,
@@ -141,7 +141,7 @@ def _add_csv_attachments(writer: PdfFileWriter, stats: dict):
     ]
 
     for func in csv_data:
-        filename, headers, data = func(stats=stats)
+        filename, headers, data = func(cycle=cycle)
         csv_file = StringIO()
         csv_writer = csv.DictWriter(csv_file, fieldnames=headers)
         csv_writer.writeheader()
@@ -155,84 +155,62 @@ def _add_csv_attachments(writer: PdfFileWriter, stats: dict):
         csv_file.close()
 
 
-def _add_overall_stats_csv(stats: dict):
+def _add_overall_stats_csv(cycle: dict):
     """Add Top Level Stats CSV attachment to PDF."""
-    headers = [
-        "low__opened",
-        "low__sent",
-        "low__clicked",
-        "medium__opened",
-        "medium__sent",
-        "medium__clicked",
-        "high__opened",
-        "high__sent",
-        "high__clicked",
-        "all__opened",
-        "all__sent",
-        "all__clicked",
-    ]
+    stats = cycle["stats"]
+
+    average_click_time = stats["stats"]["all"]["clicked"]["average"]
+    average_click_time_string = (
+        f"{average_click_time} minutes"
+        if average_click_time < 60
+        else f"{average_click_time / 60} hours"
+    )
     data = {
-        "low__opened": stats["stats"]["low"]["opened"]["count"],
-        "low__sent": stats["stats"]["low"]["sent"]["count"],
-        "low__clicked": stats["stats"]["low"]["clicked"]["count"],
-        "medium__opened": stats["stats"]["low"]["opened"]["count"],
-        "medium__sent": stats["stats"]["low"]["sent"]["count"],
-        "medium__clicked": stats["stats"]["low"]["clicked"]["count"],
-        "high__opened": stats["stats"]["low"]["opened"]["count"],
-        "high__sent": stats["stats"]["low"]["sent"]["count"],
-        "high__clicked": stats["stats"]["low"]["clicked"]["count"],
-        "all__opened": stats["stats"]["low"]["opened"]["count"],
-        "all__sent": stats["stats"]["low"]["sent"]["count"],
-        "all__clicked": stats["stats"]["low"]["clicked"]["count"],
+        "Start Date": datetime.strftime(cycle["start_date"], "%m/%d/%Y, %H:%M:%S"),
+        "End Date": datetime.strftime(cycle["end_date"], "%m/%d/%Y, %H:%M:%S"),
+        "Average Click Time": average_click_time_string,
+        "Low Sent": stats["stats"]["low"]["sent"]["count"],
+        "Low Opened": stats["stats"]["low"]["opened"]["count"],
+        "Low Clicked": stats["stats"]["low"]["clicked"]["count"],
+        "Moderate Sent": stats["stats"]["moderate"]["sent"]["count"],
+        "Moderate Opened": stats["stats"]["moderate"]["opened"]["count"],
+        "Moderate Clicked": stats["stats"]["moderate"]["clicked"]["count"],
+        "High Sent": stats["stats"]["high"]["sent"]["count"],
+        "High Opened": stats["stats"]["high"]["opened"]["count"],
+        "High Clicked": stats["stats"]["high"]["clicked"]["count"],
+        "All Sent": stats["stats"]["all"]["sent"]["count"],
+        "All Opened": stats["stats"]["all"]["opened"]["count"],
+        "All Clicked": stats["stats"]["all"]["clicked"]["count"],
     }
+    headers = data.keys()
 
     return "overall_stats.csv", headers, data
 
 
-def _user_group_stats_csv(stats):
+def _user_group_stats_csv(cycle: dict):
     """Add User Group Stats CSV attachment to PDF."""
-    headers = ["group", "sent", "clicked", "opened", "reported"]
+    stats = cycle["stats"]
 
     if not stats.get("target_stats"):
-        return "user_group_stats.csv", headers, {}
+        return "user_group_stats.csv", [], {}
 
     data = [
         {
-            "group": t["group"] if t["group"] else "not grouped",
-            "sent": t["sent"]["count"],
-            "clicked": t["clicked"]["count"],
-            "opened": t["opened"]["count"],
+            "Group": t["group"] if t["group"] else "not grouped",
+            "All Sent": t["sent"]["count"],
+            "All Opened": t["opened"]["count"],
+            "All Clicked": t["clicked"]["count"],
         }
         for t in stats["target_stats"]
     ]
+    headers = data[0].keys()
 
     return "user_group_stats.csv", headers, data
 
 
-def _add_time_stats_csv(stats: dict):
+def _add_time_stats_csv(cycle: dict):
     """Add Time Stats CSV attachment to PDF."""
-    headers = [
-        "opened__one_minute",
-        "opened__three_minutes",
-        "opened__five_minutes",
-        "opened__fifteen_minutes",
-        "opened__thirty_minutes",
-        "opened__sixty_minutes",
-        "opened__two_hours",
-        "opened__three_hours",
-        "opened__four_hours",
-        "opened__one_day",
-        "clicked__one_minute",
-        "clicked__three_minutes",
-        "clicked__five_minutes",
-        "clicked__fifteen_minutes",
-        "clicked__thirty_minutes",
-        "clicked__sixty_minutes",
-        "clicked__two_hours",
-        "clicked__three_hours",
-        "clicked__four_hours",
-        "clicked__one_day",
-    ]
+    stats = cycle["stats"]
     data = {
         "opened__one_minute": stats["time_stats"]["opened"]["one_minutes"]["count"],
         "opened__three_minutes": stats["time_stats"]["opened"]["three_minutes"][
@@ -273,12 +251,14 @@ def _add_time_stats_csv(stats: dict):
         "clicked__four_hours": stats["time_stats"]["clicked"]["four_hours"]["count"],
         "clicked__one_day": stats["time_stats"]["clicked"]["one_day"]["count"],
     }
+    headers = data.keys()
 
     return "time_stats.csv", headers, data
 
 
-def _add_template_stats_csv(stats: dict):
+def _add_template_stats_csv(cycle: dict):
     """Add Template Stats CSV attachment to PDF."""
+    stats = cycle["stats"]
     headers = [
         "sent",
         "opened",
@@ -286,19 +266,6 @@ def _add_template_stats_csv(stats: dict):
         "deception_level",
         "subject",
         "from_address",
-        "deception_score",
-        "relevancy__public_news",
-        "relevancy__organization",
-        "behavior__fear",
-        "behavior__greed",
-        "behavior__curiosity",
-        "behavior__duty_obligation",
-        "appearance__grammar",
-        "appearance__logo_graphics",
-        "appearance__link_domain",
-        "sender__internal",
-        "sender__authoritative",
-        "sender__external",
     ]
 
     data = [
@@ -309,35 +276,6 @@ def _add_template_stats_csv(stats: dict):
             "deception_level": stat["deception_level"],
             "subject": stat["template"]["subject"],
             "from_address": stat["template"]["from_address"],
-            "deception_score": stat["template"]["deception_score"],
-            "relevancy__public_news": stat["template"]["indicators"]["relevancy"][
-                "public_news"
-            ],
-            "relevancy__organization": stat["template"]["indicators"]["relevancy"][
-                "organization"
-            ],
-            "behavior__fear": stat["template"]["indicators"]["behavior"]["fear"],
-            "behavior__greed": stat["template"]["indicators"]["behavior"]["greed"],
-            "behavior__curiosity": stat["template"]["indicators"]["behavior"][
-                "curiosity"
-            ],
-            "behavior__duty_obligation": stat["template"]["indicators"]["behavior"][
-                "duty_obligation"
-            ],
-            "appearance__grammar": stat["template"]["indicators"]["appearance"][
-                "grammar"
-            ],
-            "appearance__logo_graphics": stat["template"]["indicators"]["appearance"][
-                "logo_graphics"
-            ],
-            "appearance__link_domain": stat["template"]["indicators"]["appearance"][
-                "link_domain"
-            ],
-            "sender__internal": stat["template"]["indicators"]["sender"]["internal"],
-            "sender__authoritative": stat["template"]["indicators"]["sender"][
-                "authoritative"
-            ],
-            "sender__external": stat["template"]["indicators"]["sender"]["external"],
         }
         for stat in stats["template_stats"]
     ]

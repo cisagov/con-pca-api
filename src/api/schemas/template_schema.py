@@ -56,7 +56,7 @@ class TemplateSchema(BaseSchema):
     deception_score = fields.Int(validate=validate.Range(min=1, max=6))
     from_address = fields.Str(required=True)
     retired = fields.Bool(missing=False)
-    retired_description = fields.Str(default="", allow_none=True)
+    retired_description = fields.Str(dump_default="", allow_none=True)
     sophisticated = fields.List(fields.Str(), allow_none=True)
     red_flag = fields.List(fields.Str(), allow_none=True)
     subject = fields.Str()
