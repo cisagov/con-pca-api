@@ -121,13 +121,13 @@ def create_subscription_name(customer):
     """Create name for subscription from customer."""
     subscriptions = subscription_manager.all(
         {"customer_id": customer["_id"]},
-        fields=["name", "identifier"],
+        fields=["name", "unique_identifier"],
     )
     if not subscriptions:
-        return f"{customer['identifier']}_1"
+        return f"{customer['unique_identifier']}_1"
     else:
         ids = [int(float(x["name"].split("_")[-1])) for x in subscriptions]
-        return f"{customer['identifier']}_{max(ids) + 1}"
+        return f"{customer['unique_identifier']}_{max(ids) + 1}"
 
 
 def calculate_cycle_dates(subscription):
