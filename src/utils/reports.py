@@ -354,6 +354,7 @@ def get_reports_sent():
     }
 
     pipeline = [
+        {"$match": {"archived": False}},
         {"$unwind": "$notification_history"},
         {"$group": {"_id": "$notification_history.message_type", "count": {"$sum": 1}}},
         {
@@ -423,14 +424,18 @@ def get_sector_industry_report():
         customers = [
             c["_id"]
             for c in customer_manager.all(
-                params={"customer_type": stat.split("_")[0].capitalize()},
+                params={
+                    "customer_type": stat.split("_")[0].capitalize(),
+                    "archived": False,
+                },
                 fields=["_id"],
             )
         ]
         subscriptions = [
             s["_id"]
             for s in subscription_manager.all(
-                params={"customer_id": {"$in": customers}}, fields=["_id"]
+                params={"customer_id": {"$in": customers}, "archived": False},
+                fields=["_id"],
             )
         ]
         if subscriptions:
