@@ -417,7 +417,7 @@ def get_ratio(numerator, denominator):
     return (
         0
         if not denominator
-        else round(float(numerator or 0) / float(denominator), ndigits=3)
+        else round(float(numerator or 0) / float(denominator), ndigits=4)
     )
 
 
