@@ -95,57 +95,89 @@
       <h2 id="toc-header">Table of Contents</h2>
       <div id="toc-section">
         <dl>
-          <dt><span>1.</span> HOW TO USE THIS REPORT</dt>
+          <dt>
+            <span>1.</span
+            ><a href="#howtousethisreport"> HOW TO USE THIS REPORT</a>
+          </dt>
           <dd>3</dd>
         </dl>
         <dl>
-          <dt><span>2.</span> REPORT CARD</dt>
+          <dt><span>2.</span><a href="#reportcard"> REPORT CARD</a></dt>
           <dd>4</dd>
         </dl>
         <dl>
-          <dt><span>3.</span> FRAMEWORK</dt>
+          <dt><span>3.</span><a href="#framework"> FRAMEWORK</a></dt>
           <dd>5</dd>
         </dl>
         <dl>
-          <dt><span>4.</span> RED FLAGS AND SOPHISTICATED TECHNIQUES</dt>
+          <dt>
+            <span>4.</span
+            ><a href="#redflagsandsophisticatedtechniques">
+              RED FLAGS AND SOPHISTICATED TECHNIQUES</a
+            >
+          </dt>
           <dd>6</dd>
         </dl>
         <dl>
-          <dt><span>5.</span> PERFORMANCE OVER TIME</dt>
+          <dt>
+            <span>5.</span
+            ><a href="#performanceovertime"> PERFORMANCE OVER TIME</a>
+          </dt>
           <dd>7</dd>
         </dl>
         <dl>
-          <dt><span>6.</span> TIME INTERVALS</dt>
+          <dt><span>6.</span><a href="#timeintervals"> TIME INTERVALS</a></dt>
           <dd>8</dd>
         </dl>
         <dl>
-          <dt><span>7.</span> PHISHING TEMPLATES FOR THIS CYCLE</dt>
+          <dt>
+            <span>7.</span
+            ><a href="#phishingtemplatesforthiscycle">
+              PHISHING TEMPLATES FOR THIS CYCLE</a
+            >
+          </dt>
           <dd>9</dd>
         </dl>
         <dl>
-          <dt><span>Appendix A:</span> Definitions</dt>
+          <dt>
+            <span>Appendix A:</span><a href="#definitions"> Definitions</a>
+          </dt>
           <dd>{{ total_pages - 4 }}</dd>
         </dl>
         <dl>
-          <dt><span>Appendix B:</span> Red Flag Indicators</dt>
+          <dt>
+            <span>Appendix B:</span
+            ><a href="#redflagindicators"> Red Flag Indicators</a>
+          </dt>
           <dd>{{ total_pages - 3 }}</dd>
         </dl>
         <dl>
-          <dt><span>Appendix C:</span> Sophisticated Techniques</dt>
+          <dt>
+            <span>Appendix C:</span
+            ><a href="#sophisticatedtechniques"> Sophisticated Techniques</a>
+          </dt>
           <dd>{{ total_pages - 2 }}</dd>
         </dl>
         <dl>
-          <dt><span>Appendix D:</span> ATTACHMENTS</dt>
+          <dt>
+            <span>Appendix D:</span><a href="#attachments"> ATTACHMENTS</a>
+          </dt>
           <dd>{{ total_pages - 1 }}</dd>
         </dl>
         <dl>
-          <dt><span>Appendix E:</span> Binding Operational Directive</dt>
+          <dt>
+            <span>Appendix E:</span
+            ><a href="#bindingoperationaldirective">
+              Binding Operational Directive</a
+            >
+          </dt>
           <dd>{{ total_pages }}</dd>
         </dl>
       </div>
     </div>
 
     <!-- How to Use Report -->
+    <a name="howtousethisreport"></a>
     <div class="page">
       <p class="page-header">1. How to Use This Report</p>
       <p class="indent">
@@ -229,6 +261,7 @@
 
     <!-- REPORT CARD -->
     <div id="report-card-page">
+      <a name="reportcard"></a>
       <div id="report-card-box"></div>
       <img
         id="report-card-logo"
@@ -645,6 +678,7 @@
     </div>
 
     <!-- Framework -->
+    <a name="framework"></a>
     <div class="page">
       <p class="page-header">3. Framework</p>
       <p class="indent">
@@ -733,6 +767,7 @@
     </div>
 
     <!-- Red Flags and Sophisticated Techniques -->
+    <a name="redflagsandsophisticatedtechniques"></a>
     <div class="page">
       <p class="page-header">4. Red Flags and Sophisticated Techniques</p>
       <p class="indent">
@@ -795,6 +830,7 @@
     </div>
 
     <!-- Performance Over Time -->
+    <a name="performanceovertime"></a>
     <div class="page">
       <p class="page-header">5. Performance Over Time</p>
       <p class="indent">
@@ -858,6 +894,7 @@
     </div>
 
     <!-- Time Intervals -->
+    <a name="timeintervals"></a>
     <div class="page">
       <p class="page-header">6. Time Intervals</p>
       <p class="indent">
@@ -1001,6 +1038,7 @@
     </div>-->
 
     <!-- Templates -->
+    <a name="phishingtemplatesforthiscycle"></a>
     {% for template in stats.template_stats | sort(attribute="clicked.ratio",
     reverse=True) %}
     <div class="page">
@@ -1172,6 +1210,7 @@
     </div> -->
 
     <!-- Appendix A: Definitions -->
+    <a name="definitions"></a>
     <div class="page">
       <div class="page-header">Appendix A: Definitions</div>
       <p style="margin-top: 0.25in">
@@ -1207,6 +1246,7 @@
     </div>
 
     <!-- Appendix B: Red Flag Indicators -->
+    <a name="redflagindicators"></a>
     <div class="page">
       <div class="page-header">Appendix B: Red Flag Indicators</div>
       <p style="margin-top: 0.25in">
@@ -1227,6 +1267,7 @@
     </div>
 
     <!-- Appendix C: Sophisticated Techniques -->
+    <a name="sophisticatedtechniques"></a>
     <div class="page">
       <div class="page-header">Appendix C: Sophisticated Techniques</div>
       <p style="margin-top: 0.25in">
@@ -1246,6 +1287,7 @@
     </div>
 
     <!-- Appendix D: Attachments -->
+    <a name="attachments"></a>
     <div class="page">
       <p class="page-header">Appendix D: Attachments</p>
       <p>
@@ -1271,6 +1313,7 @@
     </div>
 
     <!-- Appendix E: BOD -->
+    <a name="bindingoperationaldirective"></a>
     <div class="page">
       <div class="page-header">Appendix E: Binding Operational Directive</div>
       <div
