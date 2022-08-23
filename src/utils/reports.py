@@ -138,6 +138,7 @@ def _add_csv_attachments(writer: PdfFileWriter, cycle: dict):
         _add_template_stats_csv,
         _add_time_stats_csv,
         _user_group_stats_csv,
+        _add_indicator_stats_csv,
     ]
 
     for func in csv_data:
@@ -259,28 +260,30 @@ def _add_time_stats_csv(cycle: dict):
 def _add_template_stats_csv(cycle: dict):
     """Add Template Stats CSV attachment to PDF."""
     stats = cycle["stats"]
-    headers = [
-        "sent",
-        "opened",
-        "clicked",
-        "deception_level",
-        "subject",
-        "from_address",
-    ]
 
     data = [
         {
-            "sent": stat["sent"]["count"],
-            "opened": stat["opened"]["count"],
-            "clicked": stat["clicked"]["count"],
-            "deception_level": stat["deception_level"],
-            "subject": stat["template"]["subject"],
-            "from_address": stat["template"]["from_address"],
+            "Sent": stat["sent"]["count"],
+            "Opened": stat["opened"]["count"],
+            "Clicked": stat["clicked"]["count"],
+            "Deception Level": stat["deception_level"],
+            "Subject": stat["template"]["subject"],
+            "From Address": stat["template"]["from_address"],
         }
         for stat in stats["template_stats"]
     ]
 
+    headers = data[0].keys()
+
     return "template_stats.csv", headers, data
+
+
+def _add_indicator_stats_csv(cycle: dict):
+    """Add Indicator Stats CSV attachment to PDF."""
+    data = [{"Indicator Name": ""}]
+    headers = data[0].keys()
+
+    return "indicator_stats.csv", headers, data
 
 
 def get_reports_sent(subscriptions):
