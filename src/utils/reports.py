@@ -7,6 +7,7 @@ import json
 import os
 import os.path
 import subprocess  # nosec
+from typing import List, Tuple
 
 # Third-Party Libraries
 from PyPDF2 import PdfFileReader, PdfFileWriter
@@ -188,12 +189,12 @@ def _add_overall_stats_csv(cycle: dict):
     return "overall_stats.csv", headers, data
 
 
-def _user_group_stats_csv(cycle: dict):
+def _user_group_stats_csv(cycle: dict) -> Tuple[str, List[str], List[dict]]:
     """Add User Group Stats CSV attachment to PDF."""
     stats = cycle["stats"]
 
     if not stats.get("target_stats"):
-        return "user_group_stats.csv", [], {}
+        return "user_group_stats.csv", [], []
 
     data = [
         {
@@ -204,7 +205,7 @@ def _user_group_stats_csv(cycle: dict):
         }
         for t in stats["target_stats"]
     ]
-    headers = data[0].keys()
+    headers = list(data[0].keys())
 
     return "user_group_stats.csv", headers, data
 
@@ -280,7 +281,10 @@ def _add_template_stats_csv(cycle: dict):
 
 def _add_indicator_stats_csv(cycle: dict):
     """Add Indicator Stats CSV attachment to PDF."""
-    data = [{"Indicator Name": ""}]
+    stats = cycle["stats"]
+
+    data = [{"Indicator Name": stat["indicator"]} for stat in stats["indicator_stats"]]
+
     headers = data[0].keys()
 
     return "indicator_stats.csv", headers, data
