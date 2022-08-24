@@ -20,14 +20,14 @@ class FailedEmailsView(MethodView):
 
     def get(self):
         """Get."""
-        get_failed_email_events()
+        success = get_failed_email_events()
         # Allow querying a list of failed emails
         parameters = failed_email_manager.get_query(request.args)
         parameters["removed"] = {"$in": [False, None]}
         if request.args.get("removed", "").lower() == "true":
             parameters["removed"] = True
-
-        return jsonify(failed_email_manager.all(params=parameters))
+        success["failed_emails"] = failed_email_manager.all(params=parameters)
+        return jsonify(success)
 
 
 class FailedEmailView(MethodView):
