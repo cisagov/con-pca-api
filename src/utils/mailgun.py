@@ -33,6 +33,7 @@ def get_failed_email_events():
     """Get failed email events from all domains from mailgun api."""
     sending_profiles = sending_profile_manager.all()
     events = []
+    success = {"success": True}
     for sending_profile in sending_profiles:
         if sending_profile["interface_type"] == "SES":
             break
@@ -48,7 +49,7 @@ def get_failed_email_events():
                 except HTTPError as e:
                     logger.exception(e)
                     logger.error(resp.text)
-                    raise e
+                    success["success"] = False
         if sending_profile["interface_type"] == "SMTP":
             if sending_profile["smtp_host"]:
                 try:
@@ -60,7 +61,7 @@ def get_failed_email_events():
                 except HTTPError as e:
                     logger.exception(e)
                     logger.error(resp.text)
-                    raise e
+                    success["success"] = False
         if resp.json().get("items"):
             events.extend(resp.json()["items"])
 
@@ -77,3 +78,4 @@ def get_failed_email_events():
                     "reason": event["delivery-status"]["message"],
                 }
             )
+    return success
