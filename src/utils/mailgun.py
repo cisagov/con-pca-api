@@ -38,32 +38,35 @@ def get_failed_email_events():
         if sending_profile["interface_type"] == "SES":
             break
         if sending_profile["interface_type"] == "Mailgun":
-            if sending_profile["mailgun_domain"]:
+            if "mailgun_domain" in sending_profile:
                 try:
                     resp = requests.get(
                         f"https://api.mailgun.net/v3/{sending_profile['mailgun_domain']}/events",
                         auth=("api", MAILGUN_API_KEY),
                         params={"event": "failed"},
                     )
+                    if resp.json().get("items"):
+                        events.extend(resp.json()["items"])
                     resp.raise_for_status()
                 except HTTPError as e:
                     logger.exception(e)
                     logger.error(resp.text)
                     success["success"] = False
         if sending_profile["interface_type"] == "SMTP":
-            if sending_profile["smtp_host"]:
+            if "smtp_host" in sending_profile:
                 try:
                     resp = requests.get(
                         f"https://api.mailgun.net/v3/{sending_profile['smtp_host']}/events",
                         auth=("api", MAILGUN_API_KEY),
                         params={"event": "failed"},
                     )
+                    if resp.json().get("items"):
+                        events.extend(resp.json()["items"])
+                    resp.raise_for_status()
                 except HTTPError as e:
                     logger.exception(e)
                     logger.error(resp.text)
                     success["success"] = False
-        if resp.json().get("items"):
-            events.extend(resp.json()["items"])
 
     for event in events:
         if event["recipient"] not in [
