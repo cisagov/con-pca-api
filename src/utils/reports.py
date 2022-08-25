@@ -264,15 +264,15 @@ def _add_template_stats_csv(cycle: dict):
 
     data = [
         {
-            "sent": stat["sent"]["count"],
-            "opened": stat["opened"]["count"],
-            "clicked": stat["clicked"]["count"],
-            "average_time_to_first_click": time.convert_seconds(
+            "Sent": stat["sent"]["count"],
+            "Opened": stat["opened"]["count"],
+            "Clicked": stat["clicked"]["count"],
+            "Average time to first click": time.convert_seconds(
                 stats["stats"][stat["deception_level"]]["clicked"]["average"]
             ).long,
-            "deception_level": stat["deception_level"],
-            "subject": stat["template"]["subject"],
-            "from_address": stat["template"]["from_address"],
+            "Deception level": stat["deception_level"],
+            "Subject": stat["template"]["subject"],
+            "From address": stat["template"]["from_address"],
         }
         for stat in stats["template_stats"]
     ]
