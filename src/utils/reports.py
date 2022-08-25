@@ -90,7 +90,7 @@ def get_report(cycle_id: str, report_type: str, nonhuman: bool = False):
 def get_report_pdf(
     cycle: dict,
     report_type: str,
-    reporting_password: str = None,
+    pw: str = "",
     nonhuman: bool = False,
 ):
     """Get report pdf."""
@@ -117,8 +117,8 @@ def get_report_pdf(
     reader = PdfFileReader(open(filepath, "rb"))
     for i in range(0, reader.getNumPages()):
         writer.addPage(reader.getPage(i))
-    if reporting_password:
-        writer.encrypt(reporting_password, use_128bit=True)
+    if pw:
+        writer.encrypt(pw, use_128bit=True)
 
     if report_type == "cycle":
         # add csv pages
@@ -425,12 +425,15 @@ def get_sector_industry_report():
                 response[stat]["emails_clicked"] = 0
             try:
                 clicked_ratio = (
-                    response[stat]["emails_clicked"] / response[stat]["emails_sent"]
+                    int(
+                        response[stat]["emails_clicked"] / response[stat]["emails_sent"]
+                    )
+                    * 100
                 )
             except ZeroDivisionError:
                 clicked_ratio = 0
 
-            response[stat]["emails_clicked_ratio"] = round(clicked_ratio * 100, 2)
+            response[stat]["emails_clicked_ratio"] = round(clicked_ratio, 2)
 
     return response
 
@@ -465,7 +468,7 @@ def getMostClickedTemplateLevel(low_ratio, moderate_ratio, high_ratio):
         "Moderate": moderate_ratio,
         "High": high_ratio,
     }
-    return max(levels, key=levels.get)
+    return max(levels)
 
 
 def preview_from_address(template, subscription, customer):
