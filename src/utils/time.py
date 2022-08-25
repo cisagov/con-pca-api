@@ -77,7 +77,9 @@ def convert_seconds(seconds):
         "hours": hour,
         "minutes": minutes,
         "seconds": seconds,
-        "long": f"{day} days, {hour} hours, {minutes} minutes, {seconds} seconds",
+        "long": f"{day} days, {hour} hours, {minutes} minutes, {seconds} seconds"
+        if day != 1
+        else f"{day} day, {hour} hours, {minutes} minutes, {seconds} seconds",
         "short": f"{str(day).zfill(2)}:{str(hour).zfill(2)}:{str(minutes).zfill(2)}:{str(seconds).zfill(2)}",
     }
     return SimpleNamespace(**d)

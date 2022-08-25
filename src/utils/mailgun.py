@@ -33,36 +33,40 @@ def get_failed_email_events():
     """Get failed email events from all domains from mailgun api."""
     sending_profiles = sending_profile_manager.all()
     events = []
+    success = {"success": True}
     for sending_profile in sending_profiles:
         if sending_profile["interface_type"] == "SES":
             break
         if sending_profile["interface_type"] == "Mailgun":
-            if sending_profile["mailgun_domain"]:
+            if "mailgun_domain" in sending_profile:
                 try:
                     resp = requests.get(
                         f"https://api.mailgun.net/v3/{sending_profile['mailgun_domain']}/events",
                         auth=("api", MAILGUN_API_KEY),
                         params={"event": "failed"},
                     )
+                    if resp.json().get("items"):
+                        events.extend(resp.json()["items"])
                     resp.raise_for_status()
                 except HTTPError as e:
                     logger.exception(e)
                     logger.error(resp.text)
-                    raise e
+                    success["success"] = False
         if sending_profile["interface_type"] == "SMTP":
-            if sending_profile["smtp_host"]:
+            if "smtp_host" in sending_profile:
                 try:
                     resp = requests.get(
                         f"https://api.mailgun.net/v3/{sending_profile['smtp_host']}/events",
                         auth=("api", MAILGUN_API_KEY),
                         params={"event": "failed"},
                     )
+                    if resp.json().get("items"):
+                        events.extend(resp.json()["items"])
+                    resp.raise_for_status()
                 except HTTPError as e:
                     logger.exception(e)
                     logger.error(resp.text)
-                    raise e
-        if resp.json().get("items"):
-            events.extend(resp.json()["items"])
+                    success["success"] = False
 
     for event in events:
         if event["recipient"] not in [
@@ -77,3 +81,4 @@ def get_failed_email_events():
                     "reason": event["delivery-status"]["message"],
                 }
             )
+    return success
