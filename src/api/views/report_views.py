@@ -12,13 +12,12 @@ from api.schemas.reports_schema import AggregateReportsSchema
 from utils.logging import setLogger
 from utils.notifications import Notification
 from utils.reports import (
-    get_customers_active,
     get_report,
     get_report_pdf,
     get_reports_sent,
     get_sector_industry_report,
 )
-from utils.stats import get_all_customer_stats, get_all_customer_subscriptions
+from utils.stats import get_all_customer_stats
 
 logger = setLogger(__name__)
 
@@ -102,21 +101,26 @@ class AggregateReportView(MethodView):
     def get(self):
         """Get."""
         context = {
-            "customers_enrolled": len(customer_manager.all(fields=["_id"])),
+            "customers_enrolled": customer_manager.count({"archived": False}),
         }
+        context["customers_active"] = subscription_manager.distinct_count(
+            "customer_id", {"status": {"$in": ["queued", "running"]}, "archived": False}
+        )
 
-        subscriptions = subscription_manager.all()
+        context["new_subscriptions"] = subscription_manager.count(
+            {"status": "created", "archived": False}
+        )
+        context["ongoing_subscriptions"] = subscription_manager.count(
+            {"status": {"$in": ["queued", "running"]}, "archived": False}
+        )
+        context["stopped_subscriptions"] = subscription_manager.count(
+            {"status": "stopped", "archived": False}
+        )
 
-        context.update(get_reports_sent(subscriptions))
+        context.update(get_reports_sent())
+
         context.update(get_sector_industry_report())
 
-        new_subs, ongoing_subs, stopped_subs = get_all_customer_subscriptions(
-            subscriptions
-        )
         context["all_customer_stats"] = get_all_customer_stats()
-        context["customers_active"] = get_customers_active()
-        context["new_subscriptions"] = new_subs
-        context["ongoing_subscriptions"] = ongoing_subs
-        context["stopped_subscriptions"] = stopped_subs
 
         return AggregateReportsSchema().dump(context)

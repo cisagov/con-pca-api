@@ -316,6 +316,14 @@ class Manager:
         """Count the number of documents matching the query in a collection."""
         return self.db.count_documents(query)
 
+    def distinct_count(self, field, query={}):
+        """Count the number of distinct values for a field matching the query in a collection."""
+        return len(self.db.distinct(field, query))
+
+    def aggregate(self, pipeline=[]):
+        """Aggregate the quantity according to the aggregation pipeline."""
+        return list(self.db.aggregate(pipeline))
+
     def exists(self, parameters=None):
         """Check if record exists."""
         fields = self.convert_fields(["_id"])
