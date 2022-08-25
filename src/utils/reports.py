@@ -82,7 +82,7 @@ def get_report(cycle_id: str, report_type: str, nonhuman: bool = False):
         "json": json,
         "str": str,
         "time": time,
-        "getMostClickedTemplateLevel": getMostClickedTemplateLevel,
+        "getMostClickedTemplateLevel": get_most_clicked_by_template_level,
     }
     return render_template(f"reports/{report_type}.html", **context)
 
@@ -461,7 +461,7 @@ def get_previous_cycles(current_cycle):
     return cycles
 
 
-def getMostClickedTemplateLevel(low_ratio, moderate_ratio, high_ratio):
+def get_most_clicked_by_template_level(low_ratio, moderate_ratio, high_ratio):
     """Get Most Clicked Template Level for report."""
     levels = {
         "Low": low_ratio,
