@@ -417,7 +417,7 @@ def get_ratio(numerator, denominator):
     return (
         0
         if not denominator
-        else round(float(numerator or 0) / float(denominator), ndigits=3)
+        else round(float(numerator or 0) / float(denominator), ndigits=4)
     )
 
 
@@ -680,33 +680,6 @@ def get_all_customer_stats():
 
     process_ratios(all_stats)
     return all_stats
-
-
-def get_all_customer_subscriptions(subscriptions):
-    """Get all customer subscriptions stats."""
-    new = len(
-        [
-            subscription
-            for subscription in subscriptions
-            if subscription["status"] == "created"
-        ]
-    )
-    ongoing = len(
-        [
-            subscription
-            for subscription in subscriptions
-            if subscription["status"] in ["queued", "running"]
-        ]
-    )
-    stopped = len(
-        [
-            subscription
-            for subscription in subscriptions
-            if subscription["status"] == "stopped"
-        ]
-    )
-
-    return new, ongoing, stopped
 
 
 def get_sending_profile_metrics(subscriptions, sending_profiles):
