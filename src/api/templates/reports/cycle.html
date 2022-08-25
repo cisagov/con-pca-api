@@ -534,7 +534,7 @@
             <div style="font-size: 18pt; margin-top: 0.25in">Most Clicked</div>
             <div style="font-size: 18pt; margin-top: 0.125in">Indicators</div>
             {% for r in stats.recommendation_stats |
-            sort(attribute="clicked.count", reverse=True) %} {% if loop.index <=
+            sort(attribute="clicked.ratio", reverse=True) %} {% if loop.index <=
             3 %}
             <div style="font-size: 14pt; margin-top: 0.25in" class="book-font">
               {{ r.recommendation.title | title }}
