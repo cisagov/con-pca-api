@@ -293,7 +293,7 @@ def _add_indicator_stats_csv(cycle: dict):
     return "indicator_stats.csv", headers, data
 
 
-def get_reports_sent(subscriptions):
+def get_reports_sent():
     """Get reports sent."""
     response = {
         "status_reports_sent": 0,
