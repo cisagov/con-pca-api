@@ -167,7 +167,7 @@ class Notification:
             filepath = get_report_pdf(
                 self.cycle,
                 self.message_type.split("_")[0],
-                reporting_password=self.subscription.get("reporting_password"),
+                pw=self.subscription.get("reporting_password", ""),
                 nonhuman=nonhuman,
             )
             logger.info(f"Attaching {filepath} to notification.")

@@ -100,7 +100,7 @@ def get_indicators():
             "external": {
                 "name": "External",
                 "values": {
-                    "0": {"label": "Not External/Unpsecified"},
+                    "0": {"label": "Not External/Unspecified"},
                     "1": {"label": "Specified"},
                 },
             },

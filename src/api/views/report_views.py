@@ -61,7 +61,7 @@ class ReportPdfView(MethodView):
         filepath = get_report_pdf(
             cycle,
             report_type,
-            reporting_password=subscription.get("reporting_password"),
+            pw=subscription.get("reporting_password"),
             nonhuman=nonhuman,
         )
         try:

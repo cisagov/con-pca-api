@@ -7,6 +7,7 @@ import json
 import os
 import os.path
 import subprocess  # nosec
+from typing import Any, List, Tuple
 
 # Third-Party Libraries
 from PyPDF2 import PdfFileReader, PdfFileWriter
@@ -81,7 +82,7 @@ def get_report(cycle_id: str, report_type: str, nonhuman: bool = False):
         "json": json,
         "str": str,
         "time": time,
-        "getMostClickedTemplateLevel": getMostClickedTemplateLevel,
+        "getMostClickedTemplateLevel": _get_most_clicked_by_template_level,
     }
     return render_template(f"reports/{report_type}.html", **context)
 
@@ -89,7 +90,7 @@ def get_report(cycle_id: str, report_type: str, nonhuman: bool = False):
 def get_report_pdf(
     cycle: dict,
     report_type: str,
-    reporting_password: str = None,
+    pw: str = "",
     nonhuman: bool = False,
 ):
     """Get report pdf."""
@@ -116,8 +117,8 @@ def get_report_pdf(
     reader = PdfFileReader(open(filepath, "rb"))
     for i in range(0, reader.getNumPages()):
         writer.addPage(reader.getPage(i))
-    if reporting_password:
-        writer.encrypt(reporting_password, use_128bit=True)
+    if pw:
+        writer.encrypt(pw, use_128bit=True)
 
     if report_type == "cycle":
         # add csv pages
@@ -133,7 +134,9 @@ def get_report_pdf(
 
 def _add_csv_attachments(writer: PdfFileWriter, cycle: dict):
     """Add CSV attachments to PDF."""
+    # Note: csv_data list must be in alphabetical order
     csv_data = [
+        _add_indicator_stats_csv,
         _add_overall_stats_csv,
         _add_template_stats_csv,
         _add_time_stats_csv,
@@ -155,7 +158,7 @@ def _add_csv_attachments(writer: PdfFileWriter, cycle: dict):
         csv_file.close()
 
 
-def _add_overall_stats_csv(cycle: dict):
+def _add_overall_stats_csv(cycle: dict) -> Tuple[str, List[str], Any]:
     """Add Top Level Stats CSV attachment to PDF."""
     stats = cycle["stats"]
 
@@ -182,17 +185,17 @@ def _add_overall_stats_csv(cycle: dict):
         "All Opened": stats["stats"]["all"]["opened"]["count"],
         "All Clicked": stats["stats"]["all"]["clicked"]["count"],
     }
-    headers = data.keys()
+    headers = list(data.keys())
 
     return "overall_stats.csv", headers, data
 
 
-def _user_group_stats_csv(cycle: dict):
+def _user_group_stats_csv(cycle: dict) -> Tuple[str, List[str], List[Any]]:
     """Add User Group Stats CSV attachment to PDF."""
     stats = cycle["stats"]
 
     if not stats.get("target_stats"):
-        return "user_group_stats.csv", [], {}
+        return "user_group_stats.csv", [], []
 
     data = [
         {
@@ -203,88 +206,115 @@ def _user_group_stats_csv(cycle: dict):
         }
         for t in stats["target_stats"]
     ]
-    headers = data[0].keys()
+    headers = list(data[0].keys())
 
     return "user_group_stats.csv", headers, data
 
 
-def _add_time_stats_csv(cycle: dict):
+def _add_time_stats_csv(cycle: dict) -> Tuple[str, List[str], Any]:
     """Add Time Stats CSV attachment to PDF."""
     stats = cycle["stats"]
     data = {
-        "opened__one_minute": stats["time_stats"]["opened"]["one_minutes"]["count"],
-        "opened__three_minutes": stats["time_stats"]["opened"]["three_minutes"][
+        "Opened one_minute": stats["time_stats"]["opened"]["one_minutes"]["count"],
+        "Opened three_minutes": stats["time_stats"]["opened"]["three_minutes"]["count"],
+        "Opened five_minutes": stats["time_stats"]["opened"]["five_minutes"]["count"],
+        "Opened fifteen_minutes": stats["time_stats"]["opened"]["fifteen_minutes"][
             "count"
         ],
-        "opened__five_minutes": stats["time_stats"]["opened"]["five_minutes"]["count"],
-        "opened__fifteen_minutes": stats["time_stats"]["opened"]["fifteen_minutes"][
+        "Opened thirty_minutes": stats["time_stats"]["opened"]["thirty_minutes"][
             "count"
         ],
-        "opened__thirty_minutes": stats["time_stats"]["opened"]["thirty_minutes"][
+        "Opened sixty_minutes": stats["time_stats"]["opened"]["sixty_minutes"]["count"],
+        "Opened two_hours": stats["time_stats"]["opened"]["two_hours"]["count"],
+        "Opened three_hours": stats["time_stats"]["opened"]["three_hours"]["count"],
+        "Opened four_hours": stats["time_stats"]["opened"]["four_hours"]["count"],
+        "Opened one_day": stats["time_stats"]["opened"]["one_day"]["count"],
+        "Clicked one_minute": stats["time_stats"]["clicked"]["one_minutes"]["count"],
+        "Clicked three_minutes": stats["time_stats"]["clicked"]["three_minutes"][
             "count"
         ],
-        "opened__sixty_minutes": stats["time_stats"]["opened"]["sixty_minutes"][
+        "Clicked five_minutes": stats["time_stats"]["clicked"]["five_minutes"]["count"],
+        "Clicked fifteen_minutes": stats["time_stats"]["clicked"]["fifteen_minutes"][
             "count"
         ],
-        "opened__two_hours": stats["time_stats"]["opened"]["two_hours"]["count"],
-        "opened__three_hours": stats["time_stats"]["opened"]["three_hours"]["count"],
-        "opened__four_hours": stats["time_stats"]["opened"]["four_hours"]["count"],
-        "opened__one_day": stats["time_stats"]["opened"]["one_day"]["count"],
-        "clicked__one_minute": stats["time_stats"]["clicked"]["one_minutes"]["count"],
-        "clicked__three_minutes": stats["time_stats"]["clicked"]["three_minutes"][
+        "Clicked thirty_minutes": stats["time_stats"]["clicked"]["thirty_minutes"][
             "count"
         ],
-        "clicked__five_minutes": stats["time_stats"]["clicked"]["five_minutes"][
+        "Clicked sixty_minutes": stats["time_stats"]["clicked"]["sixty_minutes"][
             "count"
         ],
-        "clicked__fifteen_minutes": stats["time_stats"]["clicked"]["fifteen_minutes"][
-            "count"
-        ],
-        "clicked__thirty_minutes": stats["time_stats"]["clicked"]["thirty_minutes"][
-            "count"
-        ],
-        "clicked__sixty_minutes": stats["time_stats"]["clicked"]["sixty_minutes"][
-            "count"
-        ],
-        "clicked__two_hours": stats["time_stats"]["clicked"]["two_hours"]["count"],
-        "clicked__three_hours": stats["time_stats"]["clicked"]["three_hours"]["count"],
-        "clicked__four_hours": stats["time_stats"]["clicked"]["four_hours"]["count"],
-        "clicked__one_day": stats["time_stats"]["clicked"]["one_day"]["count"],
+        "Clicked two_hours": stats["time_stats"]["clicked"]["two_hours"]["count"],
+        "Clicked three_hours": stats["time_stats"]["clicked"]["three_hours"]["count"],
+        "Clicked four_hours": stats["time_stats"]["clicked"]["four_hours"]["count"],
+        "Clicked one_day": stats["time_stats"]["clicked"]["one_day"]["count"],
     }
-    headers = data.keys()
+    headers = list(data.keys())
 
     return "time_stats.csv", headers, data
 
 
-def _add_template_stats_csv(cycle: dict):
+def _add_template_stats_csv(cycle: dict) -> Tuple[str, List[str], List[Any]]:
     """Add Template Stats CSV attachment to PDF."""
     stats = cycle["stats"]
-    headers = [
-        "sent",
-        "opened",
-        "clicked",
-        "average_time_to_first_click",
-        "deception_level",
-        "subject",
-        "from_address",
-    ]
 
     data = [
         {
-            "sent": stat["sent"]["count"],
-            "opened": stat["opened"]["count"],
-            "clicked": stat["clicked"]["count"],
-            "average_time_to_first_click": time.convert_seconds(
+            "Sent": stat["sent"]["count"],
+            "Opened": stat["opened"]["count"],
+            "Clicked": stat["clicked"]["count"],
+            "Average time to first click": time.convert_seconds(
                 stats["stats"][stat["deception_level"]]["clicked"]["average"]
             ).long,
-            "deception_level": stat["deception_level"],
-            "subject": stat["template"]["subject"],
-            "from_address": stat["template"]["from_address"],
+            "Deception level": stat["deception_level"],
+            "Subject": stat["template"]["subject"],
+            "From address": stat["template"]["from_address"],
         }
         for stat in stats["template_stats"]
     ]
 
+    headers = list(data[0].keys())
+
     return "template_stats.csv", headers, data
+
+
+def _add_indicator_stats_csv(cycle: dict) -> Tuple[str, List[str], List[Any]]:
+    """Add Indicator Stats CSV attachment to PDF."""
+    stats = cycle["stats"]
+
+    def _get_deception_level(templates: list) -> dict:
+        """Return deception level of template."""
+        low = False
+        moderate = False
+        high = False
+        for template in templates:
+            if template["deception_score"] in {1, 2}:
+                low = True
+            if template["deception_score"] in {3, 4}:
+                moderate = True
+            if template["deception_score"] in {5, 6}:
+                high = True
+        return {"low": low, "moderate": moderate, "high": high}
+
+    data = [
+        {
+            "Indicator Name": stat["recommendation"]["title"],
+            "Indicator Type": stat["recommendation"]["type"],
+            "Sent": "x" if stat["sent"]["count"] else "",
+            "Opened": "x" if stat["opened"]["count"] else "",
+            "Clicked": "x" if stat["clicked"]["count"] else "",
+            "Click Rate": f"{stat['clicked']['ratio']}%",
+            "Open Rate": f"{stat['opened']['ratio']}%",
+            "Included in Low Template": "yes" if decep_level["low"] else "no",
+            "Included in Moderate Template": "yes" if decep_level["moderate"] else "no",
+            "Included in High Template": "yes" if decep_level["high"] else "no",
+        }
+        for stat in stats["recommendation_stats"]
+        if (decep_level := _get_deception_level(stat["templates"]))
+    ]
+
+    headers = list(data[0].keys())
+
+    return "indicator_stats.csv", headers, data
 
 
 def get_reports_sent():
@@ -419,12 +449,15 @@ def get_sector_industry_report():
                 response[stat]["emails_clicked"] = 0
             try:
                 clicked_ratio = (
-                    response[stat]["emails_clicked"] / response[stat]["emails_sent"]
+                    int(
+                        response[stat]["emails_clicked"] / response[stat]["emails_sent"]
+                    )
+                    * 100
                 )
             except ZeroDivisionError:
                 clicked_ratio = 0
 
-            response[stat]["emails_clicked_ratio"] = round(clicked_ratio * 100, 2)
+            response[stat]["emails_clicked_ratio"] = round(clicked_ratio, 2)
 
     return response
 
@@ -452,14 +485,14 @@ def get_previous_cycles(current_cycle):
     return cycles
 
 
-def getMostClickedTemplateLevel(low_ratio, moderate_ratio, high_ratio):
+def _get_most_clicked_by_template_level(low_ratio, moderate_ratio, high_ratio):
     """Get Most Clicked Template Level for report."""
     levels = {
         "Low": low_ratio,
         "Moderate": moderate_ratio,
         "High": high_ratio,
     }
-    return max(levels, key=levels.get)
+    return max(levels)
 
 
 def preview_from_address(template, subscription, customer):

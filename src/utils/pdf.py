@@ -18,30 +18,30 @@ def append_attachment(writer: PdfFileWriter, fname: str, fdata: bytes):
     file_entry.update({NameObject("/Type"): NameObject("/EmbeddedFile")})
 
     # The Filespec entry
-    efEntry = DictionaryObject()
-    efEntry.update({NameObject("/F"): file_entry})
+    ef_entry = DictionaryObject()
+    ef_entry.update({NameObject("/F"): file_entry})
 
     filespec = DictionaryObject()
     filespec.update(
         {
             NameObject("/Type"): NameObject("/Filespec"),
             NameObject("/F"): createStringObject(fname),
-            NameObject("/EF"): efEntry,
+            NameObject("/EF"): ef_entry,
         }
     )
 
     if "/Names" not in writer._root_object.keys():
         # No files attached yet. Create the entry for the root, as it needs a reference to the Filespec
-        embeddedFilesNamesDictionary = DictionaryObject()
-        embeddedFilesNamesDictionary.update(
+        embedded_filenames_dict = DictionaryObject()
+        embedded_filenames_dict.update(
             {NameObject("/Names"): ArrayObject([createStringObject(fname), filespec])}
         )
 
-        embeddedFilesDictionary = DictionaryObject()
-        embeddedFilesDictionary.update(
-            {NameObject("/EmbeddedFiles"): embeddedFilesNamesDictionary}
+        embedded_files_dict = DictionaryObject()
+        embedded_files_dict.update(
+            {NameObject("/EmbeddedFiles"): embedded_filenames_dict}
         )
-        writer._root_object.update({NameObject("/Names"): embeddedFilesDictionary})
+        writer._root_object.update({NameObject("/Names"): embedded_files_dict})
     else:
         # There are files already attached. Append the new file.
         writer._root_object["/Names"]["/EmbeddedFiles"]["/Names"].append(
