@@ -7,7 +7,7 @@ import json
 import os
 import os.path
 import subprocess  # nosec
-from typing import List, Tuple
+from typing import Any, List, Tuple
 
 # Third-Party Libraries
 from PyPDF2 import PdfFileReader, PdfFileWriter
@@ -82,7 +82,7 @@ def get_report(cycle_id: str, report_type: str, nonhuman: bool = False):
         "json": json,
         "str": str,
         "time": time,
-        "getMostClickedTemplateLevel": get_most_clicked_by_template_level,
+        "getMostClickedTemplateLevel": _get_most_clicked_by_template_level,
     }
     return render_template(f"reports/{report_type}.html", **context)
 
@@ -135,11 +135,11 @@ def get_report_pdf(
 def _add_csv_attachments(writer: PdfFileWriter, cycle: dict):
     """Add CSV attachments to PDF."""
     csv_data = [
+        _add_indicator_stats_csv,
         _add_overall_stats_csv,
         _add_template_stats_csv,
         _add_time_stats_csv,
         _user_group_stats_csv,
-        _add_indicator_stats_csv,
     ]
 
     for func in csv_data:
@@ -157,7 +157,7 @@ def _add_csv_attachments(writer: PdfFileWriter, cycle: dict):
         csv_file.close()
 
 
-def _add_overall_stats_csv(cycle: dict):
+def _add_overall_stats_csv(cycle: dict) -> Tuple[str, List[str], Any]:
     """Add Top Level Stats CSV attachment to PDF."""
     stats = cycle["stats"]
 
@@ -184,12 +184,12 @@ def _add_overall_stats_csv(cycle: dict):
         "All Opened": stats["stats"]["all"]["opened"]["count"],
         "All Clicked": stats["stats"]["all"]["clicked"]["count"],
     }
-    headers = data.keys()
+    headers = list(data.keys())
 
     return "overall_stats.csv", headers, data
 
 
-def _user_group_stats_csv(cycle: dict) -> Tuple[str, List[str], List[dict]]:
+def _user_group_stats_csv(cycle: dict) -> Tuple[str, List[str], List[Any]]:
     """Add User Group Stats CSV attachment to PDF."""
     stats = cycle["stats"]
 
@@ -210,7 +210,7 @@ def _user_group_stats_csv(cycle: dict) -> Tuple[str, List[str], List[dict]]:
     return "user_group_stats.csv", headers, data
 
 
-def _add_time_stats_csv(cycle: dict):
+def _add_time_stats_csv(cycle: dict) -> Tuple[str, List[str], Any]:
     """Add Time Stats CSV attachment to PDF."""
     stats = cycle["stats"]
     data = {
@@ -253,12 +253,12 @@ def _add_time_stats_csv(cycle: dict):
         "clicked__four_hours": stats["time_stats"]["clicked"]["four_hours"]["count"],
         "clicked__one_day": stats["time_stats"]["clicked"]["one_day"]["count"],
     }
-    headers = data.keys()
+    headers = list(data.keys())
 
     return "time_stats.csv", headers, data
 
 
-def _add_template_stats_csv(cycle: dict):
+def _add_template_stats_csv(cycle: dict) -> Tuple[str, List[str], List[Any]]:
     """Add Template Stats CSV attachment to PDF."""
     stats = cycle["stats"]
 
@@ -277,18 +277,47 @@ def _add_template_stats_csv(cycle: dict):
         for stat in stats["template_stats"]
     ]
 
-    headers = data[0].keys()
+    headers = list(data[0].keys())
 
     return "template_stats.csv", headers, data
 
 
-def _add_indicator_stats_csv(cycle: dict):
+def _add_indicator_stats_csv(cycle: dict) -> Tuple[str, List[str], List[Any]]:
     """Add Indicator Stats CSV attachment to PDF."""
     stats = cycle["stats"]
 
-    data = [{"Indicator Name": stat["indicator"]} for stat in stats["indicator_stats"]]
+    def _get_deception_level(templates: list) -> dict:
+        """Return deception level of template."""
+        low = False
+        moderate = False
+        high = False
+        for template in templates:
+            if template["deception_score"] in {1, 2}:
+                low = True
+            if template["deception_score"] in {3, 4}:
+                moderate = True
+            if template["deception_score"] in {5, 6}:
+                high = True
+        return {"low": low, "moderate": moderate, "high": high}
 
-    headers = data[0].keys()
+    data = [
+        {
+            "Indicator Name": stat["recommendation"]["title"],
+            "Indicator Type": stat["recommendation"]["type"],
+            "Sent": "x" if stat["sent"]["count"] else "",
+            "Opened": "x" if stat["opened"]["count"] else "",
+            "Clicked": "x" if stat["clicked"]["count"] else "",
+            "Click Rate": f"{stat['clicked']['ratio']}%",
+            "Open Rate": f"{stat['opened']['ratio']}%",
+            "Included in Low Template": "yes" if decep_level["low"] else "no",
+            "Included in Moderate Template": "yes" if decep_level["moderate"] else "no",
+            "Included in High Template": "yes" if decep_level["high"] else "no",
+        }
+        for stat in stats["recommendation_stats"]
+        if (decep_level := _get_deception_level(stat["templates"]))
+    ]
+
+    headers = list(data[0].keys())
 
     return "indicator_stats.csv", headers, data
 
@@ -461,7 +490,7 @@ def get_previous_cycles(current_cycle):
     return cycles
 
 
-def get_most_clicked_by_template_level(low_ratio, moderate_ratio, high_ratio):
+def _get_most_clicked_by_template_level(low_ratio, moderate_ratio, high_ratio):
     """Get Most Clicked Template Level for report."""
     levels = {
         "Low": low_ratio,
