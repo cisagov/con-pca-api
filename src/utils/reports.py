@@ -134,6 +134,7 @@ def get_report_pdf(
 
 def _add_csv_attachments(writer: PdfFileWriter, cycle: dict):
     """Add CSV attachments to PDF."""
+    # Note: csv_data list must be in alphabetical order
     csv_data = [
         _add_indicator_stats_csv,
         _add_overall_stats_csv,
@@ -214,44 +215,38 @@ def _add_time_stats_csv(cycle: dict) -> Tuple[str, List[str], Any]:
     """Add Time Stats CSV attachment to PDF."""
     stats = cycle["stats"]
     data = {
-        "opened__one_minute": stats["time_stats"]["opened"]["one_minutes"]["count"],
-        "opened__three_minutes": stats["time_stats"]["opened"]["three_minutes"][
+        "Opened one_minute": stats["time_stats"]["opened"]["one_minutes"]["count"],
+        "Opened three_minutes": stats["time_stats"]["opened"]["three_minutes"]["count"],
+        "Opened five_minutes": stats["time_stats"]["opened"]["five_minutes"]["count"],
+        "Opened fifteen_minutes": stats["time_stats"]["opened"]["fifteen_minutes"][
             "count"
         ],
-        "opened__five_minutes": stats["time_stats"]["opened"]["five_minutes"]["count"],
-        "opened__fifteen_minutes": stats["time_stats"]["opened"]["fifteen_minutes"][
+        "Opened thirty_minutes": stats["time_stats"]["opened"]["thirty_minutes"][
             "count"
         ],
-        "opened__thirty_minutes": stats["time_stats"]["opened"]["thirty_minutes"][
+        "Opened sixty_minutes": stats["time_stats"]["opened"]["sixty_minutes"]["count"],
+        "Opened two_hours": stats["time_stats"]["opened"]["two_hours"]["count"],
+        "Opened three_hours": stats["time_stats"]["opened"]["three_hours"]["count"],
+        "Opened four_hours": stats["time_stats"]["opened"]["four_hours"]["count"],
+        "Opened one_day": stats["time_stats"]["opened"]["one_day"]["count"],
+        "Clicked one_minute": stats["time_stats"]["clicked"]["one_minutes"]["count"],
+        "Clicked three_minutes": stats["time_stats"]["clicked"]["three_minutes"][
             "count"
         ],
-        "opened__sixty_minutes": stats["time_stats"]["opened"]["sixty_minutes"][
+        "Clicked five_minutes": stats["time_stats"]["clicked"]["five_minutes"]["count"],
+        "Clicked fifteen_minutes": stats["time_stats"]["clicked"]["fifteen_minutes"][
             "count"
         ],
-        "opened__two_hours": stats["time_stats"]["opened"]["two_hours"]["count"],
-        "opened__three_hours": stats["time_stats"]["opened"]["three_hours"]["count"],
-        "opened__four_hours": stats["time_stats"]["opened"]["four_hours"]["count"],
-        "opened__one_day": stats["time_stats"]["opened"]["one_day"]["count"],
-        "clicked__one_minute": stats["time_stats"]["clicked"]["one_minutes"]["count"],
-        "clicked__three_minutes": stats["time_stats"]["clicked"]["three_minutes"][
+        "Clicked thirty_minutes": stats["time_stats"]["clicked"]["thirty_minutes"][
             "count"
         ],
-        "clicked__five_minutes": stats["time_stats"]["clicked"]["five_minutes"][
+        "Clicked sixty_minutes": stats["time_stats"]["clicked"]["sixty_minutes"][
             "count"
         ],
-        "clicked__fifteen_minutes": stats["time_stats"]["clicked"]["fifteen_minutes"][
-            "count"
-        ],
-        "clicked__thirty_minutes": stats["time_stats"]["clicked"]["thirty_minutes"][
-            "count"
-        ],
-        "clicked__sixty_minutes": stats["time_stats"]["clicked"]["sixty_minutes"][
-            "count"
-        ],
-        "clicked__two_hours": stats["time_stats"]["clicked"]["two_hours"]["count"],
-        "clicked__three_hours": stats["time_stats"]["clicked"]["three_hours"]["count"],
-        "clicked__four_hours": stats["time_stats"]["clicked"]["four_hours"]["count"],
-        "clicked__one_day": stats["time_stats"]["clicked"]["one_day"]["count"],
+        "Clicked two_hours": stats["time_stats"]["clicked"]["two_hours"]["count"],
+        "Clicked three_hours": stats["time_stats"]["clicked"]["three_hours"]["count"],
+        "Clicked four_hours": stats["time_stats"]["clicked"]["four_hours"]["count"],
+        "Clicked one_day": stats["time_stats"]["clicked"]["one_day"]["count"],
     }
     headers = list(data.keys())
 
