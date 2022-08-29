@@ -1053,7 +1053,9 @@
         {{ preview_template(template.template.subject, customer) }}<br />
         <b style="margin-bottom: 1rem">From:</b>
         {{ preview_from_address(template.template, subscription, customer) }}<br /><br />
-        <div class="template-html">{{ template.template.html | safe }}</div>
+        <div class="template-html">
+          {{ strip_html_links(template.template.html) | safe }}
+        </div>
       </div>
 
       {% if recommendations %} {% if template.template.red_flag %}
