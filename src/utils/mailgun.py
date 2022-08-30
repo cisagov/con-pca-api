@@ -56,7 +56,7 @@ def get_failed_email_events():
             if "smtp_host" in sending_profile:
                 try:
                     resp = requests.get(
-                        f"https://api.mailgun.net/v3/{sending_profile['smtp_host']}/events",
+                        f"https://api.mailgun.net/v3/{sending_profile['name']}/events",
                         auth=("api", MAILGUN_API_KEY),
                         params={"event": "failed"},
                     )
