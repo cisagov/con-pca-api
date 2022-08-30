@@ -123,6 +123,8 @@ def get_report_pdf(
     if report_type == "cycle":
         # add csv pages
         _add_csv_attachments(writer=writer, cycle=cycle)
+        # add table of contents links
+        _add_toc_links(writer=writer, n=len(cycle["stats"]["template_stats"]))
 
     output = open(new_filepath, "wb")
     writer.write(output)
@@ -136,7 +138,7 @@ def _add_csv_attachments(writer: PdfFileWriter, cycle: dict):
     """Add CSV attachments to PDF."""
     # Note: csv_data list must be in alphabetical order
     csv_data = [
-        _add_indicator_stats_csv,
+        # _add_indicator_stats_csv,
         _add_overall_stats_csv,
         _add_template_stats_csv,
         _add_time_stats_csv,
@@ -156,6 +158,17 @@ def _add_csv_attachments(writer: PdfFileWriter, cycle: dict):
 
         append_attachment(writer, filename, csv_file.getvalue().encode())
         csv_file.close()
+
+
+def _add_toc_links(writer: PdfFileWriter, n: int):
+    pagelinks = [3, 4, 5, 6, 7, 8, 9, 9 + n, 10 + n, 11 + n, 12 + n, 13 + n]
+    rect = [65, 495, 550, 515]
+    gap = 39
+    for i in range(len(pagelinks)):
+        writer.add_link(pagenum=1, pagedest=pagelinks[i] - 1, rect=rect)
+
+        rect[1] = rect[1] - gap
+        rect[3] = rect[3] - gap
 
 
 def _add_overall_stats_csv(cycle: dict) -> Tuple[str, List[str], Any]:
