@@ -289,15 +289,15 @@ function clickingUserTimelineChart() {
       y: {
         title: {
           display: true,
-          text: "% of Unique Users",
+          text: "# of Unique Users",
         },
         min: 0,
         max: 1,
         ticks: {
           callback: function (value, index, ticks) {
-            return value * 100 + "%";
+            return value + "%";
           },
-          stepSize: 0.25,
+          stepSize: 25,
           // maxTicksLimit: 7,
         },
       },
