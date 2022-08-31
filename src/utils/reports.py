@@ -299,9 +299,9 @@ def _add_indicator_stats_csv(cycle: dict) -> Tuple[str, List[str], List[Any]]:
         {
             "Indicator Name": stat["recommendation"]["title"],
             "Indicator Type": stat["recommendation"]["type"],
-            "Sent": "x" if stat["sent"]["count"] else "",
-            "Opened": "x" if stat["opened"]["count"] else "",
-            "Clicked": "x" if stat["clicked"]["count"] else "",
+            "Sent": stat["sent"].get("count", 0),
+            "Opened": stat["opened"].get("count", 0),
+            "Clicked": stat["clicked"].get("count", 0),
             "Click Rate": f"{stat['clicked']['ratio']}%",
             "Open Rate": f"{stat['opened']['ratio']}%",
             "Included in Low Template": "yes" if decep_level["low"] else "no",
