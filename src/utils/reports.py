@@ -140,7 +140,7 @@ def _add_csv_attachments(writer: PdfFileWriter, cycle: dict):
     """Add CSV attachments to PDF."""
     # Note: csv_data list must be in alphabetical order
     csv_data = [
-        # _add_indicator_stats_csv,
+        _add_indicator_stats_csv,
         _add_overall_stats_csv,
         _add_template_stats_csv,
         _add_time_stats_csv,
