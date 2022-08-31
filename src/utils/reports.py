@@ -11,6 +11,7 @@ from typing import Any, List, Tuple
 
 # Third-Party Libraries
 from PyPDF2 import PdfFileReader, PdfFileWriter
+from bs4 import BeautifulSoup
 from faker import Faker
 from flask import render_template
 from flask.templating import render_template_string
@@ -75,6 +76,7 @@ def get_report(cycle_id: str, report_type: str, nonhuman: bool = False):
         "percent": percent,
         "preview_template": preview_template,
         "preview_from_address": preview_from_address,
+        "strip_html_links": strip_html_links,
         "all_customer_stats": all_customer_stats,
         "indicators": get_indicators(),
         "datetime": datetime,
@@ -520,6 +522,21 @@ def preview_template(data, customer):
     }
     context = get_email_context(customer=customer, target=target)
     return render_template_string(data, **context)
+
+
+def strip_html_links(html):
+    """Remove click links from raw html."""
+    soup = BeautifulSoup(html)
+    while True:
+        a = soup.find("a")
+        if not a:
+            break
+        else:
+            a["style"] = "color: blue"
+            del a["href"]
+            a.name = "span"
+
+    return soup
 
 
 def percent(ratio):
