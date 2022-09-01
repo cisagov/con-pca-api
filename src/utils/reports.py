@@ -464,15 +464,12 @@ def get_sector_industry_report():
                 response[stat]["emails_clicked"] = 0
             try:
                 clicked_ratio = (
-                    int(
-                        response[stat]["emails_clicked"] / response[stat]["emails_sent"]
-                    )
-                    * 100
+                    response[stat]["emails_clicked"] / response[stat]["emails_sent"]
                 )
             except ZeroDivisionError:
                 clicked_ratio = 0
 
-            response[stat]["emails_clicked_ratio"] = round(clicked_ratio, 2)
+            response[stat]["emails_clicked_ratio"] = round(clicked_ratio, 4)
 
     return response
 
