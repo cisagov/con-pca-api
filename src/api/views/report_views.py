@@ -101,20 +101,21 @@ class AggregateReportView(MethodView):
     def get(self):
         """Get."""
         context = {
-            "customers_enrolled": customer_manager.count({"archived": False}),
+            "customers_enrolled": customer_manager.count({"archived": {"$ne": True}}),
         }
         context["customers_active"] = subscription_manager.distinct_count(
-            "customer_id", {"status": {"$in": ["queued", "running"]}, "archived": False}
+            "customer_id",
+            {"status": {"$in": ["queued", "running"]}, "archived": {"$ne": True}},
         )
 
         context["new_subscriptions"] = subscription_manager.count(
-            {"status": "created", "archived": False}
+            {"status": "created", "archived": {"$ne": True}}
         )
         context["ongoing_subscriptions"] = subscription_manager.count(
-            {"status": {"$in": ["queued", "running"]}, "archived": False}
+            {"status": {"$in": ["queued", "running"]}, "archived": {"$ne": True}}
         )
         context["stopped_subscriptions"] = subscription_manager.count(
-            {"status": "stopped", "archived": False}
+            {"status": "stopped", "archived": {"$ne": True}}
         )
 
         context.update(get_reports_sent())
