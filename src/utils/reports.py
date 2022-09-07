@@ -327,7 +327,7 @@ def _add_indicator_stats_csv(cycle: dict) -> Tuple[str, List[str], List[Any]]:
         if (decep_level := _get_deception_level(stat["templates"]))
     ]
 
-    headers = list(data[0].keys())
+    headers = list(data[0].keys()) if data else []
 
     return "indicator_stats.csv", headers, data
 
