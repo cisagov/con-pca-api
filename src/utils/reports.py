@@ -85,6 +85,7 @@ def get_report(cycle_id: str, report_type: str, nonhuman: bool = False):
         "str": str,
         "time": time,
         "getMostClickedTemplateLevel": _get_most_clicked_by_template_level,
+        "_get_subject_from_template_level": _get_subject_from_template_level,
     }
     return render_template(f"reports/{report_type}.html", **context)
 
@@ -504,7 +505,18 @@ def _get_most_clicked_by_template_level(low_ratio, moderate_ratio, high_ratio):
         "Moderate": moderate_ratio,
         "High": high_ratio,
     }
-    return max(levels)
+    return max(levels, key=levels.get)
+
+
+def _get_subject_from_template_level(template_stats, level):
+    """Get Subject Line from Template Level."""
+    template = next(
+        (t for t in template_stats if t.get("deception_level") == level), None
+    )
+    if template:
+        return template.get("template").get("subject")
+    else:
+        return ""
 
 
 def preview_from_address(template, subscription, customer):

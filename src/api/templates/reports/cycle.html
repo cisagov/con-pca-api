@@ -325,7 +325,7 @@
           style="margin-top: 0.175in; margin-bottom: 0.25in"
         ></div>
         <div class="d-flex">
-          <div class="d-flex flex-column">
+          <div class="d-flex flex-column" style="width: 529px">
             <div style="font-size: 18pt" class="dhs-blue">CHANGES</div>
             <div style="font-size: 14pt; margin-top: 0.125in">
               <b>Current Cycle</b>
@@ -378,7 +378,7 @@
               %} Average First Click Time:
               <b
                 >{{
-                time.convert_seconds(cycle.stats.stats.all.clicked.average).long
+                time.convert_seconds(cycle.stats.stats.all.clicked.average).flex_long
                 }}</b
               ><br />
             </div>
@@ -434,7 +434,7 @@
               Average First Click Time:
               <b
                 >{{
-                time.convert_seconds(previous_cycle.stats.stats.all.clicked.average).long
+                time.convert_seconds(previous_cycle.stats.stats.all.clicked.average).flex_long
                 }}</b
               ><br />
             </div>
@@ -507,7 +507,7 @@
         ></div>
 
         <div class="d-flex">
-          <div class="d-flex flex-column" style="width: 3in">
+          <div class="d-flex flex-column" style="width: 3.5in">
             <div style="font-size: 18pt" class="dhs-blue">Click Rate</div>
             <div class="d-flex" style="margin-top: 0.15in">
               <div class="d-flex flex-column">
@@ -531,19 +531,20 @@
               </div>
             </div>
             {% if stats.recommendation_stats | length > 0 %}
-            <div style="font-size: 18pt; margin-top: 0.25in">
+            <div style="font-size: 16pt; margin-top: 0.2in">
               Most Clicked Indicators
             </div>
             {% for r in stats.recommendation_stats |
             sort(attribute="clicked.ratio", reverse=True) %} {% if loop.index <=
             3 %}
-            <div style="font-size: 12pt; margin-top: 0.25in" class="book-font">
-              {{ r.recommendation.title | title }} ({{ percent(r.clicked.ratio)
-              }}%)
+            <div style="font-size: 10pt; margin-top: 0.05in" class="book-font">
+              {{ r.recommendation.title | title }} ({% if r.recommendation.type
+              == "red_flag" %}Red Flag{% else %}Sophisticated{% endif %}) <br />
+              {{ percent(r.clicked.ratio) }}%
             </div>
             {% endif %} {% endfor %} {% endif %}
           </div>
-          <div class="d-flex flex-column">
+          <div style="margin-left: 0.3in" class="d-flex flex-column">
             <div id="report-card-top-box"></div>
             <div id="report-card-bottom-box"></div>
           </div>
@@ -573,6 +574,13 @@
                 class="d-flex flex-column report-card-deception-text align-self-center"
               >
                 <div style="color: #3d98c1">LOW</div>
+                <div
+                  class="template-subject"
+                  style="font-size: 10pt; color: #0078ae"
+                >
+                  {{ _get_subject_from_template_level(stats.template_stats,
+                  "low") }}
+                </div>
                 <div class="book-font" style="font-size: 12pt">
                   Emails Sent: {{ stats.stats.low.sent.count }}
                 </div>
@@ -618,6 +626,13 @@
                 class="d-flex flex-column report-card-deception-text align-self-center"
               >
                 <div style="color: #0078ae">MODERATE</div>
+                <div
+                  class="template-subject"
+                  style="font-size: 10pt; color: #0078ae"
+                >
+                  {{ _get_subject_from_template_level(stats.template_stats,
+                  "moderate") }}
+                </div>
                 <div class="book-font" style="font-size: 12pt">
                   Emails Sent: {{ stats.stats.moderate.sent.count }}
                 </div>
@@ -660,6 +675,13 @@
                 class="d-flex flex-column report-card-deception-text align-self-center"
               >
                 <div style="color: #005b84">HIGH</div>
+                <div
+                  class="template-subject"
+                  style="font-size: 10pt; color: #0078ae"
+                >
+                  {{ _get_subject_from_template_level(stats.template_stats,
+                  "high") }}
+                </div>
                 <div class="book-font" style="font-size: 12pt">
                   Emails Sent: {{ stats.stats.high.sent.count }}
                 </div>
