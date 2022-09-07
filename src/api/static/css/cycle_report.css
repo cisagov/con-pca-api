@@ -411,9 +411,11 @@ tbody > tr:nth-child(even) {
 }
 
 .report-card-deception-percent {
-  font-size: 34pt;
+  font-size: 15pt;
+  font-weight: bold;
   color: #0078ae;
-  margin-left: 0.375in;
+  margin-left: 0.2in;
+  margin-right: 0.2in;
 }
 
 .report-card-deception-trend {
