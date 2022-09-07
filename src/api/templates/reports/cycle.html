@@ -76,7 +76,7 @@
           <sup>1</sup> The unauthorized use of any Federal agency’s seal is
           governed by the U.S. Code title 18 sections 506, 701, 709 and 1017.
           Requests to use the CISA logo or DHS seal should be directed to
-          branding@cisa.dhs.gov, copying vulnerability_info@cisa.dhs.gov
+          branding@cisa.dhs.gov, copying vulnerability@cisa.dhs.gov
         </p>
       </div>
     </div>
@@ -160,7 +160,7 @@
         </dl>
         <dl>
           <dt>
-            <span>Appendix D:</span><a href="#attachments"> ATTACHMENTS</a>
+            <span>Appendix D:</span><a href="#attachments"> Attachments</a>
           </dt>
           <dd>{{ total_pages - 1 }}</dd>
         </dl>
@@ -331,10 +331,10 @@
               <b>Current Cycle</b>
             </div>
             <div class="report-card-changes-text">
-              <b>Started </b> {{ cycle.start_date.strftime('%B, %d, %Y') }}
+              <b>Started </b> {{ cycle.start_date.strftime('%B %d, %Y') }}
             </div>
             <div class="report-card-changes-text" style="margin-top: 0">
-              <b>Ended </b> {{ cycle.end_date.strftime('%B, %d, %Y') }}
+              <b>Ended </b> {{ cycle.end_date.strftime('%B %d, %Y') }}
             </div>
             <div class="report-card-changes-text">
               {% if previous_cycle %} {{
@@ -453,7 +453,7 @@
             </p>
             {% endif %}
           </div>
-          {% if not previous_cycle %}
+          <!--{% if not previous_cycle %}
           <div id="report-card-vertical-divider"></div>
           <div class="d-flex flex-column flex-fill" style="align-items: center">
             <div style="font-size: 18pt; text-align: center" class="dhs-blue">
@@ -498,7 +498,7 @@
               </div>
             </div>
           </div>
-          {% endif %}
+          {% endif %}-->
         </div>
 
         <div
@@ -573,18 +573,21 @@
                 class="d-flex flex-column report-card-deception-text align-self-center"
               >
                 <div style="color: #3d98c1">LOW</div>
-                <div class="book-font">
-                  Emails Sent {{ stats.stats.low.sent.count }}
+                <div class="book-font" style="font-size: 12pt">
+                  Emails Sent: {{ stats.stats.low.sent.count }}
                 </div>
-                <div class="book-font">
-                  Unique Clicks {{ stats.stats.low.clicked.count }}
+                <div class="book-font" style="font-size: 12pt">
+                  Unique Clicks: {{ stats.stats.low.clicked.count }}
                 </div>
               </div>
               <div class="report-card-deception-percent align-self-center">
                 {{ percent(stats.stats.low.clicked.ratio) }}%
               </div>
               {% if previous_cycle %}
-              <div class="report-card-deception-trend align-self-center">
+              <div
+                class="report-card-deception-trend align-self-center"
+                style="font-size: 12pt"
+              >
                 {{ percent_svg(cycle.stats.stats.low.clicked.ratio,
                 previous_cycle.stats.stats.low.clicked.ratio) | safe }}
               </div>
@@ -615,11 +618,11 @@
                 class="d-flex flex-column report-card-deception-text align-self-center"
               >
                 <div style="color: #0078ae">MODERATE</div>
-                <div class="book-font">
-                  Emails Sent {{ stats.stats.moderate.sent.count }}
+                <div class="book-font" style="font-size: 12pt">
+                  Emails Sent: {{ stats.stats.moderate.sent.count }}
                 </div>
-                <div class="book-font">
-                  Unique Clicks {{ stats.stats.moderate.clicked.count }}
+                <div class="book-font" style="font-size: 12pt">
+                  Unique Clicks: {{ stats.stats.moderate.clicked.count }}
                 </div>
               </div>
               <div class="report-card-deception-percent align-self-center">
@@ -657,11 +660,11 @@
                 class="d-flex flex-column report-card-deception-text align-self-center"
               >
                 <div style="color: #005b84">HIGH</div>
-                <div class="book-font">
-                  Emails Sent {{ stats.stats.high.sent.count }}
+                <div class="book-font" style="font-size: 12pt">
+                  Emails Sent: {{ stats.stats.high.sent.count }}
                 </div>
-                <div class="book-font">
-                  Unique Clicks {{ stats.stats.high.clicked.count }}
+                <div class="book-font" style="font-size: 12pt">
+                  Unique Clicks: {{ stats.stats.high.clicked.count }}
                 </div>
               </div>
               <div class="report-card-deception-percent align-self-center">
@@ -838,7 +841,7 @@
       <p class="indent">
         The following table shows up to the previous 5 cycles and their
         corresponding start date, end date, target count, overall click rate,
-        and overall time to first click. This can indicate whether overall
+        and average time to first click. This can indicate whether overall
         trends are positive or negative.
       </p>
       <table class="performance-table">
@@ -849,7 +852,7 @@
             <th>End Date</th>
             <th>Targets</th>
             <th>Click Rate</th>
-            <th>Click Time (HH:MM:SS)</th>
+            <th>Click Time (DD:HH:MM:SS)</th>
           </tr>
         </thead>
         <tbody>
@@ -1295,9 +1298,16 @@
     <div class="page">
       <p class="page-header">Appendix D: Attachments</p>
       <p>
-        The raw data presented in this report are attached to this pdf in CSV
-        format
+        The raw data presented in this report is attached to this pdf in CSV
+        format. At present the data is organized into five separate files:
       </p>
+      <ul>
+        <li>indicator_stats.csv</li>
+        <li>overall_stats.csv</li>
+        <li>template_stats.csv</li>
+        <li>time_stats.csv</li>
+        <li>user_group_stats.csv</li>
+      </ul>
       <p>
         You can access the CSV files attached to this report by following these
         steps:
