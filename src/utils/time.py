@@ -80,7 +80,6 @@ def convert_seconds(seconds):
         "long": f"{day} days, {hour} hours, {minutes} minutes, {seconds} seconds"
         if day != 1
         else f"{day} day, {hour} hours, {minutes} minutes, {seconds} seconds",
-        "DD_HH_MM_SS": f"{str(day).zfill(2)}:{str(hour).zfill(2)}:{str(minutes).zfill(2)}:{str(seconds).zfill(2)}",
-        "HH_MM_SS": f"{str(day).zfill(2)}:{str(hour + day * 24).zfill(2)}:{str(minutes).zfill(2)}:{str(seconds).zfill(2)}",
+        "short": f"{str(day).zfill(2)}:{str(hour).zfill(2)}:{str(minutes).zfill(2)}:{str(seconds).zfill(2)}",
     }
     return SimpleNamespace(**d)

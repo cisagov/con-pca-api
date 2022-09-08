@@ -181,7 +181,7 @@ def _add_overall_stats_csv(cycle: dict) -> Tuple[str, List[str], Any]:
     average_click_time_string = (
         f"{average_click_time} minutes"
         if average_click_time < 60
-        else f"{round(average_click_time / 60)} hours"
+        else f"{average_click_time / 60} hours"
     )
     data = {
         "Start Date": datetime.strftime(cycle["start_date"], "%m/%d/%Y, %H:%M:%S"),
@@ -271,29 +271,18 @@ def _add_time_stats_csv(cycle: dict) -> Tuple[str, List[str], Any]:
 def _add_template_stats_csv(cycle: dict) -> Tuple[str, List[str], List[Any]]:
     """Add Template Stats CSV attachment to PDF."""
     stats = cycle["stats"]
-    customer_id = subscription_manager.get(
-        document_id=cycle["subscription_id"],
-        fields=["customer_id"],
-    )["customer_id"]
-    customer_domain = customer_manager.get(
-        document_id=customer_id,
-        fields=["domain"],
-    )["domain"]
 
     data = [
         {
             "Sent": stat["sent"]["count"],
             "Opened": stat["opened"]["count"],
             "Clicked": stat["clicked"]["count"],
-            "Average time to first click (DD:HH:MM:SS)": time.convert_seconds(
+            "Average time to first click": time.convert_seconds(
                 stats["stats"][stat["deception_level"]]["clicked"]["average"]
-            ).HH_MM_SS,
+            ).long,
             "Deception level": stat["deception_level"],
             "Subject": stat["template"]["subject"],
-            "From address": stat["template"]["from_address"].split("@")[0]
-            + "@"
-            + customer_domain
-            + ">",
+            "From address": stat["template"]["from_address"],
         }
         for stat in stats["template_stats"]
     ]
@@ -328,8 +317,8 @@ def _add_indicator_stats_csv(cycle: dict) -> Tuple[str, List[str], List[Any]]:
             "Sent": "x" if stat["sent"]["count"] else "",
             "Opened": "x" if stat["opened"]["count"] else "",
             "Clicked": "x" if stat["clicked"]["count"] else "",
-            "Click Rate": f"{stat['clicked']['ratio']*100}%",
-            "Open Rate": f"{stat['opened']['ratio']*100}%",
+            "Click Rate": f"{stat['clicked']['ratio']}%",
+            "Open Rate": f"{stat['opened']['ratio']}%",
             "Included in Low Template": "yes" if decep_level["low"] else "no",
             "Included in Moderate Template": "yes" if decep_level["moderate"] else "no",
             "Included in High Template": "yes" if decep_level["high"] else "no",
