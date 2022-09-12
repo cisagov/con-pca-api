@@ -148,6 +148,12 @@ tbody > tr:nth-child(even) {
   font-family: "franklin-gothic-book", sans-serif !important;
 }
 
+.template-subject {
+  font-family: "franklin-gothic-book", sans-serif !important;
+  width: 200px;
+  display: flex;
+}
+
 /* Cover Page */
 #cover-page {
   background: white;
@@ -355,8 +361,8 @@ tbody > tr:nth-child(even) {
 }
 
 #report-card-bottom {
-  padding-left: 0.5in;
-  padding-right: 0.5in;
+  padding-left: 0.25in;
+  padding-right: 0.25in;
   padding-top: 0.25in;
 }
 
@@ -395,7 +401,7 @@ tbody > tr:nth-child(even) {
 }
 
 .report-card-changes-text {
-  font-size: 12pt;
+  font-size: 11pt;
   margin-top: 0.175in;
   height: 12pt;
 }

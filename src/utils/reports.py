@@ -84,7 +84,8 @@ def get_report(cycle_id: str, report_type: str, nonhuman: bool = False):
         "json": json,
         "str": str,
         "time": time,
-        "getMostClickedTemplateLevel": _get_most_clicked_by_template_level,
+        "getMaxTemplateLevel": _get_max_by_template_level,
+        "_get_subject_from_template_level": _get_subject_from_template_level,
     }
     return render_template(f"reports/{report_type}.html", **context)
 
@@ -181,7 +182,7 @@ def _add_overall_stats_csv(cycle: dict) -> Tuple[str, List[str], Any]:
     average_click_time_string = (
         f"{average_click_time} minutes"
         if average_click_time < 60
-        else f"{average_click_time / 60} hours"
+        else f"{round(average_click_time / 60)} hours"
     )
     data = {
         "Start Date": datetime.strftime(cycle["start_date"], "%m/%d/%Y, %H:%M:%S"),
@@ -271,18 +272,29 @@ def _add_time_stats_csv(cycle: dict) -> Tuple[str, List[str], Any]:
 def _add_template_stats_csv(cycle: dict) -> Tuple[str, List[str], List[Any]]:
     """Add Template Stats CSV attachment to PDF."""
     stats = cycle["stats"]
+    customer_id = subscription_manager.get(
+        document_id=cycle["subscription_id"],
+        fields=["customer_id"],
+    )["customer_id"]
+    customer_domain = customer_manager.get(
+        document_id=customer_id,
+        fields=["domain"],
+    )["domain"]
 
     data = [
         {
             "Sent": stat["sent"]["count"],
             "Opened": stat["opened"]["count"],
             "Clicked": stat["clicked"]["count"],
-            "Average time to first click": time.convert_seconds(
+            "Average time to first click (DD:HH:MM:SS)": time.convert_seconds(
                 stats["stats"][stat["deception_level"]]["clicked"]["average"]
-            ).long,
+            ).DD_HH_MM_SS,
             "Deception level": stat["deception_level"],
             "Subject": stat["template"]["subject"],
-            "From address": stat["template"]["from_address"],
+            "From address": stat["template"]["from_address"].split("@")[0]
+            + "@"
+            + customer_domain
+            + ">",
         }
         for stat in stats["template_stats"]
     ]
@@ -317,8 +329,8 @@ def _add_indicator_stats_csv(cycle: dict) -> Tuple[str, List[str], List[Any]]:
             "Sent": stat["sent"].get("count", 0),
             "Opened": stat["opened"].get("count", 0),
             "Clicked": stat["clicked"].get("count", 0),
-            "Click Rate": f"{stat['clicked']['ratio']}%",
-            "Open Rate": f"{stat['opened']['ratio']}%",
+            "Click Rate": f"{stat['clicked']['ratio']*100}%",
+            "Open Rate": f"{stat['opened']['ratio']*100}%",
             "Included in Low Template": "yes" if decep_level["low"] else "no",
             "Included in Moderate Template": "yes" if decep_level["moderate"] else "no",
             "Included in High Template": "yes" if decep_level["high"] else "no",
@@ -497,14 +509,25 @@ def get_previous_cycles(current_cycle):
     return cycles
 
 
-def _get_most_clicked_by_template_level(low_ratio, moderate_ratio, high_ratio):
+def _get_max_by_template_level(low_metric, moderate_metric, high_metric):
     """Get Most Clicked Template Level for report."""
     levels = {
-        "Low": low_ratio,
-        "Moderate": moderate_ratio,
-        "High": high_ratio,
+        "Low": low_metric,
+        "Moderate": moderate_metric,
+        "High": high_metric,
     }
-    return max(levels)
+    return max(levels)  # , key=levels.get)
+
+
+def _get_subject_from_template_level(template_stats, level):
+    """Get Subject Line from Template Level."""
+    template = next(
+        (t for t in template_stats if t.get("deception_level") == level), None
+    )
+    if template:
+        return template.get("template").get("subject")
+    else:
+        return ""
 
 
 def preview_from_address(template, subscription, customer):

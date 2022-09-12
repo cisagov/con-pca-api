@@ -66,20 +66,28 @@ def get_yearly_minutes():
 
 def convert_seconds(seconds):
     """Convert seconds to hours, minutes and seconds."""
-    day = seconds // 86400
+    days = seconds // 86400
     seconds %= 86400
-    hour = seconds // 3600
+    hours = seconds // 3600
     seconds %= 3600
     minutes = seconds // 60
     seconds %= 60
     d = {
-        "days": day,
-        "hours": hour,
+        "days": days,
+        "hours": hours,
         "minutes": minutes,
         "seconds": seconds,
-        "long": f"{day} days, {hour} hours, {minutes} minutes, {seconds} seconds"
-        if day != 1
-        else f"{day} day, {hour} hours, {minutes} minutes, {seconds} seconds",
-        "short": f"{str(day).zfill(2)}:{str(hour).zfill(2)}:{str(minutes).zfill(2)}:{str(seconds).zfill(2)}",
+        "long": f"{days} days, {hours} hours, {minutes} minutes, {seconds} seconds"
+        if days != 1
+        else f"{days} day, {hours} hours, {minutes} minutes, {seconds} seconds",
+        "DD_HH_MM_SS": f"{str(days).zfill(2)}:{str(hours).zfill(2)}:{str(minutes).zfill(2)}:{str(seconds).zfill(2)}",
+        "HH_MM_SS": f"{str(days).zfill(2)}:{str(hours + days * 24).zfill(2)}:{str(minutes).zfill(2)}:{str(seconds).zfill(2)}",
     }
+    d["flex_long"] = d["long"]
+    if days == 0:
+        d["flex_long"] = d["flex_long"].partition(",")[2]
+        if hours == 0:
+            d["flex_long"] = d["flex_long"].partition(",")[2]
+            if minutes == 0:
+                d["flex_long"] = d["flex_long"].partition(",")[2]
     return SimpleNamespace(**d)

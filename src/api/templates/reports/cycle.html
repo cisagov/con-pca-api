@@ -322,10 +322,10 @@
         </div>
         <div
           id="report-card-horizontal-divider"
-          style="margin-top: 0.175in; margin-bottom: 0.25in"
+          style="margin-top: 0.175in; margin-bottom: 0.15in"
         ></div>
         <div class="d-flex">
-          <div class="d-flex flex-column">
+          <div class="d-flex flex-column" style="flex: 1 1 0">
             <div style="font-size: 18pt" class="dhs-blue">CHANGES</div>
             <div style="font-size: 14pt; margin-top: 0.125in">
               <b>Current Cycle</b>
@@ -375,26 +375,33 @@
               {% if previous_cycle %} {{
               compare_svg(cycle.stats.stats.all.clicked.average,
               previous_cycle.stats.stats.all.clicked.average ) | safe }} {%endif
-              %} Average First Click Time:
+              %} Overall Average First Click Time:
               <b
                 >{{
-                time.convert_seconds(cycle.stats.stats.all.clicked.average).long
+                time.convert_seconds(cycle.stats.stats.all.clicked.average).flex_long
                 }}</b
               ><br />
             </div>
-            <div class="report-card-changes-text" style="margin-top: 0.545in">
+            <div class="report-card-changes-text" style="margin-top: 0.4in">
               <b
-                >{{
-                getMostClickedTemplateLevel(cycle.stats.stats.low.clicked.ratio,
+                >{{ getMaxTemplateLevel(cycle.stats.stats.low.clicked.ratio,
                 cycle.stats.stats.moderate.clicked.ratio,
                 cycle.stats.stats.high.clicked.ratio) }}
               </b>
-              Template With Most Clicks
+              Template With Highest Click Rate
+            </div>
+            <div class="report-card-changes-text" style="margin-top: 0.05in">
+              <b
+                >{{ getMaxTemplateLevel(cycle.stats.stats.low.clicked.average,
+                cycle.stats.stats.moderate.clicked.average,
+                cycle.stats.stats.high.clicked.average) }}
+              </b>
+              Template With Fastest First Click Average
             </div>
           </div>
           <div
             class="d-flex flex-column"
-            style="margin-left: 0.5in; margin-right: 0in"
+            style="margin-left: 0.25in; margin-right: 0in; flex: 1 1 0"
           >
             <div style="font-size: 14pt; margin-top: 0.35in">
               <b>Previous Cycle</b>
@@ -430,22 +437,31 @@
               >
               Click Rate
             </div>
-            <div class="report-card-changes-text" style="font-size: 12pt">
-              Average First Click Time:
+            <div class="report-card-changes-text">
+              Overall Average First Click Time:
               <b
                 >{{
-                time.convert_seconds(previous_cycle.stats.stats.all.clicked.average).long
+                time.convert_seconds(previous_cycle.stats.stats.all.clicked.average).flex_long
                 }}</b
               ><br />
             </div>
-            <div class="report-card-changes-text" style="margin-top: 0.545in">
+            <div class="report-card-changes-text" style="margin-top: 0.4in">
               <b
                 >{{
-                getMostClickedTemplateLevel(previous_cycle.stats.stats.low.clicked.ratio,
+                getMaxTemplateLevel(previous_cycle.stats.stats.low.clicked.ratio,
                 previous_cycle.stats.stats.moderate.clicked.ratio,
-                previous_cycle.stats.stats.high.clicked.ratio) }}</b
-              >
-              Template With Most Clicks
+                previous_cycle.stats.stats.high.clicked.ratio) }}
+              </b>
+              Template With Highest Click Rate
+            </div>
+            <div class="report-card-changes-text" style="margin-top: 0.05in">
+              <b
+                >{{
+                getMaxTemplateLevel(previous_cycle.stats.stats.low.clicked.average,
+                previous_cycle.stats.stats.moderate.clicked.average,
+                previous_cycle.stats.stats.high.clicked.average) }}
+              </b>
+              Template With Fastest First Click Average
             </div>
             {% else %}
             <p style="width: 160px" class="report-card-changes-text">
@@ -507,7 +523,7 @@
         ></div>
 
         <div class="d-flex">
-          <div class="d-flex flex-column" style="width: 3in">
+          <div class="d-flex flex-column" style="width: 3.5in">
             <div style="font-size: 18pt" class="dhs-blue">Click Rate</div>
             <div class="d-flex" style="margin-top: 0.15in">
               <div class="d-flex flex-column">
@@ -531,19 +547,20 @@
               </div>
             </div>
             {% if stats.recommendation_stats | length > 0 %}
-            <div style="font-size: 18pt; margin-top: 0.25in">
+            <div style="font-size: 16pt; margin-top: 0.2in">
               Most Clicked Indicators
             </div>
             {% for r in stats.recommendation_stats |
             sort(attribute="clicked.ratio", reverse=True) %} {% if loop.index <=
             3 %}
-            <div style="font-size: 12pt; margin-top: 0.25in" class="book-font">
-              {{ r.recommendation.title | title }} ({{ percent(r.clicked.ratio)
-              }}%)
+            <div style="font-size: 10pt; margin-top: 0.05in" class="book-font">
+              {{ r.recommendation.title | title }} ({% if r.recommendation.type
+              == "red_flag" %}Red Flag{% else %}Sophisticated{% endif %}) <br />
+              {{ percent(r.clicked.ratio) }}%
             </div>
             {% endif %} {% endfor %} {% endif %}
           </div>
-          <div class="d-flex flex-column">
+          <div style="margin-left: 0.3in" class="d-flex flex-column">
             <div id="report-card-top-box"></div>
             <div id="report-card-bottom-box"></div>
           </div>
@@ -573,6 +590,13 @@
                 class="d-flex flex-column report-card-deception-text align-self-center"
               >
                 <div style="color: #3d98c1">LOW</div>
+                <div
+                  class="template-subject"
+                  style="font-size: 10pt; color: #3d98c1"
+                >
+                  {{ _get_subject_from_template_level(stats.template_stats,
+                  "low") }}
+                </div>
                 <div class="book-font" style="font-size: 12pt">
                   Emails Sent: {{ stats.stats.low.sent.count }}
                 </div>
@@ -618,6 +642,13 @@
                 class="d-flex flex-column report-card-deception-text align-self-center"
               >
                 <div style="color: #0078ae">MODERATE</div>
+                <div
+                  class="template-subject"
+                  style="font-size: 10pt; color: #0078ae"
+                >
+                  {{ _get_subject_from_template_level(stats.template_stats,
+                  "moderate") }}
+                </div>
                 <div class="book-font" style="font-size: 12pt">
                   Emails Sent: {{ stats.stats.moderate.sent.count }}
                 </div>
@@ -660,6 +691,13 @@
                 class="d-flex flex-column report-card-deception-text align-self-center"
               >
                 <div style="color: #005b84">HIGH</div>
+                <div
+                  class="template-subject"
+                  style="font-size: 10pt; color: #005b84"
+                >
+                  {{ _get_subject_from_template_level(stats.template_stats,
+                  "high") }}
+                </div>
                 <div class="book-font" style="font-size: 12pt">
                   Emails Sent: {{ stats.stats.high.sent.count }}
                 </div>
@@ -865,7 +903,8 @@
             <td>{{ c.target_count }}</td>
             <td>{{ percent(c.stats.stats.all.clicked.ratio) }}%</td>
             <td>
-              {{ time.convert_seconds(c.stats.stats.all.clicked.average).short
+              {{
+              time.convert_seconds(c.stats.stats.all.clicked.average).DD_HH_MM_SS
               }}
             </td>
           </tr>
@@ -878,7 +917,7 @@
             <td>{{ percent(cycle.stats.stats.all.clicked.ratio) }}%</td>
             <td>
               {{
-              time.convert_seconds(cycle.stats.stats.all.clicked.average).short
+              time.convert_seconds(cycle.stats.stats.all.clicked.average).DD_HH_MM_SS
               }}
             </td>
           </tr>
