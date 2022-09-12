@@ -903,7 +903,8 @@
             <td>{{ c.target_count }}</td>
             <td>{{ percent(c.stats.stats.all.clicked.ratio) }}%</td>
             <td>
-              {{ time.convert_seconds(c.stats.stats.all.clicked.average).short
+              {{
+              time.convert_seconds(c.stats.stats.all.clicked.average).DD_HH_MM_SS
               }}
             </td>
           </tr>
@@ -916,7 +917,7 @@
             <td>{{ percent(cycle.stats.stats.all.clicked.ratio) }}%</td>
             <td>
               {{
-              time.convert_seconds(cycle.stats.stats.all.clicked.average).short
+              time.convert_seconds(cycle.stats.stats.all.clicked.average).DD_HH_MM_SS
               }}
             </td>
           </tr>
