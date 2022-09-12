@@ -80,7 +80,8 @@ def convert_seconds(seconds):
         "long": f"{days} days, {hours} hours, {minutes} minutes, {seconds} seconds"
         if days != 1
         else f"{days} day, {hours} hours, {minutes} minutes, {seconds} seconds",
-        "short": f"{str(days).zfill(2)}:{str(hours).zfill(2)}:{str(minutes).zfill(2)}:{str(seconds).zfill(2)}",
+        "DD_HH_MM_SS": f"{str(days).zfill(2)}:{str(hours).zfill(2)}:{str(minutes).zfill(2)}:{str(seconds).zfill(2)}",
+        "HH_MM_SS": f"{str(days).zfill(2)}:{str(hours + days * 24).zfill(2)}:{str(minutes).zfill(2)}:{str(seconds).zfill(2)}",
     }
     d["flex_long"] = d["long"]
     if days == 0:
