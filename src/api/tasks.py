@@ -84,7 +84,9 @@ def process_subscription(subscription):
         task["executed_date"] = datetime.utcnow()
         logger.info(f"Processing task {task}")
         try:
-            process_task(task, subscription, cycle)
+            process_task(task, subscription, cycle) if task[
+                "scheduled_date"
+            ] > datetime.utcnow() - timedelta(days=2) else None
         except Exception as e:
             logger.exception(
                 f"An exception occurred performing {task['task_type']} task for {subscription['name']} subscription: {e}",
