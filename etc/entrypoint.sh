@@ -7,7 +7,7 @@ geoipupdate
 
 echo "Starting Con-PCA API"
 # run flask
-if [[ $DEBUG -eq 1 ]]; then
+if [[ $FLASK_DEBUG -eq 1 ]]; then
   echo "Debug Mode"
   python landing/wsgi.py &
   python api/wsgi.py
