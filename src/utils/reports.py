@@ -128,6 +128,8 @@ def get_report_pdf(
         _add_csv_attachments(writer=writer, cycle=cycle)
         # add table of contents links
         _add_toc_links(writer=writer, n=len(cycle["stats"]["template_stats"]))
+        # add section 1 links
+        _add_section1_links(writer=writer, n=len(cycle["stats"]["template_stats"]))
 
     output = open(new_filepath, "wb")
     writer.write(output)
@@ -168,10 +170,18 @@ def _add_toc_links(writer: PdfFileWriter, n: int):
     rect = [65, 495, 550, 515]
     gap = 39
     for i in range(len(pagelinks)):
-        writer.add_link(pagenum=1, pagedest=pagelinks[i] - 1, rect=rect)
+        writer.add_link(pagenum=(2)-1, pagedest=pagelinks[i] - 1, rect=rect)
 
         rect[1] = rect[1] - gap
         rect[3] = rect[3] - gap
+
+def _add_section1_links(writer: PdfFileWriter, n: int):
+    writer.add_link(pagenum=(3)-1, pagedest=(4)-1, rect=[95, 563, 285, 578])
+    writer.add_link(pagenum=(3)-1, pagedest=(5)-1, rect=[95, 502, 384, 517])
+    writer.add_link(pagenum=(3)-1, pagedest=(6)-1, rect=[95, 428, 515, 443])
+    writer.add_link(pagenum=(3)-1, pagedest=(7)-1, rect=[95, 367, 352, 382])
+    writer.add_link(pagenum=(3)-1, pagedest=(9)-1, rect=[95, 292, 306, 307])
+    writer.add_link(pagenum=(3)-1, pagedest=(12+n)-1, rect=[308, 233, 435, 247])
 
 
 def _add_overall_stats_csv(cycle: dict) -> Tuple[str, List[str], Any]:
@@ -286,9 +296,9 @@ def _add_template_stats_csv(cycle: dict) -> Tuple[str, List[str], List[Any]]:
             "Sent": stat["sent"]["count"],
             "Opened": stat["opened"]["count"],
             "Clicked": stat["clicked"]["count"],
-            "Average time to first click (DD:HH:MM:SS)": time.convert_seconds(
+            "Average time to first click (HH:MM:SS)": time.convert_seconds(
                 stats["stats"][stat["deception_level"]]["clicked"]["average"]
-            ).DD_HH_MM_SS,
+            ).HH_MM_SS,
             "Deception level": stat["deception_level"],
             "Subject": stat["template"]["subject"],
             "From address": stat["template"]["from_address"].split("@")[0]
@@ -516,7 +526,7 @@ def _get_max_by_template_level(low_metric, moderate_metric, high_metric):
         "Moderate": moderate_metric,
         "High": high_metric,
     }
-    return max(levels)  # , key=levels.get)
+    return max(levels, key=levels.get)
 
 
 def _get_subject_from_template_level(template_stats, level):
