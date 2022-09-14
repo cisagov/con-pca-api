@@ -170,18 +170,19 @@ def _add_toc_links(writer: PdfFileWriter, n: int):
     rect = [65, 495, 550, 515]
     gap = 39
     for i in range(len(pagelinks)):
-        writer.add_link(pagenum=(2)-1, pagedest=pagelinks[i] - 1, rect=rect)
+        writer.add_link(pagenum=(2) - 1, pagedest=pagelinks[i] - 1, rect=rect)
 
         rect[1] = rect[1] - gap
         rect[3] = rect[3] - gap
 
+
 def _add_section1_links(writer: PdfFileWriter, n: int):
-    writer.add_link(pagenum=(3)-1, pagedest=(4)-1, rect=[95, 563, 285, 578])
-    writer.add_link(pagenum=(3)-1, pagedest=(5)-1, rect=[95, 502, 384, 517])
-    writer.add_link(pagenum=(3)-1, pagedest=(6)-1, rect=[95, 428, 515, 443])
-    writer.add_link(pagenum=(3)-1, pagedest=(7)-1, rect=[95, 367, 352, 382])
-    writer.add_link(pagenum=(3)-1, pagedest=(9)-1, rect=[95, 292, 306, 307])
-    writer.add_link(pagenum=(3)-1, pagedest=(12+n)-1, rect=[308, 233, 435, 247])
+    writer.add_link(pagenum=(3) - 1, pagedest=(4) - 1, rect=[95, 563, 285, 578])
+    writer.add_link(pagenum=(3) - 1, pagedest=(5) - 1, rect=[95, 502, 384, 517])
+    writer.add_link(pagenum=(3) - 1, pagedest=(6) - 1, rect=[95, 428, 515, 443])
+    writer.add_link(pagenum=(3) - 1, pagedest=(7) - 1, rect=[95, 367, 352, 382])
+    writer.add_link(pagenum=(3) - 1, pagedest=(9) - 1, rect=[95, 292, 306, 307])
+    writer.add_link(pagenum=(3) - 1, pagedest=(12 + n) - 1, rect=[308, 233, 435, 247])
 
 
 def _add_overall_stats_csv(cycle: dict) -> Tuple[str, List[str], Any]:
