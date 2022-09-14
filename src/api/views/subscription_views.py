@@ -237,7 +237,7 @@ class SubscriptionSafelistExportView(MethodView):
             return send_file(
                 filepath,
                 as_attachment=True,
-                attachment_filename="safelist_export.xlsx",
+                download_name="safelist_export.xlsx",
             )
         except Exception as e:
             logger.error(
