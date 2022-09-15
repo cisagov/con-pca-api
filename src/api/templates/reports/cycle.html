@@ -195,24 +195,29 @@
       </p>
       <ol style="margin-left: 0.18in">
         <li>
-          <b>Look at the summary report card.</b> The report card contains high
-          level results for this cycle and a quick comparison to the previous
-          cycles. If this is your first report, you should note that the report
-          card will initially lack historical data to make comparisons against,
-          though that data will exist in your next report.
+          <a href="#reportcard"><b>Look at the summary report card.</b></a> The
+          report card contains high level results for this cycle and a quick
+          comparison to the previous cycles. If this is your first report, you
+          should note that the report card will initially lack historical data
+          to make comparisons against, though that data will exist in your next
+          report.
         </li>
         <li>
-          <b>Read the framework in which to understand results.</b> PCAs
-          concentrate on how phishing email deception affects target user click
-          behavior. CISA expects that a more deceptive phishing email has a
-          higher likelihood of being clicked and a lower deception email has a
+          <a href="#framework"
+            ><b>Read the framework in which to understand results.</b></a
+          >
+          PCAs concentrate on how phishing email deception affects target user
+          click behavior. CISA expects that a more deceptive phishing email has
+          a higher likelihood of being clicked and a lower deception email has a
           lower likelihood of being clicked. CISA does not expect click rates
           for all deception levels to reach and sustain zero percent.
         </li>
         <li>
-          <b
-            >Review the red flags and the sophisticated techniques ordered by
-            click rate.</b
+          <a href="#redflagsandsophisticatedtechniques"
+            ><b
+              >Review the red flags and the sophisticated techniques ordered by
+              click rate.</b
+            ></a
           >
           The indicators with click rates above your organization’s average
           click rate are representative of the phishing elements that your
@@ -220,28 +225,33 @@
           additional training on.
         </li>
         <li>
-          <b>See how performance has changed over time.</b> You should expect
-          click rates and click times to fluctuate based on the deception level
-          of the email templates used. Effective security awareness training,
-          however, should result in a noticeable click rate decrease over time
-          and to a level deemed acceptable based on your organization’s risk
-          management posture.
+          <a href="#performanceovertime"
+            ><b>See how performance has changed over time.</b></a
+          >
+          You should expect click rates and click times to fluctuate based on
+          the deception level of the email templates used. Effective security
+          awareness training, however, should result in a noticeable click rate
+          decrease over time and to a level deemed acceptable based on your
+          organization’s risk management posture.
         </li>
         <li>
-          <b>Review the details of each campaign.</b> See examples of each
-          phishing campaign used for this cycle and their click rate results to
-          understand the context in which the red flags and sophisticated
-          techniques were used.
+          <a href="#phishingtemplatesforthiscycle"
+            ><b>Review the details of each campaign.</b></a
+          >
+          See examples of each phishing campaign used for this cycle and their
+          click rate results to understand the context in which the red flags
+          and sophisticated techniques were used.
         </li>
         <li>
           <b>Compare click results to user reports of phishing.</b> If you have
-          an established process for collecting reports of phishing, the
-          attachments section provides Comma-Separated Values (CSV) files with
-          the per-campaign click results you can use to compare to your internal
-          statistics on user reports. A good initial goal for report rates is
-          having two persons reporting the phishing attempts for every person
-          that clicks in case the person who clicks the link does not report or
-          does not realize they have been phished.
+          an established process for collecting reports of phishing,
+          <a href="#attachments">the attachments section</a> provides
+          Comma-Separated Values (CSV) files with the per-campaign click results
+          you can use to compare to your internal statistics on user reports. A
+          good initial goal for report rates is having two persons reporting the
+          phishing attempts for every person that clicks in case the person who
+          clicks the link does not report or does not realize they have been
+          phished.
         </li>
         <li>
           <b>Send an updated target list.</b> If you’ve experienced personnel
@@ -383,20 +393,20 @@
               ><br />
             </div>
             <div class="report-card-changes-text" style="margin-top: 0.4in">
+              Deception level with with highest click rate:
               <b
                 >{{ getMaxTemplateLevel(cycle.stats.stats.low.clicked.ratio,
                 cycle.stats.stats.moderate.clicked.ratio,
                 cycle.stats.stats.high.clicked.ratio) }}
               </b>
-              Template With Highest Click Rate
             </div>
             <div class="report-card-changes-text" style="margin-top: 0.05in">
+              Deception level with fastest first click time average:
               <b
                 >{{ getMaxTemplateLevel(cycle.stats.stats.low.clicked.average,
                 cycle.stats.stats.moderate.clicked.average,
                 cycle.stats.stats.high.clicked.average) }}
               </b>
-              Template With Fastest First Click Average
             </div>
           </div>
           <div
