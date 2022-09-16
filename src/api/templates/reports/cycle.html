@@ -1098,7 +1098,7 @@
         <b style="margin-bottom: 1rem">From:</b>
         {{ preview_from_address(template.template, subscription, customer) }}<br /><br />
         <div class="template-html">
-          {{ strip_html_links(template.template.html) | safe }}
+          {{ preview_html(template.template.html, customer) | safe }}
         </div>
       </div>
 
