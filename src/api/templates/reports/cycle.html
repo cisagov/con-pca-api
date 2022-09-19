@@ -1293,44 +1293,49 @@
 
     <!-- Appendix B: Red Flag Indicators -->
     <a name="redflagindicators"></a>
+    {% for pg in red_flags_paginated %}
     <div class="page">
+      {% if loop.first %}
       <div class="page-header">Appendix B: Red Flag Indicators</div>
       <p style="margin-top: 0.25in">
         The following are definitions for <b>Red Flag</b> indicators.
       </p>
+      {% endif %}
       <ul>
-        {% if recommendations %} {% for rec in recommendations |
-        sort(attribute="title") %} {% if rec.type == 'red_flag' %}
+        {% if pg %} {% for rec in pg | sort(attribute="title") %}
         <li style="margin: 15px 0">
           <b>{{ rec.title }} -</b> {{ rec.description }}
         </li>
-        {% endif %} {% endfor %}{% endif %}
+        {% endfor %}{% endif %}
       </ul>
-
       <div class="page-number">
         Page | {{ total_pages - 3 }} of {{ total_pages }}
       </div>
     </div>
+    {% endfor %}
 
     <!-- Appendix C: Sophisticated Techniques -->
     <a name="sophisticatedtechniques"></a>
+    {% for pg in sophisticated_techniques_paginated %}
     <div class="page">
+      {% if loop.first %}
       <div class="page-header">Appendix C: Sophisticated Techniques</div>
       <p style="margin-top: 0.25in">
         The following are definitions for <b>Sophisticated Techniques</b>.
       </p>
+      {% endif %}
       <ul>
-        {% if recommendations %} {% for rec in recommendations |
-        sort(attribute="title") %} {% if rec.type == 'sophisticated' %}
+        {% if pg %} {% for rec in pg | sort(attribute="title") %}
         <li style="margin: 15px 0">
           <b>{{ rec.title }} -</b> {{ rec.description }}
         </li>
-        {% endif %} {% endfor %}{% endif %}
+        {% endfor %}{% endif %}
       </ul>
       <div class="page-number">
         Page | {{ total_pages - 2 }} of {{ total_pages }}
       </div>
     </div>
+    {% endfor %}
 
     <!-- Appendix D: Attachments -->
     <a name="attachments"></a>

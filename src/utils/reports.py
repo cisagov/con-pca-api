@@ -63,6 +63,12 @@ def get_report(cycle_id: str, report_type: str, nonhuman: bool = False):
     get_cycle_stats(cycle)
     previous_cycles = get_previous_cycles(cycle)
     recommendations = recommendation_manager.all()
+    red_flags = [rec for rec in recommendations if rec["type"] == "red_flag"]
+    sophisticated_techniques = [
+        rec for rec in recommendations if rec["type"] == "sophisticated"
+    ]
+    n_recs_per_page = 9
+
     all_customer_stats = get_all_customer_stats()
 
     context = {
@@ -72,6 +78,16 @@ def get_report(cycle_id: str, report_type: str, nonhuman: bool = False):
         "customer": customer,
         "previous_cycles": previous_cycles,
         "recommendations": recommendations,
+        "red_flags_paginated": [
+            red_flags[i * n_recs_per_page : (i + 1) * n_recs_per_page]
+            for i in range((len(red_flags) + n_recs_per_page - 1) // n_recs_per_page)
+        ],
+        "sophisticated_techniques_paginated": [
+            sophisticated_techniques[i * n_recs_per_page : (i + 1) * n_recs_per_page]
+            for i in range(
+                (len(sophisticated_techniques) + n_recs_per_page - 1) // n_recs_per_page
+            )
+        ],
         "compare_svg": compare_svg,
         "percent_svg": percent_svg,
         "percent": percent,
@@ -605,7 +621,7 @@ def preview_html(html, customer):
         if match.group(1) in context
         else f"{match.group(1)}",
         html,
-    ) + str(context)
+    )
 
 
 def percent(ratio):
