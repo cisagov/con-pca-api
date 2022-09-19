@@ -24,7 +24,9 @@
   <body class="mat-typography">
     <!-- Global Variables Needed -->
     <!-- Set total pages -->
-    {% set total_pages = 13 + (stats.template_stats | length) %}
+    {% set total_pages = 11 + (stats.template_stats | length) +
+    (red_flags_paginated | length) + (sophisticated_techniques_paginated |
+    length) %}
     <!-- Set previous cycle -->
     {% if previous_cycles %} {% set previous_cycle = previous_cycles[0] %} {%
     else %} {% set previous_cycle = None %} {% endif %}
@@ -143,6 +145,7 @@
             <span>Appendix A:</span><a href="#definitions"> Definitions</a>
           </dt>
           <dd>{{ total_pages - 4 }}</dd>
+          <dd>{{ 9 + (stats.template_stats | length) }}</dd>
         </dl>
         <dl>
           <dt>
@@ -150,6 +153,7 @@
             ><a href="#redflagindicators"> Red Flag Indicators</a>
           </dt>
           <dd>{{ total_pages - 3 }}</dd>
+          <dd>{{ 9 + (stats.template_stats | length) + 1 }}</dd>
         </dl>
         <dl>
           <dt>
@@ -157,6 +161,10 @@
             ><a href="#sophisticatedtechniques"> Sophisticated Techniques</a>
           </dt>
           <dd>{{ total_pages - 2 }}</dd>
+          <dd>
+            {{ 9 + (stats.template_stats | length) + 1 + (red_flags_paginated |
+            length) }}
+          </dd>
         </dl>
         <dl>
           <dt>
@@ -1297,7 +1305,7 @@
       </ul>
 
       <div class="page-number">
-        Page | {{ total_pages - 4 }} of {{ total_pages }}
+        Page | {{ 9 + (stats.template_stats | length) }} of {{ total_pages }}
       </div>
     </div>
 
@@ -1319,7 +1327,8 @@
         {% endfor %}{% endif %}
       </ul>
       <div class="page-number">
-        Page | {{ total_pages - 3 }} of {{ total_pages }}
+        Page | {{ 9 + (stats.template_stats | length) + (red_flags_paginated |
+        length) - loop.revindex0 }} of {{ total_pages }}
       </div>
     </div>
     {% endfor %}
@@ -1342,7 +1351,9 @@
         {% endfor %}{% endif %}
       </ul>
       <div class="page-number">
-        Page | {{ total_pages - 2 }} of {{ total_pages }}
+        Page | {{ 9 + (stats.template_stats | length) + (red_flags_paginated |
+        length) + (sophisticated_techniques_paginated | length) - loop.revindex0
+        }} of {{ total_pages }}
       </div>
     </div>
     {% endfor %}
