@@ -24,7 +24,9 @@
   <body class="mat-typography">
     <!-- Global Variables Needed -->
     <!-- Set total pages -->
-    {% set total_pages = 13 + (stats.template_stats | length) %}
+    {% set total_pages = 11 + (stats.template_stats | length) +
+    (red_flags_paginated | length) + (sophisticated_techniques_paginated |
+    length) %}
     <!-- Set previous cycle -->
     {% if previous_cycles %} {% set previous_cycle = previous_cycles[0] %} {%
     else %} {% set previous_cycle = None %} {% endif %}
@@ -142,21 +144,24 @@
           <dt>
             <span>Appendix A:</span><a href="#definitions"> Definitions</a>
           </dt>
-          <dd>{{ total_pages - 4 }}</dd>
+          <dd>{{ 9 + (stats.template_stats | length) }}</dd>
         </dl>
         <dl>
           <dt>
             <span>Appendix B:</span
             ><a href="#redflagindicators"> Red Flag Indicators</a>
           </dt>
-          <dd>{{ total_pages - 3 }}</dd>
+          <dd>{{ 9 + (stats.template_stats | length) + 1 }}</dd>
         </dl>
         <dl>
           <dt>
             <span>Appendix C:</span
             ><a href="#sophisticatedtechniques"> Sophisticated Techniques</a>
           </dt>
-          <dd>{{ total_pages - 2 }}</dd>
+          <dd>
+            {{ 9 + (stats.template_stats | length) + 1 + (red_flags_paginated |
+            length) }}
+          </dd>
         </dl>
         <dl>
           <dt>
@@ -1108,7 +1113,7 @@
         <b style="margin-bottom: 1rem">From:</b>
         {{ preview_from_address(template.template, subscription, customer) }}<br /><br />
         <div class="template-html">
-          {{ strip_html_links(template.template.html) | safe }}
+          {{ preview_html(template.template.html, customer) | safe }}
         </div>
       </div>
 
@@ -1297,50 +1302,58 @@
       </ul>
 
       <div class="page-number">
-        Page | {{ total_pages - 4 }} of {{ total_pages }}
+        Page | {{ 9 + (stats.template_stats | length) }} of {{ total_pages }}
       </div>
     </div>
 
     <!-- Appendix B: Red Flag Indicators -->
     <a name="redflagindicators"></a>
+    {% for pg in red_flags_paginated %}
     <div class="page">
+      {% if loop.first %}
       <div class="page-header">Appendix B: Red Flag Indicators</div>
       <p style="margin-top: 0.25in">
         The following are definitions for <b>Red Flag</b> indicators.
       </p>
+      {% endif %}
       <ul>
-        {% if recommendations %} {% for rec in recommendations |
-        sort(attribute="title") %} {% if rec.type == 'red_flag' %}
+        {% if pg %} {% for rec in pg | sort(attribute="title") %}
         <li style="margin: 15px 0">
           <b>{{ rec.title }} -</b> {{ rec.description }}
         </li>
-        {% endif %} {% endfor %}{% endif %}
+        {% endfor %}{% endif %}
       </ul>
-
       <div class="page-number">
-        Page | {{ total_pages - 3 }} of {{ total_pages }}
+        Page | {{ 9 + (stats.template_stats | length) + (red_flags_paginated |
+        length) - loop.revindex0 }} of {{ total_pages }}
       </div>
     </div>
+    {% endfor %}
 
     <!-- Appendix C: Sophisticated Techniques -->
     <a name="sophisticatedtechniques"></a>
+    {% for pg in sophisticated_techniques_paginated %}
     <div class="page">
+      {% if loop.first %}
       <div class="page-header">Appendix C: Sophisticated Techniques</div>
       <p style="margin-top: 0.25in">
         The following are definitions for <b>Sophisticated Techniques</b>.
       </p>
+      {% endif %}
       <ul>
-        {% if recommendations %} {% for rec in recommendations |
-        sort(attribute="title") %} {% if rec.type == 'sophisticated' %}
+        {% if pg %} {% for rec in pg | sort(attribute="title") %}
         <li style="margin: 15px 0">
           <b>{{ rec.title }} -</b> {{ rec.description }}
         </li>
-        {% endif %} {% endfor %}{% endif %}
+        {% endfor %}{% endif %}
       </ul>
       <div class="page-number">
-        Page | {{ total_pages - 2 }} of {{ total_pages }}
+        Page | {{ 9 + (stats.template_stats | length) + (red_flags_paginated |
+        length) + (sophisticated_techniques_paginated | length) - loop.revindex0
+        }} of {{ total_pages }}
       </div>
     </div>
+    {% endfor %}
 
     <!-- Appendix D: Attachments -->
     <a name="attachments"></a>

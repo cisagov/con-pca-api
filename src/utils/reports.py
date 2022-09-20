@@ -6,6 +6,7 @@ from io import StringIO
 import json
 import os
 import os.path
+import re
 import subprocess  # nosec
 from typing import Any, List, Tuple
 
@@ -62,6 +63,12 @@ def get_report(cycle_id: str, report_type: str, nonhuman: bool = False):
     get_cycle_stats(cycle)
     previous_cycles = get_previous_cycles(cycle)
     recommendations = recommendation_manager.all()
+    red_flags = [rec for rec in recommendations if rec["type"] == "red_flag"]
+    sophisticated_techniques = [
+        rec for rec in recommendations if rec["type"] == "sophisticated"
+    ]
+    n_recs_per_page = 9
+
     all_customer_stats = get_all_customer_stats()
 
     context = {
@@ -71,12 +78,22 @@ def get_report(cycle_id: str, report_type: str, nonhuman: bool = False):
         "customer": customer,
         "previous_cycles": previous_cycles,
         "recommendations": recommendations,
+        "red_flags_paginated": [
+            red_flags[i * n_recs_per_page : (i + 1) * n_recs_per_page]
+            for i in range((len(red_flags) + n_recs_per_page - 1) // n_recs_per_page)
+        ],
+        "sophisticated_techniques_paginated": [
+            sophisticated_techniques[i * n_recs_per_page : (i + 1) * n_recs_per_page]
+            for i in range(
+                (len(sophisticated_techniques) + n_recs_per_page - 1) // n_recs_per_page
+            )
+        ],
         "compare_svg": compare_svg,
         "percent_svg": percent_svg,
         "percent": percent,
         "preview_template": preview_template,
         "preview_from_address": preview_from_address,
-        "strip_html_links": strip_html_links,
+        "preview_html": preview_html,
         "all_customer_stats": all_customer_stats,
         "indicators": get_indicators(),
         "datetime": datetime,
@@ -568,9 +585,10 @@ def preview_template(data, customer):
     return render_template_string(data, **context)
 
 
-def strip_html_links(html):
-    """Remove click links from raw html."""
-    soup = BeautifulSoup(html)
+def preview_html(html, customer):
+    """Prepare html for cycle report viewing."""
+    # Remove click links from raw html
+    soup = BeautifulSoup(html, features="html.parser")
     while True:
         a = soup.find("a")
         if not a:
@@ -579,8 +597,42 @@ def strip_html_links(html):
             a["style"] = "color: blue"
             del a["href"]
             a.name = "span"
+    html = str(soup)
 
-    return soup
+    # Use fake data in html
+    fake = Faker()
+    context_keys = re.findall(r"\{\{(.*?)\}\}", html)
+    context = {
+        "target['first_name']": fake.first_name(),
+        "target['last_name']": fake.last_name(),
+    }
+    context["target['email']"] = (
+        context["target['first_name']"]
+        + "."
+        + context["target['last_name']"]
+        + "@"
+        + customer["domain"]
+    )
+
+    for i in context_keys:
+        try:
+            if i[0:6] == "target":
+                pass
+            elif i[0:4] == "fake":
+                context[i] = eval(i + "()")  # nosec
+            else:
+                context[i] = eval(i)  # nosec
+        except Exception as e:
+            logger.exception(e)
+            context[i] = i
+
+    return re.sub(
+        r"\{\{(.*?)\}\}",
+        lambda match: str(context[match.group(1)])
+        if match.group(1) in context
+        else f"{match.group(1)}",
+        html,
+    )
 
 
 def percent(ratio):
@@ -609,7 +661,7 @@ def compare_svg(
                 <polygon
                     style="
                         fill: {colors.get(up_color)};
-                        stroke: {colors.get(up_color)};
+                        stroke: #000000;
                         stroke-linecap: round;
                         stroke-linejoin: round;
                         stroke-width: 2px;
@@ -628,7 +680,7 @@ def compare_svg(
                 <polygon
                     style="
                         fill: {colors.get(down_color)};
-                        stroke: {colors.get(down_color)};
+                        stroke: #000000;
                         stroke-linecap: round;
                         stroke-linejoin: round;
                         stroke-width: 2px;
@@ -648,7 +700,7 @@ def compare_svg(
                 <polygon
                     style="
                         fill: {colors.get(neutral_color)};
-                        stroke: {colors.get(neutral_color)};
+                        stroke: #000000;
                         stroke-linecap: round;
                         stroke-linejoin: round;
                         stroke-width: 2px;
@@ -691,7 +743,7 @@ def percent_svg(current_percent, previous_percent):
                 <polygon
                     style="
                         fill: #C41230;
-                        stroke: #C41230;
+                        stroke: #000000;
                         stroke-linecap: round;
                         stroke-linejoin: round;
                         stroke-width: 2px;
@@ -712,7 +764,7 @@ def percent_svg(current_percent, previous_percent):
                 <polygon
                     style="
                         fill: #5E9732;
-                        stroke: #5E9732;
+                        stroke: #000000;
                         stroke-linecap: round;
                         stroke-linejoin: round;
                         stroke-width: 2px;
@@ -732,7 +784,7 @@ def percent_svg(current_percent, previous_percent):
                 <polygon
                     style="
                         fill: #006c9c;
-                        stroke: #006c9c;
+                        stroke: #000000;
                         stroke-linecap: round;
                         stroke-linejoin: round;
                         stroke-width: 2px;
