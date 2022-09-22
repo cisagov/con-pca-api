@@ -57,7 +57,7 @@ function createSparkline(chartId, allCyclesData) {
   const ctx = document.getElementById(chartId).getContext("2d");
   ctx.canvas.width = 500;
   ctx.canvas.height = 50;
-  data = {
+  let data = {
     labels: clickData,
     datasets: [
       {
@@ -98,4 +98,5 @@ function createSparkline(chartId, allCyclesData) {
       },
     },
   });
+  chart.canvas.parentNode.style.width = "500px";
 }
