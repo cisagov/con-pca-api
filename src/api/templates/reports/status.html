@@ -159,6 +159,7 @@
                 </div>
               </div>
             </div>
+            {% if not first_cycle %}
             <div class="d-flex flex-row">
               <p class="report-card-sparkline-label">
                 Cycle to Cycle Click Rate Trends:
@@ -174,6 +175,7 @@
                 </script>
               </canvas>
             </div>
+            {% endif %}
           </div>
 
           <div

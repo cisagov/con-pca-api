@@ -77,6 +77,7 @@ def get_report(cycle_id: str, report_type: str, nonhuman: bool = False):
         "subscription": subscription,
         "customer": customer,
         "previous_cycles": previous_cycles,
+        "first_cycle": len(previous_cycles) > 0,
         "recommendations": recommendations,
         "red_flags_paginated": [
             red_flags[i * n_recs_per_page : (i + 1) * n_recs_per_page]
