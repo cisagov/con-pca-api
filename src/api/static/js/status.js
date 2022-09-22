@@ -51,3 +51,51 @@ function createDoughnut(chartId, subtotal, total) {
   });
   chart.canvas.parentNode.style.width = "160px";
 }
+
+function createSparkline(chartId, allCyclesData) {
+  let clickData = allCyclesData.split(", ");
+  const ctx = document.getElementById(chartId).getContext("2d");
+  ctx.canvas.width = 500;
+  ctx.canvas.height = 50;
+  data = {
+    labels: clickData,
+    datasets: [
+      {
+        data: clickData,
+        fill: false,
+        pointRadius: 1,
+        spanGaps: true,
+        tension: 0,
+      },
+    ],
+  };
+  const chart = new Chart(ctx, {
+    type: "line",
+    data: data,
+    options: {
+      events: [],
+      borderColor: "#000000",
+      borderWidth: 1.5,
+      responsive: false,
+      plugins: {
+        legend: {
+          display: false,
+          labels: {
+            display: false,
+          },
+        },
+        tooltips: {
+          display: false,
+        },
+      },
+      scales: {
+        x: {
+          display: false,
+        },
+        y: {
+          display: false,
+        },
+      },
+    },
+  });
+}

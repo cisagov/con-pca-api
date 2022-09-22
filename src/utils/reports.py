@@ -95,6 +95,9 @@ def get_report(cycle_id: str, report_type: str, nonhuman: bool = False):
         "preview_from_address": preview_from_address,
         "preview_html": preview_html,
         "all_customer_stats": all_customer_stats,
+        "all_cycles_click_percents_str": str(
+            [percent(ratio) for ratio in all_customer_stats["all"]["clicked"]["ratios"]]
+        )[1:-1],
         "indicators": get_indicators(),
         "datetime": datetime,
         "timedelta": timedelta,

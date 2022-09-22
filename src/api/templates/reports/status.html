@@ -19,6 +19,8 @@
     <script src="{{ url_for('static', filename='js/chart.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/chartjs-plugin-datalabels.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/status.js') }}"></script>
+    <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-core.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-sparkline.min.js"></script>
   </head>
 
   <body class="mat-typography">
@@ -102,59 +104,87 @@
         </div>
         <div
           id="report-card-horizontal-divider"
-          style="margin-top: 0.175in; margin-bottom: 0.25in"
+          style="margin-top: 0.175in; margin-bottom: 0in"
         ></div>
         <div class="d-flex">
           <div class="d-flex flex-column" style="margin-right: 0.1875in">
-            <div class="report-card-templates-outer-circle">
-              <div class="report-card-templates-inner-circle">
-                <div class="report-card-templates">
-                  {{ cycle.stats.template_stats | length }}
+            <div class="d-flex flex-row">
+              <div class="d-flex flex-column" style="margin-right: 0.1875in">
+                <div class="report-card-templates-outer-circle">
+                  <div class="report-card-templates-inner-circle">
+                    <div class="report-card-templates">
+                      {{ cycle.stats.template_stats | length }}
+                    </div>
+                  </div>
+                </div>
+                <p class="report-card-stat-label">Templates Used</p>
+              </div>
+              <div
+                class="d-flex flex-column"
+                style="position: relative; margin-right: 0.1875in"
+              >
+                <canvas id="doughnut-sent">
+                  <script>
+                    createDoughnut(
+                      "doughnut-sent",
+                      "{{ stats.stats.all.sent.count }}",
+                      "{{ cycle.target_count }}"
+                    );
+                  </script>
+                </canvas>
+                <p class="report-card-stat-label">
+                  Emails Sent of Total Targets
+                </p>
+                <div class="report-card-doughnut-percent">
+                  {{ percent(stats.stats.all.sent.count / cycle.target_count)
+                  }}%
+                </div>
+              </div>
+              <div
+                class="d-flex flex-column"
+                style="position: relative; margin-right: 0.1875in"
+              >
+                <canvas id="doughnut-clicked">
+                  <script>
+                    createDoughnut(
+                      "doughnut-clicked",
+                      "{{ stats.stats.all.clicked.count }}",
+                      "{{ stats.stats.all.sent.count }}"
+                    );
+                  </script>
+                </canvas>
+                <p class="report-card-stat-label">Emails Clicked of Sent</p>
+                <div class="report-card-doughnut-percent">
+                  {{ percent(stats.stats.all.clicked.ratio) }}%
                 </div>
               </div>
             </div>
-            <p class="report-card-stat-label">Templates Used</p>
-          </div>
-          <div
-            class="d-flex flex-column"
-            style="position: relative; margin-right: 0.1875in"
-          >
-            <canvas id="doughnut-sent">
-              <script>
-                createDoughnut(
-                  "doughnut-sent",
-                  "{{ stats.stats.all.sent.count }}",
-                  "{{ cycle.target_count }}"
-                );
-              </script>
-            </canvas>
-            <p class="report-card-stat-label">Emails Sent of Total Targets</p>
-            <div class="report-card-doughnut-percent">
-              {{ percent(stats.stats.all.sent.count / cycle.target_count) }}%
+            <div class="d-flex flex-row">
+              <p class="report-card-sparkline-label">
+                Cycle to Cycle Click Rate Trends:
+              </p>
             </div>
-          </div>
-          <div
-            class="d-flex flex-column"
-            style="position: relative; margin-right: 0.1875in"
-          >
-            <canvas id="doughnut-clicked">
-              <script>
-                createDoughnut(
-                  "doughnut-clicked",
-                  "{{ stats.stats.all.clicked.count }}",
-                  "{{ stats.stats.all.sent.count }}"
-                );
-              </script>
-            </canvas>
-            <p class="report-card-stat-label">Emails Clicked of Sent</p>
-            <div class="report-card-doughnut-percent">
-              {{ percent(stats.stats.all.clicked.ratio) }}%
+            <div class="d-flex flex-row">
+              <canvas id="all-cycles-sparkline">
+                <script>
+                  createSparkline(
+                    "all-cycles-sparkline",
+                    "{{ all_cycles_click_percents_str }}"
+                  );
+                </script>
+              </canvas>
             </div>
           </div>
 
-          <div id="report-card-vertical-divider"></div>
+          <div
+            id="report-card-vertical-divider"
+            style="margin-top: 0.25in"
+          ></div>
           <div class="d-flex flex-column flex-fill" style="align-items: center">
-            <div style="font-size: 18pt; text-align: center" class="dhs-blue">
+            <div
+              style="font-size: 18pt; text-align: center; margin-top: 0.25in"
+              class="dhs-blue"
+            >
               AVERAGE<br />TIME
             </div>
             <div
