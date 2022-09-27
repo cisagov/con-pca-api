@@ -174,7 +174,7 @@ function clickRateTimeIntervalChart() {
   };
 
   new Chart(ctx, {
-    type: "bar",
+    type: "line",
     data: data,
     options: options,
     plugins: [ChartDataLabels],
@@ -226,40 +226,22 @@ function clickingUserTimelineChart() {
 
   dataset = [
     {
-      label: "Level 1",
-      data: order_time_vals(decep_stats[0]["click_percentage_over_time"]),
+      label: "Low",
+      data: order_time_vals(decep_stats[6]["click_percentage_over_time"]),
       borderColor: "#456799",
       backgroundColor: "#456799",
     },
     {
-      label: "Level 2",
-      data: order_time_vals(decep_stats[1]["click_percentage_over_time"]),
+      label: "Moderate",
+      data: order_time_vals(decep_stats[7]["click_percentage_over_time"]),
       borderColor: "#95433f",
       backgroundColor: "#95433f",
     },
     {
-      label: "Level 3",
-      data: order_time_vals(decep_stats[2]["click_percentage_over_time"]),
+      label: "High",
+      data: order_time_vals(decep_stats[8]["click_percentage_over_time"]),
       borderColor: "#839752",
       backgroundColor: "#839752",
-    },
-    {
-      label: "Level 4",
-      data: order_time_vals(decep_stats[3]["click_percentage_over_time"]),
-      borderColor: "#705b94",
-      backgroundColor: "#705b94",
-    },
-    {
-      label: "Level 5",
-      data: order_time_vals(decep_stats[4]["click_percentage_over_time"]),
-      borderColor: "#5c9fbc",
-      backgroundColor: "#5c9fbc",
-    },
-    {
-      label: "Level 6",
-      data: order_time_vals(decep_stats[5]["click_percentage_over_time"]),
-      borderColor: "#cb8016",
-      backgroundColor: "#cb8016",
     },
   ];
 
@@ -1038,7 +1020,7 @@ function totalClickCountByDeceptionLevel() {
       y: {
         title: {
           display: true,
-          text: "# of Unique Users",
+          text: "% of Unique Users",
         },
       },
     },
