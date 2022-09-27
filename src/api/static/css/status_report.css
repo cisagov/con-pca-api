@@ -114,7 +114,7 @@ b {
 }
 
 #report-card-vertical-divider {
-  height: 2.5in;
+  height: 3.1in;
   border-right: 4px solid #005288;
   margin-right: 0.2in;
 }
@@ -154,10 +154,17 @@ b {
   margin-top: 15px;
 }
 
+.report-card-sparkline-label {
+  color: #005288;
+  text-align: center;
+  font-size: 14pt;
+  margin-top: 15px;
+}
+
 .report-card-doughnut-percent {
   color: #0078ae;
   text-align: center;
-  font-size: 20pt;
+  font-size: 16pt;
   position: absolute;
   top: 74px;
   left: 36px;
@@ -200,4 +207,8 @@ b {
   top: 50%;
   -ms-transform: translateY(-50%) translateX(-50%);
   transform: translateY(-50%) translateX(-50%);
+}
+
+.all-cycles-sparkline {
+  color: #0078ae;
 }
