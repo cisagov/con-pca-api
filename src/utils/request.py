@@ -61,10 +61,15 @@ def get_landing_page(subscription, template_id):
         landing_page_id = template["landing_page_id"]
         logger.info(f"Template landing page has been set with {landing_page_id}")
 
+    # If landing_page_id is not set, get the default landing page
     kwargs = (
         {"document_id": landing_page_id}
         if landing_page_id
         else {"filter_data": {"is_default_template": True}}
     )
+    landing_page = landing_page_manager.get(**kwargs)
+    if landing_page:
+        return landing_page
 
-    return landing_page_manager.get(**kwargs)
+    # If a landing page is not set and a default landing page doesn't exist, return a random landing page
+    return landing_page_manager.get(document_id="")
