@@ -6,7 +6,6 @@ from flask.views import MethodView
 # cisagov Libraries
 from api.manager import CustomerManager, SubscriptionManager
 from utils.sectors import SECTORS
-from utils.subscriptions import create_subscription_name
 
 customer_manager = CustomerManager()
 subscription_manager = SubscriptionManager()
@@ -44,11 +43,6 @@ class CustomerView(MethodView):
         """Put."""
         customer_manager.update(document_id=customer_id, data=request.json)
         return jsonify({"success": True})
-
-    def post(self, customer_id):
-        """Post."""
-        customer = customer_manager.get(document_id=customer_id)
-        return create_subscription_name(customer)
 
     def delete(self, customer_id):
         """Delete."""
