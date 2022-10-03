@@ -304,6 +304,67 @@ def get_deception_level_stats(stats: dict):
             ),
         }
         decp_lev_stats.append(deception_level)
+
+    low_deception_level = {
+        "deception_level": 11,
+        "sent_count": decp_lev_stats[0]["sent_count"] + decp_lev_stats[1]["sent_count"],
+        "unique_clicks": decp_lev_stats[0]["unique_clicks"]
+        + decp_lev_stats[1]["unique_clicks"],
+        "total_clicks": decp_lev_stats[0]["total_clicks"]
+        + decp_lev_stats[1]["total_clicks"],
+        "user_reports": 0,
+        "unique_user_clicks": {
+            k: decp_lev_stats[0]["unique_user_clicks"].get(k, 0)
+            + decp_lev_stats[1]["unique_user_clicks"].get(k, 0)
+            for k in set(decp_lev_stats[0]["unique_user_clicks"])
+            | set(decp_lev_stats[1]["unique_user_clicks"])
+        },
+        "click_percentage_over_time": get_unique_click_over_time(
+            stats["1"]["clicked"]["diffs"] + stats["2"]["clicked"]["diffs"]
+        ),
+    }
+    decp_lev_stats.append(low_deception_level)
+
+    moderate_deception_level = {
+        "deception_level": 12,
+        "sent_count": decp_lev_stats[2]["sent_count"] + decp_lev_stats[3]["sent_count"],
+        "unique_clicks": decp_lev_stats[2]["unique_clicks"]
+        + decp_lev_stats[3]["unique_clicks"],
+        "total_clicks": decp_lev_stats[2]["total_clicks"]
+        + decp_lev_stats[3]["total_clicks"],
+        "user_reports": 0,
+        "unique_user_clicks": {
+            k: decp_lev_stats[2]["unique_user_clicks"].get(k, 0)
+            + decp_lev_stats[3]["unique_user_clicks"].get(k, 0)
+            for k in set(decp_lev_stats[2]["unique_user_clicks"])
+            | set(decp_lev_stats[3]["unique_user_clicks"])
+        },
+        "click_percentage_over_time": get_unique_click_over_time(
+            stats["3"]["clicked"]["diffs"] + stats["4"]["clicked"]["diffs"]
+        ),
+    }
+    decp_lev_stats.append(moderate_deception_level)
+
+    high_deception_level = {
+        "deception_level": 13,
+        "sent_count": decp_lev_stats[4]["sent_count"] + decp_lev_stats[5]["sent_count"],
+        "unique_clicks": decp_lev_stats[4]["unique_clicks"]
+        + decp_lev_stats[5]["unique_clicks"],
+        "total_clicks": decp_lev_stats[4]["total_clicks"]
+        + decp_lev_stats[5]["total_clicks"],
+        "user_reports": 0,
+        "unique_user_clicks": {
+            k: decp_lev_stats[4]["unique_user_clicks"].get(k, 0)
+            + decp_lev_stats[5]["unique_user_clicks"].get(k, 0)
+            for k in set(decp_lev_stats[4]["unique_user_clicks"])
+            | set(decp_lev_stats[5]["unique_user_clicks"])
+        },
+        "click_percentage_over_time": get_unique_click_over_time(
+            stats["5"]["clicked"]["diffs"] + stats["6"]["clicked"]["diffs"]
+        ),
+    }
+    decp_lev_stats.append(high_deception_level)
+
     return decp_lev_stats
 
 
