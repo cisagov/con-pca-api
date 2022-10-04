@@ -75,6 +75,10 @@ def get_failed_email_events():
             failed_email_manager.save(
                 {
                     "recipient": event["recipient"],
+                    "recipient_address": event["recipient"].split("@")[0],
+                    "recipient_domain": event["recipient"].split("@")[1]
+                    if len(event["recipient"].split("@")) > 1
+                    else "",
                     "sent_time": datetime.fromtimestamp(event["timestamp"]),
                     "error_type": event["reason"],
                     "message_id": event["message"]["headers"]["message-id"],
