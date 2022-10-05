@@ -15,10 +15,11 @@
     }
   ],
   "customer_type": "Federal",
-  "identifier": "test_customer",
+  "identifier": "TC",
   "industry": "Government",
   "name": "Test Customer",
   "sector": "Chemical",
+  "stakeholder_shortname": "TCC",
   "state": "NY",
   "zip_code": "11207"
 }

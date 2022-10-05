@@ -25,6 +25,7 @@ class CustomerSchema(BaseSchema):
 
     name = fields.Str(required=True)
     identifier = fields.Str(required=True)
+    stakeholder_shortname = fields.Str(required=True)
     address_1 = fields.Str(required=False, allow_none=True)
     address_2 = fields.Str(required=False, allow_none=True)
     city = fields.Str(required=False, allow_none=True)
