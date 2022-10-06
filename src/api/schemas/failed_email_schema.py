@@ -11,6 +11,8 @@ class FailedEmailSchema(BaseSchema):
     """FailedEmailSchema."""
 
     recipient = fields.Str()
+    recipient_address = fields.Str()
+    recipient_domain = fields.Str()
     sent_time = DateTimeField()
     error_type = fields.Str()
     message_id = fields.Str()

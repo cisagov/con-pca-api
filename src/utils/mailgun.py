@@ -75,10 +75,35 @@ def get_failed_email_events():
             failed_email_manager.save(
                 {
                     "recipient": event["recipient"],
+                    "recipient_address": event["recipient"].split("@")[0],
+                    "recipient_domain": "@" + event["recipient"].split("@")[1]
+                    if len(event["recipient"].split("@")) > 1
+                    else "",
                     "sent_time": datetime.fromtimestamp(event["timestamp"]),
                     "error_type": event["reason"],
                     "message_id": event["message"]["headers"]["message-id"],
                     "reason": event["delivery-status"]["message"],
                 }
+            )
+        else:
+            failed_email = failed_email_manager.get(
+                filter_data={
+                    "recipient": event["recipient"],
+                },
+                fields=["_id"],
+            )
+            failed_email_manager.update(
+                document_id=failed_email["_id"],
+                data={
+                    "recipient": event["recipient"],
+                    "recipient_address": event["recipient"].split("@")[0],
+                    "recipient_domain": "@" + event["recipient"].split("@")[1]
+                    if len(event["recipient"].split("@")) > 1
+                    else "",
+                    "sent_time": datetime.fromtimestamp(event["timestamp"]),
+                    "error_type": event["reason"],
+                    "message_id": event["message"]["headers"]["message-id"],
+                    "reason": event["delivery-status"]["message"],
+                },
             )
     return success
