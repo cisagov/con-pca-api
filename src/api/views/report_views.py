@@ -17,7 +17,7 @@ from utils.reports import (
     get_reports_sent,
     get_sector_industry_report,
 )
-from utils.stats import get_all_customer_stats
+from utils.stats import get_all_customer_stats, get_rolling_averages
 
 logger = setLogger(__name__)
 
@@ -121,6 +121,15 @@ class AggregateReportView(MethodView):
         context.update(get_reports_sent())
 
         context.update(get_sector_industry_report())
+
+        (
+            context["emails_sent_7_days"],
+            context["emails_clicked_7_days"],
+        ) = get_rolling_averages(7)
+        (
+            context["emails_sent_30_days"],
+            context["emails_clicked_30_days"],
+        ) = get_rolling_averages(30)
 
         context["all_customer_stats"] = get_all_customer_stats()
 
