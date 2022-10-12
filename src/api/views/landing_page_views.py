@@ -75,3 +75,13 @@ class LandingPageView(MethodView):
             )
         landing_page_manager.delete(document_id=landing_page_id)
         return jsonify({"success": True})
+
+
+class LandingPageTemplatesView(MethodView):
+    """LandingPageTemplatesView."""
+
+    def get(self, landing_page_id):
+        """Get."""
+        return jsonify(
+            template_manager.all(params={"landing_page_id": landing_page_id})
+        )

@@ -41,7 +41,11 @@ from api.views.cycle_views import (
 )
 from api.views.failed_email_views import FailedEmailsView, FailedEmailView
 from api.views.landing_domain_views import LandingDomainsView, LandingDomainView
-from api.views.landing_page_views import LandingPagesView, LandingPageView
+from api.views.landing_page_views import (
+    LandingPagesView,
+    LandingPageTemplatesView,
+    LandingPageView,
+)
 from api.views.logging_views import LoggingView
 from api.views.nonhuman_views import NonHumansView
 from api.views.recommendation_views import RecommendationsView, RecommendationView
@@ -102,6 +106,7 @@ rules = [
     # Landing Page Views
     ("/landingpages/", LandingPagesView),
     ("/landingpage/<landing_page_id>/", LandingPageView),
+    ("/landingpage/<landing_page_id>/templates", LandingPageTemplatesView),
     # Logging Views
     ("/logging/", LoggingView),
     # Non Human Views
