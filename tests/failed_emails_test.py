@@ -1,4 +1,4 @@
-"""Test cases for failed emails"""
+"""Test cases for failed emails."""
 
 # Third-Party Libraries
 import pytest
