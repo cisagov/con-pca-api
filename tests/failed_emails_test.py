@@ -5,7 +5,7 @@ import pytest
 
 
 class TestFailedEmails:
-    """Test case for failed emails"""
+    """Test case for failed emails."""
 
     def test_failed_emails_view(self, client):
         """Test the failed emails view."""
