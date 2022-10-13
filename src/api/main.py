@@ -17,6 +17,7 @@ from api.initialize import (
     initialize_nonhumans,
     initialize_recommendations,
     initialize_templates,
+    populate_stakeholder_shortname,
 )
 from api.phish import emails_job
 from api.tasks import failed_emails_job, tasks_job
@@ -244,4 +245,11 @@ def load_dummy_data():
     """Load test data to db."""
     initialize_templates()
     load_test_data()
+    logger.info("Success.")
+
+
+@app.cli.command("transform-data")
+def populate_new_fields_with_data():
+    """Add default data directly to the database for new required fields."""
+    populate_stakeholder_shortname()
     logger.info("Success.")
