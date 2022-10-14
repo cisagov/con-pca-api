@@ -190,6 +190,7 @@ with app.app_context():
     initialize_recommendations()
     initialize_templates()
     initialize_nonhumans()
+    populate_stakeholder_shortname()
 
 
 class CustomJSONEncoder(JSONEncoder):

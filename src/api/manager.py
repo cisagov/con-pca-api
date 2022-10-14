@@ -361,7 +361,7 @@ class CustomerManager(Manager):
         return super().__init__(
             collection="customer",
             schema=CustomerSchema,
-            unique_indexes=["name", "stakeholder_shortname"],
+            unique_indexes=["name"],
         )
 
 
