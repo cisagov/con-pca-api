@@ -106,7 +106,7 @@ def populate_stakeholder_shortname():
         fields=["_id", "name", "identifier", "stakeholder_shortname"]
     )
     for customer in customers:
-        if customer.get("stakeholder_shortname", "") == "":
+        if not customer.get("stakeholder_shortname"):
             customer_manager.update(
                 document_id=customer["_id"],
                 data={

@@ -179,8 +179,10 @@ logger = setLogger(__name__)
 # Start Background Jobs
 sched = BackgroundScheduler()
 sched.add_job(emails_job, "interval", minutes=EMAIL_MINUTES, max_instances=3)
-sched.add_job(tasks_job, "interval", minutes=TASK_MINUTES)
-sched.add_job(failed_emails_job, "interval", minutes=FAILED_EMAIL_MINUTES)
+sched.add_job(tasks_job, "interval", minutes=TASK_MINUTES, max_instances=3)
+sched.add_job(
+    failed_emails_job, "interval", minutes=FAILED_EMAIL_MINUTES, max_instances=3
+)
 sched.start()
 
 # Initialize Database
@@ -188,6 +190,7 @@ with app.app_context():
     initialize_recommendations()
     initialize_templates()
     initialize_nonhumans()
+    populate_stakeholder_shortname()
 
 
 class CustomJSONEncoder(JSONEncoder):
