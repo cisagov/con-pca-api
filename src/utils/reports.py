@@ -623,9 +623,17 @@ def preview_html(html, customer):
             if i[0:6] == "target":
                 pass
             elif i[0:4] == "fake":
-                context[i] = eval(i + "()")  # nosec
+                try:
+                    context[i] = eval(i + "()")  # nosec
+                except Exception as e:
+                    logger.exception(e)
+                    context[i] = str(i)
             else:
-                context[i] = eval(i)  # nosec
+                try:
+                    context[i] = eval(i)  # nosec
+                except Exception as e:
+                    logger.exception(e)
+                    context[i] = str(i)
         except Exception as e:
             logger.exception(e)
             context[i] = i
