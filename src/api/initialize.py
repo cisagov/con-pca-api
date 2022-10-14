@@ -4,11 +4,17 @@ import json
 import os
 
 # cisagov Libraries
-from api.manager import NonHumanManager, RecommendationManager, TemplateManager
+from api.manager import (
+    CustomerManager,
+    NonHumanManager,
+    RecommendationManager,
+    TemplateManager,
+)
 from utils.logging import setLogger
 
 logger = setLogger(__name__)
 
+customer_manager = CustomerManager()
 recommendation_manager = RecommendationManager()
 template_manager = TemplateManager()
 nonhuman_manager = NonHumanManager()
@@ -92,3 +98,19 @@ def initialize_recommendations():
         logger.info(f"Found {len(recommendations)} to create.")
     recommendation_manager.save_many(recommendations)
     logger.info("Recommendations initialized")
+
+
+def populate_stakeholder_shortname():
+    """Populate the stakeholder_shortname field with the same name as customer_identifier if empty."""
+    customers = customer_manager.all(
+        fields=["_id", "name", "identifier", "stakeholder_shortname"]
+    )
+    for customer in customers:
+        if customer.get("stakeholder_shortname", "") == "":
+            customer_manager.update(
+                document_id=customer["_id"],
+                data={
+                    "name": customer["name"],
+                    "stakeholder_shortname": customer["identifier"],
+                },
+            )
