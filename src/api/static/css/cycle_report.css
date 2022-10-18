@@ -197,17 +197,17 @@ tbody > tr:nth-child(even) {
 #cover-cycle {
   color: white;
   position: absolute;
-  top: 478px;
-  left: 555px;
+  top: 477px;
+  left: 551px;
   background-color: #6589a9;
-  font-size: 8pt;
+  font-size: 5.25pt;
 }
 
 #cover-date {
   color: white;
   position: absolute;
-  top: 505px;
-  left: 555px;
+  top: 506px;
+  left: 551px;
   font-size: 8pt;
 }
 
@@ -276,17 +276,17 @@ tbody > tr:nth-child(even) {
 #toc-cycle {
   color: white;
   position: absolute;
-  top: 190px;
-  left: 590px;
+  top: 189px;
+  left: 587px;
   background-color: #6892bc;
-  font-size: 8pt;
+  font-size: 5.25pt;
 }
 
 #toc-date {
   color: white;
   position: absolute;
   top: 220px;
-  left: 590px;
+  left: 587px;
   font-size: 8pt;
 }
 
@@ -341,20 +341,20 @@ tbody > tr:nth-child(even) {
 #report-card-box {
   background-color: #005288;
   width: 8.5in;
-  height: 1.875in;
+  height: 1.5in;
 }
 
 #report-card-logo {
   position: absolute;
   width: 1.25in;
-  top: 0.3125in;
+  top: 0.115in;
   left: 0.5in;
 }
 
 #report-card-customer {
   position: absolute;
   right: 0.5in;
-  top: 0.3125in;
+  top: 0.2in;
   color: white;
   text-align: end;
   font-size: 14pt;
