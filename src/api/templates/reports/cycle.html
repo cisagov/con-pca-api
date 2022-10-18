@@ -50,7 +50,7 @@
       />
       <p id="cover-assessment">Phishing Campaign Assessment</p>
       <p id="cover-report">Cycle Report</p>
-      <p id="cover-cycle">PCA{{ cycle._id | upper }}</p>
+      <p id="cover-cycle">PCA {{ cycle._id | upper }}</p>
       <p id="cover-date">{{ datetime.utcnow().strftime('%b %d, %Y') }}</p>
       <h2 id="cover-customer">
         {{ customer.name }}
@@ -91,7 +91,7 @@
       />
       <p id="toc-assessment">Phishing Campaign Assessment</p>
       <p id="toc-report">Cycle Report</p>
-      <p id="toc-cycle">PCA{{ cycle._id | upper }}</p>
+      <p id="toc-cycle">PCA {{ cycle._id | upper }}</p>
       <p id="toc-date">{{ datetime.utcnow().strftime('%b %d, %Y') }}</p>
 
       <h2 id="toc-header">Table of Contents</h2>
@@ -99,23 +99,23 @@
         <dl>
           <dt>
             <span>1.</span
-            ><a href="#howtousethisreport"> HOW TO USE THIS REPORT</a>
+            ><a href="#howtousethisreport"> How To Use This Report</a>
           </dt>
           <dd>3</dd>
         </dl>
         <dl>
-          <dt><span>2.</span><a href="#reportcard"> REPORT CARD</a></dt>
+          <dt><span>2.</span><a href="#reportcard"> Report Card</a></dt>
           <dd>4</dd>
         </dl>
         <dl>
-          <dt><span>3.</span><a href="#framework"> FRAMEWORK</a></dt>
+          <dt><span>3.</span><a href="#framework"> Framework</a></dt>
           <dd>5</dd>
         </dl>
         <dl>
           <dt>
             <span>4.</span
             ><a href="#redflagsandsophisticatedtechniques">
-              RED FLAGS AND SOPHISTICATED TECHNIQUES</a
+              Red Flags And Sophisticated Techniques</a
             >
           </dt>
           <dd>6</dd>
@@ -123,19 +123,19 @@
         <dl>
           <dt>
             <span>5.</span
-            ><a href="#performanceovertime"> PERFORMANCE OVER TIME</a>
+            ><a href="#performanceovertime"> Performance Over Time</a>
           </dt>
           <dd>7</dd>
         </dl>
         <dl>
-          <dt><span>6.</span><a href="#timeintervals"> TIME INTERVALS</a></dt>
+          <dt><span>6.</span><a href="#timeintervals"> Time Intervals</a></dt>
           <dd>8</dd>
         </dl>
         <dl>
           <dt>
             <span>7.</span
             ><a href="#phishingtemplatesforthiscycle">
-              PHISHING TEMPLATES FOR THIS CYCLE</a
+              Phishing Templates For This Cycle</a
             >
           </dt>
           <dd>9</dd>
@@ -199,7 +199,7 @@
         report to strengthen your security posture. Here’s a basic flow:
       </p>
       <ol style="margin-left: 0.18in">
-        <li>
+        <li class="indent">
           <a href="#reportcard"><b>Look at the summary report card.</b></a> The
           report card contains high level results for this cycle and a quick
           comparison to the previous cycles. If this is your first report, you
@@ -207,7 +207,7 @@
           to make comparisons against, though that data will exist in your next
           report.
         </li>
-        <li>
+        <li class="indent">
           <a href="#framework"
             ><b>Read the framework in which to understand results.</b></a
           >
@@ -217,7 +217,7 @@
           lower likelihood of being clicked. CISA does not expect click rates
           for all deception levels to reach and sustain zero percent.
         </li>
-        <li>
+        <li class="indent">
           <a href="#redflagsandsophisticatedtechniques"
             ><b
               >Review the red flags and the sophisticated techniques ordered by
@@ -229,7 +229,7 @@
           targeted users are potentially less aware of and may benefit
           additional training on.
         </li>
-        <li>
+        <li class="indent">
           <a href="#performanceovertime"
             ><b>See how performance has changed over time.</b></a
           >
@@ -239,7 +239,7 @@
           decrease over time and to a level deemed acceptable based on your
           organization’s risk management posture.
         </li>
-        <li>
+        <li class="indent">
           <a href="#phishingtemplatesforthiscycle"
             ><b>Review the details of each campaign.</b></a
           >
@@ -247,7 +247,7 @@
           click rate results to understand the context in which the red flags
           and sophisticated techniques were used.
         </li>
-        <li>
+        <li class="indent">
           <b>Compare click results to user reports of phishing.</b> If you have
           an established process for collecting reports of phishing,
           <a href="#attachments">the attachments section</a> provides
@@ -258,7 +258,7 @@
           clicks the link does not report or does not realize they have been
           phished.
         </li>
-        <li>
+        <li class="indent">
           <b>Send an updated target list.</b> If you’ve experienced personnel
           changes since the start of this last cycle, send an updated email
           target list to vulnerability@cisa.dhs.gov prior to the start of your
@@ -267,7 +267,7 @@
           %Y') }}.
         </li>
       </ol>
-      <p>
+      <p class="indent">
         If you have any questions about this report or feedback on how to
         improve the PCA service, email vulnerability@cisa.dhs.gov.
       </p>
@@ -290,7 +290,7 @@
       <div id="report-card-bottom">
         <div class="d-flex">
           <div class="d-flex flex-column">
-            <div style="font-size: 18pt" class="dhs-blue">TOTAL TARGETS</div>
+            <div style="font-size: 18pt" class="dhs-blue">Total Targets</div>
             <div style="font-size: 34pt; margin-top: 0.185in">
               {{ cycle.target_count }}
             </div>
@@ -341,7 +341,7 @@
         ></div>
         <div class="d-flex">
           <div class="d-flex flex-column" style="flex: 1 1 0">
-            <div style="font-size: 18pt" class="dhs-blue">CHANGES</div>
+            <div style="font-size: 18pt" class="dhs-blue">Changes</div>
             <div style="font-size: 14pt; margin-top: 0.125in">
               <b>Current Cycle</b>
             </div>
@@ -398,7 +398,7 @@
               ><br />
             </div>
             <div class="report-card-changes-text" style="margin-top: 0.4in">
-              Deception level with with highest click rate:
+              Deception Level With Highest Click Rate:
               <b
                 >{{ getMaxTemplateLevel(cycle.stats.stats.low.clicked.ratio,
                 cycle.stats.stats.moderate.clicked.ratio,
@@ -406,7 +406,7 @@
               </b>
             </div>
             <div class="report-card-changes-text" style="margin-top: 0.05in">
-              Deception level with fastest first click time average:
+              Deception Level With Fastest Average First Click Time:
               <b
                 >{{ getMaxTemplateLevel(cycle.stats.stats.low.clicked.average,
                 cycle.stats.stats.moderate.clicked.average,
@@ -461,22 +461,22 @@
               ><br />
             </div>
             <div class="report-card-changes-text" style="margin-top: 0.4in">
+              Deception Level With Highest Click Rate:
               <b
                 >{{
                 getMaxTemplateLevel(previous_cycle.stats.stats.low.clicked.ratio,
                 previous_cycle.stats.stats.moderate.clicked.ratio,
                 previous_cycle.stats.stats.high.clicked.ratio) }}
               </b>
-              Template With Highest Click Rate
             </div>
             <div class="report-card-changes-text" style="margin-top: 0.05in">
+              Deception Level With Fastest Average First Click Time:
               <b
                 >{{
                 getMaxTemplateLevel(previous_cycle.stats.stats.low.clicked.average,
                 previous_cycle.stats.stats.moderate.clicked.average,
                 previous_cycle.stats.stats.high.clicked.average) }}
               </b>
-              Template With Fastest First Click Average
             </div>
             {% else %}
             <p style="width: 160px" class="report-card-changes-text">
@@ -604,7 +604,7 @@
               <div
                 class="d-flex flex-column report-card-deception-text align-self-center"
               >
-                <div style="color: #3d98c1">LOW</div>
+                <div style="color: #3d98c1">Low</div>
                 <div
                   class="template-subject"
                   style="font-size: 10pt; color: #3d98c1"
@@ -656,7 +656,7 @@
               <div
                 class="d-flex flex-column report-card-deception-text align-self-center"
               >
-                <div style="color: #0078ae">MODERATE</div>
+                <div style="color: #0078ae">Moderate</div>
                 <div
                   class="template-subject"
                   style="font-size: 10pt; color: #0078ae"
@@ -705,7 +705,7 @@
               <div
                 class="d-flex flex-column report-card-deception-text align-self-center"
               >
-                <div style="color: #005b84">HIGH</div>
+                <div style="color: #005b84">High</div>
                 <div
                   class="template-subject"
                   style="font-size: 10pt; color: #005b84"
@@ -757,64 +757,64 @@
         overall deception level:
       </p>
       <ul>
-        <li>
+        <li class="indent">
           <b>Sophisticated techniques </b>are indicators used to increase the
           deception level by making an email appear normal, expected, and
           relevant to fool email recipients into acting before questioning or
           investigating the email’s legitimacy.
         </li>
-        <li>
+        <li class="indent">
           <b>Red flags </b>are indicators used to lower an email’s deception
           level by undermining its legitimacy and arousing user suspicion by
           appearing unusual, out of place, or unfamiliar.
         </li>
       </ul>
-      <p>Deception levels range from low to high:</p>
+      <p class="indent">Deception levels range from low to high:</p>
       <ul>
-        <li>
+        <li class="indent">
           <b>Low deception </b>emails are typically the easiest to detect and
           contain more red flags than sophisticated techniques.
         </li>
-        <li>
+        <li class="indent">
           <b>Moderate deception </b>emails may initially appear legitimate due
           to sophisticated techniques but a similar number of red flags may
           arouse enough suspicion for the email recipient to reject the email as
           legitimate.
         </li>
-        <li>
+        <li class="indent">
           <b>High deception </b>emails are typically the hardest to detect and
           contain more sophisticated techniques than red flags.
         </li>
       </ul>
-      <p>
+      <p class="indent">
         CISA does not expect click rates for all deception levels to reach and
         sustain zero percent. Effective security awareness training, however,
         should result in a noticeable click rate decrease over time and to a
         level deemed acceptable based on your organization’s risk management
         posture.
       </p>
-      <p>
+      <p class="indent">
         CISA expects regular awareness training to be part of a multi-layered,
         anti-phishing strategy that at least also includes:
       </p>
       <ul>
-        <li>
+        <li class="indent">
           <b>Established reporting processes. </b>Providing email users a simple
           means of reporting suspected phishing attacks decreases the window of
           opportunity for the attacker and increases the time your security team
           has to detect and respond to a potential breach.
         </li>
-        <li>
+        <li class="indent">
           <b>Long and strong passwords. </b>Allowing network users to have a
           password manager to ensure they have unique, long, and strong
           passwords for each account.
         </li>
-        <li>
+        <li class="indent">
           <b>Using multi-factor authentication (MFA). </b>Enabling MFA can help
           prevent adversaries from gaining access to your systems even if your
           password is compromised.
         </li>
-        <li>
+        <li class="indent">
           <b>Installing and updating antivirus software. </b>Ensuring all your
           network connected devices are equipped with regularly updated
           antivirus software, firewalls, email filters, and antispyware to stop
@@ -1274,11 +1274,11 @@
     <a name="definitions"></a>
     <div class="page">
       <div class="page-header">Appendix A: Definitions</div>
-      <p style="margin-top: 0.25in">
+      <p style="margin-top: 0.25in" class="indent">
         The following are definitions for terms found within the report.
       </p>
       <ul>
-        <li style="margin: 15px 0">
+        <li style="margin: 15px 0" class="indent">
           <b>Click Rate</b> is the total number of emails with "malicious" links
           that targets clicked at least once, divided by the total numbers of
           emails sent. Of the {{ cycle.stats.stats.all.sent.count }} emails
@@ -1291,11 +1291,11 @@
           <b>Report Rate</b> is the total number of user reports that were sent
           to the helpdesk, divided by the total phishing emails sent.
         </li> -->
-        <li style="margin: 15px 0">
+        <li style="margin: 15px 0" class="indent">
           <b>Click Time</b> is the time CISA sent the phishing email minus the
           time the user clicked the link within the email.
         </li>
-        <li style="margin: 15px 0">
+        <li style="margin: 15px 0" class="indent">
           <b>Average time to first click</b> is the average click time of the
           click time for each target that clicked a "malicious" link.
         </li>
@@ -1312,13 +1312,13 @@
     <div class="page">
       {% if loop.first %}
       <div class="page-header">Appendix B: Red Flag Indicators</div>
-      <p style="margin-top: 0.25in">
+      <p style="margin-top: 0.25in" class="indent">
         The following are definitions for <b>Red Flag</b> indicators.
       </p>
       {% endif %}
       <ul>
         {% if pg %} {% for rec in pg | sort(attribute="title") %}
-        <li style="margin: 15px 0">
+        <li style="margin: 15px 0" class="indent">
           <b>{{ rec.title }} -</b> {{ rec.description }}
         </li>
         {% endfor %}{% endif %}
@@ -1336,13 +1336,13 @@
     <div class="page">
       {% if loop.first %}
       <div class="page-header">Appendix C: Sophisticated Techniques</div>
-      <p style="margin-top: 0.25in">
+      <p style="margin-top: 0.25in" class="indent">
         The following are definitions for <b>Sophisticated Techniques</b>.
       </p>
       {% endif %}
       <ul>
         {% if pg %} {% for rec in pg | sort(attribute="title") %}
-        <li style="margin: 15px 0">
+        <li style="margin: 15px 0" class="indent">
           <b>{{ rec.title }} -</b> {{ rec.description }}
         </li>
         {% endfor %}{% endif %}
@@ -1359,26 +1359,28 @@
     <a name="attachments"></a>
     <div class="page">
       <p class="page-header">Appendix D: Attachments</p>
-      <p>
+      <p class="indent">
         The raw data presented in this report is attached to this pdf in CSV
         format. At present the data is organized into five separate files:
       </p>
       <ul>
-        <li>indicator_stats.csv</li>
-        <li>overall_stats.csv</li>
-        <li>template_stats.csv</li>
-        <li>time_stats.csv</li>
-        <li>user_group_stats.csv</li>
+        <li class="indent">indicator_stats.csv</li>
+        <li class="indent">overall_stats.csv</li>
+        <li class="indent">template_stats.csv</li>
+        <li class="indent">time_stats.csv</li>
+        <li class="indent">user_group_stats.csv</li>
       </ul>
-      <p>
+      <p class="indent">
         You can access the CSV files attached to this report by following these
         steps:
       </p>
       <ul>
-        <li>Install Adobe Acrobat DC Reader on your machine</li>
-        <li>Open this report PDF file in Adobe Acrobat DC Reader</li>
-        <li>Click on Attachments in the left pane</li>
-        <li>
+        <li class="indent">Install Adobe Acrobat DC Reader on your machine</li>
+        <li class="indent">
+          Open this report PDF file in Adobe Acrobat DC Reader
+        </li>
+        <li class="indent">Click on Attachments in the left pane</li>
+        <li class="indent">
           You should now be able to access CSV files attached to this report
           pdf.
         </li>
@@ -1404,12 +1406,12 @@
         <p>November 3, 2021</p>
         <p>Reducing the Significant Risk of Known Exploited Vulnerabilities</p>
       </div>
-      <p>
+      <p class="indent">
         Pursuant to BOD 22-01 published on November 3rd, 2021, the Cybersecurity
         and Infrastructure Security Agency has developed and published a catalog
         of known exploited vulnerabilities.
       </p>
-      <p>
+      <p class="indent">
         While the BOD only requires action from federal civilian agencies, the
         catalog is provided for your awareness. CISA strongly recommends that
         private businesses and state, local, tribal, and territorial (SLTT)
@@ -1417,31 +1419,31 @@
         vulnerabilities to strengthen their security and resilience posture.
         Building collective resilience requires action across all stakeholders.
       </p>
-      <p>Thresholds and conditions for catalog updates:</p>
-      <p>
+      <p class="indent">Thresholds and conditions for catalog updates:</p>
+      <p class="indent">
         CISA will update this catalog with additional exploited vulnerabilities
         as they become known, subject to an executive level CISA review and when
         they satisfy the following thresholds:
       </p>
       <ul style="margin-left: 0.18in">
-        <li>
+        <li class="indent">
           The vulnerability has an assigned Common Vulnerabilities and Exposures
           (CVE) ID.
         </li>
-        <li>
+        <li class="indent">
           There is reliable evidence that the vulnerability has been actively
           exploited in the wild.
         </li>
-        <li>
+        <li class="indent">
           There is a clear remediation action for the vulnerability, such as a
           vendor provided update.
         </li>
       </ul>
-      <p>
+      <p class="indent">
         To report newly exploited vulnerabilities that are not in this catalog
         please email CISA Central at central@cisa.dhs.gov
       </p>
-      <p>
+      <p class="indent">
         For more information on this BOD please see cyber.dhs.gov - Binding
         Operational Directive 22-01 (https://cyber.dhs.gov/bod/22-01/)
       </p>
