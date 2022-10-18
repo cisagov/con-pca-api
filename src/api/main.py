@@ -181,7 +181,7 @@ sched = BackgroundScheduler()
 sched.add_job(emails_job, "interval", minutes=EMAIL_MINUTES, max_instances=20)
 sched.add_job(tasks_job, "interval", minutes=TASK_MINUTES, max_instances=20)
 sched.add_job(
-    failed_emails_job, "interval", minutes=FAILED_EMAIL_MINUTES, max_instances=20
+    failed_emails_job, "interval", minutes=FAILED_EMAIL_MINUTES, max_instances=3
 )
 sched.start()
 
