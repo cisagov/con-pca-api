@@ -6,10 +6,10 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from api.config.environment import EMAIL_MINUTES, FAILED_EMAIL_MINUTES, TASK_MINUTES
 from api.phish import emails_job
 from api.tasks import failed_emails_job, tasks_job
-
 from utils.logging import setLogger
 
 logger = setLogger("apscheduler")
+
 
 def startScheduler():
     """Start the scheduler and add tasks."""
