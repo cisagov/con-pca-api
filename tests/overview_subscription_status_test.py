@@ -25,7 +25,7 @@ class TestSubscriptionStatus:
                 pytest.fail("expected a dict")
 
         if subscription_status[0]:
-            # assert subscription_status[0]["_id"] is not None
+            assert subscription_status[0]["_id"] is not None
             if not isinstance(subscription_status[0]["primary_contact"], dict):
                 pytest.fail("expected a dict")
 
