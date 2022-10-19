@@ -30,7 +30,9 @@ class TestSubscriptionStatus:
                 pytest.fail("expected a dict")
 
             try:
-                if not isinstance(subscription_status[0]["primary_contact"]["email"], str):
+                if not isinstance(
+                    subscription_status[0]["primary_contact"]["email"], str
+                ):
                     pytest.fail("expected a str")
             except KeyError:
                 pytest.fail("email property does not exist")
