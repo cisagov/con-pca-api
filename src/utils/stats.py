@@ -248,6 +248,14 @@ def get_rolling_averages(n_days):
     sent = target_manager.count(
         {"sent_date": {"$gte": datetime.now() - timedelta(days=n_days)}}
     )
+    scheduled = target_manager.count(
+        {"send_date": {"$gte": datetime.now() - timedelta(days=n_days)}}
+    )
+    try:
+        ratio = sent / scheduled
+    except ZeroDivisionError:
+        ratio = 0
+    ratio = round(ratio, 4)
     clicked = target_manager.count(
         {
             "sent_date": {"$gte": datetime.now() - timedelta(days=n_days)},
@@ -255,7 +263,7 @@ def get_rolling_averages(n_days):
         }
     )
 
-    return sent, clicked
+    return sent, scheduled, ratio, clicked
 
 
 def add_template_to_stats_by_level(stats, target, timeline):
