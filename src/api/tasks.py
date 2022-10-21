@@ -2,6 +2,7 @@
 # Standard Python Libraries
 from datetime import datetime, timedelta
 import os
+import time
 from uuid import uuid4
 
 # Third-Party Libraries
@@ -36,12 +37,14 @@ template_manager = TemplateManager()
 def tasks_job():
     """Run subscription tasks."""
     with app.app_context():
+        start_time = time.time()
         while True:
             subscription = get_subscription()
             if not subscription:
                 logger.info("No more subscription tasks to process.")
                 break
             process_subscription(subscription)
+        logger.info("Tasks job took-- %s seconds ---" % (time.time() - start_time))
 
 
 def failed_emails_job():
