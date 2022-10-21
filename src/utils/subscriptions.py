@@ -18,7 +18,8 @@ from api.manager import (
     TemplateManager,
 )
 from utils.templates import get_deception_level
-from utils.time import get_yearly_minutes
+
+# from utils.time import get_yearly_minutes
 
 customer_manager = CustomerManager()
 cycle_manager = CycleManager()
@@ -181,12 +182,12 @@ def get_initial_tasks(subscription, cycle):
     cycle_minutes = (
         subscription["cycle_length_minutes"] + subscription["cooldown_minutes"]
     )
-    yearly_minutes = get_yearly_minutes()
+    # yearly_minutes = get_yearly_minutes()
     task_types = {
         "start_subscription_email": start_date,
         "status_report": start_date + timedelta(minutes=report_minutes),
         "cycle_report": start_date + timedelta(minutes=cycle_minutes),
-        "yearly_report": start_date + timedelta(minutes=yearly_minutes),
+        # "yearly_report": start_date + timedelta(minutes=yearly_minutes),
         "end_cycle": start_date
         + timedelta(
             minutes=(cycle_minutes + subscription.get("buffer_time_minutes", 0))

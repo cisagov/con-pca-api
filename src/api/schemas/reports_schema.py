@@ -16,6 +16,23 @@ class SectorIndustryReportSchema(Schema):
     emails_clicked_ratio = fields.Float()
 
 
+class EmailSendingReportSchema(Schema):
+    """EmailSendingReportSchema."""
+
+    emails_sent_24_hours = fields.Integer()
+    emails_scheduled_24_hours = fields.Integer()
+    emails_sent_on_time_24_hours_ratio = fields.Float()
+    emails_clicked_24_hours = fields.Integer()
+    emails_sent_7_days = fields.Integer()
+    emails_scheduled_7_days = fields.Integer()
+    emails_sent_on_time_7_days_ratio = fields.Float()
+    emails_clicked_7_days = fields.Integer()
+    emails_sent_30_days = fields.Integer()
+    emails_scheduled_30_days = fields.Integer()
+    emails_sent_on_time_30_days_ratio = fields.Float()
+    emails_clicked_30_days = fields.Integer()
+
+
 class AggregateReportsSchema(Schema):
     """AggregateStatsSchema."""
 
@@ -24,10 +41,7 @@ class AggregateReportsSchema(Schema):
     status_reports_sent = fields.Integer()
     cycle_reports_sent = fields.Integer()
     yearly_reports_sent = fields.Integer()
-    emails_sent_7_days = fields.Integer()
-    emails_clicked_7_days = fields.Integer()
-    emails_sent_30_days = fields.Integer()
-    emails_clicked_30_days = fields.Integer()
+    email_sending_stats = fields.Nested(EmailSendingReportSchema())
     new_subscriptions = fields.Integer()
     ongoing_subscriptions = fields.Integer()
     stopped_subscriptions = fields.Integer()
