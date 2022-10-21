@@ -122,14 +122,26 @@ class AggregateReportView(MethodView):
 
         context.update(get_sector_industry_report())
 
+        email_sending_stats = {}
         (
-            context["emails_sent_7_days"],
-            context["emails_clicked_7_days"],
+            email_sending_stats["emails_sent_24_hours"],
+            email_sending_stats["emails_scheduled_24_hours"],
+            email_sending_stats["emails_sent_on_time_24_hours_ratio"],
+            email_sending_stats["emails_clicked_24_hours"],
+        ) = get_rolling_averages(1)
+        (
+            email_sending_stats["emails_sent_7_days"],
+            email_sending_stats["emails_scheduled_7_days"],
+            email_sending_stats["emails_sent_on_time_7_days_ratio"],
+            email_sending_stats["emails_clicked_7_days"],
         ) = get_rolling_averages(7)
         (
-            context["emails_sent_30_days"],
-            context["emails_clicked_30_days"],
+            email_sending_stats["emails_sent_30_days"],
+            email_sending_stats["emails_scheduled_30_days"],
+            email_sending_stats["emails_sent_on_time_30_days_ratio"],
+            email_sending_stats["emails_clicked_30_days"],
         ) = get_rolling_averages(30)
+        context["email_sending_stats"] = email_sending_stats
 
         context["all_customer_stats"] = get_all_customer_stats()
 
