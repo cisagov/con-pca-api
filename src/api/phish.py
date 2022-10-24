@@ -3,7 +3,6 @@
 import base64
 from datetime import datetime
 from itertools import groupby
-import time
 
 # Third-Party Libraries
 from flask import render_template_string
@@ -35,7 +34,6 @@ template_manager = TemplateManager()
 def emails_job():
     """Email job to run every minute."""
     with app.app_context():
-        start_time = time.time()
         targets = []
         cycle_ids = get_active_cycles()
         if not cycle_ids:
@@ -52,7 +50,6 @@ def emails_job():
             logger.info("Processed all targets.")
         else:
             logger.info("No targets to send to.")
-        logger.info("Emails job took-- %s seconds ---" % (time.time() - start_time))
 
 
 def get_active_cycles():
