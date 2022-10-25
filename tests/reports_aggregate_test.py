@@ -39,23 +39,45 @@ class TestReportsAggregate:
                     pytest.fail("expected a dict")
 
                     if reportsaggregate["all_customer_stats"]["all"]:
-                        if not isinstance(reportsaggregate["all_customer_stats"]["all"]["reported"], dict):
+                        if not isinstance(
+                            reportsaggregate["all_customer_stats"]["all"]["reported"],
+                            dict,
+                        ):
                             pytest.fail("expected a dict")
 
             try:
-                if not isinstance(reportsaggregate["all_customer_stats"]["all"]["reported"]["count"], int):
+                if not isinstance(
+                    reportsaggregate["all_customer_stats"]["all"]["reported"]["count"],
+                    int,
+                ):
                     pytest.fail("expected a int for count")
 
-                if not isinstance(reportsaggregate["all_customer_stats"]["all"]["reported"]["average"], int):
+                if not isinstance(
+                    reportsaggregate["all_customer_stats"]["all"]["reported"][
+                        "average"
+                    ],
+                    int,
+                ):
                     pytest.fail("expected a int for average")
 
-                if not isinstance(reportsaggregate["all_customer_stats"]["all"]["reported"]["maximum"], int):
+                if not isinstance(
+                    reportsaggregate["all_customer_stats"]["all"]["reported"][
+                        "maximum"
+                    ],
+                    int,
+                ):
                     pytest.fail("expected a int for maximum")
 
-                if not isinstance(reportsaggregate["all_customer_stats"]["all"]["reported"]["median"], int):
+                if not isinstance(
+                    reportsaggregate["all_customer_stats"]["all"]["reported"]["median"],
+                    int,
+                ):
                     pytest.fail("expected a int for median")
 
-                if not isinstance(reportsaggregate["all_customer_stats"]["all"]["reported"]["ratio"], float):
+                if not isinstance(
+                    reportsaggregate["all_customer_stats"]["all"]["reported"]["ratio"],
+                    float,
+                ):
                     pytest.fail("expected a float")
             except KeyError:
                 pytest.fail("reported properties do not exist")
