@@ -30,6 +30,7 @@ from api.views.auth_views import (
 from api.views.config_views import ConfigView
 from api.views.customer_views import (
     ArchiveCustomerView,
+    CustomersPOCView,
     CustomersView,
     CustomerView,
     SectorIndustryView,
@@ -88,6 +89,7 @@ rules = [
     ("/config/", ConfigView),
     # Customer Views
     ("/customers/", CustomersView),
+    ("/customers/contacts/", CustomersPOCView),
     ("/customer/<customer_id>/", CustomerView),
     ("/archivecustomer/<customer_id>/", ArchiveCustomerView),
     # Cycle Views
@@ -178,8 +180,8 @@ logger = setLogger(__name__)
 
 # Start Background Jobs
 sched = BackgroundScheduler()
-sched.add_job(emails_job, "interval", minutes=EMAIL_MINUTES, max_instances=20)
-sched.add_job(tasks_job, "interval", minutes=TASK_MINUTES, max_instances=20)
+sched.add_job(emails_job, "interval", minutes=EMAIL_MINUTES, max_instances=10)
+sched.add_job(tasks_job, "interval", minutes=TASK_MINUTES, max_instances=10)
 sched.add_job(
     failed_emails_job, "interval", minutes=FAILED_EMAIL_MINUTES, max_instances=3
 )
