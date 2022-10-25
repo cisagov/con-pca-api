@@ -178,8 +178,32 @@ class SubscriptionTestView(MethodView):
 
     def post(self, subscription_id):
         """Launch a test for the subscription."""
-        resp, status_code = test_subscription(subscription_id, request.json["contacts"])
-        return jsonify(resp), status_code
+        if request.args.get("overload"):
+            # Standard Python Libraries
+            from datetime import datetime, timedelta
+            from uuid import uuid4
+
+            number_of_tasks = int(request.args.get("number_of_tasks"))
+            subscription = subscription_manager.get(document_id=subscription_id)
+            for i in range(number_of_tasks):
+                task = {
+                    "task_uuid": str(uuid4()),
+                    "task_type": "cycle_report",
+                    "scheduled_date": datetime.now() + timedelta(minutes=1),
+                    "executed": False,
+                }
+                subscription_manager.add_to_list(
+                    document_id=subscription["_id"],
+                    field="tasks",
+                    data=task,
+                )
+            return jsonify({"success": True})
+
+        else:
+            resp, status_code = test_subscription(
+                subscription_id, request.json["contacts"]
+            )
+            return jsonify(resp), status_code
 
 
 class SubscriptionValidView(MethodView):
