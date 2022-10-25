@@ -79,6 +79,33 @@ class ArchiveCustomerView(MethodView):
             return jsonify({"success": False})
 
 
+class CustomersPOCView(MethodView):
+    """CustomersPOCView."""
+
+    def get(self):
+        """Get."""
+        customers = customer_manager.all()
+        POCs = []
+        for customer in customers:
+            active_subscriptions = subscription_manager.all(
+                params={
+                    "customer_id": customer.get("_id"),
+                    "status": {"$in": ["queued", "running"]},
+                },
+                fields=["_id", "name"],
+            )
+            for contact in customer.get("contact_list"):
+                contact["company_name"] = customer.get("name")
+                contact["active_subscriptions"] = (
+                    True if active_subscriptions else False
+                )
+
+                contact.pop("active", None)
+                POCs.append(contact)
+
+        return jsonify(POCs)
+
+
 class SectorIndustryView(MethodView):
     """SectorIndustryView."""
 
