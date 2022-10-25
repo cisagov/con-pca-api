@@ -246,10 +246,20 @@ def generate_cycle_stats(cycle, targets, nonhuman=False):
 def get_rolling_averages(n_days):
     """Get total number of emails sent/clicked by the system over the last x days."""
     sent = target_manager.count(
-        {"sent_date": {"$gte": datetime.now() - timedelta(days=n_days)}}
+        {
+            "sent_date": {
+                "$gte": datetime.now() - timedelta(days=n_days),
+                "$lte": datetime.now(),
+            }
+        }
     )
     scheduled = target_manager.count(
-        {"send_date": {"$gte": datetime.now() - timedelta(days=n_days)}}
+        {
+            "send_date": {
+                "$gte": datetime.now() - timedelta(days=n_days),
+                "$lte": datetime.now(),
+            }
+        }
     )
     try:
         ratio = sent / scheduled
@@ -258,7 +268,10 @@ def get_rolling_averages(n_days):
     ratio = round(ratio, 4)
     clicked = target_manager.count(
         {
-            "sent_date": {"$gte": datetime.now() - timedelta(days=n_days)},
+            "sent_date": {
+                "$gte": datetime.now() - timedelta(days=n_days),
+                "$lte": datetime.now(),
+            },
             "timeline": {"$elemMatch": {"message": "clicked"}},
         }
     )
