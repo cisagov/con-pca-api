@@ -4,6 +4,7 @@ from datetime import date
 from types import FunctionType, MethodType
 
 # Third-Party Libraries
+from apscheduler.schedulers.background import BackgroundScheduler
 from flask import render_template
 from flask.json import JSONEncoder
 from marshmallow.exceptions import ValidationError
@@ -11,12 +12,15 @@ from marshmallow.exceptions import ValidationError
 # cisagov Libraries
 from api.app import app
 from api.commands.load_test_data import load_test_data
+from api.config.environment import EMAIL_MINUTES, FAILED_EMAIL_MINUTES, TASK_MINUTES
 from api.initialize import (
     initialize_nonhumans,
     initialize_recommendations,
     initialize_templates,
     populate_stakeholder_shortname,
 )
+from api.phish import emails_job
+from api.tasks import failed_emails_job, tasks_job
 from api.views.auth_views import (
     LoginView,
     RefreshTokenView,
@@ -26,6 +30,7 @@ from api.views.auth_views import (
 from api.views.config_views import ConfigView
 from api.views.customer_views import (
     ArchiveCustomerView,
+    CustomersPOCView,
     CustomersView,
     CustomerView,
     SectorIndustryView,
@@ -73,7 +78,6 @@ from api.views.template_views import (
 )
 from api.views.user_views import UserConfirmView, UsersView, UserView
 from api.views.utility_views import ImageEncodeView, RandomPasswordView, TestEmailView
-from utils.apscheduler import startScheduler
 from utils.decorators.auth import auth_required
 from utils.logging import setLogger
 
@@ -85,6 +89,7 @@ rules = [
     ("/config/", ConfigView),
     # Customer Views
     ("/customers/", CustomersView),
+    ("/customers/contacts/", CustomersPOCView),
     ("/customer/<customer_id>/", CustomerView),
     ("/archivecustomer/<customer_id>/", ArchiveCustomerView),
     # Cycle Views
@@ -174,7 +179,13 @@ for rule in login_rules:
 logger = setLogger(__name__)
 
 # Start Background Jobs
-sched = startScheduler()
+sched = BackgroundScheduler()
+sched.add_job(emails_job, "interval", minutes=EMAIL_MINUTES, max_instances=10)
+sched.add_job(tasks_job, "interval", minutes=TASK_MINUTES, max_instances=10)
+sched.add_job(
+    failed_emails_job, "interval", minutes=FAILED_EMAIL_MINUTES, max_instances=3
+)
+sched.start()
 
 # Initialize Database
 with app.app_context():
