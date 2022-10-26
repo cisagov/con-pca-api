@@ -1,6 +1,6 @@
 """Scripts to run when application starts."""
 # Standard Python Libraries
-from datetime import datetime, timedelta
+from datetime import datetime
 import json
 import os
 
@@ -8,9 +8,9 @@ import os
 import pytz  # type: ignore
 
 # cisagov Libraries
-from api.config import environment
 from api.manager import (
     CustomerManager,
+    CycleManager,
     NonHumanManager,
     RecommendationManager,
     SubscriptionManager,
@@ -23,6 +23,7 @@ from utils.templates import select_templates
 logger = setLogger(__name__)
 
 customer_manager = CustomerManager()
+cycle_manager = CycleManager()
 recommendation_manager = RecommendationManager()
 subscription_manager = SubscriptionManager()
 template_manager = TemplateManager()
@@ -137,34 +138,47 @@ def restart_subscriptions():
             "continuous_subscription": True,
         },
     )
+    cycles = cycle_manager.all(fields=["subscription_id", "end_date", "active"])
+
+    [
+        dict(
+            s,
+            **{
+                "cycle_start_date": c["start_date"],
+                "cycle_end_date": c["end_date"],
+                "active": c["active"],
+            },
+        )
+        for c in cycles
+        for s in subscriptions
+        if c["subscription_id"] == s["_id"]
+    ]
 
     if not subscriptions:
         logger.info("No subscriptions to needed restart.")
         return
 
     for subscription in subscriptions:
-        end_date = (
-            subscription["start_date"]
-            + timedelta(minutes=environment.DELAY_MINUTES)
-            + timedelta(minutes=subscription["cycle_length_minutes"])
-            + timedelta(minutes=subscription["cooldown_minutes"])
-            + timedelta(minutes=subscription["buffer_time_minutes"])
-        )
+        cycles = cycle_manager.all(params={"subscription_id": subscription["_id"]})
+        # get the most recent cycle
+        end_date = sorted(cycles, key=lambda x: x["end_date"], reverse=True)[0][
+            "end_date"
+        ]
+
         now = pytz.utc.localize(datetime.now())
 
         if not end_date <= now:
-            logger.info("Subscriptions are not overdue.")
-            return
-
-        logger.info(f"Restarting subscription {subscription['name']}.")
-        stop_subscription(subscription["_id"])
-        # randomize templates between cycles
-        templates = [
-            t
-            for t in template_manager.all({"retired": False})
-            if t not in subscription["templates_selected"]
-        ]
-        templates_selected = sum(select_templates(templates), [])
-        start_subscription(
-            str(subscription["_id"]), templates_selected=templates_selected
-        )
+            logger.info(f"{subscription['name']} are not overdue.")
+        else:
+            logger.info(f"Restarting subscription {subscription['name']}.")
+            stop_subscription(subscription["_id"])
+            # randomize templates between cycles
+            templates = [
+                t
+                for t in template_manager.all({"retired": False})
+                if t not in subscription["templates_selected"]
+            ]
+            templates_selected = sum(select_templates(templates), [])
+            start_subscription(
+                str(subscription["_id"]), templates_selected=templates_selected
+            )
