@@ -1,21 +1,30 @@
 """Scripts to run when application starts."""
 # Standard Python Libraries
+from datetime import datetime, timedelta
 import json
 import os
 
+# Third-Party Libraries
+import pytz
+
 # cisagov Libraries
+from api.config import environment
 from api.manager import (
     CustomerManager,
     NonHumanManager,
     RecommendationManager,
+    SubscriptionManager,
     TemplateManager,
 )
 from utils.logging import setLogger
+from utils.subscriptions import start_subscription, stop_subscription
+from utils.templates import select_templates
 
 logger = setLogger(__name__)
 
 customer_manager = CustomerManager()
 recommendation_manager = RecommendationManager()
+subscription_manager = SubscriptionManager()
 template_manager = TemplateManager()
 nonhuman_manager = NonHumanManager()
 
@@ -114,3 +123,48 @@ def populate_stakeholder_shortname():
                     "stakeholder_shortname": customer["identifier"],
                 },
             )
+
+
+def restart_subscriptions():
+    """
+    Restart all overdue continuous Subscriptions.
+
+    Note: This is a temporary solution and will be removed soon.
+    """
+    subscriptions = subscription_manager.all(
+        params={
+            "status": {"$in": ["running"]},
+            "continuous_subscription": True,
+        },
+    )
+
+    if not subscriptions:
+        logger.info("No subscriptions to needed restart.")
+        return
+
+    for subscription in subscriptions:
+        end_date = (
+            subscription["start_date"]
+            + timedelta(minutes=environment.DELAY_MINUTES)
+            + timedelta(minutes=subscription["cycle_length_minutes"])
+            + timedelta(minutes=subscription["cooldown_minutes"])
+            + timedelta(minutes=subscription["buffer_time_minutes"])
+        )
+        now = pytz.utc.localize(datetime.now())
+
+        if not end_date <= now:
+            logger.info("Subscriptions are not overdue.")
+            return
+
+        logger.info(f"Restarting subscription {subscription['name']}.")
+        stop_subscription(str(subscription["_id"]))
+        # randomize templates between cycles
+        templates = [
+            t
+            for t in template_manager.all({"retired": False})
+            if t not in subscription["templates_selected"]
+        ]
+        templates_selected = sum(select_templates(templates), [])
+        start_subscription(
+            str(subscription["_id"]), templates_selected=templates_selected
+        )
