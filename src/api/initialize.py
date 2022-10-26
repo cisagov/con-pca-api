@@ -157,7 +157,7 @@ def restart_subscriptions():
             return
 
         logger.info(f"Restarting subscription {subscription['name']}.")
-        stop_subscription(str(subscription["_id"]))
+        stop_subscription(subscription["_id"])
         # randomize templates between cycles
         templates = [
             t
