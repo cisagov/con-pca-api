@@ -153,18 +153,17 @@ def restart_subscriptions():
         now = pytz.utc.localize(datetime.now())
 
         if not end_date <= now:
-            logger.info("Subscriptions are not overdue.")
-            return
-
-        logger.info(f"Restarting subscription {subscription['name']}.")
-        stop_subscription(subscription["_id"])
-        # randomize templates between cycles
-        templates = [
-            t
-            for t in template_manager.all({"retired": False})
-            if t not in subscription["templates_selected"]
-        ]
-        templates_selected = sum(select_templates(templates), [])
-        start_subscription(
-            str(subscription["_id"]), templates_selected=templates_selected
-        )
+            logger.info(f"{subscription['name']} are not overdue.")
+        else:
+            logger.info(f"Restarting subscription {subscription['name']}.")
+            stop_subscription(subscription["_id"])
+            # randomize templates between cycles
+            templates = [
+                t
+                for t in template_manager.all({"retired": False})
+                if t not in subscription["templates_selected"]
+            ]
+            templates_selected = sum(select_templates(templates), [])
+            start_subscription(
+                str(subscription["_id"]), templates_selected=templates_selected
+            )
