@@ -1,6 +1,7 @@
 """Domain manager."""
 # Standard Python Libraries
 from datetime import date
+from logging import INFO, basicConfig
 from types import FunctionType, MethodType
 
 # Third-Party Libraries
@@ -177,6 +178,7 @@ for rule in login_rules:
     url = f"{url_prefix}{rule[0]}"
     app.add_url_rule(url, view_func=rule[1].as_view(url))  # type: ignore
 
+basicConfig(level=INFO)
 logger = setLogger(__name__)
 
 # Start Background Jobs
