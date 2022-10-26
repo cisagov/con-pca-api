@@ -18,6 +18,7 @@ from api.initialize import (
     initialize_recommendations,
     initialize_templates,
     populate_stakeholder_shortname,
+    restart_subscriptions,
 )
 from api.phish import emails_job
 from api.tasks import failed_emails_job, tasks_job
@@ -193,6 +194,7 @@ with app.app_context():
     initialize_templates()
     initialize_nonhumans()
     populate_stakeholder_shortname()
+    restart_subscriptions()
 
 
 class CustomJSONEncoder(JSONEncoder):

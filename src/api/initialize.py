@@ -114,3 +114,12 @@ def populate_stakeholder_shortname():
                     "stakeholder_shortname": customer["identifier"],
                 },
             )
+
+
+def restart_subscriptions():
+    """
+    Restart all overdue continuous Subscriptions.
+
+    Note: This is a temporary solution and will be removed soon.
+    """
+    ...
