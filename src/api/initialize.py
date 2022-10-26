@@ -5,7 +5,7 @@ import json
 import os
 
 # Third-Party Libraries
-import pytz
+import pytz  # type: ignore
 
 # cisagov Libraries
 from api.config import environment
