@@ -88,9 +88,13 @@ def process_subscription(subscription):
         task["executed_date"] = datetime.utcnow()
         logger.info(f"Processing task {task}")
         try:
-            process_task(task, subscription, cycle) if task["scheduled_date"] > (
-                datetime.now(pytz.utc) - timedelta(days=2)
-            ) else None
+            # temporarily allow all previous end_cycle tasks to execute
+            if task["task_type"] == "end_cycle":
+                process_task(task, subscription, cycle)
+            else:
+                process_task(task, subscription, cycle) if task["scheduled_date"] > (
+                    datetime.now(pytz.utc) - timedelta(days=2)
+                ) else None
         except Exception as e:
             logger.exception(
                 f"An exception occurred performing {task['task_type']} task for {subscription['name']} subscription: {e}",
