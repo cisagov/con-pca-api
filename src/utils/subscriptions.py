@@ -107,11 +107,12 @@ def stop_subscription(subscription_id):
     cycle = cycle_manager.get(
         filter_data={
             "active": True,
-            "subscription_id": str(subscription_id),
+            "subscription_id": subscription_id,
         },
         fields=["_id"],
     )
-    cycle_manager.update(cycle["_id"], {"active": False})
+    if cycle:
+        cycle_manager.update(cycle["_id"], {"active": False})
     subscription_manager.update(
         document_id=subscription_id, data={"status": "stopped", "tasks": []}
     )

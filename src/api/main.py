@@ -1,6 +1,7 @@
 """Domain manager."""
 # Standard Python Libraries
 from datetime import date
+from logging import INFO, basicConfig
 from types import FunctionType, MethodType
 
 # Third-Party Libraries
@@ -18,6 +19,7 @@ from api.initialize import (
     initialize_recommendations,
     initialize_templates,
     populate_stakeholder_shortname,
+    restart_subscriptions,
 )
 from api.phish import emails_job
 from api.tasks import failed_emails_job, tasks_job
@@ -176,6 +178,7 @@ for rule in login_rules:
     url = f"{url_prefix}{rule[0]}"
     app.add_url_rule(url, view_func=rule[1].as_view(url))  # type: ignore
 
+basicConfig(level=INFO)
 logger = setLogger(__name__)
 
 # Start Background Jobs
@@ -193,6 +196,7 @@ with app.app_context():
     initialize_templates()
     initialize_nonhumans()
     populate_stakeholder_shortname()
+    restart_subscriptions()
 
 
 class CustomJSONEncoder(JSONEncoder):
