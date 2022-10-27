@@ -1,6 +1,6 @@
 """Stat utils."""
 # Standard Python Libraries
-from datetime import timedelta
+from datetime import datetime, timedelta
 from itertools import groupby
 import statistics
 
@@ -241,6 +241,42 @@ def generate_cycle_stats(cycle, targets, nonhuman=False):
             "target_stats": target_stats,
         }
     )
+
+
+def get_rolling_averages(n_days):
+    """Get total number of emails sent/clicked by the system over the last x days."""
+    sent = target_manager.count(
+        {
+            "sent_date": {
+                "$gte": datetime.now() - timedelta(days=n_days),
+                "$lte": datetime.now(),
+            }
+        }
+    )
+    scheduled = target_manager.count(
+        {
+            "send_date": {
+                "$gte": datetime.now() - timedelta(days=n_days),
+                "$lte": datetime.now(),
+            }
+        }
+    )
+    try:
+        ratio = sent / scheduled
+    except ZeroDivisionError:
+        ratio = 0
+    ratio = round(ratio, 4)
+    clicked = target_manager.count(
+        {
+            "sent_date": {
+                "$gte": datetime.now() - timedelta(days=n_days),
+                "$lte": datetime.now(),
+            },
+            "timeline": {"$elemMatch": {"message": "clicked"}},
+        }
+    )
+
+    return sent, scheduled, ratio, clicked
 
 
 def add_template_to_stats_by_level(stats, target, timeline):

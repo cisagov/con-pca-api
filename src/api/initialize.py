@@ -1,15 +1,31 @@
 """Scripts to run when application starts."""
 # Standard Python Libraries
+from datetime import datetime
 import json
 import os
 
+# Third-Party Libraries
+import pytz  # type: ignore
+
 # cisagov Libraries
-from api.manager import NonHumanManager, RecommendationManager, TemplateManager
+from api.manager import (
+    CustomerManager,
+    CycleManager,
+    NonHumanManager,
+    RecommendationManager,
+    SubscriptionManager,
+    TemplateManager,
+)
 from utils.logging import setLogger
+from utils.subscriptions import start_subscription, stop_subscription
+from utils.templates import select_templates
 
 logger = setLogger(__name__)
 
+customer_manager = CustomerManager()
+cycle_manager = CycleManager()
 recommendation_manager = RecommendationManager()
+subscription_manager = SubscriptionManager()
 template_manager = TemplateManager()
 nonhuman_manager = NonHumanManager()
 
@@ -92,3 +108,63 @@ def initialize_recommendations():
         logger.info(f"Found {len(recommendations)} to create.")
     recommendation_manager.save_many(recommendations)
     logger.info("Recommendations initialized")
+
+
+def populate_stakeholder_shortname():
+    """Populate the stakeholder_shortname field with the same name as customer_identifier if empty."""
+    customers = customer_manager.all(
+        fields=["_id", "name", "identifier", "stakeholder_shortname"]
+    )
+    for customer in customers:
+        if not customer.get("stakeholder_shortname"):
+            customer_manager.update(
+                document_id=customer["_id"],
+                data={
+                    "name": customer["name"],
+                    "stakeholder_shortname": customer["identifier"],
+                },
+            )
+
+
+def restart_subscriptions():
+    """
+    Restart all overdue continuous Subscriptions.
+
+    Note: This is a temporary solution and will be removed soon.
+    """
+    subscriptions = subscription_manager.all(
+        params={
+            "status": {"$in": ["running"]},
+            "continuous_subscription": True,
+        },
+    )
+    cycles = cycle_manager.all(fields=["subscription_id", "end_date", "active"])
+
+    if not subscriptions:
+        logger.info("No subscriptions to needed restart.")
+        return
+
+    for subscription in subscriptions:
+        cycles = cycle_manager.all(params={"subscription_id": subscription["_id"]})
+        # get the most recent cycle
+        end_date = sorted(cycles, key=lambda x: x["end_date"], reverse=True)[0][
+            "end_date"
+        ]
+
+        now = pytz.utc.localize(datetime.now())
+
+        if not end_date <= now:
+            logger.info(f"{subscription['name']} are not overdue.")
+        else:
+            logger.info(f"Restarting subscription {subscription['name']}.")
+            stop_subscription(subscription["_id"])
+            # randomize templates between cycles
+            templates = [
+                t
+                for t in template_manager.all({"retired": False})
+                if t not in subscription["templates_selected"]
+            ]
+            templates_selected = sum(select_templates(templates), [])
+            start_subscription(
+                str(subscription["_id"]), templates_selected=templates_selected
+            )

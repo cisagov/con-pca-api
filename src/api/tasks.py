@@ -21,7 +21,8 @@ from utils.notifications import Notification
 from utils.safelist import generate_safelist_file
 from utils.subscriptions import start_subscription, stop_subscription
 from utils.templates import select_templates
-from utils.time import get_yearly_minutes
+
+# from utils.time import get_yearly_minutes
 
 logger = setLogger(__name__)
 
@@ -123,11 +124,11 @@ def add_new_task(subscription, task):
     cycle_minutes = (
         subscription["cycle_length_minutes"] + subscription["cooldown_minutes"]
     )
-    yearly_minutes = get_yearly_minutes()
+    # yearly_minutes = get_yearly_minutes()
     new_date = {
         "status_report": scheduled + timedelta(minutes=report_minutes),
         "cycle_report": scheduled + timedelta(minutes=cycle_minutes),
-        "yearly_report": scheduled + timedelta(minutes=yearly_minutes),
+        # "yearly_report": scheduled + timedelta(minutes=yearly_minutes),
         "end_cycle": scheduled + timedelta(minutes=cycle_minutes),
     }.get(task["task_type"])
     if new_date:
@@ -153,7 +154,7 @@ def process_task(task, subscription, cycle):
         "start_subscription_email": start_subscription_email,
         "status_report": status_report,
         "cycle_report": cycle_report,
-        "yearly_report": yearly_report,
+        # "yearly_report": yearly_report,
         "end_cycle": end_cycle,
         "thirty_day_reminder": thirty_day_reminder,
         "fifteen_day_reminder": fifteen_day_reminder,
@@ -178,10 +179,10 @@ def cycle_report(subscription, cycle):
     Notification("cycle_report", subscription, cycle).send()
 
 
-def yearly_report(subscription, cycle):
-    """Send yearly report."""
-    # Notification("yearly_report", subscription, cycle).send()
-    return
+# def yearly_report(subscription, cycle):
+#     """Send yearly report."""
+#     # Notification("yearly_report", subscription, cycle).send()
+#     return
 
 
 def thirty_day_reminder(subscription, cycle):

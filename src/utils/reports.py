@@ -609,6 +609,7 @@ def preview_html(html, customer):
     context = {
         "target['first_name']": fake.first_name(),
         "target['last_name']": fake.last_name(),
+        "url": "areallyfakeURL.com",
     }
     context["target['email']"] = (
         context["target['first_name']"]
@@ -619,16 +620,25 @@ def preview_html(html, customer):
     )
 
     for i in context_keys:
-        try:
-            if i[0:6] == "target":
-                pass
-            elif i[0:4] == "fake":
-                context[i] = eval(i + "()")  # nosec
-            else:
-                context[i] = eval(i)  # nosec
-        except Exception as e:
-            logger.exception(e)
-            context[i] = i
+        if i not in context.keys():
+            try:
+                if i[0:6] == "target":
+                    context[i] = str(i)
+                elif i[0:4] == "fake":
+                    try:
+                        context[i] = eval(i + "()")  # nosec
+                    except NameError as e:
+                        logger.exception(e)
+                        context[i] = str(i)
+                else:
+                    try:
+                        context[i] = eval(i)  # nosec
+                    except NameError as e:
+                        logger.exception(e)
+                        context[i] = str(i)
+            except Exception as e:
+                logger.exception(e)
+                context[i] = str(i)
 
     return re.sub(
         r"\{\{(.*?)\}\}",

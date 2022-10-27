@@ -1,6 +1,7 @@
 """Domain manager."""
 # Standard Python Libraries
 from datetime import date
+from logging import INFO, basicConfig
 from types import FunctionType, MethodType
 
 # Third-Party Libraries
@@ -17,6 +18,8 @@ from api.initialize import (
     initialize_nonhumans,
     initialize_recommendations,
     initialize_templates,
+    populate_stakeholder_shortname,
+    restart_subscriptions,
 )
 from api.phish import emails_job
 from api.tasks import failed_emails_job, tasks_job
@@ -29,6 +32,7 @@ from api.views.auth_views import (
 from api.views.config_views import ConfigView
 from api.views.customer_views import (
     ArchiveCustomerView,
+    CustomersPOCView,
     CustomersView,
     CustomerView,
     SectorIndustryView,
@@ -41,7 +45,11 @@ from api.views.cycle_views import (
 )
 from api.views.failed_email_views import FailedEmailsView, FailedEmailView
 from api.views.landing_domain_views import LandingDomainsView, LandingDomainView
-from api.views.landing_page_views import LandingPagesView, LandingPageView
+from api.views.landing_page_views import (
+    LandingPagesView,
+    LandingPageTemplatesView,
+    LandingPageView,
+)
 from api.views.logging_views import LoggingView
 from api.views.nonhuman_views import NonHumansView
 from api.views.recommendation_views import RecommendationsView, RecommendationView
@@ -83,6 +91,7 @@ rules = [
     ("/config/", ConfigView),
     # Customer Views
     ("/customers/", CustomersView),
+    ("/customers/contacts/", CustomersPOCView),
     ("/customer/<customer_id>/", CustomerView),
     ("/archivecustomer/<customer_id>/", ArchiveCustomerView),
     # Cycle Views
@@ -102,6 +111,7 @@ rules = [
     # Landing Page Views
     ("/landingpages/", LandingPagesView),
     ("/landingpage/<landing_page_id>/", LandingPageView),
+    ("/landingpage/<landing_page_id>/templates", LandingPageTemplatesView),
     # Logging Views
     ("/logging/", LoggingView),
     # Non Human Views
@@ -168,13 +178,16 @@ for rule in login_rules:
     url = f"{url_prefix}{rule[0]}"
     app.add_url_rule(url, view_func=rule[1].as_view(url))  # type: ignore
 
+basicConfig(level=INFO)
 logger = setLogger(__name__)
 
 # Start Background Jobs
 sched = BackgroundScheduler()
-sched.add_job(emails_job, "interval", minutes=EMAIL_MINUTES, max_instances=3)
-sched.add_job(tasks_job, "interval", minutes=TASK_MINUTES)
-sched.add_job(failed_emails_job, "interval", minutes=FAILED_EMAIL_MINUTES)
+sched.add_job(emails_job, "interval", minutes=EMAIL_MINUTES, max_instances=10)
+sched.add_job(tasks_job, "interval", minutes=TASK_MINUTES, max_instances=10)
+sched.add_job(
+    failed_emails_job, "interval", minutes=FAILED_EMAIL_MINUTES, max_instances=3
+)
 sched.start()
 
 # Initialize Database
@@ -182,6 +195,8 @@ with app.app_context():
     initialize_recommendations()
     initialize_templates()
     initialize_nonhumans()
+    populate_stakeholder_shortname()
+    restart_subscriptions()
 
 
 class CustomJSONEncoder(JSONEncoder):
@@ -239,4 +254,11 @@ def load_dummy_data():
     """Load test data to db."""
     initialize_templates()
     load_test_data()
+    logger.info("Success.")
+
+
+@app.cli.command("transform-data")
+def populate_new_fields_with_data():
+    """Add default data directly to the database for new required fields."""
+    populate_stakeholder_shortname()
     logger.info("Success.")
