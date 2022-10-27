@@ -140,20 +140,6 @@ def restart_subscriptions():
     )
     cycles = cycle_manager.all(fields=["subscription_id", "end_date", "active"])
 
-    [
-        dict(
-            s,
-            **{
-                "cycle_start_date": c["start_date"],
-                "cycle_end_date": c["end_date"],
-                "active": c["active"],
-            },
-        )
-        for c in cycles
-        for s in subscriptions
-        if c["subscription_id"] == s["_id"]
-    ]
-
     if not subscriptions:
         logger.info("No subscriptions to needed restart.")
         return
