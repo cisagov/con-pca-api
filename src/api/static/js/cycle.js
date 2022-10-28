@@ -226,22 +226,28 @@ function clickingUserTimelineChart() {
 
   dataset = [
     {
+      label: "All",
+      data: order_time_vals(decep_stats[9]["click_percentage_over_time"]),
+      borderColor: "#5a5b5d",
+      backgroundColor: "#5a5b5d",
+    },
+    {
       label: "Low",
       data: order_time_vals(decep_stats[6]["click_percentage_over_time"]),
-      borderColor: "#456799",
-      backgroundColor: "#456799",
+      borderColor: "#5e9732",
+      backgroundColor: "#5e9732",
     },
     {
       label: "Moderate",
       data: order_time_vals(decep_stats[7]["click_percentage_over_time"]),
-      borderColor: "#95433f",
-      backgroundColor: "#95433f",
+      borderColor: "#0078ae",
+      backgroundColor: "#0078ae",
     },
     {
       label: "High",
       data: order_time_vals(decep_stats[8]["click_percentage_over_time"]),
-      borderColor: "#839752",
-      backgroundColor: "#839752",
+      borderColor: "#c41230",
+      backgroundColor: "#c41230",
     },
   ];
 
