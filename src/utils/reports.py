@@ -253,6 +253,7 @@ def _user_group_stats_csv(cycle: dict) -> Tuple[str, List[str], List[Any]]:
             "All Clicked": t["clicked"]["count"],
         }
         for t in stats["target_stats"]
+        if t["sent"]["count"] > 5
     ]
     headers = list(data[0].keys())
 
