@@ -17,6 +17,7 @@ def generate_safelist_file(
     domains,
     ips,
     templates,
+    next_templates,
     reporting_password,
     simulation_url,
 ):
@@ -69,8 +70,12 @@ def generate_safelist_file(
             ws[f"B{ip_start + i}"].font = regular_font
         ws.merge_cells(f"A{ip_start}:A{ip_start + len(ips) - 1}")
 
-    # Templates
-    template_start = 3 + len(domains) + (1 if not ips else len(ips)) + 1
+    # Current Cycle Templates
+    current_label_start = 3 + len(domains) + (1 if not ips else len(ips)) + 1
+    ws[f"A{current_label_start}"] = "Current Cycle Templates:"
+    ws[f"A{current_label_start}"].font = header_font
+
+    template_start = current_label_start + 2
     ws[f"A{template_start}"] = "Template Subject"
     ws[f"B{template_start}"] = "Deception Level"
     ws[f"A{template_start}"].font = header_font
@@ -82,6 +87,24 @@ def generate_safelist_file(
             template["deception_score"]
         ).title()
         ws[f"B{template_start + i + 1}"].font = regular_font
+
+    # Next Cycle Templates
+    next_label_start = current_label_start + len(templates) + 4
+    ws[f"A{next_label_start}"] = "Next Cycle Templates:"
+    ws[f"A{next_label_start}"].font = header_font
+
+    next_template_start = next_label_start + 2
+    ws[f"A{next_template_start}"] = "Template Subject"
+    ws[f"B{next_template_start}"] = "Deception Level"
+    ws[f"A{next_template_start}"].font = header_font
+    ws[f"B{next_template_start}"].font = header_font
+    for i, template in enumerate(next_templates):
+        ws[f"A{next_template_start + i + 1}"] = template["subject"]
+        ws[f"A{next_template_start + i + 1}"].font = regular_font
+        ws[f"B{next_template_start + i + 1}"] = get_deception_level(
+            template["deception_score"]
+        ).title()
+        ws[f"B{next_template_start + i + 1}"].font = regular_font
 
     # Expand columns in workbook
     for cells in ws.columns:

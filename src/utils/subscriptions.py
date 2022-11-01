@@ -17,7 +17,7 @@ from api.manager import (
     TargetManager,
     TemplateManager,
 )
-from utils.templates import get_deception_level
+from utils.templates import get_deception_level, select_templates
 
 # from utils.time import get_yearly_minutes
 
@@ -95,6 +95,15 @@ def start_subscription(subscription_id, templates_selected=[]):
 
     if templates_selected:
         update_data["templates_selected"] = templates_selected
+
+    next_templates = [
+        t
+        for t in template_manager.all({"retired": False})
+        if t not in templates_selected
+    ]
+    next_templates_selected = sum(select_templates(next_templates), [])
+    if next_templates_selected:
+        update_data["next_templates"] = next_templates_selected
 
     subscription_manager.update(document_id=subscription_id, data=update_data)
     cycle_manager.update(document_id=cycle_id, data=cycle)
