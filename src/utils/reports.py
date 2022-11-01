@@ -255,8 +255,13 @@ def _user_group_stats_csv(cycle: dict) -> Tuple[str, List[str], List[Any]]:
         for t in stats["target_stats"]
         if t["sent"]["count"] > 5
     ]
+    if len(data) == 0:
+        data = [
+            {
+                "Message": "To protect the anonymity of participants, data can only be displayed for groups with over 5 members. This cycle does not have any qualifying groups.",
+            }
+        ]
     headers = list(data[0].keys())
-
     return "user_group_stats.csv", headers, data
 
 
