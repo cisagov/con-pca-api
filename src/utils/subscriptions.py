@@ -208,7 +208,7 @@ def get_initial_tasks(subscription, cycle):
 
     if subscription.get("continuous_subscription"):
         task_types["safelisting_reminder"] = start_date
-        +timedelta(minutes=(cycle_minutes + subscription.get("buffer_time_minutes", 0)))
+        +timedelta(minutes=(cycle_minutes))
 
     cycle_days = cycle_minutes / 60 / 24
     if cycle_days >= 30:
