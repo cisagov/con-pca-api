@@ -18,7 +18,7 @@ from api.initialize import (
     initialize_nonhumans,
     initialize_recommendations,
     initialize_templates,
-    populate_stakeholder_shortname,
+    reset_dirty_stats,
     restart_subscriptions,
 )
 from api.phish import emails_job
@@ -195,7 +195,6 @@ with app.app_context():
     initialize_recommendations()
     initialize_templates()
     initialize_nonhumans()
-    populate_stakeholder_shortname()
     restart_subscriptions()
 
 
@@ -260,5 +259,6 @@ def load_dummy_data():
 @app.cli.command("transform-data")
 def populate_new_fields_with_data():
     """Add default data directly to the database for new required fields."""
-    populate_stakeholder_shortname()
+    # populate_stakeholder_shortname()
+    reset_dirty_stats()
     logger.info("Success.")
