@@ -66,6 +66,8 @@ class SubscriptionsView(MethodView):
                 "status",
                 "start_date",
                 "cycle_length_minutes",
+                "cooldown_minutes",
+                "buffer_time_minutes",
                 "active",
                 "archived",
                 "primary_contact",
