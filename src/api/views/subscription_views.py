@@ -333,3 +333,33 @@ class SubscriptionSafelistSendView(MethodView):
         )
 
         return jsonify({"success": "Safelisting information email sent."})
+
+
+class SubscriptionCurrentTemplatesView(MethodView):
+    """Get the current templates for a given subscription."""
+
+    def get(self, subscription_id):
+        """Get test results for a subscription."""
+        template_ids = subscription_manager.get(
+            document_id=subscription_id, fields=["templates_selected"]
+        ).get("templates_selected", [])
+        templates = template_manager.all(
+            params={"_id": {"$in": template_ids}},
+            fields=["subject"],
+        )
+        return jsonify([t["subject"] for t in templates if "subject" in t])
+
+
+class SubscriptionNextTemplatesView(MethodView):
+    """Get the next templates for a given subscription."""
+
+    def get(self, subscription_id):
+        """Get test results for a subscription."""
+        template_ids = subscription_manager.get(
+            document_id=subscription_id, fields=["next_templates"]
+        ).get("next_templates", [])
+        templates = template_manager.all(
+            params={"_id": {"$in": template_ids}},
+            fields=["subject"],
+        )
+        return jsonify([t["subject"] for t in templates if "subject" in t])
