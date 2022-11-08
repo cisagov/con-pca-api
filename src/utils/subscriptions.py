@@ -196,7 +196,7 @@ def get_initial_tasks(subscription, cycle):
             minutes=(cycle_minutes + subscription.get("buffer_time_minutes", 0))
         )
     else:
-        task_types["end_cycle"] = start_date + timedelta(minutes=(cycle_minutes))
+        task_types["end_cycle"] = start_date + timedelta(minutes=(cycle_minutes + 15))
 
     cycle_days = cycle_minutes / 60 / 24
     if cycle_days >= 30:
