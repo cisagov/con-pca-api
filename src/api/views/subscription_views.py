@@ -1,6 +1,7 @@
 """Subscription Views."""
 # Standard Python Libraries
 from collections import OrderedDict
+from datetime import timedelta
 import os
 
 # Third-Party Libraries
@@ -127,10 +128,49 @@ class SubscriptionView(MethodView):
 
     def get(self, subscription_id):
         """Get."""
-        return jsonify(subscription_manager.get(document_id=subscription_id))
+        return jsonify(
+            subscription_manager.get(
+                document_id=subscription_id,
+            )
+        )
 
     def put(self, subscription_id):
         """Put."""
+        subscription = subscription_manager.get(
+            document_id=subscription_id, fields=["status", "continuous_subscription"]
+        )
+        if subscription["status"] in ["queued", "running"]:
+            if "continuous_subscription" in request.json:
+                if request.json["continuous_subscription"] != subscription.get(
+                    "continuous_subscription"
+                ):
+                    data = {}
+                    data["tasks"] = subscription["tasks"]
+                    if request.json["continuous_subscription"]:
+                        for task in data["tasks"]:
+                            if task["task_type"] == "end_cycle":
+                                task["task_type"] = "start_next_cycle"
+                                task["scheduled_date"] = task[
+                                    "scheduled_date"
+                                ] + timedelta(
+                                    minutes=(subscription.get("buffer_time_minutes", 0))
+                                )
+                        subscription_manager.update(
+                            document_id=subscription_id, data=data
+                        )
+                    else:
+                        for task in data["tasks"]:
+                            if task["task_type"] == "start_next_cycle":
+                                task["task_type"] = "end_cycle"
+                                task["scheduled_date"] = task[
+                                    "scheduled_date"
+                                ] - timedelta(
+                                    minutes=(subscription.get("buffer_time_minutes", 0))
+                                )
+                        subscription_manager.update(
+                            document_id=subscription_id, data=data
+                        )
+
         if "target_email_list" in request.json:
             if not request.json["target_email_list"]:
                 subscription = subscription_manager.get(
