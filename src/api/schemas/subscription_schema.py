@@ -52,6 +52,7 @@ class SubscriptionTasksSchema(Schema):
                 "five_day_reminder",
                 "safelisting_reminder",
                 "end_cycle",
+                "start_next_cycle",
             ]
         )
     )
