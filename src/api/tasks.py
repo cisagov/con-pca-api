@@ -156,6 +156,7 @@ def process_task(task, subscription, cycle):
         "cycle_report": cycle_report,
         # "yearly_report": yearly_report,
         "end_cycle": end_cycle,
+        "start_next_cycle": end_cycle,
         "thirty_day_reminder": thirty_day_reminder,
         "fifteen_day_reminder": fifteen_day_reminder,
         "five_day_reminder": five_day_reminder,
@@ -256,7 +257,7 @@ def safelisting_reminder(subscription, cycle):
     )
 
     if not os.path.exists(filepath):
-        logger.error("Safelist file does not exist: ", filepath)
+        logger.error("Safelist file does not exist: " + filepath)
         return
 
     with app.app_context():
