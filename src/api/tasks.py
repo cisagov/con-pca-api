@@ -78,7 +78,7 @@ def process_subscription(subscription):
         filter(
             lambda x: x["scheduled_date"].timestamp() < datetime.utcnow().timestamp()
             and not x.get("executed"),
-            subscription.get("tasks", []),
+            cycle.get("tasks", []),
         )
     )
 
@@ -98,8 +98,8 @@ def process_subscription(subscription):
             )
             task["error"] = str(e)
         if not end_cycle_task:
-            update_task(subscription["_id"], task)
-            add_new_task(subscription, task)
+            update_task(cycle["_id"], task)
+            add_new_task(subscription, cycle, task)
         logger.info(f"Executed task {task}")
 
     subscription_manager.update(
@@ -107,17 +107,17 @@ def process_subscription(subscription):
     )
 
 
-def update_task(subscription_id, task):
+def update_task(cycle_id, task):
     """Update subscription task."""
-    subscription_manager.update_in_list(
-        document_id=subscription_id,
+    cycle_manager.update_in_list(
+        document_id=cycle_id,
         field="tasks.$",
         data=task,
         params={"tasks.task_uuid": task["task_uuid"]},
     )
 
 
-def add_new_task(subscription, task):
+def add_new_task(subscription, cycle, task):
     """Add new subscription task."""
     scheduled = task["scheduled_date"]
     report_minutes = subscription["report_frequency_minutes"]
@@ -140,8 +140,8 @@ def add_new_task(subscription, task):
         }
         logger.info(f"Adding new task {task}")
 
-        return subscription_manager.add_to_list(
-            document_id=subscription["_id"],
+        return cycle_manager.add_to_list(
+            document_id=cycle["_id"],
             field="tasks",
             data=task,
         )

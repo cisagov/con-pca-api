@@ -126,6 +126,20 @@ def populate_stakeholder_shortname():
             )
 
 
+def populate_cycle_tasks():
+    """Populate the cycle tasks from the subscription tasks."""
+    active_cycles = cycle_manager.all(params={"active": True}, fields=["_id", "tasks"])
+    for cycle in active_cycles:
+        subscription = subscription_manager.get(document_id=cycle["subscription_id"])
+        if not cycle.get("tasks"):
+            cycle_manager.update(
+                document_id=cycle["_id"],
+                data={
+                    "tasks": subscription.get("tasks"),
+                },
+            )
+
+
 def restart_subscriptions():
     """
     Restart all overdue continuous Subscriptions.
