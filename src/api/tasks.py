@@ -243,7 +243,7 @@ def safelisting_reminder(subscription, cycle):
     )
 
     if not os.path.exists(filepath):
-        logger.error("Safelist file does not exist: ", filepath)
+        logger.error("Safelist file does not exist: " + filepath)
         return
 
     with app.app_context():

@@ -320,8 +320,7 @@ class SubscriptionSafelistSendView(MethodView):
 
         if not os.path.exists(filepath):
             logger.error(
-                "Safelist file does not exist: ",
-                filepath,
+                "Safelist file does not exist: " + filepath,
                 extra={"source_type": "subscription", "source": subscription_id},
             )
             return jsonify({"success": "Failed to generate safelisting file."}), 500
