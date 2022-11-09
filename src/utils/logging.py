@@ -36,6 +36,20 @@ class DatabaseHandler(logging.Handler):
                 self.loggingManager.save(log)
             except (KeyboardInterrupt, SystemExit):
                 raise
+            except TypeError:
+                message = record
+                log = {
+                    "error_message": message,
+                    "file": "",
+                }
+                log.update(
+                    {
+                        key: extra[key]
+                        for key in ["source", "source_type"]
+                        if key in extra
+                    }
+                )
+                self.loggingManager.save(log)
             except Exception:
                 self.handleError(record)
 
