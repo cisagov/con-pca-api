@@ -33,6 +33,20 @@ class EmailSendingReportSchema(Schema):
     emails_clicked_30_days = fields.Integer()
 
 
+class TaskReportSchema(Schema):
+    """TaskReportSchema."""
+
+    tasks_succeeded_24_hours = fields.Integer()
+    tasks_scheduled_24_hours = fields.Integer()
+    tasks_succeeded_24_hours_ratio = fields.Float()
+    tasks_succeeded_7_days = fields.Integer()
+    tasks_scheduled_7_days = fields.Integer()
+    tasks_succeeded_7_days_ratio = fields.Float()
+    tasks_succeeded_30_days = fields.Integer()
+    tasks_scheduled_30_days = fields.Integer()
+    tasks_succeeded_30_days_ratio = fields.Float()
+
+
 class AggregateReportsSchema(Schema):
     """AggregateStatsSchema."""
 
@@ -42,6 +56,7 @@ class AggregateReportsSchema(Schema):
     cycle_reports_sent = fields.Integer()
     yearly_reports_sent = fields.Integer()
     email_sending_stats = fields.Nested(EmailSendingReportSchema())
+    task_stats = fields.Nested(TaskReportSchema())
     new_subscriptions = fields.Integer()
     ongoing_subscriptions = fields.Integer()
     stopped_subscriptions = fields.Integer()

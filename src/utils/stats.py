@@ -243,7 +243,7 @@ def generate_cycle_stats(cycle, targets, nonhuman=False):
     )
 
 
-def get_rolling_averages(n_days):
+def get_rolling_emails(n_days):
     """Get total number of emails sent/clicked by the system over the last x days."""
     sent = target_manager.count(
         {
@@ -277,6 +277,52 @@ def get_rolling_averages(n_days):
     )
 
     return sent, scheduled, ratio, clicked
+
+
+def get_rolling_tasks(n_days):
+    """Get total number of tasks scheduled/succeeded by the system over the last x days."""
+    pipeline = [
+        {"$match": {"active": {"$eq": True}}},
+        {"$unwind": {"path": "$tasks"}},
+        {
+            "$match": {
+                "tasks.executed": {
+                    "scheduled_date": {
+                        "$gte": datetime.now() - timedelta(days=n_days),
+                        "$lte": datetime.now() - timedelta(minutes=5),
+                    },
+                    "executed": {"$eq": True},
+                },
+            }
+        },
+        {"$count": "succeeded"},
+    ]
+    succeeded = subscription_manager.aggregate(pipeline)["succeeded"]
+
+    pipeline = [
+        {"$match": {"active": {"$eq": True}}},
+        {"$unwind": {"path": "$tasks"}},
+        {
+            "$match": {
+                "tasks.executed": {
+                    "scheduled_date": {
+                        "$gte": datetime.now() - timedelta(days=n_days),
+                        "$lte": datetime.now() - timedelta(minutes=5),
+                    },
+                }
+            }
+        },
+        {"$count": "succeeded"},
+    ]
+    scheduled = subscription_manager.aggregate(pipeline)["scheduled"]
+
+    try:
+        ratio = succeeded / scheduled
+    except ZeroDivisionError:
+        ratio = 0
+    ratio = round(ratio, 4)
+
+    return succeeded, scheduled, ratio
 
 
 def add_template_to_stats_by_level(stats, target, timeline):
