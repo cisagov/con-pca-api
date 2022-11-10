@@ -264,7 +264,7 @@ def get_rolling_emails(n_days):
     try:
         ratio = sent / scheduled
     except ZeroDivisionError:
-        ratio = 0
+        ratio = 1
     ratio = round(ratio, 4)
     clicked = target_manager.count(
         {
@@ -286,40 +286,47 @@ def get_rolling_tasks(n_days):
         {"$unwind": {"path": "$tasks"}},
         {
             "$match": {
-                "tasks.executed": {
-                    "scheduled_date": {
-                        "$gte": datetime.now() - timedelta(days=n_days),
-                        "$lte": datetime.now() - timedelta(minutes=5),
-                    },
-                    "executed": {"$eq": True},
+                "tasks.executed": {"$eq": True},
+                "tasks.scheduled_date": {
+                    "$gte": datetime.now() - timedelta(days=n_days),
+                    "$lte": datetime.now() - timedelta(minutes=5),
                 },
             }
         },
         {"$count": "succeeded"},
     ]
-    succeeded = subscription_manager.aggregate(pipeline)["succeeded"]
+    aggregate = cycle_manager.aggregate(pipeline)
+    succeeded = (
+        aggregate[0].get("succeeded", 0)
+        if len(cycle_manager.aggregate(pipeline)) > 0
+        else 0
+    )
 
     pipeline = [
         {"$match": {"active": {"$eq": True}}},
         {"$unwind": {"path": "$tasks"}},
         {
             "$match": {
-                "tasks.executed": {
-                    "scheduled_date": {
-                        "$gte": datetime.now() - timedelta(days=n_days),
-                        "$lte": datetime.now() - timedelta(minutes=5),
-                    },
-                }
+                "tasks.scheduled_date": {
+                    "$gte": datetime.now() - timedelta(days=n_days),
+                    "$lte": datetime.now() - timedelta(minutes=5),
+                },
             }
         },
-        {"$count": "succeeded"},
+        {"$count": "scheduled"},
     ]
-    scheduled = subscription_manager.aggregate(pipeline)["scheduled"]
+
+    aggregate = cycle_manager.aggregate(pipeline)
+    scheduled = (
+        aggregate[0].get("scheduled", 0)
+        if len(cycle_manager.aggregate(pipeline)) > 0
+        else 0
+    )
 
     try:
         ratio = succeeded / scheduled
     except ZeroDivisionError:
-        ratio = 0
+        ratio = 1
     ratio = round(ratio, 4)
 
     return succeeded, scheduled, ratio
