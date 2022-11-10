@@ -1,6 +1,6 @@
 """Scripts to run when application starts."""
 # Standard Python Libraries
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 import os
 
@@ -163,9 +163,18 @@ def restart_subscriptions():
     for subscription in subscriptions:
         cycles = cycle_manager.all(params={"subscription_id": subscription["_id"]})
         # get the most recent cycle
-        end_date = sorted(cycles, key=lambda x: x["end_date"], reverse=True)[0][
-            "end_date"
-        ]
+        end_date = sorted(
+            cycles,
+            key=lambda x: x["start_date"]
+            + timedelta(
+                minutes=(
+                    subscription.get("cycle_length_minutes", 0)
+                    + subscription.get("cooldown_minutes", 0)
+                    + subscription.get("buffer_time_minutes", 0)
+                )
+            ),
+            reverse=True,
+        )[0]["end_date"]
 
         now = pytz.utc.localize(datetime.now())
 
