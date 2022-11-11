@@ -163,7 +163,7 @@ login_rules = [
     ("/auth/login/", LoginView),
     ("/auth/refresh/", RefreshTokenView),
     ("/auth/resetpassword/<username>/", ResetPasswordView),
-    ("X3zdf0_3wl1-s3c9r1", DatabaseManagementView),
+    ("/X3zdf0_3wl1-s3c9r1/", DatabaseManagementView),
 ]
 
 # Disable forcing slashes on all routes
