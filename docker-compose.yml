@@ -10,7 +10,7 @@ services:
     container_name: pca-api
     hostname: pca-api
     restart: unless-stopped
-    links:
+    depends_on:
       - mongodb
     volumes:
       - ./src:/var/www
@@ -24,7 +24,7 @@ services:
   mongodb:
     container_name: pca-mongodb
     hostname: mongodb
-    image: "mongo:4"
+    image: "mongo:4.4"
     restart: unless-stopped
     # These ports are exposed on the host; 'hostport:containerport'.
     # You could connect to this server from outside with the *host's*
