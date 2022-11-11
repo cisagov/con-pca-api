@@ -197,7 +197,7 @@ with app.app_context():
     initialize_templates()
     initialize_nonhumans()
     populate_stakeholder_shortname()
-    populate_cycle_tasks
+    populate_cycle_tasks()
     restart_subscriptions()
 
 
