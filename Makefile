@@ -22,7 +22,7 @@ attach:
 
 # target: build = build all containers
 build:
-	docker-compose build
+	docker compose build --no-cache
 
 # target: app logs - Runs docker logs in the terminal
 logs:
@@ -30,18 +30,20 @@ logs:
 
 # target: up - Run local web server.
 up:
-	docker-compose up -d
+	docker compose up -d
 
 # target: stop - Stop all docker containers
 stop:
-	docker-compose stop
+	docker compose stop
 
 # target: down - Remove all docker containers
 down:
-	docker-compose down
+	docker compose down
 
-# target: redeploy = bring down, rebuild and redeploy all containers
-redeploy: down build up
+# target: restart - stop and restart api container
+restart:
+	docker restart pca-api
+	docker attach --sig-proxy=false pca-api
 
 # target: shell - docker python shell within container
 shell:
