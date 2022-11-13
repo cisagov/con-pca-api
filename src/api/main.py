@@ -190,7 +190,7 @@ sched.add_job(tasks_job, "interval", minutes=TASK_MINUTES, max_instances=10)
 sched.add_job(
     failed_emails_job, "interval", minutes=FAILED_EMAIL_MINUTES, max_instances=3
 )
-# sched.start() # The scheduler will not be started while in maintainance mode
+sched.start()
 
 # Initialize Database
 with app.app_context():
