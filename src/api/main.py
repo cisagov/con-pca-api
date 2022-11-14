@@ -195,6 +195,7 @@ with app.app_context():
     initialize_recommendations()
     initialize_templates()
     initialize_nonhumans()
+    reset_dirty_stats()
     restart_subscriptions()
 
 
@@ -259,6 +260,5 @@ def load_dummy_data():
 @app.cli.command("transform-data")
 def populate_new_fields_with_data():
     """Add default data directly to the database for new required fields."""
-    # populate_stakeholder_shortname()
     reset_dirty_stats()
     logger.info("Success.")
