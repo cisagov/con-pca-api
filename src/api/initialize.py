@@ -133,7 +133,7 @@ def populate_cycle_tasks():
     )
     for cycle in active_cycles:
         subscription = subscription_manager.get(document_id=cycle["subscription_id"])
-        if not cycle.get("tasks"):
+        if cycle.get("tasks", []) == [] and subscription.get("tasks", []) != []:
             cycle_manager.update(
                 document_id=cycle["_id"],
                 data={

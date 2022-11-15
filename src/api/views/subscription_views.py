@@ -282,9 +282,11 @@ class SubscriptionSafelistExportView(MethodView):
             if next_templates_selected:
                 update_data["next_templates"] = next_templates_selected
             subscription_manager.update(document_id=subscription_id, data=update_data)
+        else:
+            next_templates_selected = subscription.get("next_templates", [])
 
         data["next_templates"] = template_manager.all(
-            params={"_id": {"$in": subscription.get("next_templates", [])}},
+            params={"_id": {"$in": next_templates_selected}},
             fields=["subject", "deception_score"],
         )
 
@@ -345,9 +347,11 @@ class SubscriptionSafelistSendView(MethodView):
             if next_templates_selected:
                 update_data["next_templates"] = next_templates_selected
             subscription_manager.update(document_id=subscription_id, data=update_data)
+        else:
+            next_templates_selected = subscription.get("next_templates", [])
 
         data["next_templates"] = template_manager.all(
-            params={"_id": {"$in": subscription.get("next_templates", [])}},
+            params={"_id": {"$in": next_templates_selected}},
             fields=["subject", "deception_score"],
         )
 
