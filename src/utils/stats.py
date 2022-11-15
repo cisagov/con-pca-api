@@ -243,7 +243,7 @@ def generate_cycle_stats(cycle, targets, nonhuman=False):
     )
 
 
-def get_rolling_averages(n_days):
+def get_rolling_emails(n_days):
     """Get total number of emails sent/clicked by the system over the last x days."""
     sent = target_manager.count(
         {
@@ -264,7 +264,7 @@ def get_rolling_averages(n_days):
     try:
         ratio = sent / scheduled
     except ZeroDivisionError:
-        ratio = 0
+        ratio = 1
     ratio = round(ratio, 4)
     clicked = target_manager.count(
         {
@@ -277,6 +277,59 @@ def get_rolling_averages(n_days):
     )
 
     return sent, scheduled, ratio, clicked
+
+
+def get_rolling_tasks(n_days):
+    """Get total number of tasks scheduled/succeeded by the system over the last x days."""
+    pipeline = [
+        {"$match": {"active": {"$eq": True}}},
+        {"$unwind": {"path": "$tasks"}},
+        {
+            "$match": {
+                "tasks.executed": {"$eq": True},
+                "tasks.scheduled_date": {
+                    "$gte": datetime.now() - timedelta(days=n_days),
+                    "$lte": datetime.now() - timedelta(minutes=5),
+                },
+            }
+        },
+        {"$count": "succeeded"},
+    ]
+    aggregate = cycle_manager.aggregate(pipeline)
+    succeeded = (
+        aggregate[0].get("succeeded", 0)
+        if len(cycle_manager.aggregate(pipeline)) > 0
+        else 0
+    )
+
+    pipeline = [
+        {"$match": {"active": {"$eq": True}}},
+        {"$unwind": {"path": "$tasks"}},
+        {
+            "$match": {
+                "tasks.scheduled_date": {
+                    "$gte": datetime.now() - timedelta(days=n_days),
+                    "$lte": datetime.now() - timedelta(minutes=5),
+                },
+            }
+        },
+        {"$count": "scheduled"},
+    ]
+
+    aggregate = cycle_manager.aggregate(pipeline)
+    scheduled = (
+        aggregate[0].get("scheduled", 0)
+        if len(cycle_manager.aggregate(pipeline)) > 0
+        else 0
+    )
+
+    try:
+        ratio = succeeded / scheduled
+    except ZeroDivisionError:
+        ratio = 1
+    ratio = round(ratio, 4)
+
+    return succeeded, scheduled, ratio
 
 
 def add_template_to_stats_by_level(stats, target, timeline):

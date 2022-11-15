@@ -19,6 +19,8 @@ from api.initialize import (
     initialize_recommendations,
     initialize_templates,
     reset_dirty_stats,
+    populate_cycle_tasks,
+    populate_stakeholder_shortname,
 )
 from api.phish import emails_job
 from api.tasks import failed_emails_job, tasks_job
@@ -197,6 +199,9 @@ with app.app_context():
     initialize_templates()
     initialize_nonhumans()
     reset_dirty_stats()
+    populate_stakeholder_shortname()
+    populate_cycle_tasks()
+    # restart_subscriptions()
 
 
 class CustomJSONEncoder(JSONEncoder):
@@ -260,5 +265,6 @@ def load_dummy_data():
 @app.cli.command("transform-data")
 def populate_new_fields_with_data():
     """Add default data directly to the database for new required fields."""
-    reset_dirty_stats()
+    populate_stakeholder_shortname()
+    populate_cycle_tasks()
     logger.info("Success.")
