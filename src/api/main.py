@@ -202,7 +202,6 @@ with app.app_context():
     # restart_subscriptions()
 
 
-
 class CustomJSONEncoder(JSONEncoder):
     """CustomJSONEncoder."""
 
