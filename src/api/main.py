@@ -18,9 +18,9 @@ from api.initialize import (
     initialize_nonhumans,
     initialize_recommendations,
     initialize_templates,
-    reset_dirty_stats,
     populate_cycle_tasks,
     populate_stakeholder_shortname,
+    reset_dirty_stats,
 )
 from api.phish import emails_job
 from api.tasks import failed_emails_job, tasks_job

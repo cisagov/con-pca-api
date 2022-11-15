@@ -125,6 +125,7 @@ def populate_stakeholder_shortname():
                 },
             )
 
+
 def reset_dirty_stats():
     """Reset the dirty_stats field to true whenever the app is initialized."""
     cycles = cycle_manager.all(
@@ -137,6 +138,7 @@ def reset_dirty_stats():
                 "dirty_stats": True,
             },
         )
+
 
 def populate_cycle_tasks():
     """Populate the cycle tasks from the subscription tasks."""
@@ -152,6 +154,7 @@ def populate_cycle_tasks():
                     "tasks": subscription.get("tasks"),
                 },
             )
+
 
 def restart_subscriptions():
     """
