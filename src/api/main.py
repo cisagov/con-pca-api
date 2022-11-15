@@ -62,8 +62,10 @@ from api.views.report_views import (
 )
 from api.views.sending_profile_views import SendingProfilesView, SendingProfileView
 from api.views.subscription_views import (
+    SubscriptionCurrentTemplatesView,
     SubscriptionHeaderView,
     SubscriptionLaunchView,
+    SubscriptionNextTemplatesView,
     SubscriptionSafelistExportView,
     SubscriptionSafelistSendView,
     SubscriptionsView,
@@ -139,6 +141,11 @@ rules = [
         SubscriptionSafelistExportView,
     ),
     ("/subscription/<subscription_id>/safelist/send/", SubscriptionSafelistSendView),
+    (
+        "/subscription/<subscription_id>/templates/current/",
+        SubscriptionCurrentTemplatesView,
+    ),
+    ("/subscription/<subscription_id>/templates/next/", SubscriptionNextTemplatesView),
     # Tag Views
     ("/tags/", TagsView),
     # Template Views

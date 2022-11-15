@@ -17,7 +17,7 @@ from api.manager import (
     TargetManager,
     TemplateManager,
 )
-from utils.templates import get_deception_level
+from utils.templates import get_deception_level, select_templates
 
 # from utils.time import get_yearly_minutes
 
@@ -96,6 +96,15 @@ def start_subscription(subscription_id, templates_selected=[]):
 
     if templates_selected:
         update_data["templates_selected"] = templates_selected
+
+    next_templates = [
+        t
+        for t in template_manager.all({"retired": False})
+        if t not in templates_selected
+    ]
+    next_templates_selected = sum(select_templates(next_templates), [])
+    if next_templates_selected:
+        update_data["next_templates"] = next_templates_selected
 
     subscription_manager.update(document_id=subscription_id, data=update_data)
     cycle_manager.update(document_id=cycle_id, data=cycle)
@@ -199,15 +208,17 @@ def get_initial_tasks(subscription, cycle):
     else:
         task_types["end_cycle"] = start_date + timedelta(minutes=(cycle_minutes + 15))
 
+    if subscription.get("continuous_subscription"):
+        task_types["safelisting_reminder"] = start_date
+        +timedelta(minutes=(cycle_minutes))
+
     cycle_days = cycle_minutes / 60 / 24
     if cycle_days >= 30:
         task_types["thirty_day_reminder"] = end_date - timedelta(days=30)
     if cycle_days >= 15:
         task_types["fifteen_day_reminder"] = end_date - timedelta(days=15)
-        task_types["safelisting_reminder"] = end_date - timedelta(days=15)
     if cycle_days >= 5:
         task_types["five_day_reminder"] = end_date - timedelta(days=5)
-        task_types["safelisting_reminder"] = end_date - timedelta(days=5)
 
     tasks = []
     for task_type, scheduled_date in task_types.items():
