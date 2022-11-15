@@ -271,7 +271,7 @@ class SubscriptionSafelistExportView(MethodView):
         data = request.json
 
         # Randomize Next templates if they do not already exist
-        if not subscription.get("next_templates"):
+        if subscription.get("next_templates", []) == []:
             update_data = {}
             next_templates = [
                 t
@@ -334,7 +334,7 @@ class SubscriptionSafelistSendView(MethodView):
         data = request.json
 
         # Randomize Next templates if they do not already exist
-        if not subscription.get("next_templates"):
+        if subscription.get("next_templates", []) == []:
             update_data = {}
             next_templates = [
                 t
