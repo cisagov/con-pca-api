@@ -9,7 +9,6 @@ from uuid import uuid4
 import dateutil.parser  # type: ignore
 
 # cisagov Libraries
-from api.config import environment
 from api.manager import (
     CustomerManager,
     CycleManager,
@@ -162,7 +161,6 @@ def calculate_cycle_dates(subscription):
     if start_date < now:
         start_date = now
 
-    start_date = start_date + timedelta(minutes=environment.DELAY_MINUTES)
     send_by_date = start_date + timedelta(minutes=subscription["cycle_length_minutes"])
     end_date = send_by_date + timedelta(minutes=subscription["cooldown_minutes"])
     return {
