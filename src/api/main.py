@@ -20,6 +20,7 @@ from api.initialize import (
     initialize_templates,
     populate_cycle_tasks,
     populate_stakeholder_shortname,
+    reset_dirty_stats,
 )
 from api.phish import emails_job
 from api.tasks import failed_emails_job, tasks_job
@@ -204,6 +205,7 @@ with app.app_context():
     initialize_recommendations()
     initialize_templates()
     initialize_nonhumans()
+    reset_dirty_stats()
     populate_stakeholder_shortname()
     populate_cycle_tasks()
     # restart_subscriptions()
