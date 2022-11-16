@@ -14,6 +14,7 @@ from api.manager import (
     CycleManager,
     SubscriptionManager,
     TargetManager,
+    TemplateManager,
 )
 from utils.logging import setLogger
 from utils.notifications import Notification
@@ -25,6 +26,7 @@ from utils.subscriptions import (
     start_subscription,
     stop_subscription,
 )
+from utils.templates import select_templates
 from utils.valid import is_subscription_valid
 
 logger = setLogger(__name__)
@@ -33,6 +35,7 @@ subscription_manager = SubscriptionManager()
 customer_manager = CustomerManager()
 cycle_manager = CycleManager()
 target_manager = TargetManager()
+template_manager = TemplateManager()
 
 
 class SubscriptionsView(MethodView):
@@ -263,7 +266,29 @@ class SubscriptionSafelistExportView(MethodView):
 
         Get an excel file with safelist attributes in it.
         """
+        subscription = subscription_manager.get(document_id=subscription_id)
+
         data = request.json
+
+        # Randomize Next templates if they do not already exist
+        if not subscription.get("next_templates"):
+            update_data = {}
+            next_templates = [
+                t
+                for t in template_manager.all({"retired": False})
+                if t not in subscription.get("templates_selected")
+            ]
+            next_templates_selected = sum(select_templates(next_templates), [])
+            if next_templates_selected:
+                update_data["next_templates"] = next_templates_selected
+            subscription_manager.update(document_id=subscription_id, data=update_data)
+        else:
+            next_templates_selected = subscription.get("next_templates", [])
+
+        data["next_templates"] = template_manager.all(
+            params={"_id": {"$in": next_templates_selected}},
+            fields=["subject", "deception_score"],
+        )
 
         filepath = generate_safelist_file(
             subscription_id=subscription_id,
@@ -271,6 +296,7 @@ class SubscriptionSafelistExportView(MethodView):
             domains=data["domains"],
             ips=data["ips"],
             templates=data["templates"],
+            next_templates=data["next_templates"],
             reporting_password=data["password"],
             simulation_url=data.get("simulation_url", ""),
         )
@@ -308,12 +334,34 @@ class SubscriptionSafelistSendView(MethodView):
         cycle = cycle_manager.get(filter_data=cycle_filter_data)
 
         data = request.json
+
+        # Randomize Next templates if they do not already exist
+        if not subscription.get("next_templates"):
+            update_data = {}
+            next_templates = [
+                t
+                for t in template_manager.all({"retired": False})
+                if t not in subscription.get("templates_selected")
+            ]
+            next_templates_selected = sum(select_templates(next_templates), [])
+            if next_templates_selected:
+                update_data["next_templates"] = next_templates_selected
+            subscription_manager.update(document_id=subscription_id, data=update_data)
+        else:
+            next_templates_selected = subscription.get("next_templates", [])
+
+        data["next_templates"] = template_manager.all(
+            params={"_id": {"$in": next_templates_selected}},
+            fields=["subject", "deception_score"],
+        )
+
         filepath = generate_safelist_file(
             subscription_id=subscription_id,
             phish_header=data["phish_header"],
             domains=data["domains"],
             ips=data["ips"],
             templates=data["templates"],
+            next_templates=data["next_templates"],
             reporting_password=data["password"],
             simulation_url=data.get("simulation_url", ""),
         )
@@ -330,3 +378,33 @@ class SubscriptionSafelistSendView(MethodView):
         )
 
         return jsonify({"success": "Safelisting information email sent."})
+
+
+class SubscriptionCurrentTemplatesView(MethodView):
+    """Get the current templates for a given subscription."""
+
+    def get(self, subscription_id):
+        """Get test results for a subscription."""
+        template_ids = subscription_manager.get(
+            document_id=subscription_id, fields=["templates_selected"]
+        ).get("templates_selected", [])
+        templates = template_manager.all(
+            params={"_id": {"$in": template_ids}},
+            fields=["subject"],
+        )
+        return jsonify([t["subject"] for t in templates if "subject" in t])
+
+
+class SubscriptionNextTemplatesView(MethodView):
+    """Get the next templates for a given subscription."""
+
+    def get(self, subscription_id):
+        """Get test results for a subscription."""
+        template_ids = subscription_manager.get(
+            document_id=subscription_id, fields=["next_templates"]
+        ).get("next_templates", [])
+        templates = template_manager.all(
+            params={"_id": {"$in": template_ids}},
+            fields=["subject"],
+        )
+        return jsonify([t["subject"] for t in templates if "subject" in t])

@@ -199,7 +199,6 @@ There are no required environment variables.
 | `EMAIL_MINUTES` | How often to check for phishing emails to send. | `1` |
 | `TASK_MINUTES` | How often to check for tasks to run. | `1` |
 | `FAILED_EMAIL_MINUTES` | How often to check for email events that failed. | `1440` |
-| `DELAY_MINUTES` | Time to delay between starting a subscription and sending emails. | `1` |
 
 ### Optional ###
 
