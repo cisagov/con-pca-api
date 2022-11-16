@@ -209,7 +209,7 @@ def end_cycle(subscription, cycle):
     if subscription.get("continuous_subscription"):
         stop_subscription(str(subscription["_id"]))
         # randomize templates between cycles
-        if subscription.get("next_templates", []) != []:
+        if subscription.get("next_templates"):
             start_subscription(
                 str(subscription["_id"]),
                 templates_selected=subscription["next_templates"],
