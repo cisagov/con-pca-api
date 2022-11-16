@@ -50,7 +50,7 @@ class CycleSchema(BaseSchema):
     send_by_date = DateTimeField()
     active = fields.Bool()
     target_count = fields.Integer()
-    tasks = fields.List(fields.Nested(CycleTasksSchema))
+    tasks = fields.List(fields.Nested(CycleTasksSchema), required=False)
     dirty_stats = fields.Bool()
     stats = fields.Nested(CycleStatsSchema)
     nonhuman_stats = fields.Nested(CycleStatsSchema)
