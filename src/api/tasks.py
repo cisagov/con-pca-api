@@ -78,7 +78,7 @@ def process_subscription(subscription):
         filter(
             lambda x: x["scheduled_date"].timestamp() < datetime.utcnow().timestamp()
             and not x.get("executed"),
-            cycle.get("tasks", []),
+            subscription.get("tasks", []),
         )
     )
 
@@ -98,7 +98,7 @@ def process_subscription(subscription):
             )
             task["error"] = str(e)
         if not end_cycle_task:
-            update_task(cycle["_id"], task)
+            update_task(subscription["_id"], task)
             add_new_task(subscription, cycle, task)
         logger.info(f"Executed task {task}")
 
@@ -107,10 +107,10 @@ def process_subscription(subscription):
     )
 
 
-def update_task(cycle_id, task):
+def update_task(subscription_id, task):
     """Update subscription task."""
-    cycle_manager.update_in_list(
-        document_id=cycle_id,
+    subscription_manager.update_in_list(
+        document_id=subscription_id,
         field="tasks.$",
         data=task,
         params={"tasks.task_uuid": task["task_uuid"]},
@@ -140,8 +140,8 @@ def add_new_task(subscription, cycle, task):
         }
         logger.info(f"Adding new task {task}")
 
-        return cycle_manager.add_to_list(
-            document_id=cycle["_id"],
+        return subscription_manager.add_to_list(
+            document_id=subscription["_id"],
             field="tasks",
             data=task,
         )
@@ -209,23 +209,15 @@ def end_cycle(subscription, cycle):
     if subscription.get("continuous_subscription"):
         stop_subscription(str(subscription["_id"]))
         # randomize templates between cycles
-        if subscription.get("next_templates"):
-            start_subscription(
-                str(subscription["_id"]),
-                templates_selected=subscription["next_templates"],
-            )
-
-        else:
-            templates = [
-                t
-                for t in template_manager.all({"retired": False})
-                if t not in subscription["templates_selected"]
-            ]
-            templates_selected = sum(select_templates(templates), [])
-            start_subscription(
-                str(subscription["_id"]), templates_selected=templates_selected
-            )
-
+        templates = [
+            t
+            for t in template_manager.all({"retired": False})
+            if t not in subscription["templates_selected"]
+        ]
+        templates_selected = sum(select_templates(templates), [])
+        start_subscription(
+            str(subscription["_id"]), templates_selected=templates_selected
+        )
     else:
         stop_subscription(str(subscription["_id"]))
         Notification("subscription_stopped", subscription, cycle).send()
@@ -240,18 +232,12 @@ def safelisting_reminder(subscription, cycle):
         fields=["subject", "deception_score"],
     )
 
-    next_templates = template_manager.all(
-        params={"_id": {"$in": subscription["next_templates"]}},
-        fields=["subject", "deception_score"],
-    )
-
     filepath = generate_safelist_file(
         subscription_id=subscription["_id"],
         phish_header=cycle["phish_header"],
         domains=[sp["from_address"].split("@")[1] for sp in sending_profiles],
         ips=[sp["sending_ips"] for sp in sending_profiles],
         templates=templates,
-        next_templates=next_templates,
         reporting_password=subscription["reporting_password"],
         simulation_url=subscription.get("landing_domain", ""),  # simulated phishing url
     )
