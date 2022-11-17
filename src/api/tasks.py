@@ -106,6 +106,12 @@ def process_subscription(subscription):
         document_id=subscription["_id"], data={"processing": False}, update=False
     )
 
+    cycle = cycle_manager.get(
+        filter_data={
+            "subscription_id": str(subscription["_id"]),
+            "active": True,
+        }
+    )
     cycle_manager.update(
         document_id=cycle["_id"],
         data={
