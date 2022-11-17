@@ -89,6 +89,7 @@ def start_subscription(subscription_id, templates_selected=[]):
 
     update_data = {
         "status": "running",
+        "tasks": tasks,
     }
 
     cycle["tasks"] = tasks
