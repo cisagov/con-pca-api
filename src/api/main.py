@@ -18,7 +18,6 @@ from api.initialize import (
     initialize_nonhumans,
     initialize_recommendations,
     initialize_templates,
-    populate_cycle_tasks,
     populate_stakeholder_shortname,
     reset_dirty_stats,
 )
@@ -207,7 +206,7 @@ with app.app_context():
     initialize_nonhumans()
     reset_dirty_stats()
     populate_stakeholder_shortname()
-    populate_cycle_tasks()
+    # populate_cycle_tasks()
     # restart_subscriptions()
 
 
@@ -266,12 +265,4 @@ def load_dummy_data():
     """Load test data to db."""
     initialize_templates()
     load_test_data()
-    logger.info("Success.")
-
-
-@app.cli.command("transform-data")
-def populate_new_fields_with_data():
-    """Add default data directly to the database for new required fields."""
-    populate_stakeholder_shortname()
-    populate_cycle_tasks()
     logger.info("Success.")
