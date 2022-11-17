@@ -209,15 +209,22 @@ def end_cycle(subscription, cycle):
     if subscription.get("continuous_subscription"):
         stop_subscription(str(subscription["_id"]))
         # randomize templates between cycles
-        templates = [
-            t
-            for t in template_manager.all({"retired": False})
-            if t not in subscription["templates_selected"]
-        ]
-        templates_selected = sum(select_templates(templates), [])
-        start_subscription(
-            str(subscription["_id"]), templates_selected=templates_selected
-        )
+        if subscription.get("next_templates"):
+            start_subscription(
+                str(subscription["_id"]),
+                templates_selected=subscription["next_templates"],
+            )
+
+        else:
+            templates = [
+                t
+                for t in template_manager.all({"retired": False})
+                if t not in subscription["templates_selected"]
+            ]
+            templates_selected = sum(select_templates(templates), [])
+            start_subscription(
+                str(subscription["_id"]), templates_selected=templates_selected
+            )
     else:
         stop_subscription(str(subscription["_id"]))
         Notification("subscription_stopped", subscription, cycle).send()
@@ -232,12 +239,18 @@ def safelisting_reminder(subscription, cycle):
         fields=["subject", "deception_score"],
     )
 
+    next_templates = template_manager.all(
+        params={"_id": {"$in": subscription["next_templates"]}},
+        fields=["subject", "deception_score"],
+    )
+
     filepath = generate_safelist_file(
         subscription_id=subscription["_id"],
         phish_header=cycle["phish_header"],
         domains=[sp["from_address"].split("@")[1] for sp in sending_profiles],
         ips=[sp["sending_ips"] for sp in sending_profiles],
         templates=templates,
+        next_templates=next_templates,
         reporting_password=subscription["reporting_password"],
         simulation_url=subscription.get("landing_domain", ""),  # simulated phishing url
     )
