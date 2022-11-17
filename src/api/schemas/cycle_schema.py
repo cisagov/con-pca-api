@@ -30,6 +30,7 @@ class CycleTasksSchema(Schema):
                 "fifteen_day_reminder",
                 "five_day_reminder",
                 "safelisting_reminder",
+                "start_next_cycle",
                 "end_cycle",
             ]
         )
