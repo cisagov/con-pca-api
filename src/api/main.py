@@ -206,7 +206,6 @@ with app.app_context():
     initialize_nonhumans()
     reset_dirty_stats()
     populate_stakeholder_shortname()
-    # populate_cycle_tasks()
     # restart_subscriptions()
 
 

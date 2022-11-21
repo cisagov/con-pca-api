@@ -78,7 +78,7 @@ def process_subscription(subscription):
         filter(
             lambda x: x["scheduled_date"].timestamp() < datetime.utcnow().timestamp()
             and not x.get("executed"),
-            cycle.get("tasks", []),
+            subscription.get("tasks", []),
         )
     )
 
@@ -98,7 +98,7 @@ def process_subscription(subscription):
             )
             task["error"] = str(e)
         if not end_cycle_task:
-            update_task(cycle["_id"], task)
+            update_task(subscription["_id"], task)
             add_new_task(subscription, cycle, task)
         logger.info(f"Executed task {task}")
 
@@ -106,11 +106,24 @@ def process_subscription(subscription):
         document_id=subscription["_id"], data={"processing": False}, update=False
     )
 
+    cycle = cycle_manager.get(
+        filter_data={
+            "subscription_id": str(subscription["_id"]),
+            "active": True,
+        }
+    )
+    cycle_manager.update(
+        document_id=cycle["_id"],
+        data={
+            "tasks": subscription.get("tasks"),
+        },
+    )
 
-def update_task(cycle_id, task):
+
+def update_task(subscription_id, task):
     """Update subscription task."""
-    cycle_manager.update_in_list(
-        document_id=cycle_id,
+    subscription_manager.update_in_list(
+        document_id=subscription_id,
         field="tasks.$",
         data=task,
         params={"tasks.task_uuid": task["task_uuid"]},
@@ -140,8 +153,8 @@ def add_new_task(subscription, cycle, task):
         }
         logger.info(f"Adding new task {task}")
 
-        return cycle_manager.add_to_list(
-            document_id=cycle["_id"],
+        return subscription_manager.add_to_list(
+            document_id=subscription["_id"],
             field="tasks",
             data=task,
         )
@@ -225,7 +238,6 @@ def end_cycle(subscription, cycle):
             start_subscription(
                 str(subscription["_id"]), templates_selected=templates_selected
             )
-
     else:
         stop_subscription(str(subscription["_id"]))
         Notification("subscription_stopped", subscription, cycle).send()
