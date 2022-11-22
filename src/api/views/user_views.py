@@ -4,11 +4,12 @@ from flask import jsonify
 from flask.views import MethodView
 
 # cisagov Libraries
-from api.manager import SubscriptionManager
+from api.manager import SubscriptionManager, UserManager
 from utils.aws import Cognito
 
 cognito = Cognito()
 subscription_manager = SubscriptionManager()
+user_manager = UserManager()
 
 
 class UsersView(MethodView):
@@ -16,7 +17,23 @@ class UsersView(MethodView):
 
     def get(self):
         """Get."""
-        return jsonify(cognito.list_users())
+        users = cognito.list_users()
+        users = [
+            dict(
+                user,
+                **{
+                    "last_login": user_manager.get(
+                        filter_data={"username": user.get("username", "")}
+                    ).get("last_login")
+                    if user_manager.get(
+                        filter_data={"username": user.get("username", "")}
+                    )
+                    else ""
+                }
+            )
+            for user in users
+        ]
+        return jsonify(users)
 
 
 class UserView(MethodView):
