@@ -15,7 +15,7 @@ from api.manager import (
     TemplateManager,
 )
 from api.schemas.stats_schema import CycleStatsSchema
-from utils.templates import get_indicators
+from utils.templates import get_deception_level, get_indicators
 
 template_manager = TemplateManager()
 customer_manager = TemplateManager()
@@ -29,19 +29,35 @@ sending_profile_manager = SendingProfileManager()
 
 def get_cycle_stats(cycle):
     """Get stats for cycle."""
-    if cycle.get("dirty_stats", True):
-        targets = target_manager.all(params={"cycle_id": cycle["_id"]})
-        data = {
-            "stats": generate_cycle_stats(cycle, targets, nonhuman=False),
-            "nonhuman_stats": generate_cycle_stats(cycle, targets, nonhuman=True),
-            "dirty_stats": False,
-        }
-        cycle.update(data)
-        if cycle.get("_id"):
-            cycle_manager.update(
-                document_id=cycle["_id"],
-                data=data,
-            )
+    # if cycle.get("dirty_stats", True):
+    targets = target_manager.all(params={"cycle_id": cycle["_id"]})
+    data = {
+        "stats": generate_cycle_stats(cycle, targets, nonhuman=False),
+        "nonhuman_stats": generate_cycle_stats(cycle, targets, nonhuman=True),
+        "dirty_stats": False,
+    }
+    cycle.update(data)
+    if cycle.get("_id"):
+        cycle_manager.update(
+            document_id=cycle["_id"],
+            data=data,
+        )
+
+
+def mongo_get_cycle_stats(cycle):
+    """Get stats for cycle."""
+    # if cycle.get("dirty_stats", True):
+    data = {
+        "stats": mongo_generate_cycle_stats(cycle["_id"], nonhuman=False),
+        "nonhuman_stats": mongo_generate_cycle_stats(cycle["_id"], nonhuman=True),
+        "dirty_stats": False,
+    }
+    cycle.update(data)
+    if cycle.get("_id"):
+        cycle_manager.update(
+            document_id=cycle["_id"],
+            data=data,
+        )
 
 
 def generate_cycle_stats(cycle, targets, nonhuman=False):
@@ -241,6 +257,357 @@ def generate_cycle_stats(cycle, targets, nonhuman=False):
             "target_stats": target_stats,
         }
     )
+
+
+def mongo_generate_cycle_stats(cycle_id, nonhuman=False):
+    """Get stats for cycle."""
+    nonhuman_orgs = get_nonhuman_orgs()
+
+    decep_level_stats = mongo_get_deception_level_stats(
+        cycle_id, nonhuman, nonhuman_orgs
+    )
+    indicator_stats = mongo_get_indicator_stats(cycle_id, nonhuman, nonhuman_orgs)
+    maxmind_stats = mongo_get_maxmind_stats(cycle_id, nonhuman, nonhuman_orgs)
+    recommendation_stats = mongo_get_recommendation_stats(
+        cycle_id, nonhuman, nonhuman_orgs
+    )
+    stats = mongo_get_stats(cycle_id, nonhuman, nonhuman_orgs)
+    target_stats = mongo_get_target_stats(cycle_id, nonhuman, nonhuman_orgs)
+    template_stats = mongo_get_template_stats(cycle_id, nonhuman, nonhuman_orgs)
+    time_stats = mongo_get_time_stats(cycle_id, nonhuman, nonhuman_orgs)
+
+    return CycleStatsSchema().dump(
+        {
+            "stats": stats,
+            "template_stats": template_stats,
+            "maxmind_stats": maxmind_stats,
+            "indicator_stats": indicator_stats,
+            "time_stats": time_stats,
+            "recommendation_stats": recommendation_stats,
+            "deception_level_stats": decep_level_stats,
+            "target_stats": target_stats,
+        }
+    )
+
+
+def mongo_get_deception_level_stats(cycle_id, nonhuman, nonhuman_orgs):
+    """Get deception level stats."""
+    deception_level_stats = {}
+    return deception_level_stats
+
+
+def mongo_get_indicator_stats(cycle_id, nonhuman, nonhuman_orgs):
+    """Get indicator stats."""
+    indicator_stats = {}
+    return indicator_stats
+
+
+def mongo_get_maxmind_stats(cycle_id, nonhuman, nonhuman_orgs):
+    """Get maxmind stats."""
+    maxmind_stats = {}
+    return maxmind_stats
+
+
+def mongo_get_recommendation_stats(cycle_id, nonhuman, nonhuman_orgs):
+    """Get recommendation stats."""
+    recommendation_stats = {}
+    return recommendation_stats
+
+
+def mongo_get_stats(cycle_id, nonhuman, nonhuman_orgs):
+    """Get stats."""
+    stats = {}
+    return stats
+
+
+def mongo_get_target_stats(cycle_id, nonhuman, nonhuman_orgs):
+    """Get target stats."""
+    target_stats = {}
+    return target_stats
+
+
+def mongo_get_template_stats(cycle_id, nonhuman, nonhuman_orgs):
+    """Get template stats."""
+    template_stats = []
+    cycle = cycle_manager.get(document_id=cycle_id, fields=["template_ids"])
+    templates = template_manager.all(
+        params={"_id": {"$in": cycle["template_ids"]}},
+    )
+
+    for template in templates:
+        sent_count = target_manager.count(
+            {
+                "cycle_id": {"$eq": cycle_id},
+                "template_id": {"$eq": template["_id"]},
+            }
+        )
+        stats = {
+            "template": template,
+            "deception_level": get_deception_level(template["deception_score"]),
+            "template_id": template["_id"],
+            "sent": {"count": sent_count},
+            "opened": {},
+            "clicked": {},
+            "reported": {},
+        }
+        for event in ["opened", "clicked", "reported"]:
+            aggregate = target_manager.aggregate(
+                get_template_stats_pipeline(
+                    cycle_id, template["_id"], event, nonhuman, nonhuman_orgs
+                )
+            )
+            count = aggregate[0].get("count", 0) if len(aggregate) > 0 else 0
+            ratio = get_ratio(count, sent_count)
+            stats[event]["count"] = count
+            stats[event]["ratio"] = ratio
+
+        template_stats.append(stats)
+
+    mongo_rank_templates(template_stats)
+
+    # Sort low, moderate, high
+    template_stats = sorted(template_stats, key=lambda d: d["deception_level"])
+    template_stats = [template_stats[1], template_stats[2], template_stats[0]]
+
+    return template_stats
+
+
+def get_template_stats_pipeline(
+    cycle_id, template_id, event_type, nonhuman, nonhuman_orgs
+):
+    """Get template stats."""
+    if not nonhuman:
+        return [
+            {
+                "$match": {
+                    "cycle_id": {"$eq": cycle_id},
+                    "template_id": {"$eq": template_id},
+                }
+            },
+            {"$unwind": {"path": "$timeline"}},
+            {
+                "$match": {
+                    "timeline.message": {
+                        "$eq": event_type,
+                    },
+                    "timeline.details.asn_org": {
+                        "$nin": nonhuman_orgs,
+                    },
+                }
+            },
+            {"$count": "count"},
+        ]
+    else:
+        return [
+            {
+                "$match": {
+                    "cycle_id": {"$eq": cycle_id},
+                    "template_id": {"$eq": template_id},
+                }
+            },
+            {"$unwind": {"path": "$timeline"}},
+            {
+                "$match": {
+                    "timeline.message": {
+                        "$eq": event_type,
+                    },
+                    "timeline.details.asn_org": {
+                        "$in": nonhuman_orgs,
+                    },
+                }
+            },
+            {"$count": "count"},
+        ]
+
+
+def mongo_get_time_stats(cycle_id, nonhuman, nonhuman_orgs):
+    """Get time stats."""
+    time_stats = {
+        "clicked": {
+            "fifteen_minutes": {
+                "count": 0,
+                "ratio": 0.0,
+            },
+            "five_minutes": {
+                "count": 0,
+                "ratio": 0.0,
+            },
+            "four_hours": {
+                "count": 0,
+                "ratio": 0.0,
+            },
+            "one_day": {
+                "count": 0,
+                "ratio": 0.0,
+            },
+            "one_minutes": {
+                "count": 0,
+                "ratio": 0.0,
+            },
+            "sixty_minutes": {
+                "count": 0,
+                "ratio": 0.0,
+            },
+            "thirty_minutes": {
+                "count": 0,
+                "ratio": 0.0,
+            },
+            "three_hours": {
+                "count": 0,
+                "ratio": 0.0,
+            },
+            "three_minutes": {
+                "count": 0,
+                "ratio": 0.0,
+            },
+            "two_hours": {
+                "count": 0,
+                "ratio": 0.0,
+            },
+        },
+        "opened": {
+            "fifteen_minutes": {
+                "count": 0,
+                "ratio": 0.0,
+            },
+            "five_minutes": {
+                "count": 0,
+                "ratio": 0.0,
+            },
+            "four_hours": {
+                "count": 0,
+                "ratio": 0.0,
+            },
+            "one_day": {
+                "count": 0,
+                "ratio": 0.0,
+            },
+            "one_minutes": {
+                "count": 0,
+                "ratio": 0.0,
+            },
+            "sixty_minutes": {
+                "count": 0,
+                "ratio": 0.0,
+            },
+            "thirty_minutes": {
+                "count": 0,
+                "ratio": 0.0,
+            },
+            "three_hours": {
+                "count": 0,
+                "ratio": 0.0,
+            },
+            "three_minutes": {
+                "count": 0,
+                "ratio": 0.0,
+            },
+            "two_hours": {
+                "count": 0,
+                "ratio": 0.0,
+            },
+        },
+    }
+
+    sent_count = target_manager.count({"cycle_id": {"$eq": cycle_id}})
+
+    events = ["clicked", "opened"]
+    time_windows = {
+        "fifteen_minutes": 15 * 60000,
+        "five_minutes": 5 * 60000,
+        "four_hours": 4 * 60 * 60000,
+        "one_day": 24 * 60 * 60000,
+        "one_minutes": 1 * 60000,
+        "sixty_minutes": 60 * 60000,
+        "thirty_minutes": 30 * 60000,
+        "three_hours": 3 * 60 * 60000,
+        "three_minutes": 3 * 60000,
+        "two_hours": 2 * 60 * 60000,
+    }
+
+    for event in events:
+        for time_window in list(time_windows.keys()):
+            aggregate = target_manager.aggregate(
+                get_time_stats_pipeline(
+                    cycle_id, event, time_windows[time_window], nonhuman, nonhuman_orgs
+                )
+            )
+            count = aggregate[0].get("count", 0) if len(aggregate) > 0 else 0
+            ratio = get_ratio(count, sent_count)
+            time_stats[event][time_window]["count"] = count
+            time_stats[event][time_window]["ratio"] = ratio
+
+    return time_stats
+
+
+def get_time_stats_pipeline(
+    cycle_id, event_type, time_milliseconds, nonhuman, nonhuman_orgs
+):
+    """Get time stats pipeline."""
+    if not nonhuman:
+        return [
+            {
+                "$match": {
+                    "cycle_id": {"$eq": cycle_id},
+                }
+            },
+            {"$unwind": {"path": "$timeline"}},
+            {
+                "$match": {
+                    "timeline.message": {
+                        "$eq": event_type,
+                    },
+                    "timeline.details.asn_org": {
+                        "$nin": nonhuman_orgs,
+                    },
+                }
+            },
+            {
+                "$project": {
+                    "time_to_click": {"$subtract": ["$timeline.time", "$sent_date"]}
+                }
+            },
+            {
+                "$match": {
+                    "time_to_click": {
+                        "$lte": time_milliseconds,
+                    },
+                }
+            },
+            {"$count": "count"},
+        ]
+    else:
+        return [
+            {
+                "$match": {
+                    "cycle_id": {"$eq": cycle_id},
+                }
+            },
+            {"$unwind": {"path": "$timeline"}},
+            {
+                "$match": {
+                    "timeline.message": {
+                        "$eq": event_type,
+                    },
+                }
+            },
+            {
+                "$project": {
+                    "time_to_click": {"$subtract": ["$timeline.time", "$sent_date"]}
+                }
+            },
+            {
+                "$match": {
+                    "time_to_click": {
+                        "$lte": time_milliseconds,
+                    },
+                    "timeline.details.asn_org": {
+                        "$in": nonhuman_orgs,
+                    },
+                }
+            },
+            {"$count": "count"},
+        ]
 
 
 def get_rolling_emails(n_days):
@@ -598,6 +965,25 @@ def rank_templates(template_stats: dict):
             ):
                 rank += 1
             template_stats[stat["template_id"]][event]["rank"] = rank
+
+
+def mongo_rank_templates(template_stats: list):
+    """Rank templates by opened and clicked counts."""
+    for event in ["opened", "clicked", "reported"]:
+        template_stats = sorted(
+            template_stats, key=lambda d: d[event]["ratio"], reverse=True
+        )
+        template_stats[0][event]["rank"] = 1
+        template_stats[1][event]["rank"] = (
+            template_stats[0][event]["rank"] + 1
+            if template_stats[0][event]["ratio"] != template_stats[1][event]["ratio"]
+            else template_stats[0][event]["rank"]
+        )
+        template_stats[2][event]["rank"] = (
+            template_stats[1][event]["rank"] + 1
+            if template_stats[1][event]["ratio"] != template_stats[2][event]["ratio"]
+            else template_stats[1][event]["rank"]
+        )
 
 
 def process_ratios(stats: dict):
