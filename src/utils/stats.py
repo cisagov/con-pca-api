@@ -304,7 +304,74 @@ def mongo_get_indicator_stats(cycle_id, nonhuman, nonhuman_orgs):
 
 def mongo_get_maxmind_stats(cycle_id, nonhuman, nonhuman_orgs):
     """Get maxmind stats."""
-    maxmind_stats = {}
+    if not nonhuman:
+        pipeline = [
+            {"$match": {"cycle_id": cycle_id}},
+            {"$unwind": {"path": "$timeline"}},
+            {
+                "$match": {
+                    "timeline.details.asn_org": {
+                        "$nin": nonhuman_orgs,
+                    },
+                }
+            },
+            {
+                "$group": {
+                    "_id": "$timeline.details.asn_org",
+                    "asn_org": {"$first": "$timeline.details.asn_org"},
+                    "ips": {"$addToSet": "$timeline.details.ip"},
+                    "cities": {"$addToSet": "$timeline.details.city"},
+                    "clicks": {
+                        "$sum": {
+                            "$cond": [{"$eq": ["$timeline.message", "clicked"]}, 1, 0]
+                        }
+                    },
+                    "opens": {
+                        "$sum": {
+                            "$cond": [{"$eq": ["$timeline.message", "opened"]}, 1, 0]
+                        }
+                    },
+                }
+            },
+        ]
+    else:
+        pipeline = [
+            {"$match": {"cycle_id": "6376a9aa4c95c0c4630feb83"}},
+            {"$unwind": {"path": "$timeline"}},
+            {
+                "$match": {
+                    "timeline.details.asn_org": {
+                        "$in": nonhuman_orgs,
+                    },
+                }
+            },
+            {
+                "$group": {
+                    "_id": "$timeline.details.asn_org",
+                    "asn_org": {"$first": "$timeline.details.asn_org"},
+                    "ips": {"$addToSet": "$timeline.details.ip"},
+                    "cities": {"$addToSet": "$timeline.details.city"},
+                    "clicks": {
+                        "$sum": {
+                            "$cond": [{"$eq": ["$timeline.message", "clicked"]}, 1, 0]
+                        }
+                    },
+                    "opens": {
+                        "$sum": {
+                            "$cond": [{"$eq": ["$timeline.message", "opened"]}, 1, 0]
+                        }
+                    },
+                }
+            },
+        ]
+    maxmind_stats = target_manager.aggregate(pipeline)
+
+    for asn_org in maxmind_stats:
+        asn_org["is_nonhuman"] = asn_org["asn_org"] in nonhuman_orgs
+
+    # Sort alphebetically by asn_org
+    maxmind_stats = sorted(maxmind_stats, key=lambda d: d["asn_org"])
+
     return maxmind_stats
 
 
