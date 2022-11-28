@@ -73,25 +73,6 @@ class MongoCycleStatsView(MethodView):
         mongo_get_cycle_stats(cycle)
         return jsonify(cycle["nonhuman_stats"] if nonhuman else cycle["stats"])
 
-    # def post(self, cycle_id):
-    #     from api.manager import TargetManager
-    #     from datetime import datetime
-    #     target_manager = TargetManager()
-    #     sent_count = target_manager.count(
-    #         {
-    #             "cycle_id": {
-    #                 "$eq": cycle_id
-    #             },
-    #             "sent_date": {
-    #                 "$lte": datetime.now(),
-    #             },
-    #             "template_id": {
-    #                 "$eq": "6376a96bf0c8f93f64b3ddba"
-    #             },
-    #         }
-    #     )
-    #     return str(sent_count)
-
 
 class CycleManualReportsView(MethodView):
     """CycleReportsView."""

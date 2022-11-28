@@ -389,7 +389,105 @@ def mongo_get_stats(cycle_id, nonhuman, nonhuman_orgs):
 
 def mongo_get_target_stats(cycle_id, nonhuman, nonhuman_orgs):
     """Get target stats."""
-    target_stats = {}
+    if not nonhuman:
+        pipeline = [
+            {"$match": {"cycle_id": cycle_id}},
+            {"$unwind": {"path": "$timeline", "preserveNullAndEmptyArrays": True}},
+            {
+                "$match": {
+                    "timeline.details.asn_org": {
+                        "$nin": nonhuman_orgs,
+                    },
+                }
+            },
+            {
+                "$group": {
+                    "_id": "$position",
+                    "group": {"$first": "$position"},
+                    "sent_count": {
+                        "$sum": {
+                            "$cond": [{"$ne": ["$timeline.message", "clicked"]}, 1, 0]
+                        }
+                    },
+                    "clicks": {
+                        "$sum": {
+                            "$cond": [{"$eq": ["$timeline.message", "clicked"]}, 1, 0]
+                        }
+                    },
+                    "opens": {
+                        "$sum": {
+                            "$cond": [{"$eq": ["$timeline.message", "opened"]}, 1, 0]
+                        }
+                    },
+                    "reports": {
+                        "$sum": {
+                            "$cond": [{"$eq": ["$timeline.message", "reported"]}, 1, 0]
+                        }
+                    },
+                }
+            },
+            {
+                "$project": {
+                    "group": "$_id",
+                    "sent.count": "$sent_count",
+                    "clicked.count": "$clicks",
+                    "opened.count": "$opens",
+                    "reported.count": "$reports",
+                }
+            },
+        ]
+    else:
+        pipeline = [
+            {"$match": {"cycle_id": cycle_id}},
+            {"$unwind": {"path": "$timeline", "preserveNullAndEmptyArrays": True}},
+            {
+                "$match": {
+                    "timeline.details.asn_org": {
+                        "$in": nonhuman_orgs,
+                    },
+                }
+            },
+            {
+                "$group": {
+                    "_id": "$position",
+                    "group": {"$first": "$position"},
+                    "sent_count": {
+                        "$sum": {
+                            "$cond": [{"$ne": ["$timeline.message", "clicked"]}, 1, 0]
+                        }
+                    },
+                    "clicks": {
+                        "$sum": {
+                            "$cond": [{"$eq": ["$timeline.message", "clicked"]}, 1, 0]
+                        }
+                    },
+                    "opens": {
+                        "$sum": {
+                            "$cond": [{"$eq": ["$timeline.message", "opened"]}, 1, 0]
+                        }
+                    },
+                    "reports": {
+                        "$sum": {
+                            "$cond": [{"$eq": ["$timeline.message", "reported"]}, 1, 0]
+                        }
+                    },
+                }
+            },
+            {
+                "$project": {
+                    "group": "$_id",
+                    "sent.count": "$sent_count",
+                    "clicked.count": "$clicks",
+                    "opened.count": "$opens",
+                    "reported.count": "$reports",
+                }
+            },
+        ]
+    target_stats = target_manager.aggregate(pipeline)
+
+    # Sort alphebetically by group
+    target_stats = sorted(target_stats, key=lambda d: d["group"])
+
     return target_stats
 
 
