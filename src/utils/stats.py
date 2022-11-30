@@ -292,8 +292,574 @@ def mongo_generate_cycle_stats(cycle_id, nonhuman=False):
 
 def mongo_get_deception_level_stats(cycle_id, nonhuman, nonhuman_orgs):
     """Get deception level stats."""
-    deception_level_stats = {}
+    if not nonhuman:
+        pipeline = [
+            {"$match": {"cycle_id": cycle_id}},
+            {"$addFields": {"template_id": {"$toObjectId": "$template_id"}}},
+            {
+                "$lookup": {
+                    "from": "template",
+                    "localField": "template_id",
+                    "foreignField": "_id",
+                    "as": "template",
+                }
+            },
+            {"$unwind": {"path": "$template"}},
+            {"$unwind": {"path": "$timeline", "preserveNullAndEmptyArrays": True}},
+            {
+                "$match": {
+                    "timeline.details.asn_org": {
+                        "$nin": nonhuman_orgs,
+                    },
+                }
+            },
+            {
+                "$group": {
+                    "_id": "$template.deception_score",
+                    "deception_level": {"$first": "$template.deception_score"},
+                    "sent_count": {
+                        "$sum": {
+                            "$cond": [{"$ne": ["$timeline.message", "clicked"]}, 1, 0]
+                        }
+                    },
+                    "total_clicks": {
+                        "$sum": {
+                            "$cond": [{"$eq": ["$timeline.message", "clicked"]}, 1, 0]
+                        }
+                    },
+                    "unique_clicks": {
+                        "$addToSet": {
+                            "$cond": [
+                                {"$eq": ["$timeline.message", "clicked"]},
+                                {"$toString": "$_id"},
+                                "$$REMOVE",
+                            ]
+                        }
+                    },
+                    "user_reports": {
+                        "$sum": {
+                            "$cond": [{"$eq": ["$timeline.message", "reported"]}, 1, 0]
+                        }
+                    },
+                    "unique_user_clicks": {
+                        "$push": {
+                            "$cond": [
+                                {"$eq": ["$timeline.message", "clicked"]},
+                                {"$toString": "$_id"},
+                                "$$REMOVE",
+                            ]
+                        }
+                    },
+                    "click_percentage_over_time": {
+                        "$push": {
+                            "$cond": [
+                                {"$eq": ["$timeline.message", "clicked"]},
+                                {"$subtract": ["$timeline.time", "$sent_date"]},
+                                "$$REMOVE",
+                            ]
+                        }
+                    },
+                }
+            },
+        ]
+    else:
+        pipeline = [
+            {"$match": {"cycle_id": cycle_id}},
+            {"$addFields": {"template_id": {"$toObjectId": "$template_id"}}},
+            {
+                "$lookup": {
+                    "from": "template",
+                    "localField": "template_id",
+                    "foreignField": "_id",
+                    "as": "template",
+                }
+            },
+            {"$unwind": {"path": "$template"}},
+            {"$unwind": {"path": "$timeline", "preserveNullAndEmptyArrays": True}},
+            {
+                "$match": {
+                    "timeline.details.asn_org": {
+                        "$in": nonhuman_orgs,
+                    },
+                }
+            },
+            {
+                "$group": {
+                    "_id": "$template.deception_score",
+                    "deception_level": {"$first": "$template.deception_score"},
+                    "sent_count": {
+                        "$sum": {
+                            "$cond": [{"$ne": ["$timeline.message", "clicked"]}, 1, 0]
+                        }
+                    },
+                    "total_clicks": {
+                        "$sum": {
+                            "$cond": [{"$eq": ["$timeline.message", "clicked"]}, 1, 0]
+                        }
+                    },
+                    "unique_clicks": {
+                        "$addToSet": {
+                            "$cond": [
+                                {"$eq": ["$timeline.message", "clicked"]},
+                                {"$toString": "$_id"},
+                                "$$REMOVE",
+                            ]
+                        }
+                    },
+                    "user_reports": {
+                        "$sum": {
+                            "$cond": [{"$eq": ["$timeline.message", "reported"]}, 1, 0]
+                        }
+                    },
+                    "unique_user_clicks": {
+                        "$push": {
+                            "$cond": [
+                                {"$eq": ["$timeline.message", "clicked"]},
+                                {"$toString": "$_id"},
+                                "$$REMOVE",
+                            ]
+                        }
+                    },
+                    "click_percentage_over_time": {
+                        "$push": {
+                            "$cond": [
+                                {"$eq": ["$timeline.message", "clicked"]},
+                                {"$subtract": ["$timeline.time", "$sent_date"]},
+                                "$$REMOVE",
+                            ]
+                        }
+                    },
+                }
+            },
+        ]
+
+    deception_level_stats = target_manager.aggregate(pipeline)
+    deception_level_stats = sorted(
+        deception_level_stats, key=lambda d: d["deception_level"]
+    )
+
+    for deception_level in deception_level_stats:
+        deception_level["unique_clicks"] = len(deception_level["unique_clicks"])
+        deception_level["unique_user_clicks"] = mongo_calculate_unique_user_clicks(
+            deception_level["unique_user_clicks"]
+        )
+        deception_level[
+            "click_percentage_over_time"
+        ] = mongo_calculate_click_percentage_over_time(
+            deception_level["click_percentage_over_time"]
+        )
+
+    for deception_level in [1, 2, 3, 4, 5, 6]:
+        index = next(
+            (
+                i
+                for i, item in enumerate(deception_level_stats)
+                if item["deception_level"] == deception_level
+            ),
+            None,
+        )
+        if index is None:
+            empty_deception_level = {
+                "click_percentage_over_time": {
+                    "fifteen_minutes": {"count": 0, "ratio": 0.0},
+                    "five_minutes": {"count": 0, "ratio": 0.0},
+                    "four_hours": {"count": 0, "ratio": 0.0},
+                    "one_day": {"count": 0, "ratio": 0.0},
+                    "one_minutes": {"count": 0, "ratio": 0.0},
+                    "sixty_minutes": {"count": 0, "ratio": 0.0},
+                    "thirty_minutes": {"count": 0, "ratio": 0.0},
+                    "three_hours": {"count": 0, "ratio": 0.0},
+                    "three_minutes": {"count": 0, "ratio": 0.0},
+                    "two_hours": {"count": 0, "ratio": 0.0},
+                },
+                "deception_level": deception_level,
+                "sent_count": 0,
+                "total_clicks": 0,
+                "unique_clicks": 0,
+                "unique_user_clicks": {
+                    "four_five_clicks": 0,
+                    "one_click": 0,
+                    "six_ten_clicks": 0,
+                    "ten_plus_clicks": 0,
+                    "two_three_clicks": 0,
+                },
+                "user_reports": 0,
+            }
+            deception_level_stats.append(empty_deception_level)
+
+    deception_level_stats = sorted(
+        deception_level_stats, key=lambda d: d["deception_level"]
+    )
+    calculate_composite_deception_stats(deception_level_stats, [0, 1], 11)  # Low
+    calculate_composite_deception_stats(deception_level_stats, [2, 3], 12)  # Moderate
+    calculate_composite_deception_stats(deception_level_stats, [4, 5], 13)  # High
+    calculate_composite_deception_stats(deception_level_stats, [6, 7, 8], 14)  # All
+
     return deception_level_stats
+
+
+def calculate_composite_deception_stats(
+    deception_level_stats, indices, deception_level
+):
+    """Aggregate deception score stats to get deception level stats."""
+    if len(indices) == 2:
+        composite_deception_level = {
+            "deception_level": deception_level,
+            "sent_count": deception_level_stats[indices[0]]["sent_count"]
+            + deception_level_stats[indices[1]]["sent_count"],
+            "unique_clicks": deception_level_stats[indices[0]]["unique_clicks"]
+            + deception_level_stats[indices[1]]["unique_clicks"],
+            "total_clicks": deception_level_stats[indices[0]]["total_clicks"]
+            + deception_level_stats[indices[1]]["total_clicks"],
+            "user_reports": deception_level_stats[indices[0]]["user_reports"]
+            + deception_level_stats[indices[1]]["user_reports"],
+            "unique_user_clicks": {
+                k: deception_level_stats[indices[0]]["unique_user_clicks"].get(k, 0)
+                + deception_level_stats[indices[1]]["unique_user_clicks"].get(k, 0)
+                for k in set(deception_level_stats[indices[0]]["unique_user_clicks"])
+                | set(deception_level_stats[indices[1]]["unique_user_clicks"])
+            },
+            "click_percentage_over_time": {
+                "one_minutes": {
+                    "count": deception_level_stats[indices[0]][
+                        "click_percentage_over_time"
+                    ]["one_minutes"]["count"]
+                    + deception_level_stats[indices[1]]["click_percentage_over_time"][
+                        "one_minutes"
+                    ]["count"],
+                    "ratio": 0.0,
+                },
+                "three_minutes": {
+                    "count": deception_level_stats[indices[0]][
+                        "click_percentage_over_time"
+                    ]["three_minutes"]["count"]
+                    + deception_level_stats[indices[1]]["click_percentage_over_time"][
+                        "three_minutes"
+                    ]["count"],
+                    "ratio": 0.0,
+                },
+                "five_minutes": {
+                    "count": deception_level_stats[indices[0]][
+                        "click_percentage_over_time"
+                    ]["five_minutes"]["count"]
+                    + deception_level_stats[indices[1]]["click_percentage_over_time"][
+                        "five_minutes"
+                    ]["count"],
+                    "ratio": 0.0,
+                },
+                "fifteen_minutes": {
+                    "count": deception_level_stats[indices[0]][
+                        "click_percentage_over_time"
+                    ]["fifteen_minutes"]["count"]
+                    + deception_level_stats[indices[1]]["click_percentage_over_time"][
+                        "fifteen_minutes"
+                    ]["count"],
+                    "ratio": 0.0,
+                },
+                "thirty_minutes": {
+                    "count": deception_level_stats[indices[0]][
+                        "click_percentage_over_time"
+                    ]["thirty_minutes"]["count"]
+                    + deception_level_stats[indices[1]]["click_percentage_over_time"][
+                        "thirty_minutes"
+                    ]["count"],
+                    "ratio": 0.0,
+                },
+                "sixty_minutes": {
+                    "count": deception_level_stats[indices[0]][
+                        "click_percentage_over_time"
+                    ]["sixty_minutes"]["count"]
+                    + deception_level_stats[indices[1]]["click_percentage_over_time"][
+                        "sixty_minutes"
+                    ]["count"],
+                    "ratio": 0.0,
+                },
+                "two_hours": {
+                    "count": deception_level_stats[indices[0]][
+                        "click_percentage_over_time"
+                    ]["two_hours"]["count"]
+                    + deception_level_stats[indices[1]]["click_percentage_over_time"][
+                        "two_hours"
+                    ]["count"],
+                    "ratio": 0.0,
+                },
+                "three_hours": {
+                    "count": deception_level_stats[indices[0]][
+                        "click_percentage_over_time"
+                    ]["three_hours"]["count"]
+                    + deception_level_stats[indices[1]]["click_percentage_over_time"][
+                        "three_hours"
+                    ]["count"],
+                    "ratio": 0.0,
+                },
+                "four_hours": {
+                    "count": deception_level_stats[indices[0]][
+                        "click_percentage_over_time"
+                    ]["four_hours"]["count"]
+                    + deception_level_stats[indices[1]]["click_percentage_over_time"][
+                        "four_hours"
+                    ]["count"],
+                    "ratio": 0.0,
+                },
+                "one_day": {
+                    "count": deception_level_stats[indices[0]][
+                        "click_percentage_over_time"
+                    ]["one_day"]["count"]
+                    + deception_level_stats[indices[1]]["click_percentage_over_time"][
+                        "one_day"
+                    ]["count"],
+                    "ratio": 0.0,
+                },
+            },
+        }
+        for key in list(composite_deception_level["click_percentage_over_time"].keys()):
+            composite_deception_level["click_percentage_over_time"][key][
+                "ratio"
+            ] = get_ratio(
+                composite_deception_level["click_percentage_over_time"][key]["count"],
+                composite_deception_level["total_clicks"],
+            )
+        deception_level_stats.append(composite_deception_level)
+
+    elif len(indices) == 3:
+        composite_deception_level = {
+            "deception_level": deception_level,
+            "sent_count": deception_level_stats[indices[0]]["sent_count"]
+            + deception_level_stats[indices[1]]["sent_count"]
+            + deception_level_stats[indices[2]]["sent_count"],
+            "unique_clicks": deception_level_stats[indices[0]]["unique_clicks"]
+            + deception_level_stats[indices[1]]["unique_clicks"]
+            + deception_level_stats[indices[2]]["unique_clicks"],
+            "total_clicks": deception_level_stats[indices[0]]["total_clicks"]
+            + deception_level_stats[indices[1]]["total_clicks"]
+            + deception_level_stats[indices[2]]["total_clicks"],
+            "user_reports": deception_level_stats[indices[0]]["user_reports"]
+            + deception_level_stats[indices[1]]["user_reports"]
+            + deception_level_stats[indices[2]]["user_reports"],
+            "unique_user_clicks": {
+                k: deception_level_stats[indices[0]]["unique_user_clicks"].get(k, 0)
+                + deception_level_stats[indices[1]]["unique_user_clicks"].get(k, 0)
+                + deception_level_stats[indices[2]]["unique_user_clicks"].get(k, 0)
+                for k in set(deception_level_stats[indices[0]]["unique_user_clicks"])
+                | set(deception_level_stats[indices[1]]["unique_user_clicks"])
+                | set(deception_level_stats[indices[2]]["unique_user_clicks"])
+            },
+            "click_percentage_over_time": {
+                "one_minutes": {
+                    "count": deception_level_stats[indices[0]][
+                        "click_percentage_over_time"
+                    ]["one_minutes"]["count"]
+                    + deception_level_stats[indices[1]]["click_percentage_over_time"][
+                        "one_minutes"
+                    ]["count"]
+                    + deception_level_stats[indices[2]]["click_percentage_over_time"][
+                        "one_minutes"
+                    ]["count"],
+                    "ratio": 0.0,
+                },
+                "three_minutes": {
+                    "count": deception_level_stats[indices[0]][
+                        "click_percentage_over_time"
+                    ]["three_minutes"]["count"]
+                    + deception_level_stats[indices[1]]["click_percentage_over_time"][
+                        "three_minutes"
+                    ]["count"]
+                    + deception_level_stats[indices[2]]["click_percentage_over_time"][
+                        "three_minutes"
+                    ]["count"],
+                    "ratio": 0.0,
+                },
+                "five_minutes": {
+                    "count": deception_level_stats[indices[0]][
+                        "click_percentage_over_time"
+                    ]["five_minutes"]["count"]
+                    + deception_level_stats[indices[1]]["click_percentage_over_time"][
+                        "five_minutes"
+                    ]["count"]
+                    + deception_level_stats[indices[2]]["click_percentage_over_time"][
+                        "five_minutes"
+                    ]["count"],
+                    "ratio": 0.0,
+                },
+                "fifteen_minutes": {
+                    "count": deception_level_stats[indices[0]][
+                        "click_percentage_over_time"
+                    ]["fifteen_minutes"]["count"]
+                    + deception_level_stats[indices[1]]["click_percentage_over_time"][
+                        "fifteen_minutes"
+                    ]["count"]
+                    + deception_level_stats[indices[2]]["click_percentage_over_time"][
+                        "fifteen_minutes"
+                    ]["count"],
+                    "ratio": 0.0,
+                },
+                "thirty_minutes": {
+                    "count": deception_level_stats[indices[0]][
+                        "click_percentage_over_time"
+                    ]["thirty_minutes"]["count"]
+                    + deception_level_stats[indices[1]]["click_percentage_over_time"][
+                        "thirty_minutes"
+                    ]["count"]
+                    + deception_level_stats[indices[2]]["click_percentage_over_time"][
+                        "thirty_minutes"
+                    ]["count"],
+                    "ratio": 0.0,
+                },
+                "sixty_minutes": {
+                    "count": deception_level_stats[indices[0]][
+                        "click_percentage_over_time"
+                    ]["sixty_minutes"]["count"]
+                    + deception_level_stats[indices[1]]["click_percentage_over_time"][
+                        "sixty_minutes"
+                    ]["count"]
+                    + deception_level_stats[indices[2]]["click_percentage_over_time"][
+                        "sixty_minutes"
+                    ]["count"],
+                    "ratio": 0.0,
+                },
+                "two_hours": {
+                    "count": deception_level_stats[indices[0]][
+                        "click_percentage_over_time"
+                    ]["two_hours"]["count"]
+                    + deception_level_stats[indices[1]]["click_percentage_over_time"][
+                        "two_hours"
+                    ]["count"]
+                    + deception_level_stats[indices[2]]["click_percentage_over_time"][
+                        "two_hours"
+                    ]["count"],
+                    "ratio": 0.0,
+                },
+                "three_hours": {
+                    "count": deception_level_stats[indices[0]][
+                        "click_percentage_over_time"
+                    ]["three_hours"]["count"]
+                    + deception_level_stats[indices[1]]["click_percentage_over_time"][
+                        "three_hours"
+                    ]["count"]
+                    + deception_level_stats[indices[2]]["click_percentage_over_time"][
+                        "three_hours"
+                    ]["count"],
+                    "ratio": 0.0,
+                },
+                "four_hours": {
+                    "count": deception_level_stats[indices[0]][
+                        "click_percentage_over_time"
+                    ]["four_hours"]["count"]
+                    + deception_level_stats[indices[1]]["click_percentage_over_time"][
+                        "four_hours"
+                    ]["count"]
+                    + deception_level_stats[indices[2]]["click_percentage_over_time"][
+                        "four_hours"
+                    ]["count"],
+                    "ratio": 0.0,
+                },
+                "one_day": {
+                    "count": deception_level_stats[indices[0]][
+                        "click_percentage_over_time"
+                    ]["one_day"]["count"]
+                    + deception_level_stats[indices[1]]["click_percentage_over_time"][
+                        "one_day"
+                    ]["count"]
+                    + deception_level_stats[indices[2]]["click_percentage_over_time"][
+                        "one_day"
+                    ]["count"],
+                    "ratio": 0.0,
+                },
+            },
+        }
+        for key in list(composite_deception_level["click_percentage_over_time"].keys()):
+            composite_deception_level["click_percentage_over_time"][key][
+                "ratio"
+            ] = get_ratio(
+                composite_deception_level["click_percentage_over_time"][key]["count"],
+                composite_deception_level["total_clicks"],
+            )
+        deception_level_stats.append(composite_deception_level)
+
+
+def mongo_calculate_unique_user_clicks(target_list):
+    """Get unique user clicks stats."""
+    count_list = list({i: target_list.count(i) for i in target_list}.values())
+    count_dict = {i: count_list.count(i) for i in count_list}
+
+    unique_user_clicks = {
+        "four_five_clicks": count_dict.get(4, 0) + count_dict.get("5", 0),
+        "one_click": count_dict.get(1, 0),
+        "six_ten_clicks": count_dict.get(
+            6, 0
+        )  # TODO rename this field to "six_nine_clicks"
+        + count_dict.get(7, 0)
+        + count_dict.get(8, 0)
+        + count_dict.get(
+            9, 0
+        ),  # + count_dict.get("10", 0), # Ten clicks should not be counted in two places, the buckets are named poorly.
+        "ten_plus_clicks": 0,
+        "two_three_clicks": count_dict.get(2, 0) + count_dict.get(3, 0),
+    }
+    unique_user_clicks["ten_plus_clicks"] = len(set(target_list)) - (
+        unique_user_clicks["one_click"]
+        + unique_user_clicks["two_three_clicks"]
+        + unique_user_clicks["four_five_clicks"]
+        + unique_user_clicks["six_ten_clicks"]
+    )
+    return unique_user_clicks
+
+
+def mongo_calculate_click_percentage_over_time(time_list):
+    """Get click percentage over time stats."""
+    click_percentage_over_time = {
+        "one_minutes": {"count": 0, "ratio": 0.0},
+        "three_minutes": {"count": 0, "ratio": 0.0},
+        "five_minutes": {"count": 0, "ratio": 0.0},
+        "fifteen_minutes": {"count": 0, "ratio": 0.0},
+        "thirty_minutes": {"count": 0, "ratio": 0.0},
+        "sixty_minutes": {"count": 0, "ratio": 0.0},
+        "two_hours": {"count": 0, "ratio": 0.0},
+        "three_hours": {"count": 0, "ratio": 0.0},
+        "four_hours": {"count": 0, "ratio": 0.0},
+        "one_day": {"count": 0, "ratio": 0.0},
+    }
+    time_windows = {
+        "fifteen_minutes": 15 * 60000,
+        "five_minutes": 5 * 60000,
+        "four_hours": 4 * 60 * 60000,
+        "one_day": 24 * 60 * 60000,
+        "one_minutes": 1 * 60000,
+        "sixty_minutes": 60 * 60000,
+        "thirty_minutes": 30 * 60000,
+        "three_hours": 3 * 60 * 60000,
+        "three_minutes": 3 * 60000,
+        "two_hours": 2 * 60 * 60000,
+    }
+
+    for milliseconds_elapsed in time_list:
+        if milliseconds_elapsed <= time_windows["one_minutes"]:
+            click_percentage_over_time["one_minutes"]["count"] += 1
+        elif milliseconds_elapsed <= time_windows["three_minutes"]:
+            click_percentage_over_time["three_minutes"]["count"] += 1
+        elif milliseconds_elapsed <= time_windows["five_minutes"]:
+            click_percentage_over_time["five_minutes"]["count"] += 1
+        elif milliseconds_elapsed <= time_windows["fifteen_minutes"]:
+            click_percentage_over_time["fifteen_minutes"]["count"] += 1
+        elif milliseconds_elapsed <= time_windows["thirty_minutes"]:
+            click_percentage_over_time["thirty_minutes"]["count"] += 1
+        elif milliseconds_elapsed <= time_windows["sixty_minutes"]:
+            click_percentage_over_time["sixty_minutes"]["count"] += 1
+        elif milliseconds_elapsed <= time_windows["two_hours"]:
+            click_percentage_over_time["two_hours"]["count"] += 1
+        elif milliseconds_elapsed <= time_windows["three_hours"]:
+            click_percentage_over_time["three_hours"]["count"] += 1
+        elif milliseconds_elapsed <= time_windows["four_hours"]:
+            click_percentage_over_time["four_hours"]["count"] += 1
+        elif milliseconds_elapsed <= time_windows["one_day"]:
+            click_percentage_over_time["one_day"]["count"] += 1
+
+    for key in list(click_percentage_over_time.keys()):
+        click_percentage_over_time[key]["ratio"] = get_ratio(
+            click_percentage_over_time[key]["count"], len(time_list)
+        )
+
+    return click_percentage_over_time
 
 
 def mongo_get_indicator_stats(cycle_id, nonhuman, nonhuman_orgs):
