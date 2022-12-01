@@ -55,6 +55,31 @@ class SubscriptionsView(MethodView):
                 {"_id": {"$in": subscription_ids}},
                 {"templates_selected": request.args["template"]},
             ]
+            subscriptions = subscription_manager.all(
+                params=parameters,
+                fields=[
+                    "_id",
+                    "customer_id",
+                    "name",
+                    "status",
+                    "start_date",
+                    "cycle_length_minutes",
+                    "cooldown_minutes",
+                    "buffer_time_minutes",
+                    "active",
+                    "archived",
+                    "primary_contact",
+                    "admin_email",
+                    "target_email_list",
+                    "continuous_subscription",
+                    "created",
+                    "created_by",
+                    "updated",
+                    "updated_by",
+                    "target_domain",
+                ],
+            )
+            return subscriptions
 
         parameters["archived"] = False
         if request.args.get("archived", "").lower() == "true":
