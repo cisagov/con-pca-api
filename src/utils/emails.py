@@ -304,7 +304,7 @@ def build_message(
 
     for filepath in attachments:
         if not os.path.exists(filepath):
-            logger.error("Attachment file does not exist: ", filepath)
+            logger.error("Attachment file does not exist: " + filepath)
             continue
 
         with open(filepath, "rb") as attachment:

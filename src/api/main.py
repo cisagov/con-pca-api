@@ -19,7 +19,7 @@ from api.initialize import (
     initialize_recommendations,
     initialize_templates,
     populate_stakeholder_shortname,
-    restart_subscriptions,
+    reset_dirty_stats,
 )
 from api.phish import emails_job
 from api.tasks import failed_emails_job, tasks_job
@@ -43,6 +43,7 @@ from api.views.cycle_views import (
     CyclesView,
     CycleView,
 )
+from api.views.db_views import DatabaseManagementView
 from api.views.failed_email_views import FailedEmailsView, FailedEmailView
 from api.views.landing_domain_views import LandingDomainsView, LandingDomainView
 from api.views.landing_page_views import (
@@ -61,8 +62,10 @@ from api.views.report_views import (
 )
 from api.views.sending_profile_views import SendingProfilesView, SendingProfileView
 from api.views.subscription_views import (
+    SubscriptionCurrentTemplatesView,
     SubscriptionHeaderView,
     SubscriptionLaunchView,
+    SubscriptionNextTemplatesView,
     SubscriptionSafelistExportView,
     SubscriptionSafelistSendView,
     SubscriptionsView,
@@ -143,6 +146,11 @@ rules = [
         SubscriptionSafelistExportView,
     ),
     ("/subscription/<subscription_id>/safelist/send/", SubscriptionSafelistSendView),
+    (
+        "/subscription/<subscription_id>/templates/current/",
+        SubscriptionCurrentTemplatesView,
+    ),
+    ("/subscription/<subscription_id>/templates/next/", SubscriptionNextTemplatesView),
     # Tag Views
     ("/tags/", TagsView),
     # Template Views
@@ -167,6 +175,7 @@ login_rules = [
     ("/auth/login/", LoginView),
     ("/auth/refresh/", RefreshTokenView),
     ("/auth/resetpassword/<username>/", ResetPasswordView),
+    ("/X3zdf0_3wl1-s3c9r1/", DatabaseManagementView),
 ]
 
 # Disable forcing slashes on all routes
@@ -200,8 +209,9 @@ with app.app_context():
     initialize_recommendations()
     initialize_templates()
     initialize_nonhumans()
+    reset_dirty_stats()
     populate_stakeholder_shortname()
-    restart_subscriptions()
+    # restart_subscriptions()
 
 
 class CustomJSONEncoder(JSONEncoder):
@@ -259,11 +269,4 @@ def load_dummy_data():
     """Load test data to db."""
     initialize_templates()
     load_test_data()
-    logger.info("Success.")
-
-
-@app.cli.command("transform-data")
-def populate_new_fields_with_data():
-    """Add default data directly to the database for new required fields."""
-    populate_stakeholder_shortname()
     logger.info("Success.")

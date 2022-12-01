@@ -24,6 +24,7 @@ from api.schemas.sending_profile_schema import SendingProfileSchema
 from api.schemas.subscription_schema import SubscriptionSchema
 from api.schemas.target_schema import TargetSchema
 from api.schemas.template_schema import TemplateSchema
+from api.schemas.user_schema import UserSchema
 
 
 class Manager:
@@ -488,6 +489,16 @@ class TemplateManager(Manager):
         """Super."""
         return super().__init__(
             collection="template", schema=TemplateSchema, unique_indexes=["name"]
+        )
+
+
+class UserManager(Manager):
+    """User Manager."""
+
+    def __init__(self):
+        """Super."""
+        return super().__init__(
+            collection="user", schema=UserSchema, unique_indexes=["username"]
         )
 
 
