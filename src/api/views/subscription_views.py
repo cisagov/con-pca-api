@@ -120,6 +120,68 @@ class SubscriptionsView(MethodView):
         return jsonify(response)
 
 
+
+class SubscriptionsPagedView(MethodView):
+    """Subscriptions Paged View."""
+
+    def get(self,page,pagesize,sortby):
+        """Get."""
+        parameters = dict(request.args)
+        parameters = subscription_manager.get_query(parameters)
+
+        #The default order for sorting by mongo, set to -1 if descending
+        sortorder = 1
+        print(request.args.get("sortOder"))
+        if request.args.get("sortOder"):
+            print(request.args.get("sortOder"))
+            if request.args.get("sortOder") == "desc":
+                print("ASDASD")
+                sortorder = -1
+
+        if request.args.get("template"):
+            cycles = cycle_manager.all(
+                params={"template_ids": request.args["template"]},
+                fields=["subscription_id"],
+            )
+            subscription_ids = list({c["subscription_id"] for c in cycles})
+            parameters["$or"] = [
+                {"_id": {"$in": subscription_ids}},
+                {"templates_selected": request.args["template"]},
+            ]
+
+        parameters["archived"] = {"$in": [False, None]}
+        if request.args.get("archived", "").lower() == "true":
+            parameters["archived"] = True
+
+        subscriptions = subscription_manager.page(
+            params=parameters,
+            fields=[
+                "_id",
+                "customer_id",
+                "name",
+                "status",
+                "start_date",
+                "cycle_length_minutes",
+                "active",
+                "archived",
+                "primary_contact",
+                "admin_email",
+                "target_email_list",
+                "continuous_subscription",
+                "created",
+                "created_by",
+                "updated",
+                "updated_by",
+            ],
+            sortBy=sortby,
+            sortOrder=sortorder,
+            pagesize=int(pagesize),
+            page=int(page)
+        )
+
+        return jsonify(subscriptions)
+    
+
 class SubscriptionView(MethodView):
     """SubscriptionView."""
 
@@ -163,7 +225,29 @@ class SubscriptionLaunchView(MethodView):
     def delete(self, subscription_id):
         """Stop a subscription."""
         return jsonify(stop_subscription(subscription_id))
+    
+class SubscriptionCountView(MethodView):
+    """SubscriptionCountView."""
 
+    def get(self):
+        """Get the count of subscriptions."""        
+        parameters = dict(request.args)
+        parameters = subscription_manager.get_query(parameters)
+
+        parameters["archived"] = {"$in": [False, None]}
+        if request.args.get("archived", "").lower() == "true":
+            parameters["archived"] = True
+
+        subscriptionCount = len(
+            subscription_manager.all(
+                params=parameters,
+                fields=[
+                    "_id"
+                ],
+            )
+        )
+        print(subscriptionCount)
+        return str(subscriptionCount)
 
 class SubscriptionTestView(MethodView):
     """SubscriptionTestView."""

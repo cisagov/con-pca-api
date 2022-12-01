@@ -182,6 +182,20 @@ class Manager:
         if limit:
             query.limit(limit)
         return self.read_data(query, many=True)
+    
+    def page(self, params=None, fields=None, sortBy="_id:", sortOrder="1", pagesize=10, page=1):
+        """Get subscribtptions in paginated format"""
+        print(sortBy)
+        print(sortOrder)
+        query = self.db.find(self.format_params(params), self.convert_fields(fields))\
+                .sort(sortBy,int(sortOrder)) \
+                .skip(page * pagesize) \
+                .limit(pagesize) \
+        
+                # .sort(sortBy) \
+        return self.read_data(query, many=True)
+        
+
 
     def delete(self, document_id=None, params=None):
         """Delete item by object id."""
