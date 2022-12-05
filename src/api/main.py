@@ -135,7 +135,7 @@ rules = [
     ("/subscriptions/", SubscriptionsView),
     ("/subscriptions/count/", SubscriptionCountView),
     ("/subscriptionsPaged/", SubscriptionsPagedView),
-    ("/subscriptionspaged/<page>/<pagesize>/<sortby>/", SubscriptionsPagedView),
+    ("/subscriptionspaged/<page>/<pagesize>/<sortby>/<sortorder>/", SubscriptionsPagedView),
     ("/subscriptions/valid/", SubscriptionValidView),
     ("/subscription/<subscription_id>/", SubscriptionView),
     ("/subscription/<subscription_id>/launch/", SubscriptionLaunchView),

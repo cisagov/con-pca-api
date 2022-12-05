@@ -8,6 +8,7 @@ import re
 from bson.objectid import ObjectId
 from flask import abort, g, jsonify, make_response
 import pymongo
+from pymongo.collation import Collation
 
 # cisagov Libraries
 from api.config.environment import DB
@@ -184,18 +185,11 @@ class Manager:
             query.limit(limit)
         return self.read_data(query, many=True)
     
-    def page(self, params=None, fields=None, sortBy="_id:", sortOrder="1", pagesize=10, page=1):
+    def page(self, params=None, fields=None, sortBy="_id:", sortOrder="1", pagesize=10, page=0, searchfilter=""):
         """Get subscribtptions in paginated format"""
-        print(sortBy)
-        print(sortOrder)
-        query = self.db.find(self.format_params(params), self.convert_fields(fields))\
-                .sort(sortBy,int(sortOrder)) \
-                .skip(page * pagesize) \
-                .limit(pagesize) \
-        
-                # .sort(sortBy) \
-        return self.read_data(query, many=True)
-        
+        import pprint
+        customers = self.db.aggregate(params)
+        return self.read_data(customers, many=True)
 
 
     def delete(self, document_id=None, params=None):
