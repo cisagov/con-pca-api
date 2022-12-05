@@ -7,6 +7,7 @@ import pytest
 class TestSubscriptionStatus:
     """Test case for subscriptions status."""
 
+    # Commenting this test out because Mongomock does not support the type conversion operators we need to use
     # def test_subscription_status_view(self, client):
     #     """Test the subscriptions status view."""
     #     resp = client.get("/api/subscriptions/status/")
