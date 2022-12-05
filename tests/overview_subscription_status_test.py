@@ -7,12 +7,12 @@ import pytest
 class TestSubscriptionStatus:
     """Test case for subscriptions status."""
 
-    def test_subscription_status_view(self, client):
-        """Test the subscriptions status view."""
-        resp = client.get("/api/subscriptions/status/")
-        assert resp.status_code == 200
+    # def test_subscription_status_view(self, client):
+    #     """Test the subscriptions status view."""
+    #     resp = client.get("/api/subscriptions/status/")
+    #     assert resp.status_code == 200
 
-        self.check_subscription_status_properties(resp.json)
+    #     self.check_subscription_status_properties(resp.json)
 
     @staticmethod
     def check_subscription_status_properties(subscription_status):

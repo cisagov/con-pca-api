@@ -69,108 +69,60 @@ class SubscriptionsView(MethodView):
         if request.args.get("archived", "").lower() == "true":
             parameters["archived"] = True
 
-        if not parameters["archived"]:
-            pipeline = [
-                {"$match": {"archived": {"$in": [False, None]}}},
-                {
-                    "$addFields": {
-                        "subscription_id": {"$toString": "$_id"},
-                        "customer_object_id": {"$toObjectId": "$customer_id"},
-                    }
-                },
-                {
-                    "$lookup": {
-                        "from": "cycle",
-                        "localField": "subscription_id",
-                        "foreignField": "subscription_id",
-                        "as": "cycle",
-                    }
-                },
-                {
-                    "$lookup": {
-                        "from": "customer",
-                        "localField": "customer_object_id",
-                        "foreignField": "_id",
-                        "as": "customer",
-                    }
-                },
-                {
-                    "$project": {
-                        "_id": {"$toString": "$_id"},
-                        "appendix_a_date": {"$max": "$customer.appendix_a_date"},
-                        "cycle_start_date": {"$max": "$cycle.start_date"},
-                        "created": "$created",
-                        "target_domain": "$target_domain",
-                        "customer_id": "$customer_id",
-                        "name": "$name",
-                        "status": "$status",
-                        "start_date": "$start_date",
-                        "cycle_length_minutes": "$cycle_length_minutes",
-                        "cooldown_minutes": "$cooldown_minutes",
-                        "buffer_time_minutes": "$buffer_time_minutes",
-                        "active": {"$anyElementTrue": "$cycle.active"},
-                        "archived": "$archived",
-                        "primary_contact": "$primary_contact",
-                        "admin_email": "$admin_email",
-                        "target_email_list": "$target_email_list",
-                        "continuous_subscription": "$continuous_subscription",
-                        "created_by": "$created_by",
-                        "updated": "$updated",
-                        "updated_by": "$updated_by",
-                    }
-                },
-            ]
-        else:
-            pipeline = [
-                {"$match": {"archived": {"$nin": [False, None]}}},
-                {
-                    "$addFields": {
-                        "subscription_id": {"$toString": "$_id"},
-                        "customer_object_id": {"$toObjectId": "$customer_id"},
-                    }
-                },
-                {
-                    "$lookup": {
-                        "from": "cycle",
-                        "localField": "subscription_id",
-                        "foreignField": "subscription_id",
-                        "as": "cycle",
-                    }
-                },
-                {
-                    "$lookup": {
-                        "from": "customer",
-                        "localField": "customer_object_id",
-                        "foreignField": "_id",
-                        "as": "customer",
-                    }
-                },
-                {
-                    "$project": {
-                        "_id": {"$toString": "$_id"},
-                        "appendix_a_date": {"$max": "$customer.appendix_a_date"},
-                        "cycle_start_date": {"$max": "$cycle.start_date"},
-                        "created": "$created",
-                        "target_domain": "$target_domain",
-                        "customer_id": "$customer_id",
-                        "name": "$name",
-                        "status": "$status",
-                        "start_date": "$start_date",
-                        "cycle_length_minutes": "$cycle_length_minutes",
-                        "cooldown_minutes": "$cooldown_minutes",
-                        "buffer_time_minutes": "$buffer_time_minutes",
-                        "active": {"$anyElementTrue": "$cycle.active"},
-                        "archived": "$archived",
-                        "primary_contact": "$primary_contact",
-                        "admin_email": "$admin_email",
-                        "target_email_list": "$target_email_list",
-                        "continuous_subscription": "$continuous_subscription",
-                        "created_by": "$created_by",
-                        "updated": "$updated",
-                        "updated_by": "$updated_by",
-                    }
-                },
-            ]
+        pipeline = [
+            {
+                "$match": {"archived": {"$in": [False, None]}}
+                if not parameters["archived"]
+                else {"archived": {"$nin": [False, None]}}
+            },
+            {
+                "$addFields": {
+                    "subscription_id": {"$toString": "$_id"},
+                    "customer_object_id": {"$toObjectId": "$customer_id"},
+                }
+            },
+            {
+                "$lookup": {
+                    "from": "cycle",
+                    "localField": "subscription_id",
+                    "foreignField": "subscription_id",
+                    "as": "cycle",
+                }
+            },
+            {
+                "$lookup": {
+                    "from": "customer",
+                    "localField": "customer_object_id",
+                    "foreignField": "_id",
+                    "as": "customer",
+                }
+            },
+            {
+                "$project": {
+                    "_id": {"$toString": "$_id"},
+                    "appendix_a_date": {"$max": "$customer.appendix_a_date"},
+                    "cycle_start_date": {"$max": "$cycle.start_date"},
+                    "created": "$created",
+                    "target_domain": "$target_domain",
+                    "customer_id": "$customer_id",
+                    "name": "$name",
+                    "status": "$status",
+                    "start_date": "$start_date",
+                    "cycle_length_minutes": "$cycle_length_minutes",
+                    "cooldown_minutes": "$cooldown_minutes",
+                    "buffer_time_minutes": "$buffer_time_minutes",
+                    "active": {"$anyElementTrue": "$cycle.active"},
+                    "archived": "$archived",
+                    "primary_contact": "$primary_contact",
+                    "admin_email": "$admin_email",
+                    "target_email_list": "$target_email_list",
+                    "continuous_subscription": "$continuous_subscription",
+                    "created_by": "$created_by",
+                    "updated": "$updated",
+                    "updated_by": "$updated_by",
+                }
+            },
+        ]
 
         subscriptions = subscription_manager.aggregate(pipeline)
 
