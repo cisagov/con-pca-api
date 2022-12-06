@@ -68,6 +68,7 @@ from api.views.subscription_views import (
     SubscriptionNextTemplatesView,
     SubscriptionSafelistExportView,
     SubscriptionSafelistSendView,
+    SubscriptionsStatusView,
     SubscriptionsView,
     SubscriptionTestView,
     SubscriptionValidView,
@@ -131,6 +132,7 @@ rules = [
     ("/sendingprofile/<sending_profile_id>/", SendingProfileView),
     # Subscription Views
     ("/subscriptions/", SubscriptionsView),
+    ("/subscriptions/status/", SubscriptionsStatusView),
     ("/subscriptions/valid/", SubscriptionValidView),
     ("/subscription/<subscription_id>/", SubscriptionView),
     ("/subscription/<subscription_id>/launch/", SubscriptionLaunchView),
