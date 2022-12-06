@@ -24,6 +24,7 @@ from api.manager import (
     RecommendationManager,
     SendingProfileManager,
     SubscriptionManager,
+    TemplateManager,
 )
 from utils import time
 from utils.emails import get_email_context, get_from_address
@@ -39,6 +40,7 @@ cycle_manager = CycleManager()
 recommendation_manager = RecommendationManager()
 sending_profile_manager = SendingProfileManager()
 subscription_manager = SubscriptionManager()
+template_manager = TemplateManager()
 
 
 def get_report(cycle_id: str, report_type: str, nonhuman: bool = False):
@@ -148,9 +150,11 @@ def get_report_pdf(
         # add csv pages
         _add_csv_attachments(writer=writer, cycle=cycle)
         # add table of contents links
-        _add_toc_links(writer=writer, n=len(cycle["stats"]["template_stats"]))
+        _add_toc_links(writer=writer, n=len(cycle["stats"].get("template_stats", 0)))
         # add section 1 links
-        _add_section1_links(writer=writer, n=len(cycle["stats"]["template_stats"]))
+        _add_section1_links(
+            writer=writer, n=len(cycle["stats"].get("template_stats", 0))
+        )
 
     output = open(new_filepath, "wb")
     writer.write(output)
@@ -310,14 +314,9 @@ def _add_time_stats_csv(cycle: dict) -> Tuple[str, List[str], Any]:
 def _add_template_stats_csv(cycle: dict) -> Tuple[str, List[str], List[Any]]:
     """Add Template Stats CSV attachment to PDF."""
     stats = cycle["stats"]
-    customer_id = subscription_manager.get(
-        document_id=cycle["subscription_id"],
-        fields=["customer_id"],
-    )["customer_id"]
-    customer_domain = customer_manager.get(
-        document_id=customer_id,
-        fields=["domain"],
-    )["domain"]
+    subscription = subscription_manager.get(
+        document_id=cycle.get("subscription_id"),
+    )
 
     data = [
         {
@@ -331,7 +330,7 @@ def _add_template_stats_csv(cycle: dict) -> Tuple[str, List[str], List[Any]]:
             "Subject": stat["template"]["subject"],
             "From address": stat["template"]["from_address"].split("@")[0]
             + "@"
-            + customer_domain
+            + get_from_domain(stat["template"], subscription)
             + ">",
         }
         for stat in stats["template_stats"]
@@ -570,6 +569,9 @@ def _get_subject_from_template_level(template_stats, level):
 
 def preview_from_address(template, subscription, customer):
     """Preview from address in a report."""
+    template = template_manager.get(
+        document_id=template["_id"], fields=["from_address", "sending_profile_id"]
+    )
     if template.get("sending_profile_id"):
         sending_profile = sending_profile_manager.get(
             document_id=template["sending_profile_id"]
@@ -580,6 +582,27 @@ def preview_from_address(template, subscription, customer):
         )
     from_address = get_from_address(sending_profile, template["from_address"])
     return preview_template(from_address, customer)
+
+
+def get_from_domain(template, subscription):
+    """Get from domain for template_stats.csv."""
+    template = template_manager.get(
+        document_id=template["_id"], fields=["from_address", "sending_profile_id"]
+    )
+    if template.get("sending_profile_id"):
+        sending_profile = sending_profile_manager.get(
+            document_id=template["sending_profile_id"]
+        )
+    else:
+        sending_profile = sending_profile_manager.get(
+            document_id=subscription["sending_profile_id"]
+        )
+    if type(sending_profile) is dict:
+        sp_from = sending_profile["from_address"]
+    else:
+        sp_from = sending_profile.from_address
+    sp_domain = sp_from.split("<")[-1].split("@")[1].replace(">", "")
+    return sp_domain
 
 
 def preview_template(data, customer):
@@ -617,12 +640,13 @@ def preview_html(html, customer):
         "target['last_name']": fake.last_name(),
         "url": "areallyfakeURL.com",
     }
+    domain = customer.get("domain", "@example.com")
     context["target['email']"] = (
         context["target['first_name']"]
         + "."
         + context["target['last_name']"]
         + "@"
-        + customer["domain"]
+        + domain
     )
 
     for i in context_keys:
