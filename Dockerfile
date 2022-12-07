@@ -48,18 +48,6 @@ ENV CISA_HOME="/home/${CISA_USER}"
 RUN addgroup --system --gid ${CISA_GID} ${CISA_GROUP} \
     && adduser --system --uid ${CISA_UID} --ingroup ${CISA_GROUP} ${CISA_USER}
 
-###
-# Dependencies
-#
-# Note that we use apk --no-cache to avoid writing to a local cache.
-# This results in a smaller final image, at the cost of slightly
-# longer install times.
-###
-ENV DEPS \
-    ca-certificates \
-    openssl \
-    py-pip
-RUN apk --no-cache --quiet add ${DEPS}
 
 ###
 # Make sure pip and setuptools are the latest versions
