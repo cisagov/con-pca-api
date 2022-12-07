@@ -6,7 +6,6 @@ ENV PYTHONUNBUFFERED 1
 RUN apt-get update -y && \
     apt-get install -y python3-pip python-dev
 
-<<<<<<< HEAD
 RUN apt-get install -y nodejs npm chromium
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
@@ -18,7 +17,6 @@ RUN npm install
 ADD ./requirements.txt /var/www/requirements.txt
 RUN pip install --upgrade pip \
     pip install -r requirements.txt
-=======
 ###
 # For a list of pre-defined annotation keys and value types see:
 # https://github.com/opencontainers/image-spec/blob/master/annotations.md
@@ -31,8 +29,8 @@ RUN pip install --upgrade pip \
 # suggested that you use an email address here that is specific to the
 # person or group that maintains this repository; for example:
 # LABEL org.opencontainers.image.authors="vm-fusion-dev-group@trio.dhs.gov"
-LABEL org.opencontainers.image.authors="github@cisa.dhs.gov"
-LABEL org.opencontainers.image.vendor="Cybersecurity and Infrastructure Security Agency"
+LABEL org.opencontainers.image.authors="mostafa.abdelbaky@inl.gov"
+LABEL org.opencontainers.image.vendor="Idaho National Laboratory"
 
 ###
 # Unprivileged user setup variables
@@ -79,11 +77,9 @@ RUN apk --no-cache --quiet add ${DEPS}
 # slightly longer install times.
 ###
 RUN pip install --no-cache-dir --upgrade pip setuptools
->>>>>>> 6f639fe050f3435ce9f57989578ee9a10bec3a21
 
 ADD ./src/ /var/www/
 
-<<<<<<< HEAD
 ENV PYTHONPATH "${PYTHONPATH}:/var/www"
 
 # Install GeoIPUpdate
@@ -105,8 +101,6 @@ EXPOSE 443
 
 WORKDIR /var/www
 
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-=======
 ###
 # Install Python dependencies
 #
@@ -121,13 +115,4 @@ RUN wget --output-document sourcecode.tgz \
     && ln -snf /run/secrets/quote.txt src/example/data/secret.txt \
     && rm sourcecode.tgz
 
-###
-# Prepare to run
-###
-ENV ECHO_MESSAGE="Hello World from Dockerfile"
-USER ${CISA_USER}
-EXPOSE 8080/TCP
-VOLUME ["/var/log"]
-ENTRYPOINT ["example"]
-CMD ["--log-level", "DEBUG"]
->>>>>>> 6f639fe050f3435ce9f57989578ee9a10bec3a21
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
