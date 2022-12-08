@@ -24,14 +24,14 @@ updates:
       - dependency-name: hashicorp/setup-terraform
       - dependency-name: mxschmitt/action-tmate
       # Managed by cisagov/skeleton-docker
-      # - dependency-name: actions/download-artifact
-      # - dependency-name: actions/github-script
-      # - dependency-name: actions/upload-artifact
-      # - dependency-name: docker/build-push-action
-      # - dependency-name: docker/login-action
-      # - dependency-name: docker/setup-buildx-action
-      # - dependency-name: docker/setup-qemu-action
-      # - dependency-name: github/codeql-action
+      - dependency-name: actions/download-artifact
+      - dependency-name: actions/github-script
+      - dependency-name: actions/upload-artifact
+      - dependency-name: docker/build-push-action
+      - dependency-name: docker/login-action
+      - dependency-name: docker/setup-buildx-action
+      - dependency-name: docker/setup-qemu-action
+      - dependency-name: github/codeql-action
 
   - package-ecosystem: "pip"
     directory: "/"
