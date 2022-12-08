@@ -5,7 +5,8 @@ from flask.views import MethodView
 
 # cisagov Libraries
 from api.manager import CycleManager
-from utils.stats import get_cycle_stats, mongo_get_cycle_stats
+from utils.mongo_stats import mongo_get_cycle_stats
+from utils.stats import get_cycle_stats
 
 cycle_manager = CycleManager()
 
@@ -72,6 +73,14 @@ class MongoCycleStatsView(MethodView):
         cycle = cycle_manager.get(document_id=cycle_id)
         mongo_get_cycle_stats(cycle)
         return jsonify(cycle["nonhuman_stats"] if nonhuman else cycle["stats"])
+
+    def post(self, cycle_id):
+        """Post."""
+        # cisagov Libraries
+        from utils.mongo_stats import mongo_get_indicator_stats
+
+        indicator_stats = mongo_get_indicator_stats(cycle_id, False, [])
+        return indicator_stats
 
 
 class CycleManualReportsView(MethodView):
