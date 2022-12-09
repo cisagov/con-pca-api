@@ -140,8 +140,8 @@ def mongo_get_deception_level_stats(cycle_id, nonhuman, nonhuman_orgs):
             }
         },
     ]
-
     deception_level_stats = target_manager.aggregate(pipeline)
+
     deception_level_stats = sorted(
         deception_level_stats, key=lambda d: d["deception_level"]
     )
@@ -198,9 +198,9 @@ def mongo_get_deception_level_stats(cycle_id, nonhuman, nonhuman_orgs):
     deception_level_stats = sorted(
         deception_level_stats, key=lambda d: d["deception_level"]
     )
-    calculate_composite_deception_stats(deception_level_stats, [0, 1], 11)  # Low
-    calculate_composite_deception_stats(deception_level_stats, [2, 3], 12)  # Moderate
-    calculate_composite_deception_stats(deception_level_stats, [4, 5], 13)  # High
+    # calculate_composite_deception_stats(deception_level_stats, [0, 1], 11)  # Low
+    # calculate_composite_deception_stats(deception_level_stats, [2, 3], 12)  # Moderate
+    # calculate_composite_deception_stats(deception_level_stats, [4, 5], 13)  # High
     calculate_composite_deception_stats(deception_level_stats, [6, 7, 8], 14)  # All
 
     return deception_level_stats
@@ -1316,156 +1316,255 @@ def mongo_rank_templates(template_stats: list):
 
 def mongo_get_time_stats(cycle_id, nonhuman, nonhuman_orgs):
     """Get time stats."""
-    time_stats = {
-        "clicked": {
-            "fifteen_minutes": {
-                "count": 0,
-                "ratio": 0.0,
-            },
-            "five_minutes": {
-                "count": 0,
-                "ratio": 0.0,
-            },
-            "four_hours": {
-                "count": 0,
-                "ratio": 0.0,
-            },
-            "one_day": {
-                "count": 0,
-                "ratio": 0.0,
-            },
-            "one_minutes": {
-                "count": 0,
-                "ratio": 0.0,
-            },
-            "sixty_minutes": {
-                "count": 0,
-                "ratio": 0.0,
-            },
-            "thirty_minutes": {
-                "count": 0,
-                "ratio": 0.0,
-            },
-            "three_hours": {
-                "count": 0,
-                "ratio": 0.0,
-            },
-            "three_minutes": {
-                "count": 0,
-                "ratio": 0.0,
-            },
-            "two_hours": {
-                "count": 0,
-                "ratio": 0.0,
-            },
-        },
-        "opened": {
-            "fifteen_minutes": {
-                "count": 0,
-                "ratio": 0.0,
-            },
-            "five_minutes": {
-                "count": 0,
-                "ratio": 0.0,
-            },
-            "four_hours": {
-                "count": 0,
-                "ratio": 0.0,
-            },
-            "one_day": {
-                "count": 0,
-                "ratio": 0.0,
-            },
-            "one_minutes": {
-                "count": 0,
-                "ratio": 0.0,
-            },
-            "sixty_minutes": {
-                "count": 0,
-                "ratio": 0.0,
-            },
-            "thirty_minutes": {
-                "count": 0,
-                "ratio": 0.0,
-            },
-            "three_hours": {
-                "count": 0,
-                "ratio": 0.0,
-            },
-            "three_minutes": {
-                "count": 0,
-                "ratio": 0.0,
-            },
-            "two_hours": {
-                "count": 0,
-                "ratio": 0.0,
-            },
-        },
-    }
-
-    sent_count = target_manager.count({"cycle_id": {"$eq": cycle_id}})
-
-    events = ["clicked", "opened"]
-    time_windows = {
-        "fifteen_minutes": 15 * 60000,
-        "five_minutes": 5 * 60000,
-        "four_hours": 4 * 60 * 60000,
-        "one_day": 24 * 60 * 60000,
-        "one_minutes": 1 * 60000,
-        "sixty_minutes": 60 * 60000,
-        "thirty_minutes": 30 * 60000,
-        "three_hours": 3 * 60 * 60000,
-        "three_minutes": 3 * 60000,
-        "two_hours": 2 * 60 * 60000,
-    }
-
-    for event in events:
-        for time_window in list(time_windows.keys()):
-            aggregate = target_manager.aggregate(
-                get_time_stats_pipeline(
-                    cycle_id, event, time_windows[time_window], nonhuman, nonhuman_orgs
-                )
-            )
-            count = aggregate[0].get("count", 0) if len(aggregate) > 0 else 0
-            ratio = get_ratio(count, sent_count)
-            time_stats[event][time_window]["count"] = count
-            time_stats[event][time_window]["ratio"] = ratio
-
-    return time_stats
-
-
-def get_time_stats_pipeline(
-    cycle_id, event_type, time_milliseconds, nonhuman, nonhuman_orgs
-):
-    """Get time stats pipeline."""
-    return [
-        {
-            "$match": {
-                "cycle_id": {"$eq": cycle_id},
-            }
-        },
+    pipeline = [
+        {"$match": {"cycle_id": "6376a9aa4c95c0c4630feb83"}},
         {"$unwind": {"path": "$timeline"}},
         {
-            "$match": {
-                "timeline.message": {
-                    "$eq": event_type,
+            "$addFields": {
+                "time_to_event": {"$subtract": ["$timeline.time", "$sent_date"]}
+            }
+        },
+        {
+            "$group": {
+                "_id": "$timeline.message",
+                "events": {"$sum": 1},
+                "one_minutes": {
+                    "$sum": {
+                        "$cond": [
+                            {
+                                "$and": [
+                                    {"$gt": ["$time_to_event", 0]},
+                                    {
+                                        "$lte": [
+                                            "$time_to_event",
+                                            {"$multiply": [1, 60000]},
+                                        ]
+                                    },
+                                ]
+                            },
+                            1,
+                            0,
+                        ]
+                    }
                 },
-                "timeline.details.asn_org": {"$nin": nonhuman_orgs}
-                if not nonhuman
-                else {"$in": nonhuman_orgs},
+                "three_minutes": {
+                    "$sum": {
+                        "$cond": [
+                            {
+                                "$and": [
+                                    {"$gt": ["$time_to_event", 0]},
+                                    {
+                                        "$lte": [
+                                            "$time_to_event",
+                                            {"$multiply": [3, 60000]},
+                                        ]
+                                    },
+                                ]
+                            },
+                            1,
+                            0,
+                        ]
+                    }
+                },
+                "five_minutes": {
+                    "$sum": {
+                        "$cond": [
+                            {
+                                "$and": [
+                                    {"$gt": ["$time_to_event", 0]},
+                                    {
+                                        "$lte": [
+                                            "$time_to_event",
+                                            {"$multiply": [5, 60000]},
+                                        ]
+                                    },
+                                ]
+                            },
+                            1,
+                            0,
+                        ]
+                    }
+                },
+                "fifteen_minutes": {
+                    "$sum": {
+                        "$cond": [
+                            {
+                                "$and": [
+                                    {"$gt": ["$time_to_event", 0]},
+                                    {
+                                        "$lte": [
+                                            "$time_to_event",
+                                            {"$multiply": [15, 60000]},
+                                        ]
+                                    },
+                                ]
+                            },
+                            1,
+                            0,
+                        ]
+                    }
+                },
+                "thirty_minutes": {
+                    "$sum": {
+                        "$cond": [
+                            {
+                                "$and": [
+                                    {"$gt": ["$time_to_event", 0]},
+                                    {
+                                        "$lte": [
+                                            "$time_to_event",
+                                            {"$multiply": [30, 60000]},
+                                        ]
+                                    },
+                                ]
+                            },
+                            1,
+                            0,
+                        ]
+                    }
+                },
+                "sixty_minutes": {
+                    "$sum": {
+                        "$cond": [
+                            {
+                                "$and": [
+                                    {"$gt": ["$time_to_event", 0]},
+                                    {
+                                        "$lte": [
+                                            "$time_to_event",
+                                            {"$multiply": [60, 60000]},
+                                        ]
+                                    },
+                                ]
+                            },
+                            1,
+                            0,
+                        ]
+                    }
+                },
+                "two_hours": {
+                    "$sum": {
+                        "$cond": [
+                            {
+                                "$and": [
+                                    {"$gt": ["$time_to_event", 0]},
+                                    {
+                                        "$lte": [
+                                            "$time_to_event",
+                                            {"$multiply": [2, 60, 60000]},
+                                        ]
+                                    },
+                                ]
+                            },
+                            1,
+                            0,
+                        ]
+                    }
+                },
+                "three_hours": {
+                    "$sum": {
+                        "$cond": [
+                            {
+                                "$and": [
+                                    {"$gt": ["$time_to_event", 0]},
+                                    {
+                                        "$lte": [
+                                            "$time_to_event",
+                                            {"$multiply": [3, 60, 60000]},
+                                        ]
+                                    },
+                                ]
+                            },
+                            1,
+                            0,
+                        ]
+                    }
+                },
+                "four_hours": {
+                    "$sum": {
+                        "$cond": [
+                            {
+                                "$and": [
+                                    {"$gt": ["$time_to_event", 0]},
+                                    {
+                                        "$lte": [
+                                            "$time_to_event",
+                                            {"$multiply": [4, 60, 60000]},
+                                        ]
+                                    },
+                                ]
+                            },
+                            1,
+                            0,
+                        ]
+                    }
+                },
+                "one_day": {
+                    "$sum": {
+                        "$cond": [
+                            {
+                                "$and": [
+                                    {"$gt": ["$time_to_event", 0]},
+                                    {
+                                        "$lte": [
+                                            "$time_to_event",
+                                            {"$multiply": [24, 60, 60000]},
+                                        ]
+                                    },
+                                ]
+                            },
+                            1,
+                            0,
+                        ]
+                    }
+                },
             }
         },
         {
             "$project": {
-                "time_to_click": {"$subtract": ["$timeline.time", "$sent_date"]}
-            }
-        },
-        {
-            "$match": {
-                "time_to_click": {
-                    "$lte": time_milliseconds,
+                "one_minutes.count": "$one_minutes",
+                "one_minutes.ratio": {
+                    "$round": [{"$divide": ["$one_minutes", "$events"]}, 4]
                 },
+                "three_minutes.count": "$three_minutes",
+                "three_minutes.ratio": {
+                    "$round": [{"$divide": ["$three_minutes", "$events"]}, 4]
+                },
+                "five_minutes.count": "$five_minutes",
+                "five_minutes.ratio": {
+                    "$round": [{"$divide": ["$five_minutes", "$events"]}, 4]
+                },
+                "fifteen_minutes.count": "$fifteen_minutes",
+                "fifteen_minutes.ratio": {
+                    "$round": [{"$divide": ["$fifteen_minutes", "$events"]}, 4]
+                },
+                "thirty_minutes.count": "$thirty_minutes",
+                "thirty_minutes.ratio": {
+                    "$round": [{"$divide": ["$thirty_minutes", "$events"]}, 4]
+                },
+                "sixty_minutes.count": "$sixty_minutes",
+                "sixty_minutes.ratio": {
+                    "$round": [{"$divide": ["$sixty_minutes", "$events"]}, 4]
+                },
+                "two_hours.count": "$two_hours",
+                "two_hours.ratio": {
+                    "$round": [{"$divide": ["$two_hours", "$events"]}, 4]
+                },
+                "three_hours.count": "$three_hours",
+                "three_hours.ratio": {
+                    "$round": [{"$divide": ["$three_hours", "$events"]}, 4]
+                },
+                "four_hours.count": "$four_hours",
+                "four_hours.ratio": {
+                    "$round": [{"$divide": ["$four_hours", "$events"]}, 4]
+                },
+                "one_day.count": "$one_day",
+                "one_day.ratio": {"$round": [{"$divide": ["$one_day", "$events"]}, 4]},
             }
         },
-        {"$count": "count"},
     ]
+    time_stats = target_manager.aggregate(pipeline)
+
+    time_stats = {item["_id"]: item for item in time_stats}
+
+    return time_stats
