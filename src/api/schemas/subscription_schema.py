@@ -84,7 +84,7 @@ class SubscriptionSchema(BaseSchema):
     name = fields.Str()
     customer_id = fields.Str()
     sending_profile_id = fields.Str()
-    target_domain = fields.Str()    
+    target_domain = fields.Str()
     customer = fields.Nested(CustomerSchema)
     start_date = DateTimeField()
     primary_contact = fields.Nested(CustomerContactSchema)

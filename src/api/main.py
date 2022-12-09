@@ -62,19 +62,19 @@ from api.views.report_views import (
 )
 from api.views.sending_profile_views import SendingProfilesView, SendingProfileView
 from api.views.subscription_views import (
+    SubscriptionCountView,
     SubscriptionCurrentTemplatesView,
     SubscriptionHeaderView,
     SubscriptionLaunchView,
     SubscriptionNextTemplatesView,
     SubscriptionSafelistExportView,
     SubscriptionSafelistSendView,
+    SubscriptionsPagedView,
     SubscriptionsStatusView,
     SubscriptionsView,
-    SubscriptionsPagedView,
     SubscriptionTestView,
     SubscriptionValidView,
     SubscriptionView,
-    SubscriptionCountView,
 )
 from api.views.tag_views import TagsView
 from api.views.template_views import (
@@ -136,7 +136,10 @@ rules = [
     ("/subscriptions/", SubscriptionsView),
     ("/subscriptions/count/", SubscriptionCountView),
     ("/subscriptionsPaged/", SubscriptionsPagedView),
-    ("/subscriptionspaged/<page>/<pagesize>/<sortby>/<sortorder>/", SubscriptionsPagedView),
+    (
+        "/subscriptionspaged/<page>/<pagesize>/<sortby>/<sortorder>/",
+        SubscriptionsPagedView,
+    ),
     ("/subscriptions/status/", SubscriptionsStatusView),
     ("/subscriptions/valid/", SubscriptionValidView),
     ("/subscription/<subscription_id>/", SubscriptionView),

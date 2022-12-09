@@ -1,7 +1,7 @@
 """Subscription Views."""
 # Standard Python Libraries
 from collections import OrderedDict
-from datetime import timedelta, datetime
+from datetime import datetime, timedelta
 import os
 
 # Third-Party Libraries
@@ -141,11 +141,10 @@ class SubscriptionsView(MethodView):
         return jsonify(response)
 
 
-
 class SubscriptionsPagedView(MethodView):
     """Subscriptions Paged View."""
 
-    def get(self,page,pagesize,sortby,sortorder):
+    def get(self, page, pagesize, sortby, sortorder):
         """Get."""
         parameters = dict(request.args)
         parameters = subscription_manager.get_query(parameters)
@@ -157,12 +156,12 @@ class SubscriptionsPagedView(MethodView):
         sort_dict = OrderedDict()
         if sortby != "name":
             sort_dict[sortby] = sortdirection
-            sort_dict['name_no_inc'] = 1
-            sort_dict['name_inc'] = 1
+            sort_dict["name_no_inc"] = 1
+            sort_dict["name_inc"] = 1
         else:
-            sort_dict['name_no_inc'] = sortdirection
-            sort_dict['name_inc'] = sortdirection
-        
+            sort_dict["name_no_inc"] = sortdirection
+            sort_dict["name_inc"] = sortdirection
+
         if request.args.get("template"):
             cycles = cycle_manager.all(
                 params={"template_ids": request.args["template"]},
@@ -175,20 +174,17 @@ class SubscriptionsPagedView(MethodView):
             ]
 
         if "archived" in request.args:
-            archived = [ 
+            archived = [
                 # { "archived": True  },
-                { "archived": True  }, 
-            ];
+                {"archived": True},
+            ]
         else:
-            archived = [ 
-                { "archived": { "$exists": False  } }, 
-                { "archived": False  } 
-            ];
+            archived = [{"archived": {"$exists": False}}, {"archived": False}]
 
         if request.args.get("archived", "").lower() == "true":
             parameters["archived"] = True
-        
-        compareDate = datetime.now();
+
+        compareDate = datetime.now()
         compareDate += timedelta(days=1)
 
         pipeline = [
@@ -197,19 +193,15 @@ class SubscriptionsPagedView(MethodView):
                     "subscription_id": {"$toString": "$_id"},
                     "customer_object_id": {"$toObjectId": "$customer_id"},
                     "contact_full_name": {
-                        "$concat": ["$primary_contact.first_name"," ","$primary_contact.last_name"]
+                        "$concat": [
+                            "$primary_contact.first_name",
+                            " ",
+                            "$primary_contact.last_name",
+                        ]
                     },
-                    "name_inc":{
-                        "$toInt": { 
-                            "$last" : {"$split": ["$name","_"]}
-                        }
-                    },
-                    "name_no_inc":{
-                        "$first" : {"$split": ["$name","_"]}
-                    },
-                    "target_count":{
-                        "$size": "$target_email_list"
-                    }
+                    "name_inc": {"$toInt": {"$last": {"$split": ["$name", "_"]}}},
+                    "name_no_inc": {"$first": {"$split": ["$name", "_"]}},
+                    "target_count": {"$size": "$target_email_list"},
                 },
             },
             {
@@ -223,30 +215,32 @@ class SubscriptionsPagedView(MethodView):
             {
                 "$lookup": {
                     "from": "cycle",
-                    "let": {"subscription_id" : "$subscription_id"},
-                    "pipeline" : [
+                    "let": {"subscription_id": "$subscription_id"},
+                    "pipeline": [
                         {
-                            "$match": 
-                                {"$and" : [
+                            "$match": {
+                                "$and": [
                                     {
                                         "start_date": {"$lte": compareDate},
                                     },
-                                    {"$expr": {
-                                        "$eq": [
-                                            "$subscription_id",
-                                            "$$subscription_id"
-                                        ]
+                                    {
+                                        "$expr": {
+                                            "$eq": [
+                                                "$subscription_id",
+                                                "$$subscription_id",
+                                            ]
                                         }
-                                    }]
-                                }
+                                    },
+                                ]
+                            }
                         }
                     ],
                     "as": "cycle",
                 }
             },
-            { "$sort" : sort_dict } ,
-            { "$skip" : int(page) * int(pagesize)} ,
-            { "$limit" : int(pagesize) } ,
+            {"$sort": sort_dict},
+            {"$skip": int(page) * int(pagesize)},
+            {"$limit": int(pagesize)},
             {
                 "$project": {
                     "_id": {"$toString": "$_id"},
@@ -277,37 +271,64 @@ class SubscriptionsPagedView(MethodView):
         filter_val = request.args.get("searchFilter")
         if request.args.get("searchFilter"):
             filter_val = request.args.get("searchFilter")
-            pipeline.insert(2,
-                { "$match": {
-                    "$and" : [
-                        {"$or" : [
-                            {"name": {"$regex": filter_val, '$options' : 'i'}},
-                            {"status": {"$regex": filter_val, '$options' : 'i'}},                    
-                            {"primary_contact.first_name": {"$regex": filter_val, '$options' : 'i'}},                    
-                            {"primary_contact.last_name": {"$regex": filter_val, '$options' : 'i'}},                    
-                            {"contact_full_name": {"$regex": filter_val, '$options' : 'i'}},                    
-                            {"target_domain": {"$regex": filter_val, '$options' : 'i'}},    
-                            {"customer.name": {"$regex": filter_val, '$options' : 'i'}},
-                            ]
-                        }, 
-                        {"$or" : archived }
-                    ]
-                }},                
+            pipeline.insert(
+                2,
+                {
+                    "$match": {
+                        "$and": [
+                            {
+                                "$or": [
+                                    {"name": {"$regex": filter_val, "$options": "i"}},
+                                    {"status": {"$regex": filter_val, "$options": "i"}},
+                                    {
+                                        "primary_contact.first_name": {
+                                            "$regex": filter_val,
+                                            "$options": "i",
+                                        }
+                                    },
+                                    {
+                                        "primary_contact.last_name": {
+                                            "$regex": filter_val,
+                                            "$options": "i",
+                                        }
+                                    },
+                                    {
+                                        "contact_full_name": {
+                                            "$regex": filter_val,
+                                            "$options": "i",
+                                        }
+                                    },
+                                    {
+                                        "target_domain": {
+                                            "$regex": filter_val,
+                                            "$options": "i",
+                                        }
+                                    },
+                                    {
+                                        "customer.name": {
+                                            "$regex": filter_val,
+                                            "$options": "i",
+                                        }
+                                    },
+                                ]
+                            },
+                            {"$or": archived},
+                        ]
+                    }
+                },
             )
-        else :
-            pipeline.insert(2,
-                { "$match": 
-                    {"$or" : archived }                    
-                },                
+        else:
+            pipeline.insert(
+                2,
+                {"$match": {"$or": archived}},
             )
-            
 
         subscriptions = subscription_manager.page(
             params=pipeline,
         )
 
         return jsonify(subscriptions)
-    
+
 
 class SubscriptionView(MethodView):
     """SubscriptionView."""
@@ -452,15 +473,16 @@ class SubscriptionLaunchView(MethodView):
     def delete(self, subscription_id):
         """Stop a subscription."""
         return jsonify(stop_subscription(subscription_id))
-    
+
+
 class SubscriptionCountView(MethodView):
     """SubscriptionCountView."""
 
     def get(self):
-        """Get the count of subscriptions."""        
+        """Get the count of subscriptions."""
         parameters = dict(request.args)
         parameters = subscription_manager.get_query(parameters)
-        
+
         if request.args.get("template"):
             cycles = cycle_manager.all(
                 params={"template_ids": request.args["template"]},
@@ -473,20 +495,17 @@ class SubscriptionCountView(MethodView):
             ]
 
         if "archived" in request.args:
-            archived = [ 
+            archived = [
                 # { "archived": True  },
-                { "archived": True  }, 
-            ];
+                {"archived": True},
+            ]
         else:
-            archived = [ 
-                { "archived": { "$exists": False  } }, 
-                { "archived": False  } 
-            ];
+            archived = [{"archived": {"$exists": False}}, {"archived": False}]
 
         if request.args.get("archived", "").lower() == "true":
             parameters["archived"] = True
-        
-        compareDate = datetime.now();
+
+        compareDate = datetime.now()
         compareDate += timedelta(days=1)
 
         pipeline = [
@@ -495,19 +514,15 @@ class SubscriptionCountView(MethodView):
                     "subscription_id": {"$toString": "$_id"},
                     "customer_object_id": {"$toObjectId": "$customer_id"},
                     "contact_full_name": {
-                        "$concat": ["$primary_contact.first_name"," ","$primary_contact.last_name"]
+                        "$concat": [
+                            "$primary_contact.first_name",
+                            " ",
+                            "$primary_contact.last_name",
+                        ]
                     },
-                    "name_inc":{
-                        "$toInt": { 
-                            "$last" : {"$split": ["$name","_"]}
-                        }
-                    },
-                    "name_no_inc":{
-                        "$first" : {"$split": ["$name","_"]}
-                    },
-                    "target_count":{
-                        "$size": "$target_email_list"
-                    }
+                    "name_inc": {"$toInt": {"$last": {"$split": ["$name", "_"]}}},
+                    "name_no_inc": {"$first": {"$split": ["$name", "_"]}},
+                    "target_count": {"$size": "$target_email_list"},
                 },
             },
             {
@@ -517,42 +532,72 @@ class SubscriptionCountView(MethodView):
                     "foreignField": "_id",
                     "as": "customer",
                 }
-            }
+            },
         ]
 
         filter_val = request.args.get("searchFilter")
         if request.args.get("searchFilter"):
             filter_val = request.args.get("searchFilter")
-            pipeline.insert(2,
-                { "$match": {
-                    "$and" : [
-                        {"$or" : [
-                            {"name": {"$regex": filter_val, '$options' : 'i'}},
-                            {"status": {"$regex": filter_val, '$options' : 'i'}},                    
-                            {"primary_contact.first_name": {"$regex": filter_val, '$options' : 'i'}},                    
-                            {"primary_contact.last_name": {"$regex": filter_val, '$options' : 'i'}},                    
-                            {"contact_full_name": {"$regex": filter_val, '$options' : 'i'}},                    
-                            {"target_domain": {"$regex": filter_val, '$options' : 'i'}},    
-                            {"customer.name": {"$regex": filter_val, '$options' : 'i'}},
-                            ]
-                        }, 
-                        {"$or" : archived }
-                    ]
-                }},                
+            pipeline.insert(
+                2,
+                {
+                    "$match": {
+                        "$and": [
+                            {
+                                "$or": [
+                                    {"name": {"$regex": filter_val, "$options": "i"}},
+                                    {"status": {"$regex": filter_val, "$options": "i"}},
+                                    {
+                                        "primary_contact.first_name": {
+                                            "$regex": filter_val,
+                                            "$options": "i",
+                                        }
+                                    },
+                                    {
+                                        "primary_contact.last_name": {
+                                            "$regex": filter_val,
+                                            "$options": "i",
+                                        }
+                                    },
+                                    {
+                                        "contact_full_name": {
+                                            "$regex": filter_val,
+                                            "$options": "i",
+                                        }
+                                    },
+                                    {
+                                        "target_domain": {
+                                            "$regex": filter_val,
+                                            "$options": "i",
+                                        }
+                                    },
+                                    {
+                                        "customer.name": {
+                                            "$regex": filter_val,
+                                            "$options": "i",
+                                        }
+                                    },
+                                ]
+                            },
+                            {"$or": archived},
+                        ]
+                    }
+                },
             )
-        else :
-            pipeline.insert(2,
-                { "$match": 
-                    {"$or" : archived }                    
-                },                
+        else:
+            pipeline.insert(
+                2,
+                {"$match": {"$or": archived}},
             )
-            
 
-        subscriptionCount = len(subscription_manager.page(
-            params=pipeline,
-        ))
+        subscriptionCount = len(
+            subscription_manager.page(
+                params=pipeline,
+            )
+        )
 
         return str(subscriptionCount)
+
 
 class SubscriptionTestView(MethodView):
     """SubscriptionTestView."""
