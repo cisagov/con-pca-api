@@ -27,9 +27,9 @@ target_manager = TargetManager()
 sending_profile_manager = SendingProfileManager()
 
 
-def get_cycle_stats(cycle):
+def get_cycle_stats(cycle, recalculate=False):
     """Get stats for cycle."""
-    if cycle.get("dirty_stats", True):
+    if cycle.get("dirty_stats", True) or recalculate:
         targets = target_manager.all(params={"cycle_id": cycle["_id"]})
         data = {
             "stats": generate_cycle_stats(cycle, targets, nonhuman=False),

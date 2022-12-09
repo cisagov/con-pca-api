@@ -14,7 +14,7 @@ from api.manager import (
 )
 from api.schemas.stats_schema import CycleStatsSchema
 from utils.stats import get_nonhuman_orgs, get_ratio
-from utils.templates import get_deception_level, get_indicators
+from utils.templates import get_indicators
 
 template_manager = TemplateManager()
 customer_manager = TemplateManager()
@@ -26,20 +26,20 @@ target_manager = TargetManager()
 sending_profile_manager = SendingProfileManager()
 
 
-def mongo_get_cycle_stats(cycle):
+def mongo_get_cycle_stats(cycle, recalculate=False):
     """Get stats for cycle."""
-    # if cycle.get("dirty_stats", True):
-    data = {
-        "stats": mongo_generate_cycle_stats(cycle["_id"], nonhuman=False),
-        "nonhuman_stats": mongo_generate_cycle_stats(cycle["_id"], nonhuman=True),
-        "dirty_stats": False,
-    }
-    cycle.update(data)
-    if cycle.get("_id"):
-        cycle_manager.update(
-            document_id=cycle["_id"],
-            data=data,
-        )
+    if cycle.get("dirty_stats", True) or recalculate:
+        data = {
+            "stats": mongo_generate_cycle_stats(cycle["_id"], nonhuman=False),
+            "nonhuman_stats": mongo_generate_cycle_stats(cycle["_id"], nonhuman=True),
+            "dirty_stats": False,
+        }
+        cycle.update(data)
+        if cycle.get("_id"):
+            cycle_manager.update(
+                document_id=cycle["_id"],
+                data=data,
+            )
 
 
 def mongo_generate_cycle_stats(cycle_id, nonhuman=False):
@@ -573,6 +573,7 @@ def mongo_calculate_click_percentage_over_time(time_list):
 def mongo_get_indicator_stats(cycle_id, nonhuman, nonhuman_orgs):
     """Get indicator stats."""
     indicators = get_indicators()
+    group_pipeline, project_pipeline = get_subpipelines(indicators)
     pipeline = [
         {"$match": {"cycle_id": cycle_id}},
         {"$addFields": {"template_id": {"$toObjectId": "$template_id"}}},
@@ -593,25 +594,101 @@ def mongo_get_indicator_stats(cycle_id, nonhuman, nonhuman_orgs):
                 else {"$in": nonhuman_orgs},
             }
         },
-        {"$group": get_group_subpipeline(indicators)},
+        {"$group": group_pipeline},
+        {"$project": project_pipeline},
     ]
     indicator_stats = target_manager.aggregate(pipeline)
+
+    # reformat to a list of dicts
+    if len(indicator_stats) > 0:
+        del indicator_stats[0]["_id"]
+        indicator_stats = list(indicator_stats[0].values())
 
     return indicator_stats
 
 
-def get_group_subpipeline(indicators):
-    """Get subpipeline for the group stage."""
-    pipeline = {"_id": "$cycle_id"}
+def get_subpipelines(indicators):
+    """Get subpipelines for the group and project stage."""
+    group_pipeline = {"_id": "$cycle_id"}
+    project_pipeline = {}
     for group, gv in indicators.items():
         for indicator, iv in gv.items():
             for value, label in iv["values"].items():
                 label = label["label"]
+                project_pipeline[f"{group}_{label}_{indicator}.group"] = group
+                project_pipeline[f"{group}_{label}_{indicator}.indicator"] = indicator
+                project_pipeline[f"{group}_{label}_{indicator}.label"] = label
+                project_pipeline[f"{group}_{label}_{indicator}.value"] = {
+                    "$toInt": value
+                }
+                project_pipeline[
+                    f"{group}_{label}_{indicator}.sent.count"
+                ] = f"${group}_{label}_{indicator}_sent"
+                project_pipeline[
+                    f"{group}_{label}_{indicator}.clicked.count"
+                ] = f"${group}_{label}_{indicator}_clicked"
+                project_pipeline[f"{group}_{label}_{indicator}.clicked.ratio"] = {
+                    "$round": [
+                        {
+                            "$cond": [
+                                {"$eq": [f"${group}_{label}_{indicator}_sent", 0]},
+                                0,
+                                {
+                                    "$divide": [
+                                        f"${group}_{label}_{indicator}_clicked",
+                                        f"${group}_{label}_{indicator}_sent",
+                                    ]
+                                },
+                            ]
+                        },
+                        4,
+                    ]
+                }
+                project_pipeline[
+                    f"{group}_{label}_{indicator}.opened.count"
+                ] = f"${group}_{label}_{indicator}_opened"
+                project_pipeline[f"{group}_{label}_{indicator}.opened.ratio"] = {
+                    "$round": [
+                        {
+                            "$cond": [
+                                {"$eq": [f"${group}_{label}_{indicator}_sent", 0]},
+                                0,
+                                {
+                                    "$divide": [
+                                        f"${group}_{label}_{indicator}_opened",
+                                        f"${group}_{label}_{indicator}_sent",
+                                    ]
+                                },
+                            ]
+                        },
+                        4,
+                    ]
+                }
+                project_pipeline[
+                    f"{group}_{label}_{indicator}.reported.count"
+                ] = f"${group}_{label}_{indicator}_reported"
+                project_pipeline[f"{group}_{label}_{indicator}.reported.ratio"] = {
+                    "$round": [
+                        {
+                            "$cond": [
+                                {"$eq": [f"${group}_{label}_{indicator}_sent", 0]},
+                                0,
+                                {
+                                    "$divide": [
+                                        f"${group}_{label}_{indicator}_reported",
+                                        f"${group}_{label}_{indicator}_sent",
+                                    ]
+                                },
+                            ]
+                        },
+                        4,
+                    ]
+                }
                 for event in ["sent", "clicked", "opened", "reported"]:
-                    pipeline[
+                    group_pipeline[
                         f"{group}_{label}_{indicator}_{event}"
                     ] = get_indicator_subpipeline(group, indicator, value, event)
-    return pipeline
+    return group_pipeline, project_pipeline
 
 
 def get_indicator_subpipeline(group, indicator, value, event):
@@ -626,7 +703,7 @@ def get_indicator_subpipeline(group, indicator, value, event):
                             {
                                 "$eq": [
                                     f"$template.indicators.{group}.{indicator}",
-                                    value,
+                                    int(value),
                                 ]
                             },
                         ]
@@ -646,7 +723,7 @@ def get_indicator_subpipeline(group, indicator, value, event):
                             {
                                 "$eq": [
                                     f"$template.indicators.{group}.{indicator}",
-                                    value,
+                                    int(value),
                                 ]
                             },
                         ]
@@ -698,7 +775,107 @@ def mongo_get_maxmind_stats(cycle_id, nonhuman, nonhuman_orgs):
 
 def mongo_get_recommendation_stats(cycle_id, nonhuman, nonhuman_orgs):
     """Get recommendation stats."""
-    recommendation_stats = {}
+    pipeline = [
+        {"$match": {"cycle_id": cycle_id}},
+        {"$addFields": {"template_id": {"$toObjectId": "$template_id"}}},
+        {
+            "$lookup": {
+                "from": "template",
+                "localField": "template_id",
+                "foreignField": "_id",
+                "as": "template",
+            }
+        },
+        {"$unwind": {"path": "$template"}},
+        {
+            "$addFields": {
+                "recommendation_id": {
+                    "$concatArrays": ["$template.sophisticated", "$template.red_flag"]
+                }
+            }
+        },
+        {"$unwind": {"path": "$recommendation_id", "preserveNullAndEmptyArrays": True}},
+        {"$addFields": {"recommendation_id": {"$toObjectId": "$recommendation_id"}}},
+        {
+            "$lookup": {
+                "from": "recommendation",
+                "localField": "recommendation_id",
+                "foreignField": "_id",
+                "as": "recommendation",
+            }
+        },
+        {"$unwind": {"path": "$recommendation"}},
+        {"$unwind": {"path": "$timeline", "preserveNullAndEmptyArrays": True}},
+        {
+            "$match": {
+                "timeline.details.asn_org": {"$nin": nonhuman_orgs}
+                if not nonhuman
+                else {"$in": nonhuman_orgs},
+            }
+        },
+        {
+            "$group": {
+                "_id": "$recommendation_id",
+                "recommendation": {"$first": "$recommendation"},
+                "templates": {"$addToSet": "$template"},
+                "sent_count": {
+                    "$sum": {"$cond": [{"$ne": ["$timeline.message", "clicked"]}, 1, 0]}
+                },
+                "clicked": {
+                    "$sum": {"$cond": [{"$eq": ["$timeline.message", "clicked"]}, 1, 0]}
+                },
+                "opened": {
+                    "$sum": {"$cond": [{"$eq": ["$timeline.message", "opened"]}, 1, 0]}
+                },
+                "reported": {
+                    "$sum": {
+                        "$cond": [{"$eq": ["$timeline.message", "reported"]}, 1, 0]
+                    }
+                },
+            }
+        },
+        {
+            "$project": {
+                "recommendation._id": "$recommendation._id",
+                "recommendation.description": "$recommendation.description",
+                "recommendation.title": "$recommendation.title",
+                "recommendation.type": "$recommendation.type",
+                "templates": {
+                    "$map": {
+                        "input": "$templates",
+                        "as": "template",
+                        "in": {
+                            "_id": {"$toString": "$$template._id"},
+                            "deception_score": "$$template.deception_score",
+                            "from_address": "$$template.from_address",
+                            "html": "$$template.html",
+                            "indicators": "$$template.indicators",
+                            "name": "$$template.name",
+                            "red_flag": "$$template.red_flag",
+                            "retired_description": "$$template.retired_description",
+                            "sophisticated": "$$template.sophisticated",
+                            "subject": "$$template.subject",
+                        },
+                    },
+                },
+                "sent.count": "$sent_count",
+                "clicked.count": "$clicked",
+                "clicked.ratio": {
+                    "$round": [{"$divide": ["$clicked", "$sent_count"]}, 4]
+                },
+                "opened.count": "$opened",
+                "opened.ratio": {
+                    "$round": [{"$divide": ["$opened", "$sent_count"]}, 4]
+                },
+                "reported.count": "$reported",
+                "reported.ratio": {
+                    "$round": [{"$divide": ["$reported", "$sent_count"]}, 4]
+                },
+            }
+        },
+    ]
+    recommendation_stats = target_manager.aggregate(pipeline)
+
     return recommendation_stats
 
 
@@ -1014,50 +1191,100 @@ def mongo_get_target_stats(cycle_id, nonhuman, nonhuman_orgs):
 
 def mongo_get_template_stats(cycle_id, nonhuman, nonhuman_orgs):
     """Get template stats."""
-    template_stats = []
-    cycle = cycle_manager.get(document_id=cycle_id, fields=["template_ids"])
-    templates = template_manager.all(
-        params={"_id": {"$in": cycle["template_ids"]}},
-        fields=[
-            "_id",
-            "deception_score",
-            "from_address",
-            "html",
-            "indicators",
-            "name",
-            "retired_description",
-            "subject",
-        ],
-    )
-
-    for template in templates:
-        sent_count = target_manager.count(
-            {
-                "cycle_id": {"$eq": cycle_id},
-                "template_id": {"$eq": template["_id"]},
+    pipeline = [
+        {"$match": {"cycle_id": "6376a9aa4c95c0c4630feb83"}},
+        {"$addFields": {"template_id": {"$toObjectId": "$template_id"}}},
+        {
+            "$lookup": {
+                "from": "template",
+                "localField": "template_id",
+                "foreignField": "_id",
+                "as": "template",
             }
-        )
-        stats = {
-            "template": template,
-            "deception_level": get_deception_level(template["deception_score"]),
-            "template_id": template["_id"],
-            "sent": {"count": sent_count},
-            "opened": {},
-            "clicked": {},
-            "reported": {},
-        }
-        for event in ["opened", "clicked", "reported"]:
-            aggregate = target_manager.aggregate(
-                get_template_stats_pipeline(
-                    cycle_id, template["_id"], event, nonhuman, nonhuman_orgs
-                )
-            )
-            count = aggregate[0].get("count", 0) if len(aggregate) > 0 else 0
-            ratio = get_ratio(count, sent_count)
-            stats[event]["count"] = count
-            stats[event]["ratio"] = ratio
-
-        template_stats.append(stats)
+        },
+        {"$unwind": {"path": "$template"}},
+        {"$unwind": {"path": "$timeline", "preserveNullAndEmptyArrays": True}},
+        {
+            "$group": {
+                "_id": "$template._id",
+                "template": {"$first": "$template"},
+                "template_id": {"$first": {"$toString": "$template._id"}},
+                "sent_count": {
+                    "$sum": {"$cond": [{"$ne": ["$timeline.message", "clicked"]}, 1, 0]}
+                },
+                "clicked": {
+                    "$sum": {"$cond": [{"$eq": ["$timeline.message", "clicked"]}, 1, 0]}
+                },
+                "opened": {
+                    "$sum": {"$cond": [{"$eq": ["$timeline.message", "opened"]}, 1, 0]}
+                },
+                "reported": {
+                    "$sum": {
+                        "$cond": [{"$eq": ["$timeline.message", "reported"]}, 1, 0]
+                    }
+                },
+            }
+        },
+        {
+            "$project": {
+                "recommendation": "$recommendation",
+                "template._id": "$template._id",
+                "template.deception_score": "$template.deception_score",
+                "template.from_address": "$template.from_address",
+                "template.html": "$template.html",
+                "template.indicators": "$template.indicators",
+                "template.name": "$template.name",
+                "template.red_flag": "$template.red_flag",
+                "template.retired_description": "$template.retired_description",
+                "template.sophisticated": "$template.sophisticated",
+                "template.subject": "$template.subject",
+                "template_id": {"$toString": "$template._id"},
+                "deception_level": {
+                    "$switch": {
+                        "branches": [
+                            {
+                                "case": {"$lte": ["$template.deception_score", 2]},
+                                "then": "low",
+                            },
+                            {
+                                "case": {
+                                    "$and": [
+                                        {"$gt": ["$template.deception_score", 2]},
+                                        {"$lte": ["$template.deception_score", 4]},
+                                    ]
+                                },
+                                "then": "moderate",
+                            },
+                            {
+                                "case": {
+                                    "$and": [
+                                        {"$gt": ["$template.deception_score", 4]},
+                                        {"$lte": ["$template.deception_score", 11]},
+                                    ]
+                                },
+                                "then": "high",
+                            },
+                        ],
+                        "default": "low",
+                    }
+                },
+                "sent.count": "$sent_count",
+                "clicked.count": "$clicked",
+                "clicked.ratio": {
+                    "$round": [{"$divide": ["$clicked", "$sent_count"]}, 4]
+                },
+                "opened.count": "$opened",
+                "opened.ratio": {
+                    "$round": [{"$divide": ["$opened", "$sent_count"]}, 4]
+                },
+                "reported.count": "$reported",
+                "reported.ratio": {
+                    "$round": [{"$divide": ["$reported", "$sent_count"]}, 4]
+                },
+            }
+        },
+    ]
+    template_stats = target_manager.aggregate(pipeline)
 
     mongo_rank_templates(template_stats)
 
@@ -1066,32 +1293,6 @@ def mongo_get_template_stats(cycle_id, nonhuman, nonhuman_orgs):
     template_stats = [template_stats[1], template_stats[2], template_stats[0]]
 
     return template_stats
-
-
-def get_template_stats_pipeline(
-    cycle_id, template_id, event_type, nonhuman, nonhuman_orgs
-):
-    """Get template stats."""
-    return [
-        {
-            "$match": {
-                "cycle_id": {"$eq": cycle_id},
-                "template_id": {"$eq": template_id},
-            }
-        },
-        {"$unwind": {"path": "$timeline"}},
-        {
-            "$match": {
-                "timeline.message": {
-                    "$eq": event_type,
-                },
-                "timeline.details.asn_org": {"$nin": nonhuman_orgs}
-                if not nonhuman
-                else {"$in": nonhuman_orgs},
-            }
-        },
-        {"$count": "count"},
-    ]
 
 
 def mongo_rank_templates(template_stats: list):

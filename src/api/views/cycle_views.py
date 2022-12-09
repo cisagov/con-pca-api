@@ -57,8 +57,11 @@ class CycleStatsView(MethodView):
         nonhuman = False
         if request.args.get("nonhuman", "") == "true":
             nonhuman = True
+        recalculate = False
+        if request.args.get("recalculate", "") == "true":
+            recalculate = True
         cycle = cycle_manager.get(document_id=cycle_id)
-        get_cycle_stats(cycle)
+        get_cycle_stats(cycle, recalculate)
         return jsonify(cycle["nonhuman_stats"] if nonhuman else cycle["stats"])
 
 
@@ -70,8 +73,11 @@ class MongoCycleStatsView(MethodView):
         nonhuman = False
         if request.args.get("nonhuman", "") == "true":
             nonhuman = True
+        recalculate = False
+        if request.args.get("recalculate", "") == "true":
+            recalculate = True
         cycle = cycle_manager.get(document_id=cycle_id)
-        mongo_get_cycle_stats(cycle)
+        mongo_get_cycle_stats(cycle, recalculate)
         return jsonify(cycle["nonhuman_stats"] if nonhuman else cycle["stats"])
 
     def post(self, cycle_id):
