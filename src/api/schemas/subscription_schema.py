@@ -4,7 +4,7 @@ from marshmallow import Schema, fields, validate
 
 # cisagov Libraries
 from api.schemas.base_schema import BaseSchema
-from api.schemas.customer_schema import CustomerContactSchema
+from api.schemas.customer_schema import CustomerContactSchema, CustomerSchema
 from api.schemas.fields import DateTimeField
 from api.schemas.target_schema import TargetTimelineSchema
 from api.schemas.template_schema import TemplateSchema
@@ -85,6 +85,7 @@ class SubscriptionSchema(BaseSchema):
     customer_id = fields.Str()
     sending_profile_id = fields.Str()
     target_domain = fields.Str()
+    customer = fields.Nested(CustomerSchema)
     start_date = DateTimeField()
     primary_contact = fields.Nested(CustomerContactSchema)
     admin_email = fields.Str()
@@ -92,6 +93,7 @@ class SubscriptionSchema(BaseSchema):
     status = fields.Str(
         validate=validate.OneOf(["created", "queued", "running", "stopped"])
     )
+    cycle_start_date = DateTimeField(allow_none=True)
     target_email_list = fields.List(fields.Nested(SubscriptionTargetSchema))
     templates_selected = fields.List(fields.Str())
     next_templates = fields.List(fields.Str())
@@ -103,6 +105,10 @@ class SubscriptionSchema(BaseSchema):
     tasks = fields.List(fields.Nested(SubscriptionTasksSchema))
     processing = fields.Bool()
     archived = fields.Bool()
+    page = fields.String()
+    page_count = fields.String()
+    sortby = fields.String()
+    sortorder = fields.String()
     notification_history = fields.List(fields.Nested(SubscriptionNotificationSchema))
     phish_header = fields.Str()
     reporting_password = fields.Str()
