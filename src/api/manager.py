@@ -24,13 +24,19 @@ from api.schemas.sending_profile_schema import SendingProfileSchema
 from api.schemas.subscription_schema import SubscriptionSchema
 from api.schemas.target_schema import TargetSchema
 from api.schemas.template_schema import TemplateSchema
+from api.schemas.user_schema import UserSchema
 
 
 class Manager:
     """Manager."""
 
     def __init__(
-        self, collection, schema, unique_indexes=[], other_indexes=[], ttl_indexes=[]
+        self,
+        collection,
+        schema,
+        unique_indexes=[],
+        other_indexes=[],
+        ttl_indexes=[],
     ):
         """Initialize Manager."""
         self.collection = collection
@@ -182,6 +188,20 @@ class Manager:
         if limit:
             query.limit(limit)
         return self.read_data(query, many=True)
+
+    def page(
+        self,
+        params=None,
+        fields=None,
+        sortBy="_id:",
+        sortOrder="1",
+        pagesize=10,
+        page=0,
+        searchfilter="",
+    ):
+        """Get subscribtptions in paginated format."""
+        customers = self.db.aggregate(params)
+        return self.read_data(customers, many=True)
 
     def delete(self, document_id=None, params=None):
         """Delete item by object id."""
@@ -473,7 +493,19 @@ class TemplateManager(Manager):
     def __init__(self):
         """Super."""
         return super().__init__(
-            collection="template", schema=TemplateSchema, unique_indexes=["name"]
+            collection="template",
+            schema=TemplateSchema,
+            unique_indexes=["name"],
+        )
+
+
+class UserManager(Manager):
+    """User Manager."""
+
+    def __init__(self):
+        """Super."""
+        return super().__init__(
+            collection="user", schema=UserSchema, unique_indexes=["username"]
         )
 
 

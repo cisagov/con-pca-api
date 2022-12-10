@@ -63,12 +63,15 @@ from api.views.report_views import (
 )
 from api.views.sending_profile_views import SendingProfilesView, SendingProfileView
 from api.views.subscription_views import (
+    SubscriptionCountView,
     SubscriptionCurrentTemplatesView,
     SubscriptionHeaderView,
     SubscriptionLaunchView,
     SubscriptionNextTemplatesView,
     SubscriptionSafelistExportView,
     SubscriptionSafelistSendView,
+    SubscriptionsPagedView,
+    SubscriptionsStatusView,
     SubscriptionsView,
     SubscriptionTestView,
     SubscriptionValidView,
@@ -133,6 +136,13 @@ rules = [
     ("/sendingprofile/<sending_profile_id>/", SendingProfileView),
     # Subscription Views
     ("/subscriptions/", SubscriptionsView),
+    ("/subscriptions/count/", SubscriptionCountView),
+    ("/subscriptionsPaged/", SubscriptionsPagedView),
+    (
+        "/subscriptionspaged/<page>/<pagesize>/<sortby>/<sortorder>/",
+        SubscriptionsPagedView,
+    ),
+    ("/subscriptions/status/", SubscriptionsStatusView),
     ("/subscriptions/valid/", SubscriptionValidView),
     ("/subscription/<subscription_id>/", SubscriptionView),
     ("/subscription/<subscription_id>/launch/", SubscriptionLaunchView),
@@ -208,7 +218,6 @@ with app.app_context():
     initialize_nonhumans()
     reset_dirty_stats()
     populate_stakeholder_shortname()
-    # populate_cycle_tasks()
     # restart_subscriptions()
 
 

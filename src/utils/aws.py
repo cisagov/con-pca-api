@@ -1,13 +1,19 @@
 """Aws clients."""
+# Standard Python Libraries
+from datetime import datetime
+
 # Third-Party Libraries
 import boto3
 from botocore.exceptions import ClientError
 
 # cisagov Libraries
 from api.config.environment import COGNITO_CLIENT_ID, COGNITO_USER_POOL_ID
+from api.manager import UserManager
 from utils.logging import setLogger
 
 logger = setLogger(__name__)
+
+user_manager = UserManager()
 
 
 class AWS:
@@ -71,6 +77,15 @@ class Cognito(AWS):
 
     def authenticate(self, username, password):
         """Authenticate user."""
+        if not user_manager.exists(parameters={"username": username}):
+            user_manager.save({"username": username, "last_login": datetime.now()})
+        else:
+            user_manager.find_one_and_update(
+                params={
+                    "username": {"$eq": username},
+                },
+                data={"last_login": datetime.now()},
+            )
         return self.client.admin_initiate_auth(
             UserPoolId=COGNITO_USER_POOL_ID,
             ClientId=COGNITO_CLIENT_ID,
