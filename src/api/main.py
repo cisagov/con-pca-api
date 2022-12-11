@@ -21,6 +21,7 @@ from api.config.environment import (
     REDIS_HOST,
     REDIS_PORT,
     TASK_MINUTES,
+    TESTING,
 )
 from api.initialize import initialization_tasks
 from api.phish import emails_job
@@ -221,7 +222,9 @@ executors = {
     "default": ThreadPoolExecutor(100),
     "processpool": ProcessPoolExecutor(5),
 }
-sched = BackgroundScheduler(jobstores=jobstores, executors=executors)
+sched = BackgroundScheduler(
+    jobstores=jobstores if not TESTING else None, executors=executors
+)
 
 # Add scheduled jobs
 sched.add_job(emails_job, "interval", minutes=EMAIL_MINUTES, max_instances=10)
