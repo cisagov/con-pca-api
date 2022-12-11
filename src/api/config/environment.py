@@ -22,14 +22,18 @@ EMAIL_MINUTES = int(os.environ.get("EMAIL_MINUTES", 1))
 TASK_MINUTES = int(os.environ.get("TASK_MINUTES", 5))
 FAILED_EMAIL_MINUTES = int(os.environ.get("FAILED_EMAIL_MINUTES", 1440))
 
-# mailgun API
+# Mailgun API
 MAILGUN_API_KEY = str(os.environ.get("MAILGUN_API_KEY"))
 
 # https://bandit.readthedocs.io/en/latest/plugins/b104_hardcoded_bind_all_interfaces.html
 API_HOST = os.environ.get("API_HOST", "0.0.0.0")  # nosec
-API_PORT = os.environ.get("API_PORT", 5000)
+API_PORT = int(os.environ.get("API_PORT", 5000))
 
-# about
+# Redis
+REDIS_HOST = os.environ.get("REDIS_HOST", "redis")
+REDIS_PORT = int(os.environ.get("REDIS_PORT", 6379))
+
+# About
 DEPLOYED_DATE = os.environ.get("DEPLOYED_DATE")
 API_COMMIT_ID = os.environ.get("API_COMMIT_ID")
 UI_COMMIT_ID = os.environ.get("UI_COMMIT_ID")

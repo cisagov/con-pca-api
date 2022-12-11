@@ -24,7 +24,11 @@ class Notification:
     """Manage sending email notifications."""
 
     def __init__(
-        self, message_type: str, subscription: dict = None, cycle: dict = None, **kwargs
+        self,
+        message_type: str,
+        subscription: dict = {},
+        cycle: dict = {},
+        **kwargs,
     ):
         """Initialize."""
         self.message_type = message_type

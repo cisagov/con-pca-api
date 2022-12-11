@@ -1,5 +1,5 @@
 ---
-version: "3.7"
+version: "3.8"
 services:
   api:
     build:
@@ -12,6 +12,7 @@ services:
     restart: unless-stopped
     depends_on:
       - mongodb
+      - redis
     volumes:
       - ./src:/var/www
     env_file:
@@ -33,19 +34,17 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - "mongodb:/data/db"
+      - "mongo_data:/data/db"
     env_file:
       - .env
-
-# This can be enabled and disabled for testing reporting pdf generation
-# browserless:
-#   image: browserless/chrome:latest
-#   container_name: pca-browserless
-#   environment:
-#     - "MAX_CONCURRENT_SESSIONS=10"
-#   ports:
-#     - "3000:3000"
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+    volumes:
+      - "redis_data:/data"
 
 # Host volumes used to store code.
 volumes:
-  mongodb:
+  mongo_data:
+  redis_data:

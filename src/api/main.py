@@ -14,13 +14,7 @@ from marshmallow.exceptions import ValidationError
 from api.app import app
 from api.commands.load_test_data import load_test_data
 from api.config.environment import EMAIL_MINUTES, FAILED_EMAIL_MINUTES, TASK_MINUTES
-from api.initialize import (
-    initialize_nonhumans,
-    initialize_recommendations,
-    initialize_templates,
-    populate_stakeholder_shortname,
-    reset_dirty_stats,
-)
+from api.initialize import initialization_tasks
 from api.phish import emails_job
 from api.tasks import failed_emails_job, tasks_job
 from api.views.auth_views import (
@@ -150,12 +144,18 @@ rules = [
         "/subscription/<subscription_id>/safelist/export/",
         SubscriptionSafelistExportView,
     ),
-    ("/subscription/<subscription_id>/safelist/send/", SubscriptionSafelistSendView),
+    (
+        "/subscription/<subscription_id>/safelist/send/",
+        SubscriptionSafelistSendView,
+    ),
     (
         "/subscription/<subscription_id>/templates/current/",
         SubscriptionCurrentTemplatesView,
     ),
-    ("/subscription/<subscription_id>/templates/next/", SubscriptionNextTemplatesView),
+    (
+        "/subscription/<subscription_id>/templates/next/",
+        SubscriptionNextTemplatesView,
+    ),
     # Tag Views
     ("/tags/", TagsView),
     # Template Views
@@ -200,23 +200,21 @@ for rule in login_rules:
 basicConfig(level=INFO)
 logger = setLogger(__name__)
 
-# Start Background Jobs
+# Initialize the scheduler
 sched = BackgroundScheduler()
+
+# Add scheduled jobs
 sched.add_job(emails_job, "interval", minutes=EMAIL_MINUTES, max_instances=10)
 sched.add_job(tasks_job, "interval", minutes=TASK_MINUTES, max_instances=10)
 sched.add_job(
     failed_emails_job, "interval", minutes=FAILED_EMAIL_MINUTES, max_instances=3
 )
-sched.start()
 
-# Initialize Database
-with app.app_context():
-    initialize_recommendations()
-    initialize_templates()
-    initialize_nonhumans()
-    reset_dirty_stats()
-    populate_stakeholder_shortname()
-    # restart_subscriptions()
+# Run initialization tasks
+initialization_tasks()
+
+# Launch the task scheduler
+sched.start()
 
 
 class CustomJSONEncoder(JSONEncoder):
@@ -272,6 +270,5 @@ def api_map():
 @app.cli.command("load-test-data")
 def load_dummy_data():
     """Load test data to db."""
-    initialize_templates()
     load_test_data()
     logger.info("Success.")
