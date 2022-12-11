@@ -10,7 +10,7 @@ import redis  # type: ignore
 
 # cisagov Libraries
 from api.app import app
-from api.config.environment import REDIS_HOST, REDIS_PORT
+from api.config.environment import REDIS_HOST, REDIS_PORT, TESTING
 from api.manager import (
     CustomerManager,
     CycleManager,
@@ -198,6 +198,9 @@ def _restart_subscriptions():
 
 def _flush_redis_db():
     """Flush the redis database."""
+    if TESTING:
+        logger.info("Skipping redis flush in test mode.")
+        return
     r = redis.Redis(host=REDIS_HOST, port=REDIS_PORT)
     logger.info("Flushing redis database.")
     r.flushdb()
