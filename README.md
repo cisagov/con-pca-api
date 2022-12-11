@@ -31,7 +31,7 @@ docker run cisagov/con-pca-api:0.0.1
 
     ```yaml
     ---
-    version: "3.7"
+    version: "3.8"
 
     services:
       api:
