@@ -160,11 +160,12 @@ cd con-pca-api/
 
 The following ports are exposed by this container:
 
-| Port | Purpose        |
-|------|----------------|
-| 5000 | Flask API Port |
-| 8000 | Flask Click/Opens Tracking Port |
-| 27017 | MongoDB |
+| Port  |    Purpose           |
+|------ |----------------------|
+| 5000  |    Flask API         |
+| 8000  | Click/Opens Tracking |
+| 27017 |     MongoDB          |
+| 6379  |     RedisDB          |
 
 The [Docker composition](docker-compose.yml) publishes the
 exposed ports at 5000 and 8000.
@@ -183,12 +184,14 @@ There are no required environment variables.
 |-------|---------|---------|
 | `FLASK_APP` | Flask app to use. | `api.main:app` |
 | `FLASK_ENV` | Flask environment. | `development` |
-| `DEBUG` | Setup debug on or off. | `1` |
-| `DB_HOST` | Mongo host. | `mongodb` |
-| `DB_PORT` | Mongo port. | `27017` |
-| `DB_PW` | Mongo password. | `changeme` |
-| `DB_USER` | Mongo user. | `changeme` |
-| `WORKERS` | Amount of Gunicorn workers if Debug set to 0. | `4` |
+| `DEBUG`     | Setup debug on or off. | `1`       |
+| `DB_HOST`    | Mongo host.      | `mongodb`    |
+| `DB_PORT`    | Mongo port.      | `27017`      |
+| `REDIS_HOST` | Mongo host.      | `redis`      |
+| `REDIS_PORT` | Mongo port.      | `6379`       |
+| `DB_PW`      | Mongo password.  | `changeme`   |
+| `DB_USER`    | Mongo user.      | `changeme`   |
+| `WORKERS`    | Amount of Gunicorn workers if Debug set to 0. | `4` |
 | `AWS_ACCESS_KEY_ID` | The AWS access key to access AWS services. | `changeme` |
 | `AWS_SECRET_ACCESS_KEY` | The AWS secret access key for access to AWS services. | `changeme` |
 | `AWS_DEFAULT_REGION` | The default AWS region. | `us-east-1` |

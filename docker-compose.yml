@@ -38,7 +38,9 @@ services:
     env_file:
       - .env
   redis:
-    image: "redis:alpine"
+    container_name: pca-redis
+    hostname: redis
+    image: "redis:7-alpine"
     ports:
       - "6379:6379"
     volumes:
