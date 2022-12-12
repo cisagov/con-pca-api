@@ -29,8 +29,9 @@ from api.manager import (
 from utils import time
 from utils.emails import get_email_context, get_from_address
 from utils.logging import setLogger
+from utils.mongo_stats import mongo_get_cycle_stats
 from utils.pdf import append_attachment
-from utils.stats import get_all_customer_stats, get_cycle_stats
+from utils.stats import get_all_customer_stats
 from utils.templates import get_indicators
 
 logger = setLogger(__name__)
@@ -62,7 +63,7 @@ def get_report(cycle_id: str, report_type: str, nonhuman: bool = False):
         ],
     )
     customer = customer_manager.get(document_id=subscription["customer_id"])
-    get_cycle_stats(cycle)
+    mongo_get_cycle_stats(cycle)
     previous_cycles = get_previous_cycles(cycle)
     recommendations = recommendation_manager.all()
     red_flags = [rec for rec in recommendations if rec["type"] == "red_flag"]
@@ -541,7 +542,7 @@ def get_previous_cycles(current_cycle):
 
     # Update stats for each cycle
     for cycle in cycles:
-        get_cycle_stats(cycle)
+        mongo_get_cycle_stats(cycle)
 
     return cycles
 
