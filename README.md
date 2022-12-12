@@ -3,6 +3,7 @@
 [![GitHub Build Status](https://github.com/cisagov/con-pca-api/workflows/build/badge.svg)](https://github.com/cisagov/con-pca-api/actions/workflows/build.yml)
 [![CodeQL](https://github.com/cisagov/con-pca-api/workflows/CodeQL/badge.svg)](https://github.com/cisagov/con-pca-api/actions/workflows/codeql-analysis.yml)
 [![Known Vulnerabilities](https://snyk.io/test/github/cisagov/con-pca-api/badge.svg)](https://snyk.io/test/github/cisagov/con-pca-api)
+
 Required for install:
 
 <!--Please add required software information here-->
