@@ -49,7 +49,7 @@ def _initialize_templates():
     logger.info("Initializing templates.")
 
     templates_path = os.environ.get("TEMPLATES_PATH", "static/templates.json")
-    with open(templates_path, "r") as f:
+    with open(templates_path) as f:
         templates = json.load(f)
         logger.info(f"Found {len(templates)} to create.")
         for template in templates:
@@ -106,7 +106,7 @@ def _initialize_recommendations():
     recommendations_path = os.environ.get(
         "RECOMMENDATIONS_PATH", "static/recommendations.json"
     )
-    with open(recommendations_path, "r") as f:
+    with open(recommendations_path) as f:
         recommendations = json.load(f)
         logger.info(f"Found {len(recommendations)} to create.")
     recommendation_manager.save_many(recommendations)
