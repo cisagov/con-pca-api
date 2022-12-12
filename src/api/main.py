@@ -223,7 +223,7 @@ executors = {
     "processpool": ProcessPoolExecutor(5),
 }
 sched = BackgroundScheduler(
-    jobstores=jobstores if not TESTING else None, executors=executors
+    jobstores=jobstores if not TESTING else {}, executors=executors
 )
 
 # Add scheduled jobs
