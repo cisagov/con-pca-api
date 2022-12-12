@@ -1,10 +1,10 @@
 function createClickRateOverTime() {
   var ctx = document.getElementById("click-rate-over-time").getContext("2d");
   var currentCycle = JSON.parse(
-    document.getElementById("currentCycle").innerText
+    document.getElementById("currentCycle").innerText,
   );
   var previousCycles = JSON.parse(
-    document.getElementById("previousCycles").innerText
+    document.getElementById("previousCycles").innerText,
   );
 
   var labels = ["Low (1, 2)", "Moderate (3, 4)", "High (5, 6)"];
@@ -90,7 +90,7 @@ function clickRateTimeIntervalChart() {
     .getElementById("click-rate-time-interval")
     .getContext("2d");
   const timeStats = JSON.parse(
-    document.getElementById("timeIntervalStats").innerText
+    document.getElementById("timeIntervalStats").innerText,
   );
   const clicked = timeStats.clicked;
   const data = {
@@ -205,7 +205,7 @@ function clickingUserTimelineChart() {
   var ctx = document.getElementById("clicking-user-timeline").getContext("2d");
 
   var decep_stats = JSON.parse(
-    document.getElementById("decep_level_stats").innerText
+    document.getElementById("decep_level_stats").innerText,
   );
 
   labels = [
@@ -321,7 +321,7 @@ function reportsToClickRatio() {
 
 function avgTimeToFirstClick() {
   var currentCycle = JSON.parse(
-    document.getElementById("currentCycle").innerText
+    document.getElementById("currentCycle").innerText,
   );
 
   val = currentCycle.stats.stats.all.clicked.average;
@@ -336,7 +336,7 @@ function avgTimeToFirstClick() {
 
 function avgTimeToFirstReport() {
   var currentCycle = JSON.parse(
-    document.getElementById("currentCycle").innerText
+    document.getElementById("currentCycle").innerText,
   );
 
   val = currentCycle.stats.stats.all.reported.average;
@@ -351,7 +351,7 @@ function avgTimeToFirstReport() {
 
 function TimeIntervalText() {
   var currentCycle = JSON.parse(
-    document.getElementById("currentCycle").innerText
+    document.getElementById("currentCycle").innerText,
   );
 
   val = currentCycle.stats.stats.all.clicked.median;
@@ -366,7 +366,7 @@ function TimeIntervalText() {
 
 function mostClickedTemplate() {
   var currentCycle = JSON.parse(
-    document.getElementById("currentCycle").innerText
+    document.getElementById("currentCycle").innerText,
   );
 
   most_clicked_template = currentCycle.stats.template_stats[0];
@@ -418,7 +418,7 @@ function secondToTextDate(val) {
 function createClickRateLineGraph() {
   var ctx = document.getElementById("click-rate-over-time").getContext("2d");
   var currentCycle = JSON.parse(
-    document.getElementById("currentCycle").innerText
+    document.getElementById("currentCycle").innerText,
   );
   var cycles = JSON.parse(document.getElementById("previousCycles").innerText);
   cycles.reverse();
@@ -542,7 +542,7 @@ function deceptionIndicatorBreakdownChart() {
     .getContext("2d");
 
   var cycleStats = JSON.parse(
-    document.getElementById("currentCycle").innerText
+    document.getElementById("currentCycle").innerText,
   );
   var indicators = JSON.parse(document.getElementById("indicators").innerText);
 
@@ -872,7 +872,7 @@ function clicksByDeceptionLevel() {
     .getContext("2d");
 
   var decep_stats = JSON.parse(
-    document.getElementById("decep_level_stats").innerText
+    document.getElementById("decep_level_stats").innerText,
   );
 
   labels = ["1", "2", "3", "4", "5", "6"];
@@ -956,7 +956,7 @@ function totalClickCountByDeceptionLevel() {
     .getContext("2d");
 
   var decep_stats = JSON.parse(
-    document.getElementById("decep_level_stats").innerText
+    document.getElementById("decep_level_stats").innerText,
   );
 
   var c = JSON.parse(document.getElementById("currentCycle").innerText);

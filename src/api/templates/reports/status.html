@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <title>Status Report</title>
@@ -128,7 +128,7 @@
                     createDoughnut(
                       "doughnut-sent",
                       "{{ stats.stats.all.sent.count }}",
-                      "{{ cycle.target_count }}"
+                      "{{ cycle.target_count }}",
                     );
                   </script>
                 </canvas>
@@ -149,7 +149,7 @@
                     createDoughnut(
                       "doughnut-clicked",
                       "{{ stats.stats.all.clicked.count }}",
-                      "{{ stats.stats.all.sent.count }}"
+                      "{{ stats.stats.all.sent.count }}",
                     );
                   </script>
                 </canvas>
@@ -170,7 +170,7 @@
                 <script>
                   createSparkline(
                     "all-cycles-sparkline",
-                    "{{ all_cycles_click_percents_str }}"
+                    "{{ all_cycles_click_percents_str }}",
                   );
                 </script>
               </canvas>
