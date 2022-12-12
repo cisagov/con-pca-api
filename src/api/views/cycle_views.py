@@ -80,14 +80,6 @@ class MongoCycleStatsView(MethodView):
         mongo_get_cycle_stats(cycle, recalculate)
         return jsonify(cycle["nonhuman_stats"] if nonhuman else cycle["stats"])
 
-    def post(self, cycle_id):
-        """Post."""
-        # cisagov Libraries
-        from utils.mongo_stats import mongo_get_indicator_stats
-
-        indicator_stats = mongo_get_indicator_stats(cycle_id, False, [])
-        return indicator_stats
-
 
 class CycleManualReportsView(MethodView):
     """CycleReportsView."""

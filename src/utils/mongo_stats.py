@@ -1,5 +1,6 @@
 """Stat utils."""
 # Standard Python Libraries
+import copy
 import statistics
 
 # cisagov Libraries
@@ -77,6 +78,14 @@ def mongo_get_deception_level_stats(cycle_id, nonhuman, nonhuman_orgs):
     """Get deception level stats."""
     pipeline = [
         {"$match": {"cycle_id": cycle_id}},
+        {"$unwind": {"path": "$timeline", "preserveNullAndEmptyArrays": True}},
+        {
+            "$match": {
+                "timeline.details.asn_org": {"$nin": nonhuman_orgs}
+                if not nonhuman
+                else {"$nin": []},
+            }
+        },
         {"$addFields": {"template_id": {"$toObjectId": "$template_id"}}},
         {
             "$lookup": {
@@ -87,12 +96,9 @@ def mongo_get_deception_level_stats(cycle_id, nonhuman, nonhuman_orgs):
             }
         },
         {"$unwind": {"path": "$template"}},
-        {"$unwind": {"path": "$timeline", "preserveNullAndEmptyArrays": True}},
         {
-            "$match": {
-                "timeline.details.asn_org": {"$nin": nonhuman_orgs}
-                if not nonhuman
-                else {"$in": nonhuman_orgs},
+            "$addFields": {
+                "time_to_event": {"$subtract": ["$timeline.time", "$sent_date"]}
             }
         },
         {
@@ -128,14 +134,255 @@ def mongo_get_deception_level_stats(cycle_id, nonhuman, nonhuman_orgs):
                         ]
                     }
                 },
-                "click_percentage_over_time": {
-                    "$push": {
+                "one_minutes": {
+                    "$sum": {
                         "$cond": [
-                            {"$eq": ["$timeline.message", "clicked"]},
-                            {"$subtract": ["$timeline.time", "$sent_date"]},
-                            "$$REMOVE",
+                            {
+                                "$and": [
+                                    {"$gt": ["$time_to_event", 0]},
+                                    {
+                                        "$lte": [
+                                            "$time_to_event",
+                                            {"$multiply": [1, 60000]},
+                                        ]
+                                    },
+                                    {"$eq": ["$timeline.message", "clicked"]},
+                                ]
+                            },
+                            1,
+                            0,
                         ]
                     }
+                },
+                "three_minutes": {
+                    "$sum": {
+                        "$cond": [
+                            {
+                                "$and": [
+                                    {"$gt": ["$time_to_event", 0]},
+                                    {
+                                        "$lte": [
+                                            "$time_to_event",
+                                            {"$multiply": [3, 60000]},
+                                        ]
+                                    },
+                                    {"$eq": ["$timeline.message", "clicked"]},
+                                ]
+                            },
+                            1,
+                            0,
+                        ]
+                    }
+                },
+                "five_minutes": {
+                    "$sum": {
+                        "$cond": [
+                            {
+                                "$and": [
+                                    {"$gt": ["$time_to_event", 0]},
+                                    {
+                                        "$lte": [
+                                            "$time_to_event",
+                                            {"$multiply": [5, 60000]},
+                                        ]
+                                    },
+                                    {"$eq": ["$timeline.message", "clicked"]},
+                                ]
+                            },
+                            1,
+                            0,
+                        ]
+                    }
+                },
+                "fifteen_minutes": {
+                    "$sum": {
+                        "$cond": [
+                            {
+                                "$and": [
+                                    {"$gt": ["$time_to_event", 0]},
+                                    {
+                                        "$lte": [
+                                            "$time_to_event",
+                                            {"$multiply": [15, 60000]},
+                                        ]
+                                    },
+                                    {"$eq": ["$timeline.message", "clicked"]},
+                                ]
+                            },
+                            1,
+                            0,
+                        ]
+                    }
+                },
+                "thirty_minutes": {
+                    "$sum": {
+                        "$cond": [
+                            {
+                                "$and": [
+                                    {"$gt": ["$time_to_event", 0]},
+                                    {
+                                        "$lte": [
+                                            "$time_to_event",
+                                            {"$multiply": [30, 60000]},
+                                        ]
+                                    },
+                                    {"$eq": ["$timeline.message", "clicked"]},
+                                ]
+                            },
+                            1,
+                            0,
+                        ]
+                    }
+                },
+                "sixty_minutes": {
+                    "$sum": {
+                        "$cond": [
+                            {
+                                "$and": [
+                                    {"$gt": ["$time_to_event", 0]},
+                                    {
+                                        "$lte": [
+                                            "$time_to_event",
+                                            {"$multiply": [60, 60000]},
+                                        ]
+                                    },
+                                    {"$eq": ["$timeline.message", "clicked"]},
+                                ]
+                            },
+                            1,
+                            0,
+                        ]
+                    }
+                },
+                "two_hours": {
+                    "$sum": {
+                        "$cond": [
+                            {
+                                "$and": [
+                                    {"$gt": ["$time_to_event", 0]},
+                                    {
+                                        "$lte": [
+                                            "$time_to_event",
+                                            {"$multiply": [2, 60, 60000]},
+                                        ]
+                                    },
+                                    {"$eq": ["$timeline.message", "clicked"]},
+                                ]
+                            },
+                            1,
+                            0,
+                        ]
+                    }
+                },
+                "three_hours": {
+                    "$sum": {
+                        "$cond": [
+                            {
+                                "$and": [
+                                    {"$gt": ["$time_to_event", 0]},
+                                    {
+                                        "$lte": [
+                                            "$time_to_event",
+                                            {"$multiply": [3, 60, 60000]},
+                                        ]
+                                    },
+                                    {"$eq": ["$timeline.message", "clicked"]},
+                                ]
+                            },
+                            1,
+                            0,
+                        ]
+                    }
+                },
+                "four_hours": {
+                    "$sum": {
+                        "$cond": [
+                            {
+                                "$and": [
+                                    {"$gt": ["$time_to_event", 0]},
+                                    {
+                                        "$lte": [
+                                            "$time_to_event",
+                                            {"$multiply": [4, 60, 60000]},
+                                        ]
+                                    },
+                                    {"$eq": ["$timeline.message", "clicked"]},
+                                ]
+                            },
+                            1,
+                            0,
+                        ]
+                    }
+                },
+                "one_day": {
+                    "$sum": {
+                        "$cond": [
+                            {
+                                "$and": [
+                                    {"$gt": ["$time_to_event", 0]},
+                                    {
+                                        "$lte": [
+                                            "$time_to_event",
+                                            {"$multiply": [24, 60, 60000]},
+                                        ]
+                                    },
+                                    {"$eq": ["$timeline.message", "clicked"]},
+                                ]
+                            },
+                            1,
+                            0,
+                        ]
+                    }
+                },
+            }
+        },
+        {
+            "$project": {
+                "deception_level": "$deception_level",
+                "sent_count": "$sent_count",
+                "total_clicks": "$total_clicks",
+                "unique_clicks": "$unique_clicks",
+                "unique_user_clicks": "$unique_user_clicks",
+                "user_reports": "$user_reports",
+                "click_percentage_over_time.one_minutes.count": "$one_minutes",
+                "click_percentage_over_time.one_minutes.ratio": {
+                    "$round": [{"$divide": ["$one_minutes", "$total_clicks"]}, 4]
+                },
+                "click_percentage_over_time.three_minutes.count": "$three_minutes",
+                "click_percentage_over_time.three_minutes.ratio": {
+                    "$round": [{"$divide": ["$three_minutes", "$total_clicks"]}, 4]
+                },
+                "click_percentage_over_time.five_minutes.count": "$five_minutes",
+                "click_percentage_over_time.five_minutes.ratio": {
+                    "$round": [{"$divide": ["$five_minutes", "$total_clicks"]}, 4]
+                },
+                "click_percentage_over_time.fifteen_minutes.count": "$fifteen_minutes",
+                "click_percentage_over_time.fifteen_minutes.ratio": {
+                    "$round": [{"$divide": ["$fifteen_minutes", "$total_clicks"]}, 4]
+                },
+                "click_percentage_over_time.thirty_minutes.count": "$thirty_minutes",
+                "click_percentage_over_time.thirty_minutes.ratio": {
+                    "$round": [{"$divide": ["$thirty_minutes", "$total_clicks"]}, 4]
+                },
+                "click_percentage_over_time.sixty_minutes.count": "$sixty_minutes",
+                "click_percentage_over_time.sixty_minutes.ratio": {
+                    "$round": [{"$divide": ["$sixty_minutes", "$total_clicks"]}, 4]
+                },
+                "click_percentage_over_time.two_hours.count": "$two_hours",
+                "click_percentage_over_time.two_hours.ratio": {
+                    "$round": [{"$divide": ["$two_hours", "$total_clicks"]}, 4]
+                },
+                "click_percentage_over_time.three_hours.count": "$three_hours",
+                "click_percentage_over_time.three_hours.ratio": {
+                    "$round": [{"$divide": ["$three_hours", "$total_clicks"]}, 4]
+                },
+                "click_percentage_over_time.four_hours.count": "$four_hours",
+                "click_percentage_over_time.four_hours.ratio": {
+                    "$round": [{"$divide": ["$four_hours", "$total_clicks"]}, 4]
+                },
+                "click_percentage_over_time.one_day.count": "$one_day",
+                "click_percentage_over_time.one_day.ratio": {
+                    "$round": [{"$divide": ["$one_day", "$total_clicks"]}, 4]
                 },
             }
         },
@@ -148,14 +395,17 @@ def mongo_get_deception_level_stats(cycle_id, nonhuman, nonhuman_orgs):
 
     for deception_level in deception_level_stats:
         deception_level["unique_clicks"] = len(deception_level["unique_clicks"])
-        deception_level["unique_user_clicks"] = mongo_calculate_unique_user_clicks(
+        deception_level["unique_user_clicks"] = calculate_unique_user_clicks(
             deception_level["unique_user_clicks"]
         )
-        deception_level[
-            "click_percentage_over_time"
-        ] = mongo_calculate_click_percentage_over_time(
-            deception_level["click_percentage_over_time"]
-        )
+
+    if len(deception_level_stats) == 3:
+        composite_deception_level_stats = copy.deepcopy(deception_level_stats)
+        composite_deception_level_stats[0]["deception_level"] = 11
+        composite_deception_level_stats[1]["deception_level"] = 12
+        composite_deception_level_stats[2]["deception_level"] = 13
+    else:
+        composite_deception_level_stats = None
 
     for deception_level in [1, 2, 3, 4, 5, 6]:
         index = next(
@@ -198,12 +448,349 @@ def mongo_get_deception_level_stats(cycle_id, nonhuman, nonhuman_orgs):
     deception_level_stats = sorted(
         deception_level_stats, key=lambda d: d["deception_level"]
     )
-    # calculate_composite_deception_stats(deception_level_stats, [0, 1], 11)  # Low
-    # calculate_composite_deception_stats(deception_level_stats, [2, 3], 12)  # Moderate
-    # calculate_composite_deception_stats(deception_level_stats, [4, 5], 13)  # High
-    calculate_composite_deception_stats(deception_level_stats, [6, 7, 8], 14)  # All
+
+    if composite_deception_level_stats:
+        deception_level_stats.extend(composite_deception_level_stats)
+    else:
+        calculate_composite_deception_stats(deception_level_stats, [0, 1], 11)  # Low
+        calculate_composite_deception_stats(
+            deception_level_stats, [2, 3], 12
+        )  # Moderate
+        calculate_composite_deception_stats(deception_level_stats, [4, 5], 13)  # High
+
+    all_deception_level_stats = mongo_get_all_deception_level_stats(
+        cycle_id, nonhuman, nonhuman_orgs
+    )
+
+    if all_deception_level_stats:
+        deception_level_stats.extend(all_deception_level_stats)
+    else:
+        calculate_composite_deception_stats(deception_level_stats, [6, 7, 8], 14)  # All
 
     return deception_level_stats
+
+
+def mongo_get_all_deception_level_stats(cycle_id, nonhuman, nonhuman_orgs):
+    """Get stats for all deception levels combined."""
+    pipeline = [
+        {"$match": {"cycle_id": cycle_id}},
+        {"$unwind": {"path": "$timeline", "preserveNullAndEmptyArrays": True}},
+        {
+            "$match": {
+                "timeline.details.asn_org": {"$nin": nonhuman_orgs}
+                if not nonhuman
+                else {"$nin": []},
+            }
+        },
+        {"$addFields": {"template_id": {"$toObjectId": "$template_id"}}},
+        {
+            "$lookup": {
+                "from": "template",
+                "localField": "template_id",
+                "foreignField": "_id",
+                "as": "template",
+            }
+        },
+        {"$unwind": {"path": "$template"}},
+        {
+            "$addFields": {
+                "time_to_event": {"$subtract": ["$timeline.time", "$sent_date"]}
+            }
+        },
+        {
+            "$group": {
+                "_id": "$cycle_id",
+                "deception_level": {"$first": 14},
+                "sent_count": {
+                    "$sum": {"$cond": [{"$ne": ["$timeline.message", "clicked"]}, 1, 0]}
+                },
+                "total_clicks": {
+                    "$sum": {"$cond": [{"$eq": ["$timeline.message", "clicked"]}, 1, 0]}
+                },
+                "unique_clicks": {
+                    "$addToSet": {
+                        "$cond": [
+                            {"$eq": ["$timeline.message", "clicked"]},
+                            {"$toString": "$_id"},
+                            "$$REMOVE",
+                        ]
+                    }
+                },
+                "user_reports": {
+                    "$sum": {
+                        "$cond": [{"$eq": ["$timeline.message", "reported"]}, 1, 0]
+                    }
+                },
+                "unique_user_clicks": {
+                    "$push": {
+                        "$cond": [
+                            {"$eq": ["$timeline.message", "clicked"]},
+                            {"$toString": "$_id"},
+                            "$$REMOVE",
+                        ]
+                    }
+                },
+                "one_minutes": {
+                    "$sum": {
+                        "$cond": [
+                            {
+                                "$and": [
+                                    {"$gt": ["$time_to_event", 0]},
+                                    {
+                                        "$lte": [
+                                            "$time_to_event",
+                                            {"$multiply": [1, 60000]},
+                                        ]
+                                    },
+                                    {"$eq": ["$timeline.message", "clicked"]},
+                                ]
+                            },
+                            1,
+                            0,
+                        ]
+                    }
+                },
+                "three_minutes": {
+                    "$sum": {
+                        "$cond": [
+                            {
+                                "$and": [
+                                    {"$gt": ["$time_to_event", 0]},
+                                    {
+                                        "$lte": [
+                                            "$time_to_event",
+                                            {"$multiply": [3, 60000]},
+                                        ]
+                                    },
+                                    {"$eq": ["$timeline.message", "clicked"]},
+                                ]
+                            },
+                            1,
+                            0,
+                        ]
+                    }
+                },
+                "five_minutes": {
+                    "$sum": {
+                        "$cond": [
+                            {
+                                "$and": [
+                                    {"$gt": ["$time_to_event", 0]},
+                                    {
+                                        "$lte": [
+                                            "$time_to_event",
+                                            {"$multiply": [5, 60000]},
+                                        ]
+                                    },
+                                    {"$eq": ["$timeline.message", "clicked"]},
+                                ]
+                            },
+                            1,
+                            0,
+                        ]
+                    }
+                },
+                "fifteen_minutes": {
+                    "$sum": {
+                        "$cond": [
+                            {
+                                "$and": [
+                                    {"$gt": ["$time_to_event", 0]},
+                                    {
+                                        "$lte": [
+                                            "$time_to_event",
+                                            {"$multiply": [15, 60000]},
+                                        ]
+                                    },
+                                    {"$eq": ["$timeline.message", "clicked"]},
+                                ]
+                            },
+                            1,
+                            0,
+                        ]
+                    }
+                },
+                "thirty_minutes": {
+                    "$sum": {
+                        "$cond": [
+                            {
+                                "$and": [
+                                    {"$gt": ["$time_to_event", 0]},
+                                    {
+                                        "$lte": [
+                                            "$time_to_event",
+                                            {"$multiply": [30, 60000]},
+                                        ]
+                                    },
+                                    {"$eq": ["$timeline.message", "clicked"]},
+                                ]
+                            },
+                            1,
+                            0,
+                        ]
+                    }
+                },
+                "sixty_minutes": {
+                    "$sum": {
+                        "$cond": [
+                            {
+                                "$and": [
+                                    {"$gt": ["$time_to_event", 0]},
+                                    {
+                                        "$lte": [
+                                            "$time_to_event",
+                                            {"$multiply": [60, 60000]},
+                                        ]
+                                    },
+                                    {"$eq": ["$timeline.message", "clicked"]},
+                                ]
+                            },
+                            1,
+                            0,
+                        ]
+                    }
+                },
+                "two_hours": {
+                    "$sum": {
+                        "$cond": [
+                            {
+                                "$and": [
+                                    {"$gt": ["$time_to_event", 0]},
+                                    {
+                                        "$lte": [
+                                            "$time_to_event",
+                                            {"$multiply": [2, 60, 60000]},
+                                        ]
+                                    },
+                                    {"$eq": ["$timeline.message", "clicked"]},
+                                ]
+                            },
+                            1,
+                            0,
+                        ]
+                    }
+                },
+                "three_hours": {
+                    "$sum": {
+                        "$cond": [
+                            {
+                                "$and": [
+                                    {"$gt": ["$time_to_event", 0]},
+                                    {
+                                        "$lte": [
+                                            "$time_to_event",
+                                            {"$multiply": [3, 60, 60000]},
+                                        ]
+                                    },
+                                    {"$eq": ["$timeline.message", "clicked"]},
+                                ]
+                            },
+                            1,
+                            0,
+                        ]
+                    }
+                },
+                "four_hours": {
+                    "$sum": {
+                        "$cond": [
+                            {
+                                "$and": [
+                                    {"$gt": ["$time_to_event", 0]},
+                                    {
+                                        "$lte": [
+                                            "$time_to_event",
+                                            {"$multiply": [4, 60, 60000]},
+                                        ]
+                                    },
+                                    {"$eq": ["$timeline.message", "clicked"]},
+                                ]
+                            },
+                            1,
+                            0,
+                        ]
+                    }
+                },
+                "one_day": {
+                    "$sum": {
+                        "$cond": [
+                            {
+                                "$and": [
+                                    {"$gt": ["$time_to_event", 0]},
+                                    {
+                                        "$lte": [
+                                            "$time_to_event",
+                                            {"$multiply": [24, 60, 60000]},
+                                        ]
+                                    },
+                                    {"$eq": ["$timeline.message", "clicked"]},
+                                ]
+                            },
+                            1,
+                            0,
+                        ]
+                    }
+                },
+            }
+        },
+        {
+            "$project": {
+                "deception_level": "$deception_level",
+                "sent_count": "$sent_count",
+                "total_clicks": "$total_clicks",
+                "unique_clicks": "$unique_clicks",
+                "unique_user_clicks": "$unique_user_clicks",
+                "user_reports": "$user_reports",
+                "click_percentage_over_time.one_minutes.count": "$one_minutes",
+                "click_percentage_over_time.one_minutes.ratio": {
+                    "$round": [{"$divide": ["$one_minutes", "$total_clicks"]}, 4]
+                },
+                "click_percentage_over_time.three_minutes.count": "$three_minutes",
+                "click_percentage_over_time.three_minutes.ratio": {
+                    "$round": [{"$divide": ["$three_minutes", "$total_clicks"]}, 4]
+                },
+                "click_percentage_over_time.five_minutes.count": "$five_minutes",
+                "click_percentage_over_time.five_minutes.ratio": {
+                    "$round": [{"$divide": ["$five_minutes", "$total_clicks"]}, 4]
+                },
+                "click_percentage_over_time.fifteen_minutes.count": "$fifteen_minutes",
+                "click_percentage_over_time.fifteen_minutes.ratio": {
+                    "$round": [{"$divide": ["$fifteen_minutes", "$total_clicks"]}, 4]
+                },
+                "click_percentage_over_time.thirty_minutes.count": "$thirty_minutes",
+                "click_percentage_over_time.thirty_minutes.ratio": {
+                    "$round": [{"$divide": ["$thirty_minutes", "$total_clicks"]}, 4]
+                },
+                "click_percentage_over_time.sixty_minutes.count": "$sixty_minutes",
+                "click_percentage_over_time.sixty_minutes.ratio": {
+                    "$round": [{"$divide": ["$sixty_minutes", "$total_clicks"]}, 4]
+                },
+                "click_percentage_over_time.two_hours.count": "$two_hours",
+                "click_percentage_over_time.two_hours.ratio": {
+                    "$round": [{"$divide": ["$two_hours", "$total_clicks"]}, 4]
+                },
+                "click_percentage_over_time.three_hours.count": "$three_hours",
+                "click_percentage_over_time.three_hours.ratio": {
+                    "$round": [{"$divide": ["$three_hours", "$total_clicks"]}, 4]
+                },
+                "click_percentage_over_time.four_hours.count": "$four_hours",
+                "click_percentage_over_time.four_hours.ratio": {
+                    "$round": [{"$divide": ["$four_hours", "$total_clicks"]}, 4]
+                },
+                "click_percentage_over_time.one_day.count": "$one_day",
+                "click_percentage_over_time.one_day.ratio": {
+                    "$round": [{"$divide": ["$one_day", "$total_clicks"]}, 4]
+                },
+            }
+        },
+    ]
+    all_deception_level_stats = target_manager.aggregate(pipeline)
+
+    for deception_level in all_deception_level_stats:
+        deception_level["unique_clicks"] = len(deception_level["unique_clicks"])
+        deception_level["unique_user_clicks"] = calculate_unique_user_clicks(
+            deception_level["unique_user_clicks"]
+        )
+    return all_deception_level_stats
 
 
 def calculate_composite_deception_stats(
@@ -485,7 +1072,7 @@ def calculate_composite_deception_stats(
         deception_level_stats.append(composite_deception_level)
 
 
-def mongo_calculate_unique_user_clicks(target_list):
+def calculate_unique_user_clicks(target_list):
     """Get unique user clicks stats."""
     count_list = list({i: target_list.count(i) for i in target_list}.values())
     count_dict = {i: count_list.count(i) for i in count_list}
@@ -513,69 +1100,20 @@ def mongo_calculate_unique_user_clicks(target_list):
     return unique_user_clicks
 
 
-def mongo_calculate_click_percentage_over_time(time_list):
-    """Get click percentage over time stats."""
-    click_percentage_over_time = {
-        "one_minutes": {"count": 0, "ratio": 0.0},
-        "three_minutes": {"count": 0, "ratio": 0.0},
-        "five_minutes": {"count": 0, "ratio": 0.0},
-        "fifteen_minutes": {"count": 0, "ratio": 0.0},
-        "thirty_minutes": {"count": 0, "ratio": 0.0},
-        "sixty_minutes": {"count": 0, "ratio": 0.0},
-        "two_hours": {"count": 0, "ratio": 0.0},
-        "three_hours": {"count": 0, "ratio": 0.0},
-        "four_hours": {"count": 0, "ratio": 0.0},
-        "one_day": {"count": 0, "ratio": 0.0},
-    }
-    time_windows = {
-        "fifteen_minutes": 15 * 60000,
-        "five_minutes": 5 * 60000,
-        "four_hours": 4 * 60 * 60000,
-        "one_day": 24 * 60 * 60000,
-        "one_minutes": 1 * 60000,
-        "sixty_minutes": 60 * 60000,
-        "thirty_minutes": 30 * 60000,
-        "three_hours": 3 * 60 * 60000,
-        "three_minutes": 3 * 60000,
-        "two_hours": 2 * 60 * 60000,
-    }
-
-    for milliseconds_elapsed in time_list:
-        if milliseconds_elapsed <= time_windows["one_minutes"]:
-            click_percentage_over_time["one_minutes"]["count"] += 1
-        elif milliseconds_elapsed <= time_windows["three_minutes"]:
-            click_percentage_over_time["three_minutes"]["count"] += 1
-        elif milliseconds_elapsed <= time_windows["five_minutes"]:
-            click_percentage_over_time["five_minutes"]["count"] += 1
-        elif milliseconds_elapsed <= time_windows["fifteen_minutes"]:
-            click_percentage_over_time["fifteen_minutes"]["count"] += 1
-        elif milliseconds_elapsed <= time_windows["thirty_minutes"]:
-            click_percentage_over_time["thirty_minutes"]["count"] += 1
-        elif milliseconds_elapsed <= time_windows["sixty_minutes"]:
-            click_percentage_over_time["sixty_minutes"]["count"] += 1
-        elif milliseconds_elapsed <= time_windows["two_hours"]:
-            click_percentage_over_time["two_hours"]["count"] += 1
-        elif milliseconds_elapsed <= time_windows["three_hours"]:
-            click_percentage_over_time["three_hours"]["count"] += 1
-        elif milliseconds_elapsed <= time_windows["four_hours"]:
-            click_percentage_over_time["four_hours"]["count"] += 1
-        elif milliseconds_elapsed <= time_windows["one_day"]:
-            click_percentage_over_time["one_day"]["count"] += 1
-
-    for key in list(click_percentage_over_time.keys()):
-        click_percentage_over_time[key]["ratio"] = get_ratio(
-            click_percentage_over_time[key]["count"], len(time_list)
-        )
-
-    return click_percentage_over_time
-
-
 def mongo_get_indicator_stats(cycle_id, nonhuman, nonhuman_orgs):
     """Get indicator stats."""
     indicators = get_indicators()
     group_pipeline, project_pipeline = get_subpipelines(indicators)
     pipeline = [
         {"$match": {"cycle_id": cycle_id}},
+        {"$unwind": {"path": "$timeline", "preserveNullAndEmptyArrays": True}},
+        {
+            "$match": {
+                "timeline.details.asn_org": {"$nin": nonhuman_orgs}
+                if not nonhuman
+                else {"$nin": []},
+            }
+        },
         {"$addFields": {"template_id": {"$toObjectId": "$template_id"}}},
         {
             "$lookup": {
@@ -586,14 +1124,6 @@ def mongo_get_indicator_stats(cycle_id, nonhuman, nonhuman_orgs):
             }
         },
         {"$unwind": {"path": "$template"}},
-        {"$unwind": {"path": "$timeline", "preserveNullAndEmptyArrays": True}},
-        {
-            "$match": {
-                "timeline.details.asn_org": {"$nin": nonhuman_orgs}
-                if not nonhuman
-                else {"$in": nonhuman_orgs},
-            }
-        },
         {"$group": group_pipeline},
         {"$project": project_pipeline},
     ]
@@ -744,7 +1274,7 @@ def mongo_get_maxmind_stats(cycle_id, nonhuman, nonhuman_orgs):
             "$match": {
                 "timeline.details.asn_org": {"$nin": nonhuman_orgs}
                 if not nonhuman
-                else {"$in": nonhuman_orgs},
+                else {"$nin": []},
             }
         },
         {
@@ -777,6 +1307,14 @@ def mongo_get_recommendation_stats(cycle_id, nonhuman, nonhuman_orgs):
     """Get recommendation stats."""
     pipeline = [
         {"$match": {"cycle_id": cycle_id}},
+        {"$unwind": {"path": "$timeline", "preserveNullAndEmptyArrays": True}},
+        {
+            "$match": {
+                "timeline.details.asn_org": {"$nin": nonhuman_orgs}
+                if not nonhuman
+                else {"$nin": []},
+            }
+        },
         {"$addFields": {"template_id": {"$toObjectId": "$template_id"}}},
         {
             "$lookup": {
@@ -805,14 +1343,6 @@ def mongo_get_recommendation_stats(cycle_id, nonhuman, nonhuman_orgs):
             }
         },
         {"$unwind": {"path": "$recommendation"}},
-        {"$unwind": {"path": "$timeline", "preserveNullAndEmptyArrays": True}},
-        {
-            "$match": {
-                "timeline.details.asn_org": {"$nin": nonhuman_orgs}
-                if not nonhuman
-                else {"$in": nonhuman_orgs},
-            }
-        },
         {
             "$group": {
                 "_id": "$recommendation_id",
@@ -888,7 +1418,7 @@ def mongo_get_stats(cycle_id, nonhuman, nonhuman_orgs):
             "$match": {
                 "timeline.details.asn_org": {"$nin": nonhuman_orgs}
                 if not nonhuman
-                else {"$in": nonhuman_orgs},
+                else {"$nin": []},
             }
         },
         {
@@ -993,7 +1523,7 @@ def mongo_get_stats(cycle_id, nonhuman, nonhuman_orgs):
             "$match": {
                 "timeline.details.asn_org": {"$nin": nonhuman_orgs}
                 if not nonhuman
-                else {"$in": nonhuman_orgs},
+                else {"$nin": []},
             }
         },
         {
@@ -1125,7 +1655,6 @@ def mongo_get_stats(cycle_id, nonhuman, nonhuman_orgs):
     # calculate medians on the python side
     for level in ["all", "low", "moderate", "high"]:
         for event in ["clicked", "opened", "reported"]:
-            print(level, event, stats[level][event]["median"])
             if stats[level][event]["median"] == 0:
                 pass
             elif len(stats[level][event]["median"]) > 0:
@@ -1147,7 +1676,7 @@ def mongo_get_target_stats(cycle_id, nonhuman, nonhuman_orgs):
             "$match": {
                 "timeline.details.asn_org": {"$nin": nonhuman_orgs}
                 if not nonhuman
-                else {"$in": nonhuman_orgs},
+                else {"$nin": []},
             }
         },
         {
@@ -1192,7 +1721,15 @@ def mongo_get_target_stats(cycle_id, nonhuman, nonhuman_orgs):
 def mongo_get_template_stats(cycle_id, nonhuman, nonhuman_orgs):
     """Get template stats."""
     pipeline = [
-        {"$match": {"cycle_id": "6376a9aa4c95c0c4630feb83"}},
+        {"$match": {"cycle_id": cycle_id}},
+        {"$unwind": {"path": "$timeline", "preserveNullAndEmptyArrays": True}},
+        {
+            "$match": {
+                "timeline.details.asn_org": {"$nin": nonhuman_orgs}
+                if not nonhuman
+                else {"$nin": []},
+            }
+        },
         {"$addFields": {"template_id": {"$toObjectId": "$template_id"}}},
         {
             "$lookup": {
@@ -1203,7 +1740,6 @@ def mongo_get_template_stats(cycle_id, nonhuman, nonhuman_orgs):
             }
         },
         {"$unwind": {"path": "$template"}},
-        {"$unwind": {"path": "$timeline", "preserveNullAndEmptyArrays": True}},
         {
             "$group": {
                 "_id": "$template._id",
@@ -1286,16 +1822,16 @@ def mongo_get_template_stats(cycle_id, nonhuman, nonhuman_orgs):
     ]
     template_stats = target_manager.aggregate(pipeline)
 
-    mongo_rank_templates(template_stats)
-
-    # Sort low, moderate, high
-    template_stats = sorted(template_stats, key=lambda d: d["deception_level"])
-    template_stats = [template_stats[1], template_stats[2], template_stats[0]]
+    if len(template_stats) == 3:
+        rank_templates(template_stats)
+        # Sort low, moderate, high
+        template_stats = sorted(template_stats, key=lambda d: d["deception_level"])
+        template_stats = [template_stats[1], template_stats[2], template_stats[0]]
 
     return template_stats
 
 
-def mongo_rank_templates(template_stats: list):
+def rank_templates(template_stats: list):
     """Rank templates by opened and clicked counts."""
     for event in ["opened", "clicked", "reported"]:
         template_stats = sorted(
@@ -1317,8 +1853,15 @@ def mongo_rank_templates(template_stats: list):
 def mongo_get_time_stats(cycle_id, nonhuman, nonhuman_orgs):
     """Get time stats."""
     pipeline = [
-        {"$match": {"cycle_id": "6376a9aa4c95c0c4630feb83"}},
+        {"$match": {"cycle_id": cycle_id}},
         {"$unwind": {"path": "$timeline"}},
+        {
+            "$match": {
+                "timeline.details.asn_org": {"$nin": nonhuman_orgs}
+                if not nonhuman
+                else {"$nin": []},
+            }
+        },
         {
             "$addFields": {
                 "time_to_event": {"$subtract": ["$timeline.time", "$sent_date"]}
