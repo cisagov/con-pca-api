@@ -116,14 +116,14 @@ function createStatsByLevelChart() {
 function createStatsByDeceptionChart() {
   var ctx = document.getElementById("bar-stats-by-deception").getContext("2d");
   var templateStats = JSON.parse(
-    document.getElementById("templateStats").innerText
+    document.getElementById("templateStats").innerText,
   );
 
   const sentStats = [];
   const clickStats = [];
   for (let i = 1; i <= 6; i++) {
     let templates = templateStats.filter(
-      (obj) => obj.template.deception_score === i
+      (obj) => obj.template.deception_score === i,
     );
     let sent = 0;
     let clicked = 0;
@@ -201,7 +201,7 @@ function clickRateTimeIntervalChart() {
     .getElementById("click-rate-time-interval")
     .getContext("2d");
   const timeStats = JSON.parse(
-    document.getElementById("timeIntervalStats").innerText
+    document.getElementById("timeIntervalStats").innerText,
   );
   const clicked = timeStats.clicked;
   const data = {
