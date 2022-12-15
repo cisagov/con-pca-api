@@ -27,7 +27,7 @@ MAILGUN_API_KEY = str(os.environ.get("MAILGUN_API_KEY"))
 
 # https://bandit.readthedocs.io/en/latest/plugins/b104_hardcoded_bind_all_interfaces.html
 API_HOST = os.environ.get("API_HOST", "0.0.0.0")  # nosec
-API_PORT = os.environ.get("API_PORT", 5000)
+API_PORT = int(os.environ.get("API_PORT", 5000))
 
 # about
 DEPLOYED_DATE = os.environ.get("DEPLOYED_DATE")
