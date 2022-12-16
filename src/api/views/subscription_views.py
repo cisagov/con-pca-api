@@ -1,5 +1,6 @@
 """Subscription Views."""
 # Standard Python Libraries
+from collections import OrderedDict
 from datetime import timedelta
 import os
 
@@ -69,62 +70,113 @@ class SubscriptionsView(MethodView):
         if request.args.get("archived", "").lower() == "true":
             parameters["archived"] = True
 
-        pipeline = [
-            {
-                "$match": {"archived": {"$in": [False, None]}}
-                if not parameters["archived"]
-                else {"archived": {"$nin": [False, None]}}
-            },
-            {
-                "$addFields": {
-                    "subscription_id": {"$toString": "$_id"},
-                    "customer_object_id": {"$toObjectId": "$customer_id"},
-                }
-            },
-            {
-                "$lookup": {
-                    "from": "cycle",
-                    "localField": "subscription_id",
-                    "foreignField": "subscription_id",
-                    "as": "cycle",
-                }
-            },
-            {
-                "$lookup": {
-                    "from": "customer",
-                    "localField": "customer_object_id",
-                    "foreignField": "_id",
-                    "as": "customer",
-                }
-            },
-            {
-                "$project": {
-                    "_id": {"$toString": "$_id"},
-                    "appendix_a_date": {"$max": "$customer.appendix_a_date"},
-                    "cycle_start_date": {"$max": "$cycle.start_date"},
-                    "created": "$created",
-                    "target_domain": "$target_domain",
-                    "customer_id": "$customer_id",
-                    "name": "$name",
-                    "status": "$status",
-                    "start_date": "$start_date",
-                    "cycle_length_minutes": "$cycle_length_minutes",
-                    "cooldown_minutes": "$cooldown_minutes",
-                    "buffer_time_minutes": "$buffer_time_minutes",
-                    "active": {"$anyElementTrue": "$cycle.active"},
-                    "archived": "$archived",
-                    "primary_contact": "$primary_contact",
-                    "admin_email": "$admin_email",
-                    "target_email_list": "$target_email_list",
-                    "continuous_subscription": "$continuous_subscription",
-                    "created_by": "$created_by",
-                    "updated": "$updated",
-                    "updated_by": "$updated_by",
-                }
-            },
-        ]
+        # pipeline = [
+        #     {
+        #         "$match": {"archived": {"$in": [False, None]}}
+        #         if not parameters["archived"]
+        #         else {"archived": {"$nin": [False, None]}}
+        #     },
+        #     {
+        #         "$addFields": {
+        #             "subscription_id": {"$toString": "$_id"},
+        #             "customer_object_id": {"$toObjectId": "$customer_id"},
+        #         }
+        #     },
+        #     {
+        #         "$lookup": {
+        #             "from": "cycle",
+        #             "localField": "subscription_id",
+        #             "foreignField": "subscription_id",
+        #             "as": "cycle",
+        #         }
+        #     },
+        #     {
+        #         "$lookup": {
+        #             "from": "customer",
+        #             "localField": "customer_object_id",
+        #             "foreignField": "_id",
+        #             "as": "customer",
+        #         }
+        #     },
+        #     {
+        #         "$project": {
+        #             "_id": {"$toString": "$_id"},
+        #             "appendix_a_date": {"$max": "$customer.appendix_a_date"},
+        #             "cycle_start_date": {"$max": "$cycle.start_date"},
+        #             "created": "$created",
+        #             "target_domain": "$target_domain",
+        #             "customer_id": "$customer_id",
+        #             "name": "$name",
+        #             "status": "$status",
+        #             "start_date": "$start_date",
+        #             "cycle_length_minutes": "$cycle_length_minutes",
+        #             "cooldown_minutes": "$cooldown_minutes",
+        #             "buffer_time_minutes": "$buffer_time_minutes",
+        #             "active": {"$anyElementTrue": "$cycle.active"},
+        #             "archived": "$archived",
+        #             "primary_contact": "$primary_contact",
+        #             "admin_email": "$admin_email",
+        #             "target_email_list": "$target_email_list",
+        #             "continuous_subscription": "$continuous_subscription",
+        #             "created_by": "$created_by",
+        #             "updated": "$updated",
+        #             "updated_by": "$updated_by",
+        #         }
+        #     },
+        # ]
 
-        subscriptions = subscription_manager.aggregate(pipeline)
+        # subscriptions = subscription_manager.aggregate(pipeline)
+
+        subscriptions = subscription_manager.all(
+            params=parameters,
+            fields=[
+                "_id",
+                "customer_id",
+                "name",
+                "status",
+                "start_date",
+                "cycle_length_minutes",
+                "cooldown_minutes",
+                "buffer_time_minutes",
+                "active",
+                "archived",
+                "primary_contact",
+                "admin_email",
+                "target_email_list",
+                "continuous_subscription",
+                "created",
+                "created_by",
+                "updated",
+                "updated_by",
+                "target_domain",
+            ],
+        )
+        # TODO: refactor to leverage mongo queries.
+        cycles = cycle_manager.all(
+            fields=["subscription_id", "start_date", "end_date", "active"]
+        )
+        subscriptions = [
+            dict(
+                s,
+                **{
+                    "cycle_start_date": c["start_date"],
+                    "cycle_end_date": c["end_date"],
+                    "active": c["active"],
+                },
+            )
+            for c in cycles
+            for s in subscriptions
+            if c["subscription_id"] == s["_id"]
+        ]
+        for s in subscriptions:
+            c = customer_manager.get(
+                document_id=s["customer_id"], fields=["_id", "appendix_a_date"]
+            )
+            s["appendix_a_date"] = c.get("appendix_a_date", "")
+        subscriptions = sorted(subscriptions, key=lambda d: d["cycle_start_date"])
+        subscriptions = list(
+            OrderedDict((d["name"], d) for d in subscriptions).values()
+        )
 
         return jsonify(subscriptions)
 
@@ -217,60 +269,116 @@ class SubscriptionsStatusView(MethodView):
 
     def get(self):
         """Get data for the Overview Subscription Status Page."""
-        pipeline = [
-            {"$match": {"archived": {"$in": [False, None]}}},
-            {
-                "$addFields": {
-                    "subscription_id": {"$toString": "$_id"},
-                    "customer_object_id": {"$toObjectId": "$customer_id"},
-                }
-            },
-            {
-                "$lookup": {
-                    "from": "cycle",
-                    "localField": "subscription_id",
-                    "foreignField": "subscription_id",
-                    "as": "cycle",
-                }
-            },
-            {
-                "$lookup": {
-                    "from": "customer",
-                    "localField": "customer_object_id",
-                    "foreignField": "_id",
-                    "as": "customer",
-                }
-            },
-            {
-                "$project": {
-                    "_id": {"$toString": "$_id"},
-                    "appendix_a_date": {"$max": "$customer.appendix_a_date"},
-                    "cycle_start_date": {"$max": "$cycle.start_date"},
-                    "cycle_end_date": {"$max": "$cycle.end_date"},
-                    "active": {"$anyElementTrue": "$cycle.active"},
-                    "created": "$created",
-                    "target_domain": "$target_domain",
-                    "customer_id": "$customer_id",
-                    "name": "$name",
-                    "status": "$status",
-                    "start_date": "$start_date",
-                    "cycle_length_minutes": "$cycle_length_minutes",
-                    "cooldown_minutes": "$cooldown_minutes",
-                    "buffer_time_minutes": "$buffer_time_minutes",
-                    "archived": "$archived",
-                    "primary_contact": "$primary_contact",
-                    "admin_email": "$admin_email",
-                    "target_email_list": "$target_email_list",
-                    "continuous_subscription": "$continuous_subscription",
-                    "created_by": "$created_by",
-                    "updated": "$updated",
-                    "updated_by": "$updated_by",
-                }
-            },
-        ]
-        subscriptions = subscription_manager.aggregate(pipeline)
+        # pipeline = [
+        #     {"$match": {"archived": {"$in": [False, None]}}},
+        #     {
+        #         "$addFields": {
+        #             "subscription_id": {"$toString": "$_id"},
+        #             "customer_object_id": {"$toObjectId": "$customer_id"},
+        #         }
+        #     },
+        #     {
+        #         "$lookup": {
+        #             "from": "cycle",
+        #             "localField": "subscription_id",
+        #             "foreignField": "subscription_id",
+        #             "as": "cycle",
+        #         }
+        #     },
+        #     {
+        #         "$lookup": {
+        #             "from": "customer",
+        #             "localField": "customer_object_id",
+        #             "foreignField": "_id",
+        #             "as": "customer",
+        #         }
+        #     },
+        #     {
+        #         "$project": {
+        #             "_id": {"$toString": "$_id"},
+        #             "appendix_a_date": {"$max": "$customer.appendix_a_date"},
+        #             "cycle_start_date": {"$max": "$cycle.start_date"},
+        #             "cycle_end_date": {"$max": "$cycle.end_date"},
+        #             "active": {"$anyElementTrue": "$cycle.active"},
+        #             "created": "$created",
+        #             "target_domain": "$target_domain",
+        #             "customer_id": "$customer_id",
+        #             "name": "$name",
+        #             "status": "$status",
+        #             "start_date": "$start_date",
+        #             "cycle_length_minutes": "$cycle_length_minutes",
+        #             "cooldown_minutes": "$cooldown_minutes",
+        #             "buffer_time_minutes": "$buffer_time_minutes",
+        #             "archived": "$archived",
+        #             "primary_contact": "$primary_contact",
+        #             "admin_email": "$admin_email",
+        #             "target_email_list": "$target_email_list",
+        #             "continuous_subscription": "$continuous_subscription",
+        #             "created_by": "$created_by",
+        #             "updated": "$updated",
+        #             "updated_by": "$updated_by",
+        #         }
+        #     },
+        # ]
+        # # subscriptions = subscription_manager.aggregate(pipeline)
 
-        return subscriptions
+        # return subscriptions
+
+        parameters = dict(request.args)
+        parameters = subscription_manager.get_query(parameters)
+
+        subscriptions = subscription_manager.all(
+            params=parameters,
+            fields=[
+                "_id",
+                "customer_id",
+                "name",
+                "status",
+                "start_date",
+                "cycle_length_minutes",
+                "cooldown_minutes",
+                "buffer_time_minutes",
+                "active",
+                "archived",
+                "primary_contact",
+                "admin_email",
+                "target_email_list",
+                "continuous_subscription",
+                "created",
+                "created_by",
+                "updated",
+                "updated_by",
+                "target_domain",
+            ],
+        )
+        # TODO: refactor to leverage mongo queries.
+        cycles = cycle_manager.all(
+            fields=["subscription_id", "start_date", "end_date", "active"]
+        )
+        subscriptions = [
+            dict(
+                s,
+                **{
+                    "cycle_start_date": c["start_date"],
+                    "cycle_end_date": c["end_date"],
+                    "active": c["active"],
+                },
+            )
+            for c in cycles
+            for s in subscriptions
+            if c["subscription_id"] == s["_id"]
+        ]
+        for s in subscriptions:
+            c = customer_manager.get(
+                document_id=s["customer_id"], fields=["_id", "appendix_a_date"]
+            )
+            s["appendix_a_date"] = c.get("appendix_a_date", "")
+        subscriptions = sorted(subscriptions, key=lambda d: d["cycle_start_date"])
+        subscriptions = list(
+            OrderedDict((d["name"], d) for d in subscriptions).values()
+        )
+
+        return jsonify(subscriptions)
 
 
 class SubscriptionLaunchView(MethodView):
