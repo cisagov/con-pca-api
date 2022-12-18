@@ -93,7 +93,7 @@ def load_customer():
 
 def load_subscription(customer_id, sending_profile_id, templates):
     """Load sample subscription data."""
-    subscription = subscription_manager.get(filter_data={"name": "test_subscription"})
+    subscription = subscription_manager.get(filter_data={"name": "testSub_1"})
     if subscription:
         logging.info("Test data for subscription already exists.")
         return subscription["_id"]
