@@ -151,7 +151,6 @@ class SubscriptionsView(MethodView):
                 "target_domain",
             ],
         )
-        # TODO: refactor to leverage mongo queries.
         cycles = cycle_manager.all(
             fields=["subscription_id", "start_date", "end_date", "active"]
         )
@@ -159,14 +158,14 @@ class SubscriptionsView(MethodView):
             dict(
                 s,
                 **{
-                    "cycle_start_date": c["start_date"],
-                    "cycle_end_date": c["end_date"],
-                    "active": c["active"],
+                    "cycle_start_date": c.get("start_date", ""),
+                    "cycle_end_date": c.get("end_date", ""),
+                    "active": c.get("active", ""),
                 },
             )
             for c in cycles
             for s in subscriptions
-            if c["subscription_id"] == s["_id"]
+            if c.get("subscription_id") == s.get("_id")
         ]
         for s in subscriptions:
             c = customer_manager.get(
