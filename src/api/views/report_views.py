@@ -1,5 +1,6 @@
 """Report views."""
 # Standard Python Libraries
+from datetime import datetime, timedelta
 import os
 
 # Third-Party Libraries
@@ -164,3 +165,50 @@ class AggregateReportView(MethodView):
         context["all_customer_stats"] = get_all_customer_stats()
 
         return AggregateReportsSchema().dump(context)
+
+
+class OverdueTasksReportView(MethodView):
+    """OverdueTasksReportView."""
+
+    def get(self):
+        """Get."""
+        parameters = dict(request.args)
+        parameters = subscription_manager.get_query(parameters)
+
+        parameters["overdue_subscriptions"] = False
+        if request.args.get("overdue_subscriptions", "").lower() == "true":
+            parameters["overdue_subscriptions"] = True
+
+        pipeline = [
+            {"$unwind": {"path": "$tasks"}},
+            {
+                "$match": {
+                    "tasks.task_type": {"$in": ["start_next_cycle", "end_cycle"]},
+                    "tasks.executed": {"$eq": False},
+                    "tasks.scheduled_date": {
+                        "$lte": datetime.now() - timedelta(minutes=5),
+                    },
+                }
+                if parameters["overdue_subscriptions"]
+                else {
+                    "tasks.executed": {"$eq": False},
+                    "tasks.scheduled_date": {
+                        "$lte": datetime.now() - timedelta(minutes=5),
+                    },
+                }
+            },
+            {
+                "$project": {
+                    "_id": 0,
+                    "scheduled_date": "$tasks.scheduled_date",
+                    "executed": "$tasks.executed",
+                    "task_type": "$tasks.task_type",
+                    "subscription_status": "$status",
+                    "subscription_name": "$name",
+                    "subscription_continuous": "$continuous_subscription",
+                }
+            },
+        ]
+        overdue_tasks = subscription_manager.aggregate(pipeline)
+
+        return overdue_tasks
