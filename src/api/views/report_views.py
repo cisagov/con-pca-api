@@ -183,6 +183,8 @@ class OverdueTasksReportView(MethodView):
             {"$unwind": {"path": "$tasks"}},
             {
                 "$match": {
+                    "status": {"$eq": "running"},
+                    "continuous_subscription": {"$eq": True},
                     "tasks.task_type": {"$in": ["start_next_cycle", "end_cycle"]},
                     "tasks.executed": {"$eq": False},
                     "tasks.scheduled_date": {
@@ -191,6 +193,7 @@ class OverdueTasksReportView(MethodView):
                 }
                 if parameters["overdue_subscriptions"]
                 else {
+                    "status": {"$eq": "running"},
                     "tasks.executed": {"$eq": False},
                     "tasks.scheduled_date": {
                         "$lte": datetime.now() - timedelta(minutes=5),
