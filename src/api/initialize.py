@@ -130,6 +130,10 @@ def populate_stakeholder_shortname():
 def restart_logging_ttl_index(ttl_in_seconds=345600):
     """Create the ttl index."""
     try:
+        DB.logging.drop_indexes()
+    except Exception as e:
+        logger.exception(e)
+    try:
         DB.command(
             "collMod",
             "logging",
