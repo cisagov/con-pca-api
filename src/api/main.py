@@ -45,7 +45,6 @@ from api.views.cycle_views import (
 )
 from api.views.db_views import DatabaseManagementView
 from api.views.failed_email_views import FailedEmailsView, FailedEmailView
-from api.views.landing_domain_views import LandingDomainsView, LandingDomainView
 from api.views.landing_page_views import (
     LandingPagesView,
     LandingPageTemplatesView,
@@ -110,9 +109,6 @@ rules = [
     # Failed Email Views
     ("/failedemails/", FailedEmailsView),
     ("/failedemail/<failed_email_id>/", FailedEmailView),
-    # Landing domains
-    ("/landingdomains/", LandingDomainsView),
-    ("/landingdomain/<landing_domain_id>", LandingDomainView),
     # Landing Page Views
     ("/landingpages/", LandingPagesView),
     ("/landingpage/<landing_page_id>/", LandingPageView),

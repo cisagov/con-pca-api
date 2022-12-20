@@ -15,7 +15,6 @@ from api.schemas.config_schema import ConfigSchema
 from api.schemas.customer_schema import CustomerSchema
 from api.schemas.cycle_schema import CycleSchema
 from api.schemas.failed_email_schema import FailedEmailSchema
-from api.schemas.landing_domain_schema import LandingDomainSchema
 from api.schemas.landing_page_schema import LandingPageSchema
 from api.schemas.logging_schema import LoggingSchema
 from api.schemas.nonhuman_schema import NonHumanSchema
@@ -379,18 +378,6 @@ class CycleManager(Manager):
         return super().__init__(
             collection="cycle",
             schema=CycleSchema,
-        )
-
-
-class LandingDomainManager(Manager):
-    """LandingDomainManager."""
-
-    def __init__(self):
-        """Super."""
-        return super().__init__(
-            collection="landing_domain",
-            schema=LandingDomainSchema,
-            unique_indexes=["domain"],
         )
 
 
