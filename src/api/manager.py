@@ -106,7 +106,7 @@ class Manager:
         for index in self.ttl_indexes:
             if (
                 self.db.index_information()
-                and self.db.index_information()[index + "_1"]["expireAfterSeconds"]
+                and self.db.index_information()[index]["expireAfterSeconds"]
                 != ttl_in_seconds
             ):
                 try:
@@ -114,7 +114,7 @@ class Manager:
                         "collMod",
                         "logging",
                         index={
-                            "name": "created_1",
+                            "name": "created",
                             "expireAfterSeconds": ttl_in_seconds,
                         },
                     )
