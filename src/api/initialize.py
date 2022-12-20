@@ -8,6 +8,7 @@ import os
 import pytz  # type: ignore
 
 # cisagov Libraries
+from api.config.environment import DB
 from api.manager import (
     CustomerManager,
     CycleManager,
@@ -124,6 +125,21 @@ def populate_stakeholder_shortname():
                     "stakeholder_shortname": customer["identifier"],
                 },
             )
+
+
+def restart_logging_ttl_index(ttl_in_seconds=345600):
+    """Create the ttl index."""
+    try:
+        DB.command(
+            "collMod",
+            "logging",
+            index={
+                "name": "created_1",
+                "expireAfterSeconds": ttl_in_seconds,
+            },
+        )
+    except Exception as e:
+        logger.exception(e)
 
 
 def reset_dirty_stats():

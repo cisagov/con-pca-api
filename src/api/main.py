@@ -14,12 +14,12 @@ from marshmallow.exceptions import ValidationError
 from api.app import app
 from api.commands.load_test_data import load_test_data
 from api.config.environment import EMAIL_MINUTES, FAILED_EMAIL_MINUTES, TASK_MINUTES
-from api.initialize import (
+from api.initialize import (  # populate_stakeholder_shortname,
     initialize_nonhumans,
     initialize_recommendations,
     initialize_templates,
-    populate_stakeholder_shortname,
     reset_dirty_stats,
+    restart_logging_ttl_index,
 )
 from api.phish import emails_job
 from api.tasks import failed_emails_job, tasks_job
@@ -211,7 +211,8 @@ with app.app_context():
     initialize_templates()
     initialize_nonhumans()
     reset_dirty_stats()
-    populate_stakeholder_shortname()
+    # populate_stakeholder_shortname()
+    restart_logging_ttl_index()
     # restart_subscriptions()
 
 
