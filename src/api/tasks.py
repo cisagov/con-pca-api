@@ -133,15 +133,16 @@ def update_task(subscription_id, task):
 def add_new_task(subscription, cycle, task):
     """Add new subscription task."""
     scheduled = task["scheduled_date"]
-    report_minutes = subscription["report_frequency_minutes"]
+    # report_minutes = subscription["report_frequency_minutes"]
     cycle_minutes = (
         subscription["cycle_length_minutes"] + subscription["cooldown_minutes"]
     )
     # yearly_minutes = get_yearly_minutes()
     new_date = {
-        "status_report": scheduled + timedelta(minutes=report_minutes),
+        # "status_report": scheduled + timedelta(minutes=report_minutes),
         # "yearly_report": scheduled + timedelta(minutes=yearly_minutes),
-        "end_cycle": scheduled + timedelta(minutes=cycle_minutes),
+        "end_cycle": scheduled
+        + timedelta(minutes=cycle_minutes),
     }.get(task["task_type"])
     if new_date:
         task = {
