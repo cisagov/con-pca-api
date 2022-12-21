@@ -140,7 +140,6 @@ def add_new_task(subscription, cycle, task):
     # yearly_minutes = get_yearly_minutes()
     new_date = {
         "status_report": scheduled + timedelta(minutes=report_minutes),
-        "cycle_report": scheduled + timedelta(minutes=cycle_minutes),
         # "yearly_report": scheduled + timedelta(minutes=yearly_minutes),
         "end_cycle": scheduled + timedelta(minutes=cycle_minutes),
     }.get(task["task_type"])
