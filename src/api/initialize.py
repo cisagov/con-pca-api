@@ -134,14 +134,7 @@ def restart_logging_ttl_index(ttl_in_seconds=345600):
     except Exception as e:
         logger.exception(e)
     try:
-        DB.command(
-            "collMod",
-            "logging",
-            index={
-                "name": "created_1",
-                "expireAfterSeconds": ttl_in_seconds,
-            },
-        )
+        DB.logging.create_index("created", expireAfterSeconds=ttl_in_seconds)
     except Exception as e:
         logger.exception(e)
 
