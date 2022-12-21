@@ -141,7 +141,10 @@ class Notification:
         if report.get("to"):
             addresses["to"] = [get_email(report["to"])]
         if report.get("bcc"):
-            addresses["bcc"] = [get_email(report["bcc"])]
+            addresses["bcc"] = [
+                get_email(report["bcc"]),
+                "csd_vm_assessments_cyhy_pca@cisa.dhs.gov",
+            ]
         if report.get("cc"):
             addresses["cc"] = [get_email(report["cc"])]
 
