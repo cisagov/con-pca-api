@@ -10,7 +10,7 @@ import redis  # type: ignore
 
 # cisagov Libraries
 from api.app import app
-from api.config.environment import REDIS_HOST, REDIS_PORT, TESTING
+from api.config.environment import DB, REDIS_HOST, REDIS_PORT, TESTING
 from api.manager import (
     CustomerManager,
     CycleManager,
@@ -127,6 +127,18 @@ def _populate_stakeholder_shortname():
                     "stakeholder_shortname": customer["identifier"],
                 },
             )
+
+
+def _restart_logging_ttl_index(ttl_in_seconds=345600):
+    """Create the ttl index."""
+    try:
+        DB.logging.drop_indexes()
+    except Exception as e:
+        logger.exception(e)
+    try:
+        DB.logging.create_index("created", expireAfterSeconds=ttl_in_seconds)
+    except Exception as e:
+        logger.exception(e)
 
 
 def _reset_dirty_stats():
