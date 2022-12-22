@@ -15,7 +15,6 @@ from api.manager import (
     TargetManager,
     TemplateManager,
 )
-from api.tasks import get_random_templates
 from utils.logging import setLogger
 from utils.notifications import Notification
 from utils.safelist import generate_safelist_file
@@ -26,7 +25,7 @@ from utils.subscriptions import (
     start_subscription,
     stop_subscription,
 )
-from utils.templates import select_templates
+from utils.templates import get_random_templates
 from utils.valid import is_subscription_valid
 
 logger = setLogger(__name__)
@@ -377,12 +376,7 @@ class SubscriptionSafelistSendView(MethodView):
         # Randomize Next templates if they do not already exist
         if not subscription.get("next_templates"):
             update_data = {}
-            next_templates = [
-                t
-                for t in template_manager.all({"retired": False})
-                if t not in subscription.get("templates_selected")
-            ]
-            next_templates_selected = sum(select_templates(next_templates), [])
+            next_templates_selected = get_random_templates(subscription)
             if next_templates_selected:
                 update_data["next_templates"] = next_templates_selected
             subscription_manager.update(document_id=subscription_id, data=update_data)
