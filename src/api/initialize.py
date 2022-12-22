@@ -134,9 +134,13 @@ def _reset_processing():
     subscriptions = subscription_manager.all(
         params={"processing": True}, fields=["name", "processing"]
     )
+    if not subscriptions:
+        logger.info("No subscriptions stuck in the processing state found.")
+        return
+
     for subscription in subscriptions:
         logger.info(
-            f"Resetting processing for subscription {subscription.get('name')} from {subscription.get('processing')} to False."
+            f"Resetting processing for subscription {subscription.get('name')} to False."
         )
         subscription_manager.update(
             document_id=subscription["_id"],
