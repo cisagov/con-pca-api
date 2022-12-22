@@ -20,7 +20,7 @@ from utils.mailgun import get_failed_email_events
 from utils.notifications import Notification
 from utils.safelist import generate_safelist_file
 from utils.subscriptions import start_subscription, stop_subscription
-from utils.templates import select_templates
+from utils.templates import get_random_templates
 
 # from utils.time import get_yearly_minutes
 
@@ -229,14 +229,9 @@ def end_cycle(subscription, cycle):
             )
 
         else:
-            templates = [
-                t
-                for t in template_manager.all({"retired": False})
-                if t not in subscription["templates_selected"]
-            ]
-            templates_selected = sum(select_templates(templates), [])
             start_subscription(
-                str(subscription["_id"]), templates_selected=templates_selected
+                str(subscription["_id"]),
+                templates_selected=get_random_templates(subscription),
             )
     else:
         stop_subscription(str(subscription["_id"]))
@@ -251,6 +246,9 @@ def safelisting_reminder(subscription, cycle):
         params={"_id": {"$in": subscription["templates_selected"]}},
         fields=["subject", "deception_score"],
     )
+
+    if not subscription.get("next_templates"):
+        subscription["next_templates"] = get_random_templates(subscription)
 
     next_templates = template_manager.all(
         params={"_id": {"$in": subscription["next_templates"]}},

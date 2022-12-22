@@ -16,7 +16,7 @@ from api.manager import (
     TargetManager,
     TemplateManager,
 )
-from utils.templates import get_deception_level, select_templates
+from utils.templates import get_deception_level, get_random_templates
 
 # from utils.time import get_yearly_minutes
 
@@ -97,12 +97,7 @@ def start_subscription(subscription_id, templates_selected=[]):
     if templates_selected:
         update_data["templates_selected"] = templates_selected
 
-    next_templates = [
-        t
-        for t in template_manager.all({"retired": False})
-        if t not in templates_selected
-    ]
-    next_templates_selected = sum(select_templates(next_templates), [])
+    next_templates_selected = get_random_templates(subscription)
     if next_templates_selected:
         update_data["next_templates"] = next_templates_selected
 
