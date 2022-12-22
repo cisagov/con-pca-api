@@ -97,6 +97,12 @@ def process_subscription(subscription):
                 extra={"source_type": "subscription", "source": subscription["_id"]},
             )
             task["error"] = str(e)
+            subscription_manager.update(
+                document_id=subscription["_id"],
+                data={"processing": False},
+                update=False,
+            )
+
         if not end_cycle_task:
             update_task(subscription["_id"], task)
             add_new_task(subscription, cycle, task)
