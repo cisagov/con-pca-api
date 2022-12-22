@@ -130,7 +130,7 @@ def _populate_stakeholder_shortname():
 
 
 def _reset_processing():
-    """Populate the stakeholder_shortname field with the same name as customer_identifier if empty."""
+    """Set processing to false for all subscriptions."""
     subscriptions = subscription_manager.all()
     for subscription in subscriptions:
         subscription_manager.update(
