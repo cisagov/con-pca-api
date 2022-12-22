@@ -204,6 +204,7 @@ There are no required environment variables.
 
 | Name  | Purpose | Default |
 |-------|---------|---------|
+| `ARCHIVAL_EMAIL_ADDRESS` | An email address that will be bcc'd on all notification emails the system sends. | |
 | `AWS_COGNITO_USER_POOL_ID` | The user pool id if using cognito auth.  | |
 | `AWS_COGNITO_USER_POOL_CLIENT_ID` | The client id if using cognito auth. | |
 | `SES_ASSUME_ROLE_ARN` | The SES role to assume for sending notifications. | |

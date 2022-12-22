@@ -25,6 +25,9 @@ FAILED_EMAIL_MINUTES = int(os.environ.get("FAILED_EMAIL_MINUTES", 1440))
 # mailgun API
 MAILGUN_API_KEY = str(os.environ.get("MAILGUN_API_KEY"))
 
+# Archival Email Address
+ARCHIVAL_EMAIL_ADDRESS = str(os.environ.get("ARCHIVAL_EMAIL_ADDRESS"))
+
 # https://bandit.readthedocs.io/en/latest/plugins/b104_hardcoded_bind_all_interfaces.html
 API_HOST = os.environ.get("API_HOST", "0.0.0.0")  # nosec
 API_PORT = int(os.environ.get("API_PORT", 5000))
