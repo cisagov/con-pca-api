@@ -31,7 +31,7 @@ docker run cisagov/con-pca-api:0.0.1
 
     ```yaml
     ---
-    version: "3.7"
+    version: "3.8"
 
     services:
       api:
@@ -160,11 +160,12 @@ cd con-pca-api/
 
 The following ports are exposed by this container:
 
-| Port | Purpose        |
-|------|----------------|
-| 5000 | Flask API Port |
-| 8000 | Flask Click/Opens Tracking Port |
-| 27017 | MongoDB |
+| Port  |    Purpose           |
+|------ |----------------------|
+| 5000  |    Flask API         |
+| 8000  | Click/Opens Tracking |
+| 27017 |     MongoDB          |
+| 6379  |     RedisDB          |
 
 The [Docker composition](docker-compose.yml) publishes the
 exposed ports at 5000 and 8000.
@@ -179,44 +180,46 @@ in docker-compose.
 
 There are no required environment variables.
 
-| Name  | Purpose | Default |
-|-------|---------|---------|
-| `FLASK_APP` | Flask app to use. | `api.main:app` |
-| `FLASK_ENV` | Flask environment. | `development` |
-| `DEBUG` | Setup debug on or off. | `1` |
-| `DB_HOST` | Mongo host. | `mongodb` |
-| `DB_PORT` | Mongo port. | `27017` |
-| `DB_PW` | Mongo password. | `changeme` |
-| `DB_USER` | Mongo user. | `changeme` |
-| `WORKERS` | Amount of Gunicorn workers if Debug set to 0. | `4` |
+|   Name       |   Purpose          |   Default      |
+|--------------|--------------------|----------------|
+| `FLASK_APP`  | Flask app to use.  | `api.main:app` |
+| `FLASK_ENV`  | Flask environment. | `development`  |
+| `FLASK_DEBUG`| Flask Debug        | `1`            |
+| `DB_HOST`    | Mongo host.        | `mongodb`      |
+| `DB_PORT`    | Mongo port.        | `27017`        |
+| `REDIS_HOST` | Mongo host.        | `redis`        |
+| `REDIS_PORT` | Mongo port.        | `6379`         |
+| `DB_PW`      | Mongo password.    | `changeme`     |
+| `DB_USER`    | Mongo user.        | `changeme`     |
+| `WORKERS`    | # of Gunicorn workers, if 0 if Debug set. | `4` |
 | `AWS_ACCESS_KEY_ID` | The AWS access key to access AWS services. | `changeme` |
-| `AWS_SECRET_ACCESS_KEY` | The AWS secret access key for access to AWS services. | `changeme` |
+| `AWS_SECRET_ACCESS_KEY` | AWS secret access key for AWS services. | `changeme` |
 | `AWS_DEFAULT_REGION` | The default AWS region. | `us-east-1` |
 | `AWS_COGNITO_ENABLED` | Whether to enable authentication via Cognito. | `0` |
 | `MONGO_INITDB_ROOT_PASSWORD` | The password to start mongo container with. | `changeme` |
 | `MONGO_INITDB_ROOT_USERNAME` | The username to start mongo container with. | `changeme` |
-| `MAILGUN_API_KEY` | A private API key linked to the mailgun account managing sending domains. | `changeme` |
+| `MAILGUN_API_KEY` | Mailgun private API key for managing sending domains. | `changeme` |
 | `EMAIL_MINUTES` | How often to check for phishing emails to send. | `1` |
 | `TASK_MINUTES` | How often to check for tasks to run. | `1` |
 | `FAILED_EMAIL_MINUTES` | How often to check for email events that failed. | `1440` |
 
 ### Optional ###
 
-| Name  | Purpose | Default |
-|-------|---------|---------|
-| `ARCHIVAL_EMAIL_ADDRESS` | An email address that will be bcc'd on all notification emails the system sends. | |
-| `AWS_COGNITO_USER_POOL_ID` | The user pool id if using cognito auth.  | |
-| `AWS_COGNITO_USER_POOL_CLIENT_ID` | The client id if using cognito auth. | |
-| `SES_ASSUME_ROLE_ARN` | The SES role to assume for sending notifications. | |
-| `SMTP_FROM` | The from address for notifications. | |
-| `MAXMIND_USER_ID` | User ID for using maxmind database for clicks/opens info. | |
-| `MAXMIND_LICENSE_KEY` | License key for using maxmind database for clicks/opens info. | |
+|      Name                  |          Purpose                         |
+|----------------------------|------------------------------------------|
+| `ARCHIVAL_EMAIL_ADDRESS`   | An email address that will be bcc'd on all notification emails the system sends.  |
+| `AWS_COGNITO_USER_POOL_ID` | The user pool id if using cognito auth.  |
+| `AWS_COGNITO_USER_POOL_CLIENT_ID` | The client id if using cognito auth. |
+| `SES_ASSUME_ROLE_ARN`      | The SES role to assume for sending notifications. |
+| `SMTP_FROM`                | The from address for notifications.      |
+| `MAXMIND_USER_ID`          | User ID for using maxmind database for clicks/opens info. |
+| `MAXMIND_LICENSE_KEY`      | License key for using maxmind database for clicks/opens info. |
 
 ## Secrets ##
 
-| Filename     | Purpose |
-|--------------|---------|
-| `quote.txt` | Replaces the secret stored in the con-pca-api library's package data. |
+|   Filename   |                        Purpose                                |
+|--------------|---------------------------------------------------------------|
+| `quote.txt`  | Replaces secret stored in con-pca-api library's package data. |
 
 ## Building from source ##
 
