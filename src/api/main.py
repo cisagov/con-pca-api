@@ -5,6 +5,8 @@ from logging import INFO, basicConfig
 from types import FunctionType, MethodType
 
 # Third-Party Libraries
+from apscheduler.executors.pool import ProcessPoolExecutor, ThreadPoolExecutor
+from apscheduler.jobstores.redis import RedisJobStore
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import render_template
 from flask.json import JSONEncoder
@@ -13,14 +15,15 @@ from marshmallow.exceptions import ValidationError
 # cisagov Libraries
 from api.app import app
 from api.commands.load_test_data import load_test_data
-from api.config.environment import EMAIL_MINUTES, FAILED_EMAIL_MINUTES, TASK_MINUTES
-from api.initialize import (  # populate_stakeholder_shortname,
-    initialize_nonhumans,
-    initialize_recommendations,
-    initialize_templates,
-    reset_dirty_stats,
-    restart_logging_ttl_index,
+from api.config.environment import (
+    EMAIL_MINUTES,
+    FAILED_EMAIL_MINUTES,
+    REDIS_HOST,
+    REDIS_PORT,
+    TASK_MINUTES,
+    TESTING,
 )
+from api.initialize import initialization_tasks
 from api.phish import emails_job
 from api.tasks import failed_emails_job, tasks_job
 from api.views.auth_views import (
@@ -196,24 +199,35 @@ for rule in login_rules:
 basicConfig(level=INFO)
 logger = setLogger(__name__)
 
-# Start Background Jobs
-sched = BackgroundScheduler()
+# Initialize the scheduler
+jobstores = {
+    "default": RedisJobStore(
+        jobs_key="dispatched_jobs",
+        run_times_key="dispatched_running",
+        host=REDIS_HOST,
+        port=REDIS_PORT,
+    )
+}
+executors = {
+    "default": ThreadPoolExecutor(100),
+    "processpool": ProcessPoolExecutor(5),
+}
+sched = BackgroundScheduler(
+    jobstores=jobstores if not TESTING else {}, executors=executors
+)
+
+# Add scheduled jobs
 sched.add_job(emails_job, "interval", minutes=EMAIL_MINUTES, max_instances=10)
 sched.add_job(tasks_job, "interval", minutes=TASK_MINUTES, max_instances=10)
 sched.add_job(
     failed_emails_job, "interval", minutes=FAILED_EMAIL_MINUTES, max_instances=3
 )
-sched.start()
 
-# Initialize Database
-with app.app_context():
-    initialize_recommendations()
-    initialize_templates()
-    initialize_nonhumans()
-    reset_dirty_stats()
-    # populate_stakeholder_shortname()
-    restart_logging_ttl_index()
-    # restart_subscriptions()
+# Run initialization tasks
+initialization_tasks()
+
+# Launch the task scheduler
+sched.start()
 
 
 class CustomJSONEncoder(JSONEncoder):
@@ -269,6 +283,5 @@ def api_map():
 @app.cli.command("load-test-data")
 def load_dummy_data():
     """Load test data to db."""
-    initialize_templates()
     load_test_data()
     logger.info("Success.")
