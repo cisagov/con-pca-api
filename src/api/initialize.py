@@ -131,8 +131,13 @@ def _populate_stakeholder_shortname():
 
 def _reset_processing():
     """Set processing to false for all subscriptions."""
-    subscriptions = subscription_manager.all()
+    subscriptions = subscription_manager.all(
+        params={"processing": True}, fields=["name", "processing"]
+    )
     for subscription in subscriptions:
+        logger.info(
+            f"Resetting processing for subscription {subscription.get('name')} from {subscription.get('processing')} to False."
+        )
         subscription_manager.update(
             document_id=subscription["_id"],
             data={
