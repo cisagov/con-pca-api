@@ -129,6 +129,18 @@ def _populate_stakeholder_shortname():
             )
 
 
+def _reset_processing():
+    """Populate the stakeholder_shortname field with the same name as customer_identifier if empty."""
+    subscriptions = subscription_manager.all()
+    for subscription in subscriptions:
+        subscription_manager.update(
+            document_id=subscription["_id"],
+            data={
+                "processing": False,
+            },
+        )
+
+
 def _restart_logging_ttl_index(ttl_in_seconds=345600):
     """Create the ttl index."""
     try:
@@ -227,4 +239,5 @@ def initialization_tasks():
         _initialize_nonhumans()
         _reset_dirty_stats()
         _populate_stakeholder_shortname()
+        _reset_processing()
         # restart_subscriptions()
