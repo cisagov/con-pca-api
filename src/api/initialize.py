@@ -129,6 +129,23 @@ def _populate_stakeholder_shortname():
             )
 
 
+def _reset_processing():
+    """Set processing to false for all subscriptions."""
+    subscriptions = subscription_manager.all(
+        params={"processing": True}, fields=["name", "processing"]
+    )
+    for subscription in subscriptions:
+        logger.info(
+            f"Resetting processing for subscription {subscription.get('name')} from {subscription.get('processing')} to False."
+        )
+        subscription_manager.update(
+            document_id=subscription["_id"],
+            data={
+                "processing": False,
+            },
+        )
+
+
 def _restart_logging_ttl_index(ttl_in_seconds=345600):
     """Create the ttl index."""
     try:
@@ -227,4 +244,5 @@ def initialization_tasks():
         _initialize_nonhumans()
         _reset_dirty_stats()
         _populate_stakeholder_shortname()
+        _reset_processing()
         # restart_subscriptions()
