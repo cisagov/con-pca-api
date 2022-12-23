@@ -89,7 +89,7 @@ def process_subscription(subscription):
         logger.info(f"Processing task {task}")
         try:
             process_task(task, subscription, cycle) if task["scheduled_date"] > (
-                datetime.now(pytz.utc) - timedelta(days=2)
+                datetime.now(pytz.utc) - timedelta(days=1)
             ) else None
         except Exception as e:
             logger.exception(
@@ -97,6 +97,12 @@ def process_subscription(subscription):
                 extra={"source_type": "subscription", "source": subscription["_id"]},
             )
             task["error"] = str(e)
+            subscription_manager.update(
+                document_id=subscription["_id"],
+                data={"processing": False},
+                update=False,
+            )
+
         if not end_cycle_task:
             update_task(subscription["_id"], task)
             add_new_task(subscription, cycle, task)

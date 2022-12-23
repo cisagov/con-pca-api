@@ -6,6 +6,7 @@ from types import FunctionType, MethodType
 
 # Third-Party Libraries
 from apscheduler.executors.pool import ProcessPoolExecutor, ThreadPoolExecutor
+from apscheduler.jobstores.redis import RedisJobStore
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import render_template
 from flask.json import JSONEncoder
@@ -14,7 +15,14 @@ from marshmallow.exceptions import ValidationError
 # cisagov Libraries
 from api.app import app
 from api.commands.load_test_data import load_test_data
-from api.config.environment import EMAIL_MINUTES, FAILED_EMAIL_MINUTES, TASK_MINUTES
+from api.config.environment import (
+    EMAIL_MINUTES,
+    FAILED_EMAIL_MINUTES,
+    REDIS_HOST,
+    REDIS_PORT,
+    TASK_MINUTES,
+    TESTING,
+)
 from api.initialize import initialization_tasks
 from api.phish import emails_job
 from api.tasks import failed_emails_job, tasks_job
@@ -192,11 +200,21 @@ basicConfig(level=INFO)
 logger = setLogger(__name__)
 
 # Initialize the scheduler
+jobstores = {
+    "default": RedisJobStore(
+        jobs_key="dispatched_jobs",
+        run_times_key="dispatched_running",
+        host=REDIS_HOST,
+        port=REDIS_PORT,
+    )
+}
 executors = {
     "default": ThreadPoolExecutor(100),
     "processpool": ProcessPoolExecutor(5),
 }
-sched = BackgroundScheduler(executors=executors)
+sched = BackgroundScheduler(
+    jobstores=jobstores if not TESTING else {}, executors=executors
+)
 
 # Add scheduled jobs
 sched.add_job(emails_job, "interval", minutes=EMAIL_MINUTES, max_instances=10)
