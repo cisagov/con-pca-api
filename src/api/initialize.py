@@ -249,4 +249,3 @@ def initialization_tasks():
         _reset_dirty_stats()
         _populate_stakeholder_shortname()
         _reset_processing()
-        # restart_subscriptions()
