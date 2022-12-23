@@ -13,6 +13,10 @@ async function getReport(filename, cycleId, reportType, nonhuman) {
     ],
   });
   const page = await browser.newPage();
+
+  // Configure the navigation timeout
+  await page.setDefaultNavigationTimeout(0);
+
   let url = `http://localhost:5000/api/cycle/${cycleId}/reports/${reportType}/`;
   if (nonhuman === "True") {
     url += "?nonhuman=true";
