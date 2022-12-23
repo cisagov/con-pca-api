@@ -30,7 +30,7 @@ async function getReport(filename, cycleId, reportType, nonhuman) {
     }
   });
 
-  await page.goto(url, { waitUntil: "networkidle2" });
+  await page.goto(url, { waitUntil: "networkidle2", timeout: 0 });
 
   await page.emulateMediaType("screen");
 

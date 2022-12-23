@@ -86,7 +86,6 @@ def process_subscription(subscription):
     for task in tasks:
         task["executed"] = True
         task["executed_date"] = datetime.utcnow()
-        logger.info(f"Processing task {task}")
         try:
             process_task(task, subscription, cycle) if task["scheduled_date"] > (
                 datetime.now(pytz.utc) - timedelta(days=1)
