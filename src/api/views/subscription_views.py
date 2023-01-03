@@ -144,10 +144,10 @@ class SubscriptionsPagedView(MethodView):
         if sortby != "name":
             sort_dict[sortby] = sortdirection
             sort_dict["name_no_inc"] = 1
-            sort_dict["name_inc"] = 1
+            sort_dict["created"] = 1
         else:
             sort_dict["name_no_inc"] = sortdirection
-            sort_dict["name_inc"] = sortdirection
+            sort_dict["created"] = sortdirection
 
         if request.args.get("template"):
             cycles = cycle_manager.all(
