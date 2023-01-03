@@ -7,7 +7,7 @@ Flask==2.2.2
 Flask-Cors==3.0.10
 geoip2==4.6.0
 gunicorn==20.1.0
-marshmallow==3.17.1
+marshmallow==3.19.0
 mongomock==4.1.2
 openpyxl==3.0.10
 Pillow==9.2.0
