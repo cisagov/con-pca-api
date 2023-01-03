@@ -29,8 +29,11 @@ class TargetSchema(BaseSchema):
     """CycleTargetSchema."""
 
     cycle_id = fields.Str()
+    cycle_oid = fields.Raw()
     subscription_id = fields.Str()
+    subscription_oid = fields.Raw()
     template_id = fields.Str()
+    template_oid = fields.Raw()
     email = fields.Email(required=True)
     first_name = fields.Str(required=False, allow_none=True)
     last_name = fields.Str(required=False, allow_none=True)
