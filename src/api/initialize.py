@@ -301,7 +301,7 @@ def _duplicate_oid_fields():
                     oid_name, ""
                 ):
                     logger.info(
-                        f"Updating {oid_name} for target {target.get('last_name')} to match {target.get(id_name)}."
+                        f"Updating {oid_name} for target {target.get('_id')} to match {target.get(id_name)}."
                     )
                     update_data[oid_name] = bson.objectid.ObjectId(
                         target.get(id_name, None)
