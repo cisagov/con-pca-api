@@ -5,6 +5,7 @@ import json
 import os
 
 # Third-Party Libraries
+import bson
 import pytz  # type: ignore
 import redis  # type: ignore
 
@@ -17,6 +18,7 @@ from api.manager import (
     NonHumanManager,
     RecommendationManager,
     SubscriptionManager,
+    TargetManager,
     TemplateManager,
 )
 from utils.logging import setLogger
@@ -30,6 +32,7 @@ cycle_manager = CycleManager()
 recommendation_manager = RecommendationManager()
 subscription_manager = SubscriptionManager()
 template_manager = TemplateManager()
+target_manager = TargetManager()
 nonhuman_manager = NonHumanManager()
 
 
@@ -150,6 +153,149 @@ def _reset_processing():
         )
 
 
+def _duplicate_oid_fields():
+    """For every string id field, create a duplicate which is an objectid."""
+    # Subscriptions
+    subscriptions = subscription_manager.all(
+        fields=[
+            "_id",
+            "name",
+            "customer_id",
+            "customer_oid",
+            "sending_profile_id",
+            "sending_profile_oid",
+            "landing_page_id",
+            "landing_page_oid",
+        ]
+    )
+    if not subscriptions:
+        logger.info("No subscriptions found for oid field duplication.")
+        return
+    for subscription in subscriptions:
+        for id_name in ["customer_id", "sending_profile_id", "landing_page_id"]:
+            if id_name in subscription:
+                oid_name = id_name.replace("_id", "_oid")
+                update_data = {}
+                if oid_name not in subscription or subscription.get(
+                    id_name, ""
+                ) != subscription.get(oid_name, ""):
+                    logger.info(
+                        f"Updating {oid_name} for subscription {subscription.get('name')} to match {subscription.get(id_name)}."
+                    )
+                    update_data[oid_name] = bson.objectid.ObjectId(
+                        subscription.get(id_name, None)
+                    )
+                subscription_manager.update(
+                    document_id=subscription["_id"], data=update_data
+                )
+
+    # Cycles
+    cycles = cycle_manager.all(
+        fields=[
+            "_id",
+            "name",
+            "subscription_id",
+            "subscription_oid",
+            "template_ids",
+            "template_oids",
+        ]
+    )
+    if not cycles:
+        logger.info("No cycles found for oid field duplication.")
+        return
+    for cycle in cycles:
+        if "subscription_oid" not in cycle or cycle.get(
+            "subscription_id", ""
+        ) != cycle.get("subscription_oid", ""):
+            logger.info(
+                f"Updating subscription_oid for cycle {cycle.get('_id')} to match {cycle.get('subscription_id')}."
+            )
+            cycle_manager.update(
+                document_id=subscription["_id"],
+                data={
+                    "subscription_oid": bson.objectid.ObjectId(
+                        cycle.get("subscription_id", None)
+                    ),
+                },
+            )
+        if "template_oids" not in cycle or cycle.get("template_ids", "") != cycle.get(
+            "template_oids", ""
+        ):
+            logger.info(
+                f"Updating template_oids for cycle {cycle.get('_id')} to match {cycle.get('template_ids')}."
+            )
+            template_oids = []
+            for id in cycle.get("template_ids", []):
+                template_oids.append(bson.objectid.ObjectId(id))
+            cycle_manager.update(
+                document_id=cycle["_id"],
+                data={
+                    "template_oids": template_oids,
+                },
+            )
+
+    # Templates
+    templates = template_manager.all(
+        fields=[
+            "_id",
+            "name",
+            "sending_profile_id",
+            "sending_profile_oid",
+            "landing_page_id",
+            "landing_page_oid",
+        ]
+    )
+    if not templates:
+        logger.info("No templates found for oid field duplication.")
+        return
+    for template in templates:
+        for id_name in ["sending_profile_id", "landing_page_id"]:
+            if id_name in template:
+                oid_name = id_name.replace("_id", "_oid")
+                update_data = {}
+                if oid_name not in template or template.get(
+                    id_name, ""
+                ) != template.get(oid_name, ""):
+                    logger.info(
+                        f"Updating {oid_name} for template {template.get('name')} to match {template.get(id_name)}."
+                    )
+                    update_data[oid_name] = bson.objectid.ObjectId(
+                        template.get(id_name, None)
+                    )
+                template_manager.update(document_id=template["_id"], data=update_data)
+
+    # Targets
+    targets = target_manager.all(
+        fields=[
+            "_id",
+            "cycle_id",
+            "cycle_oid",
+            "subscription_id",
+            "subscription_oid",
+            "template_id",
+            "template_oid",
+        ]
+    )
+    if not targets:
+        logger.info("No targets found for oid field duplication.")
+        return
+    for target in targets:
+        for id_name in ["cycle_id", "subscription_id", "template_id"]:
+            if id_name in target:
+                oid_name = id_name.replace("_id", "_oid")
+                update_data = {}
+                if oid_name not in target or target.get(id_name, "") != target.get(
+                    oid_name, ""
+                ):
+                    logger.info(
+                        f"Updating {oid_name} for target {target.get('last_name')} to match {target.get(id_name)}."
+                    )
+                    update_data[oid_name] = bson.objectid.ObjectId(
+                        target.get(id_name, None)
+                    )
+                target_manager.update(document_id=target["_id"], data=update_data)
+
+
 def _restart_logging_ttl_index(ttl_in_seconds=345600):
     """Create the ttl index."""
     try:
@@ -249,3 +395,4 @@ def initialization_tasks():
         _reset_dirty_stats()
         _populate_stakeholder_shortname()
         _reset_processing()
+        _duplicate_oid_fields()
