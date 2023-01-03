@@ -3,10 +3,11 @@ FROM python:3.10
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-RUN apt-get update -y && \
-    apt-get install -y python3-pip python-dev
+RUN curl -L https://deb.nodesource.com/setup_14.x | bash \
+    && apt-get update -y \
+    && apt-get install -y python3-pip python-dev
 
-RUN apt-get install -y nodejs npm chromium
+RUN apt-get install -y nodejs chromium
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
 WORKDIR /var/www/

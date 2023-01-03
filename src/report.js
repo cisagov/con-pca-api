@@ -13,6 +13,10 @@ async function getReport(filename, cycleId, reportType, nonhuman) {
     ],
   });
   const page = await browser.newPage();
+
+  // Configure the navigation timeout
+  await page.setDefaultNavigationTimeout(0);
+
   let url = `http://localhost:5000/api/cycle/${cycleId}/reports/${reportType}/`;
   if (nonhuman === "True") {
     url += "?nonhuman=true";
@@ -26,7 +30,7 @@ async function getReport(filename, cycleId, reportType, nonhuman) {
     }
   });
 
-  await page.goto(url, { waitUntil: "networkidle2" });
+  await page.goto(url, { waitUntil: "networkidle2", timeout: 0 });
 
   await page.emulateMediaType("screen");
 

@@ -2,6 +2,9 @@
 # Standard Python Libraries
 import random
 
+# cisagov Libraries
+from api.manager import TemplateManager
+
 
 class LEVELS:
     """Deception levels."""
@@ -19,6 +22,17 @@ def select_templates(templates: list, count: int = 1) -> list:
         sample_size = count if len(v) > count else len(v)
         response.append(random.sample(v, sample_size))
     return response
+
+
+def get_random_templates(subscription):
+    """Get three random templates that weren't just used."""
+    template_manager = TemplateManager()
+    templates = [
+        t
+        for t in template_manager.all({"retired": False})
+        if t not in subscription["templates_selected"]
+    ]
+    return sum(select_templates(templates), [])
 
 
 def group_templates(templates):

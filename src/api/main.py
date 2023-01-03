@@ -5,6 +5,8 @@ from logging import INFO, basicConfig
 from types import FunctionType, MethodType
 
 # Third-Party Libraries
+from apscheduler.executors.pool import ProcessPoolExecutor, ThreadPoolExecutor
+from apscheduler.jobstores.redis import RedisJobStore
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import render_template
 from flask.json import JSONEncoder
@@ -13,14 +15,15 @@ from marshmallow.exceptions import ValidationError
 # cisagov Libraries
 from api.app import app
 from api.commands.load_test_data import load_test_data
-from api.config.environment import EMAIL_MINUTES, FAILED_EMAIL_MINUTES, TASK_MINUTES
-from api.initialize import (
-    initialize_nonhumans,
-    initialize_recommendations,
-    initialize_templates,
-    populate_stakeholder_shortname,
-    reset_dirty_stats,
+from api.config.environment import (
+    EMAIL_MINUTES,
+    FAILED_EMAIL_MINUTES,
+    REDIS_HOST,
+    REDIS_PORT,
+    TASK_MINUTES,
+    TESTING,
 )
+from api.initialize import initialization_tasks
 from api.phish import emails_job
 from api.tasks import failed_emails_job, tasks_job
 from api.views.auth_views import (
@@ -46,7 +49,6 @@ from api.views.cycle_views import (
 )
 from api.views.db_views import DatabaseManagementView
 from api.views.failed_email_views import FailedEmailsView, FailedEmailView
-from api.views.landing_domain_views import LandingDomainsView, LandingDomainView
 from api.views.landing_page_views import (
     LandingPagesView,
     LandingPageTemplatesView,
@@ -57,20 +59,19 @@ from api.views.nonhuman_views import NonHumansView
 from api.views.recommendation_views import RecommendationsView, RecommendationView
 from api.views.report_views import (
     AggregateReportView,
+    OverdueTasksReportView,
     ReportEmailView,
     ReportHtmlView,
     ReportPdfView,
 )
 from api.views.sending_profile_views import SendingProfilesView, SendingProfileView
 from api.views.subscription_views import (
-    SubscriptionCountView,
     SubscriptionCurrentTemplatesView,
     SubscriptionHeaderView,
     SubscriptionLaunchView,
     SubscriptionNextTemplatesView,
     SubscriptionSafelistExportView,
     SubscriptionSafelistSendView,
-    SubscriptionsPagedView,
     SubscriptionsStatusView,
     SubscriptionsView,
     SubscriptionTestView,
@@ -113,9 +114,6 @@ rules = [
     # Failed Email Views
     ("/failedemails/", FailedEmailsView),
     ("/failedemail/<failed_email_id>/", FailedEmailView),
-    # Landing domains
-    ("/landingdomains/", LandingDomainsView),
-    ("/landingdomain/<landing_domain_id>", LandingDomainView),
     # Landing Page Views
     ("/landingpages/", LandingPagesView),
     ("/landingpage/<landing_page_id>/", LandingPageView),
@@ -129,6 +127,7 @@ rules = [
     ("/recommendation/<recommendation_id>/", RecommendationView),
     # Report Views
     ("/reports/aggregate/", AggregateReportView),
+    ("/reports/overduetasks/", OverdueTasksReportView),
     # Sector/Industry View
     ("/sectorindustry/", SectorIndustryView),
     # Sending Profile Views
@@ -136,12 +135,6 @@ rules = [
     ("/sendingprofile/<sending_profile_id>/", SendingProfileView),
     # Subscription Views
     ("/subscriptions/", SubscriptionsView),
-    ("/subscriptions/count/", SubscriptionCountView),
-    ("/subscriptionsPaged/", SubscriptionsPagedView),
-    (
-        "/subscriptionspaged/<page>/<pagesize>/<sortby>/<sortorder>/",
-        SubscriptionsPagedView,
-    ),
     ("/subscriptions/status/", SubscriptionsStatusView),
     ("/subscriptions/valid/", SubscriptionValidView),
     ("/subscription/<subscription_id>/", SubscriptionView),
@@ -152,12 +145,18 @@ rules = [
         "/subscription/<subscription_id>/safelist/export/",
         SubscriptionSafelistExportView,
     ),
-    ("/subscription/<subscription_id>/safelist/send/", SubscriptionSafelistSendView),
+    (
+        "/subscription/<subscription_id>/safelist/send/",
+        SubscriptionSafelistSendView,
+    ),
     (
         "/subscription/<subscription_id>/templates/current/",
         SubscriptionCurrentTemplatesView,
     ),
-    ("/subscription/<subscription_id>/templates/next/", SubscriptionNextTemplatesView),
+    (
+        "/subscription/<subscription_id>/templates/next/",
+        SubscriptionNextTemplatesView,
+    ),
     # Tag Views
     ("/tags/", TagsView),
     # Template Views
@@ -202,23 +201,35 @@ for rule in login_rules:
 basicConfig(level=INFO)
 logger = setLogger(__name__)
 
-# Start Background Jobs
-sched = BackgroundScheduler()
+# Initialize the scheduler
+jobstores = {
+    "default": RedisJobStore(
+        jobs_key="dispatched_jobs",
+        run_times_key="dispatched_running",
+        host=REDIS_HOST,
+        port=REDIS_PORT,
+    )
+}
+executors = {
+    "default": ThreadPoolExecutor(100),
+    "processpool": ProcessPoolExecutor(5),
+}
+sched = BackgroundScheduler(
+    jobstores=jobstores if not TESTING else {}, executors=executors
+)
+
+# Add scheduled jobs
 sched.add_job(emails_job, "interval", minutes=EMAIL_MINUTES, max_instances=10)
 sched.add_job(tasks_job, "interval", minutes=TASK_MINUTES, max_instances=10)
 sched.add_job(
     failed_emails_job, "interval", minutes=FAILED_EMAIL_MINUTES, max_instances=3
 )
-sched.start()
 
-# Initialize Database
-with app.app_context():
-    initialize_recommendations()
-    initialize_templates()
-    initialize_nonhumans()
-    reset_dirty_stats()
-    populate_stakeholder_shortname()
-    # restart_subscriptions()
+# Run initialization tasks
+initialization_tasks()
+
+# Launch the task scheduler
+sched.start()
 
 
 class CustomJSONEncoder(JSONEncoder):
@@ -274,6 +285,5 @@ def api_map():
 @app.cli.command("load-test-data")
 def load_dummy_data():
     """Load test data to db."""
-    initialize_templates()
     load_test_data()
     logger.info("Success.")

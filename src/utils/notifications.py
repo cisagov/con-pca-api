@@ -8,6 +8,7 @@ from flask import render_template
 
 # cisagov Libraries
 from api.config.application import AppConfig
+from api.config.environment import ARCHIVAL_EMAIL_ADDRESS
 from api.manager import SubscriptionManager, TemplateManager
 from utils.emails import Email
 from utils.logging import setLogger
@@ -141,7 +142,11 @@ class Notification:
         if report.get("to"):
             addresses["to"] = [get_email(report["to"])]
         if report.get("bcc"):
-            addresses["bcc"] = [get_email(report["bcc"])]
+            addresses["bcc"] = [
+                get_email(report["bcc"]),
+            ]
+            if ARCHIVAL_EMAIL_ADDRESS:
+                addresses["bcc"].append(ARCHIVAL_EMAIL_ADDRESS)
         if report.get("cc"):
             addresses["cc"] = [get_email(report["cc"])]
 
