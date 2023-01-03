@@ -65,7 +65,7 @@ class SubscriptionsView(MethodView):
             )
             return subscriptions
 
-        parameters["archived"] = {"$in": [False, None]}
+        parameters["archived"] = False
         if request.args.get("archived", "").lower() == "true":
             parameters["archived"] = True
 
@@ -118,6 +118,8 @@ class SubscriptionsView(MethodView):
             },
         ]
         subscriptions = subscription_manager.aggregate(pipeline)
+        for subscription in subscriptions:
+            subscription["_id"] = str(subscription["_id"])
 
         return jsonify(subscriptions)
 
@@ -256,8 +258,10 @@ class SubscriptionsStatusView(MethodView):
             },
         ]
         subscriptions = subscription_manager.aggregate(pipeline)
+        for subscription in subscriptions:
+            subscription["_id"] = str(subscription["_id"])
 
-        return subscriptions
+        return jsonify(subscriptions)
 
 
 class SubscriptionLaunchView(MethodView):
