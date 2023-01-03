@@ -177,8 +177,6 @@ class SubscriptionsPagedView(MethodView):
         pipeline = [
             {
                 "$addFields": {
-                    "subscription_id": {"$toString": "$_id"},
-                    "customer_object_id": {"$toObjectId": "$customer_id"},
                     "contact_full_name": {
                         "$concat": [
                             "$primary_contact.first_name",
@@ -186,7 +184,7 @@ class SubscriptionsPagedView(MethodView):
                             "$primary_contact.last_name",
                         ]
                     },
-                    "name_inc": {"$toInt": {"$last": {"$split": ["$name", "_"]}}},
+                    "name_inc": {"$last": {"$split": ["$name", "_"]}},
                     "name_no_inc": {"$first": {"$split": ["$name", "_"]}},
                     "target_count": {"$size": "$target_email_list"},
                 },
@@ -194,7 +192,7 @@ class SubscriptionsPagedView(MethodView):
             {
                 "$lookup": {
                     "from": "customer",
-                    "localField": "customer_object_id",
+                    "localField": "customer_oid",
                     "foreignField": "_id",
                     "as": "customer",
                 }
@@ -202,7 +200,7 @@ class SubscriptionsPagedView(MethodView):
             {
                 "$lookup": {
                     "from": "cycle",
-                    "let": {"subscription_id": "$subscription_id"},
+                    "let": {"subscription_id": "$_id"},
                     "pipeline": [
                         {
                             "$match": {
@@ -230,7 +228,7 @@ class SubscriptionsPagedView(MethodView):
             {"$limit": int(pagesize)},
             {
                 "$project": {
-                    "_id": {"$toString": "$_id"},
+                    "_id": "$_id",
                     "appendix_a_date": {"$max": "$customer.appendix_a_date"},
                     "cycle_start_date": {"$max": "$cycle.start_date"},
                     "created": "$created",
@@ -353,8 +351,6 @@ class SubscriptionCountView(MethodView):
         pipeline = [
             {
                 "$addFields": {
-                    "subscription_id": {"$toString": "$_id"},
-                    "customer_object_id": {"$toObjectId": "$customer_id"},
                     "contact_full_name": {
                         "$concat": [
                             "$primary_contact.first_name",
@@ -362,7 +358,7 @@ class SubscriptionCountView(MethodView):
                             "$primary_contact.last_name",
                         ]
                     },
-                    "name_inc": {"$toInt": {"$last": {"$split": ["$name", "_"]}}},
+                    "name_inc": {"$last": {"$split": ["$name", "_"]}},
                     "name_no_inc": {"$first": {"$split": ["$name", "_"]}},
                     "target_count": {"$size": "$target_email_list"},
                 },
@@ -370,7 +366,7 @@ class SubscriptionCountView(MethodView):
             {
                 "$lookup": {
                     "from": "customer",
-                    "localField": "customer_object_id",
+                    "localField": "customer_oid",
                     "foreignField": "_id",
                     "as": "customer",
                 }
