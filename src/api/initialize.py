@@ -178,9 +178,9 @@ def _duplicate_oid_fields():
             ):
                 oid_name = id_name.replace("_id", "_oid")
                 update_data = {}
-                if oid_name not in subscription or subscription.get(
-                    id_name, ""
-                ) != subscription.get(oid_name, ""):
+                if oid_name not in subscription or subscription.get(id_name, "") != str(
+                    subscription.get(oid_name, "")
+                ):
                     logger.info(
                         f"Updating {oid_name} for subscription {subscription.get('name', '')} to match {subscription.get(id_name, '')}."
                     )
@@ -209,7 +209,7 @@ def _duplicate_oid_fields():
         ):
             if "subscription_oid" not in cycle or cycle.get(
                 "subscription_id", ""
-            ) != cycle.get("subscription_oid", ""):
+            ) != str(cycle.get("subscription_oid", "")):
                 logger.info(
                     f"Updating subscription_oid for cycle {cycle.get('_id', '')} to match {cycle.get('subscription_id', '')}."
                 )
@@ -225,9 +225,9 @@ def _duplicate_oid_fields():
             ObjectId.is_valid(template_id)
             for template_id in cycle.get("template_ids", [])
         ):
-            if "template_oids" not in cycle or cycle.get(
-                "template_ids", ""
-            ) != cycle.get("template_oids", ""):
+            if "template_oids" not in cycle or cycle.get("template_ids", "") != [
+                str(each) for each in cycle.get("template_oids", "")
+            ]:
                 logger.info(
                     f"Updating template_oids for cycle {cycle.get('_id', '')} to match {cycle.get('template_ids', [])}."
                 )
@@ -260,9 +260,9 @@ def _duplicate_oid_fields():
             if id_name in template and ObjectId.is_valid(template.get(id_name, "")):
                 oid_name = id_name.replace("_id", "_oid")
                 update_data = {"name": template.get("name")}
-                if oid_name not in template or template.get(
-                    id_name, ""
-                ) != template.get(oid_name, ""):
+                if oid_name not in template or template.get(id_name, "") != str(
+                    template.get(oid_name, "")
+                ):
                     logger.info(
                         f"Updating {oid_name} for template {template.get('name', '')} to match {template.get(id_name, '')}."
                     )
@@ -291,8 +291,8 @@ def _duplicate_oid_fields():
             if id_name in target and ObjectId.is_valid(target.get(id_name, "")):
                 oid_name = id_name.replace("_id", "_oid")
                 update_data = {}
-                if oid_name not in target or target.get(id_name, "") != target.get(
-                    oid_name, ""
+                if oid_name not in target or target.get(id_name, "") != str(
+                    target.get(oid_name, "")
                 ):
                     logger.info(
                         f"Updating {oid_name} for target {target.get('email', '')} to match {target.get(id_name, '')}."
