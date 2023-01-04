@@ -267,7 +267,9 @@ def _duplicate_oid_fields():
                         f"Updating {oid_name} for template {template.get('name')} to match {template.get(id_name)}."
                     )
                     update_data[oid_name] = ObjectId(template.get(id_name, None))
-                template_manager.update(document_id=template["_id"], data=update_data)
+                    template_manager.update(
+                        document_id=template["_id"], data=update_data
+                    )
 
     # Targets
     targets = target_manager.all(
