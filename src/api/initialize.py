@@ -259,7 +259,7 @@ def _duplicate_oid_fields():
         for id_name in ["sending_profile_id", "landing_page_id"]:
             if id_name in template and ObjectId.is_valid(template.get(id_name, "")):
                 oid_name = id_name.replace("_id", "_oid")
-                update_data = {}
+                update_data = {"name": template.get("name")}
                 if oid_name not in template or template.get(
                     id_name, ""
                 ) != template.get(oid_name, ""):
@@ -295,7 +295,7 @@ def _duplicate_oid_fields():
                     oid_name, ""
                 ):
                     logger.info(
-                        f"Updating {oid_name} for target {target.get('_id', '')} to match {target.get(id_name, '')}."
+                        f"Updating {oid_name} for target {target.get('email', '')} to match {target.get(id_name, '')}."
                     )
                     update_data[oid_name] = ObjectId(target.get(id_name, None))
                 target_manager.update(document_id=target["_id"], data=update_data)
