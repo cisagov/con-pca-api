@@ -17,4 +17,4 @@ class FailedEmailSchema(BaseSchema):
     error_type = fields.Str()
     message_id = fields.Str()
     reason = fields.Str()
-    removed = fields.Bool(missing=False)
+    removed = fields.Bool(load_default=False)
