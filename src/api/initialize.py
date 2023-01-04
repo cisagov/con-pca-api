@@ -174,13 +174,13 @@ def _duplicate_oid_fields():
     for subscription in subscriptions:
         for id_name in ["customer_id", "sending_profile_id", "landing_page_id"]:
             if id_name in subscription and ObjectId.is_valid(
-                subscription.get("id_name", "")
+                subscription.get(id_name, "")
             ):
                 oid_name = id_name.replace("_id", "_oid")
                 update_data = {}
-                if oid_name not in subscription or subscription.get(
-                    id_name, ""
-                ) != subscription.get(oid_name, ""):
+                if oid_name not in subscription or subscription.get(id_name, "") != str(
+                    subscription.get(oid_name, "")
+                ):
                     logger.info(
                         f"Updating {oid_name} for subscription {subscription.get('name', '')} to match {subscription.get(id_name, '')}."
                     )
@@ -209,12 +209,12 @@ def _duplicate_oid_fields():
         ):
             if "subscription_oid" not in cycle or cycle.get(
                 "subscription_id", ""
-            ) != cycle.get("subscription_oid", ""):
+            ) != str(cycle.get("subscription_oid", "")):
                 logger.info(
                     f"Updating subscription_oid for cycle {cycle.get('_id', '')} to match {cycle.get('subscription_id', '')}."
                 )
                 cycle_manager.update(
-                    document_id=subscription.get("_id", ""),
+                    document_id=cycle.get("_id", ""),
                     data={
                         "subscription_oid": ObjectId(
                             cycle.get("subscription_id", None)
@@ -225,9 +225,9 @@ def _duplicate_oid_fields():
             ObjectId.is_valid(template_id)
             for template_id in cycle.get("template_ids", [])
         ):
-            if "template_oids" not in cycle or cycle.get(
-                "template_ids", ""
-            ) != cycle.get("template_oids", ""):
+            if "template_oids" not in cycle or cycle.get("template_ids", "") != [
+                str(each) for each in cycle.get("template_oids", "")
+            ]:
                 logger.info(
                     f"Updating template_oids for cycle {cycle.get('_id', '')} to match {cycle.get('template_ids', [])}."
                 )
@@ -260,9 +260,9 @@ def _duplicate_oid_fields():
             if id_name in template and ObjectId.is_valid(template.get(id_name, "")):
                 oid_name = id_name.replace("_id", "_oid")
                 update_data = {"name": template.get("name")}
-                if oid_name not in template or template.get(
-                    id_name, ""
-                ) != template.get(oid_name, ""):
+                if oid_name not in template or template.get(id_name, "") != str(
+                    template.get(oid_name, "")
+                ):
                     logger.info(
                         f"Updating {oid_name} for template {template.get('name', '')} to match {template.get(id_name, '')}."
                     )
@@ -270,35 +270,6 @@ def _duplicate_oid_fields():
                     template_manager.update(
                         document_id=template["_id"], data=update_data
                     )
-
-    # Targets
-    targets = target_manager.all(
-        fields=[
-            "_id",
-            "cycle_id",
-            "cycle_oid",
-            "subscription_id",
-            "subscription_oid",
-            "template_id",
-            "template_oid",
-        ]
-    )
-    if not targets:
-        logger.info("No targets found for oid field duplication.")
-        return
-    for target in targets:
-        for id_name in ["cycle_id", "subscription_id", "template_id"]:
-            if id_name in target and ObjectId.is_valid(target.get(id_name, "")):
-                oid_name = id_name.replace("_id", "_oid")
-                update_data = {}
-                if oid_name not in target or target.get(id_name, "") != target.get(
-                    oid_name, ""
-                ):
-                    logger.info(
-                        f"Updating {oid_name} for target {target.get('email', '')} to match {target.get(id_name, '')}."
-                    )
-                    update_data[oid_name] = ObjectId(target.get(id_name, None))
-                target_manager.update(document_id=target["_id"], data=update_data)
 
 
 def _restart_logging_ttl_index(ttl_in_seconds=345600):
