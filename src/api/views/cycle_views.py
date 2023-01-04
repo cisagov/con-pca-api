@@ -40,7 +40,25 @@ class CycleView(MethodView):
 
     def get(self, cycle_id):
         """Get a cycle."""
-        return cycle_manager.get(document_id=cycle_id)
+        return cycle_manager.get(
+            document_id=cycle_id,
+            fields=[
+                "_id",
+                "subscription_id",
+                "template_ids",
+                "start_date",
+                "end_date",
+                "send_by_date",
+                "active",
+                "target_count",
+                "tasks",
+                "dirty_stats",
+                "stats",
+                "nonhuman_stats",
+                "phish_header",
+                "manual_reports",
+            ],
+        )
 
     def delete(self, cycle_id):
         """Delete a cycle."""
