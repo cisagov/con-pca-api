@@ -271,35 +271,6 @@ def _duplicate_oid_fields():
                         document_id=template["_id"], data=update_data
                     )
 
-    # Targets
-    targets = target_manager.all(
-        fields=[
-            "_id",
-            "cycle_id",
-            "cycle_oid",
-            "subscription_id",
-            "subscription_oid",
-            "template_id",
-            "template_oid",
-        ]
-    )
-    if not targets:
-        logger.info("No targets found for oid field duplication.")
-        return
-    for target in targets:
-        for id_name in ["cycle_id", "subscription_id", "template_id"]:
-            if id_name in target and ObjectId.is_valid(target.get(id_name, "")):
-                oid_name = id_name.replace("_id", "_oid")
-                update_data = {}
-                if oid_name not in target or target.get(id_name, "") != str(
-                    target.get(oid_name, "")
-                ):
-                    logger.info(
-                        f"Updating {oid_name} for target {target.get('email', '')} to match {target.get(id_name, '')}."
-                    )
-                    update_data[oid_name] = ObjectId(target.get(id_name, None))
-                target_manager.update(document_id=target["_id"], data=update_data)
-
 
 def _restart_logging_ttl_index(ttl_in_seconds=345600):
     """Create the ttl index."""
