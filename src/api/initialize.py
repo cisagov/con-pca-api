@@ -174,7 +174,7 @@ def _duplicate_oid_fields():
     for subscription in subscriptions:
         for id_name in ["customer_id", "sending_profile_id", "landing_page_id"]:
             if id_name in subscription and ObjectId.is_valid(
-                subscription.get("id_name", "")
+                subscription.get(id_name, "")
             ):
                 oid_name = id_name.replace("_id", "_oid")
                 update_data = {}
@@ -214,7 +214,7 @@ def _duplicate_oid_fields():
                     f"Updating subscription_oid for cycle {cycle.get('_id', '')} to match {cycle.get('subscription_id', '')}."
                 )
                 cycle_manager.update(
-                    document_id=subscription.get("_id", ""),
+                    document_id=cycle.get("_id", ""),
                     data={
                         "subscription_oid": ObjectId(
                             cycle.get("subscription_id", None)
