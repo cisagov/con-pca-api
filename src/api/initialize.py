@@ -182,7 +182,7 @@ def _duplicate_oid_fields():
                     id_name, ""
                 ) != subscription.get(oid_name, ""):
                     logger.info(
-                        f"Updating {oid_name} for subscription {subscription.get('name')} to match {subscription.get(id_name)}."
+                        f"Updating {oid_name} for subscription {subscription.get('name', '')} to match {subscription.get(id_name, '')}."
                     )
                     update_data[oid_name] = ObjectId(subscription.get(id_name, None))
                 subscription_manager.update(
@@ -211,10 +211,10 @@ def _duplicate_oid_fields():
                 "subscription_id", ""
             ) != cycle.get("subscription_oid", ""):
                 logger.info(
-                    f"Updating subscription_oid for cycle {cycle.get('_id')} to match {cycle.get('subscription_id')}."
+                    f"Updating subscription_oid for cycle {cycle.get('_id', '')} to match {cycle.get('subscription_id', '')}."
                 )
                 cycle_manager.update(
-                    document_id=subscription.get("_id"),
+                    document_id=subscription.get("_id", ""),
                     data={
                         "subscription_oid": ObjectId(
                             cycle.get("subscription_id", None)
@@ -229,7 +229,7 @@ def _duplicate_oid_fields():
                 "template_ids", ""
             ) != cycle.get("template_oids", ""):
                 logger.info(
-                    f"Updating template_oids for cycle {cycle.get('_id')} to match {cycle.get('template_ids')}."
+                    f"Updating template_oids for cycle {cycle.get('_id', '')} to match {cycle.get('template_ids', [])}."
                 )
                 template_oids = []
                 for id in cycle.get("template_ids", []):
@@ -242,34 +242,34 @@ def _duplicate_oid_fields():
                 )
 
     # Templates
-    # templates = template_manager.all(
-    #     fields=[
-    #         "_id",
-    #         "name",
-    #         "sending_profile_id",
-    #         "sending_profile_oid",
-    #         "landing_page_id",
-    #         "landing_page_oid",
-    #     ]
-    # )
-    # if not templates:
-    #     logger.info("No templates found for oid field duplication.")
-    #     return
-    # for template in templates:
-    #     for id_name in ["sending_profile_id", "landing_page_id"]:
-    #         if id_name in template and ObjectId.is_valid(template.get(id_name, "")):
-    #             oid_name = id_name.replace("_id", "_oid")
-    #             update_data = {}
-    #             if oid_name not in template or template.get(
-    #                 id_name, ""
-    #             ) != template.get(oid_name, ""):
-    #                 logger.info(
-    #                     f"Updating {oid_name} for template {template.get('name')} to match {template.get(id_name)}."
-    #                 )
-    #                 update_data[oid_name] = ObjectId(template.get(id_name, None))
-    #                 template_manager.update(
-    #                     document_id=template["_id"], data=update_data
-    #                 )
+    templates = template_manager.all(
+        fields=[
+            "_id",
+            "name",
+            "sending_profile_id",
+            "sending_profile_oid",
+            "landing_page_id",
+            "landing_page_oid",
+        ]
+    )
+    if not templates:
+        logger.info("No templates found for oid field duplication.")
+        return
+    for template in templates:
+        for id_name in ["sending_profile_id", "landing_page_id"]:
+            if id_name in template and ObjectId.is_valid(template.get(id_name, "")):
+                oid_name = id_name.replace("_id", "_oid")
+                update_data = {}
+                if oid_name not in template or template.get(
+                    id_name, ""
+                ) != template.get(oid_name, ""):
+                    logger.info(
+                        f"Updating {oid_name} for template {template.get('name', '')} to match {template.get(id_name, '')}."
+                    )
+                    update_data[oid_name] = ObjectId(template.get(id_name, None))
+                    template_manager.update(
+                        document_id=template["_id"], data=update_data
+                    )
 
     # Targets
     targets = target_manager.all(
@@ -295,7 +295,7 @@ def _duplicate_oid_fields():
                     oid_name, ""
                 ):
                     logger.info(
-                        f"Updating {oid_name} for target {target.get('_id')} to match {target.get(id_name)}."
+                        f"Updating {oid_name} for target {target.get('_id', '')} to match {target.get(id_name, '')}."
                     )
                     update_data[oid_name] = ObjectId(target.get(id_name, None))
                 target_manager.update(document_id=target["_id"], data=update_data)
