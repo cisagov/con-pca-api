@@ -188,6 +188,20 @@ class Manager:
             query.limit(limit)
         return self.read_data(query, many=True)
 
+    def page(
+        self,
+        params=None,
+        fields=None,
+        sortBy="_id:",
+        sortOrder="1",
+        pagesize=10,
+        page=0,
+        searchfilter="",
+    ):
+        """Get subscribtptions in paginated format."""
+        customers = self.db.aggregate(params)
+        return self.read_data(customers, many=True)
+
     def delete(self, document_id=None, params=None):
         """Delete item by object id."""
         if document_id:

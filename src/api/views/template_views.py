@@ -35,7 +35,28 @@ class TemplatesView(MethodView):
             parameters["retired"] = True
 
         templates = []
-        for template in template_manager.all(params=parameters):
+        for template in template_manager.all(
+            params=parameters,
+            fields=[
+                "name",
+                "landing_page_id",
+                "sending_profile_id",
+                "deception_score",
+                "from_address",
+                "retired",
+                "retired_description",
+                "sophisticated",
+                "red_flag",
+                "subject",
+                "text",
+                "html",
+                "indicators",
+                "created",
+                "created_by",
+                "updated",
+                "updated_by",
+            ],
+        ):
             sending_profile_id = template.get("sending_profile_id")
             template["sending_profile_domain"] = ""
             if sending_profile_id:
@@ -56,7 +77,30 @@ class TemplateView(MethodView):
 
     def get(self, template_id):
         """Get."""
-        return jsonify(template_manager.get(document_id=template_id))
+        return jsonify(
+            template_manager.get(
+                document_id=template_id,
+                fields=[
+                    "name",
+                    "landing_page_id",
+                    "sending_profile_id",
+                    "deception_score",
+                    "from_address",
+                    "retired",
+                    "retired_description",
+                    "sophisticated",
+                    "red_flag",
+                    "subject",
+                    "text",
+                    "html",
+                    "indicators",
+                    "created",
+                    "created_by",
+                    "updated",
+                    "updated_by",
+                ],
+            )
+        )
 
     def put(self, template_id):
         """Put."""

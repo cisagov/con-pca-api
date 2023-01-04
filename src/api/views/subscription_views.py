@@ -1,6 +1,7 @@
 """Subscription Views."""
 # Standard Python Libraries
-from datetime import timedelta
+from collections import OrderedDict
+from datetime import datetime, timedelta
 import os
 
 # Third-Party Libraries
@@ -135,6 +136,315 @@ class SubscriptionsView(MethodView):
         return jsonify(response)
 
 
+class SubscriptionsPagedView(MethodView):
+    """Subscriptions Paged View."""
+
+    def get(self, page, pagesize, sortby, sortorder):
+        """Get."""
+        parameters = dict(request.args)
+        parameters = subscription_manager.get_query(parameters)
+
+        sortdirection = 1
+        if sortorder == "desc":
+            sortdirection = -1
+
+        sort_dict = OrderedDict()
+        if sortby != "name":
+            sort_dict[sortby] = sortdirection
+            sort_dict["name_no_inc"] = 1
+            sort_dict["created"] = 1
+        else:
+            sort_dict["name_no_inc"] = sortdirection
+            sort_dict["created"] = sortdirection
+
+        if request.args.get("template"):
+            cycles = cycle_manager.all(
+                params={"template_ids": request.args["template"]},
+                fields=["subscription_id"],
+            )
+            subscription_ids = list({c["subscription_id"] for c in cycles})
+            parameters["$or"] = [
+                {"_id": {"$in": subscription_ids}},
+                {"templates_selected": request.args["template"]},
+            ]
+
+        if "archived" in request.args:
+            archived = [
+                # { "archived": True  },
+                {"archived": True},
+            ]
+        else:
+            archived = [{"archived": {"$exists": False}}, {"archived": False}]
+
+        if request.args.get("archived", "").lower() == "true":
+            parameters["archived"] = True
+
+        compareDate = datetime.now()
+        compareDate += timedelta(days=1)
+
+        pipeline = [
+            {
+                "$addFields": {
+                    "contact_full_name": {
+                        "$concat": [
+                            "$primary_contact.first_name",
+                            " ",
+                            "$primary_contact.last_name",
+                        ]
+                    },
+                    "name_inc": {"$last": {"$split": ["$name", "_"]}},
+                    "name_no_inc": {"$first": {"$split": ["$name", "_"]}},
+                    "target_count": {"$size": "$target_email_list"},
+                },
+            },
+            {
+                "$lookup": {
+                    "from": "customer",
+                    "localField": "customer_oid",
+                    "foreignField": "_id",
+                    "as": "customer",
+                }
+            },
+            {
+                "$lookup": {
+                    "from": "cycle",
+                    "let": {"subscription_id": "$_id"},
+                    "pipeline": [
+                        {
+                            "$match": {
+                                "$and": [
+                                    {
+                                        "start_date": {"$lte": compareDate},
+                                    },
+                                    {
+                                        "$expr": {
+                                            "$eq": [
+                                                "$subscription_id",
+                                                "$$subscription_id",
+                                            ]
+                                        }
+                                    },
+                                ]
+                            }
+                        }
+                    ],
+                    "as": "cycle",
+                }
+            },
+            {"$sort": sort_dict},
+            {"$skip": int(page) * int(pagesize)},
+            {"$limit": int(pagesize)},
+            {
+                "$project": {
+                    "_id": "$_id",
+                    "appendix_a_date": {"$max": "$customer.appendix_a_date"},
+                    "cycle_start_date": {"$max": "$cycle.start_date"},
+                    "created": "$created",
+                    "target_domain": "$target_domain",
+                    "customer_id": "$customer_id",
+                    "name": "$name",
+                    "status": "$status",
+                    "start_date": "$start_date",
+                    "cycle_length_minutes": "$cycle_length_minutes",
+                    "cooldown_minutes": "$cooldown_minutes",
+                    "buffer_time_minutes": "$buffer_time_minutes",
+                    "active": {"$anyElementTrue": "$cycle.active"},
+                    "archived": "$archived",
+                    "primary_contact": "$primary_contact",
+                    "admin_email": "$admin_email",
+                    "target_email_list": "$target_email_list",
+                    "continuous_subscription": "$continuous_subscription",
+                    "created_by": "$created_by",
+                    "updated": "$updated",
+                    "updated_by": "$updated_by",
+                }
+            },
+        ]
+
+        filter_val = request.args.get("searchFilter")
+        if request.args.get("searchFilter"):
+            filter_val = request.args.get("searchFilter")
+            pipeline.insert(
+                2,
+                {
+                    "$match": {
+                        "$and": [
+                            {
+                                "$or": [
+                                    {"name": {"$regex": filter_val, "$options": "i"}},
+                                    {"status": {"$regex": filter_val, "$options": "i"}},
+                                    {
+                                        "primary_contact.first_name": {
+                                            "$regex": filter_val,
+                                            "$options": "i",
+                                        }
+                                    },
+                                    {
+                                        "primary_contact.last_name": {
+                                            "$regex": filter_val,
+                                            "$options": "i",
+                                        }
+                                    },
+                                    {
+                                        "contact_full_name": {
+                                            "$regex": filter_val,
+                                            "$options": "i",
+                                        }
+                                    },
+                                    {
+                                        "target_domain": {
+                                            "$regex": filter_val,
+                                            "$options": "i",
+                                        }
+                                    },
+                                    {
+                                        "customer.name": {
+                                            "$regex": filter_val,
+                                            "$options": "i",
+                                        }
+                                    },
+                                ]
+                            },
+                            {"$or": archived},
+                        ]
+                    }
+                },
+            )
+        else:
+            pipeline.insert(
+                2,
+                {"$match": {"$or": archived}},
+            )
+
+        subscriptions = subscription_manager.page(
+            params=pipeline,
+        )
+
+        return jsonify(subscriptions)
+
+
+class SubscriptionCountView(MethodView):
+    """SubscriptionCountView."""
+
+    def get(self):
+        """Get the count of subscriptions."""
+        parameters = dict(request.args)
+        parameters = subscription_manager.get_query(parameters)
+
+        if request.args.get("template"):
+            cycles = cycle_manager.all(
+                params={"template_ids": request.args["template"]},
+                fields=["subscription_id"],
+            )
+            subscription_ids = list({c["subscription_id"] for c in cycles})
+            parameters["$or"] = [
+                {"_id": {"$in": subscription_ids}},
+                {"templates_selected": request.args["template"]},
+            ]
+
+        if "archived" in request.args:
+            archived = [
+                # { "archived": True  },
+                {"archived": True},
+            ]
+        else:
+            archived = [{"archived": {"$exists": False}}, {"archived": False}]
+
+        if request.args.get("archived", "").lower() == "true":
+            parameters["archived"] = True
+
+        compareDate = datetime.now()
+        compareDate += timedelta(days=1)
+
+        pipeline = [
+            {
+                "$addFields": {
+                    "contact_full_name": {
+                        "$concat": [
+                            "$primary_contact.first_name",
+                            " ",
+                            "$primary_contact.last_name",
+                        ]
+                    },
+                    "name_inc": {"$last": {"$split": ["$name", "_"]}},
+                    "name_no_inc": {"$first": {"$split": ["$name", "_"]}},
+                    "target_count": {"$size": "$target_email_list"},
+                },
+            },
+            {
+                "$lookup": {
+                    "from": "customer",
+                    "localField": "customer_oid",
+                    "foreignField": "_id",
+                    "as": "customer",
+                }
+            },
+        ]
+
+        filter_val = request.args.get("searchFilter")
+        if request.args.get("searchFilter"):
+            filter_val = request.args.get("searchFilter")
+            pipeline.insert(
+                2,
+                {
+                    "$match": {
+                        "$and": [
+                            {
+                                "$or": [
+                                    {"name": {"$regex": filter_val, "$options": "i"}},
+                                    {"status": {"$regex": filter_val, "$options": "i"}},
+                                    {
+                                        "primary_contact.first_name": {
+                                            "$regex": filter_val,
+                                            "$options": "i",
+                                        }
+                                    },
+                                    {
+                                        "primary_contact.last_name": {
+                                            "$regex": filter_val,
+                                            "$options": "i",
+                                        }
+                                    },
+                                    {
+                                        "contact_full_name": {
+                                            "$regex": filter_val,
+                                            "$options": "i",
+                                        }
+                                    },
+                                    {
+                                        "target_domain": {
+                                            "$regex": filter_val,
+                                            "$options": "i",
+                                        }
+                                    },
+                                    {
+                                        "customer.name": {
+                                            "$regex": filter_val,
+                                            "$options": "i",
+                                        }
+                                    },
+                                ]
+                            },
+                            {"$or": archived},
+                        ]
+                    }
+                },
+            )
+        else:
+            pipeline.insert(
+                2,
+                {"$match": {"$or": archived}},
+            )
+
+        subscriptionCount = len(
+            subscription_manager.page(
+                params=pipeline,
+            )
+        )
+
+        return str(subscriptionCount)
+
+
 class SubscriptionView(MethodView):
     """SubscriptionView."""
 
@@ -143,6 +453,45 @@ class SubscriptionView(MethodView):
         return jsonify(
             subscription_manager.get(
                 document_id=subscription_id,
+                fields=[
+                    "name",
+                    "customer_id",
+                    "sending_profile_id",
+                    "target_domain",
+                    "customer",
+                    "start_date",
+                    "primary_contact",
+                    "admin_email",
+                    "operator_email",
+                    "status",
+                    "cycle_start_date",
+                    "target_email_list",
+                    "templates_selected",
+                    "next_templates",
+                    "continuous_subscription",
+                    "buffer_time_minutes",
+                    "cycle_length_minutes",
+                    "cooldown_minutes",
+                    "report_frequency_minutes",
+                    "tasks",
+                    "processing",
+                    "archived",
+                    "page",
+                    "page_count",
+                    "sortby",
+                    "sortorder",
+                    "notification_history",
+                    "phish_header",
+                    "reporting_password",
+                    "test_results",
+                    "landing_page_id",
+                    "landing_domain",
+                    "landing_page_url",
+                    "created",
+                    "created_by",
+                    "updated",
+                    "updated_by",
+                ],
             )
         )
 
