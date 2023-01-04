@@ -65,53 +65,61 @@ class SubscriptionsView(MethodView):
             )
             return subscriptions
 
-        parameters["archived"] = {"$in": [False, None]}
+        parameters["archived"] = False
         if request.args.get("archived", "").lower() == "true":
             parameters["archived"] = True
 
-        subscriptions = subscription_manager.all(
-            params=parameters,
-            fields=[
-                "_id",
-                "customer_id",
-                "name",
-                "status",
-                "start_date",
-                "cycle_length_minutes",
-                "cooldown_minutes",
-                "buffer_time_minutes",
-                "active",
-                "archived",
-                "primary_contact",
-                "admin_email",
-                "target_email_list",
-                "continuous_subscription",
-                "created",
-                "created_by",
-                "updated",
-                "updated_by",
-                "target_domain",
-            ],
-        )
-
-        # TODO: refactor to leverage mongo queries.
-        cycles = cycle_manager.all(
-            fields=["subscription_id", "start_date", "end_date", "active"]
-        )
-        for s in subscriptions:
-            # Add appendix A date & cycle data to subscription
-            customer = customer_manager.get(
-                document_id=s["customer_id"], fields=["_id", "appendix_a_date"]
-            )
-            cycles = cycle_manager.all(params={"subscription_id": s["_id"]})
-            cycle = sorted(cycles, key=lambda d: d["start_date"])[0] if cycles else {}
-            s.update(
-                {
-                    "cycle_start_date": cycle.get("start_date", ""),
-                    "cycle_end_date": cycle.get("end_date", ""),
-                    "appendix_a_date": customer["appendix_a_date"],
+        pipeline = [
+            {
+                "$match": {"archived": {"$in": [False, None]}}
+                if not parameters["archived"]
+                else {"archived": {"$nin": [False, None]}}
+            },
+            {
+                "$lookup": {
+                    "from": "cycle",
+                    "localField": "_id",
+                    "foreignField": "subscription_oid",
+                    "as": "cycle",
                 }
-            )
+            },
+            {
+                "$lookup": {
+                    "from": "customer",
+                    "localField": "customer_oid",
+                    "foreignField": "_id",
+                    "as": "customer",
+                }
+            },
+            {
+                "$project": {
+                    "_id": "$_id",
+                    "appendix_a_date": {"$max": "$customer.appendix_a_date"},
+                    "cycle_start_date": {"$max": "$cycle.start_date"},
+                    "created": "$created",
+                    "target_domain": "$target_domain",
+                    "customer_id": "$customer_id",
+                    "name": "$name",
+                    "status": "$status",
+                    "start_date": "$start_date",
+                    "cycle_length_minutes": "$cycle_length_minutes",
+                    "cooldown_minutes": "$cooldown_minutes",
+                    "buffer_time_minutes": "$buffer_time_minutes",
+                    "active": {"$anyElementTrue": "$cycle.active"},
+                    "archived": "$archived",
+                    "primary_contact": "$primary_contact",
+                    "admin_email": "$admin_email",
+                    "target_email_list": "$target_email_list",
+                    "continuous_subscription": "$continuous_subscription",
+                    "created_by": "$created_by",
+                    "updated": "$updated",
+                    "updated_by": "$updated_by",
+                }
+            },
+        ]
+        subscriptions = subscription_manager.aggregate(pipeline)
+        for subscription in subscriptions:
+            subscription["_id"] = str(subscription["_id"])
 
         return jsonify(subscriptions)
 
@@ -204,37 +212,54 @@ class SubscriptionsStatusView(MethodView):
 
     def get(self):
         """Get data for the Overview Subscription Status Page."""
-        subscriptions = subscription_manager.all(
-            params={"archived": {"$in": [False, None]}},
-            fields=[
-                "_id",
-                "customer_id",
-                "name",
-                "status",
-                "start_date",
-                "active",
-                "continuous_subscription",
-                "created",
-                "updated",
-            ],
-        )
-        cycles = cycle_manager.all(
-            fields=["subscription_id", "start_date", "end_date", "active"]
-        )
-        for s in subscriptions:
-            # Add appendix A date & cycle data to subscription
-            customer = customer_manager.get(
-                document_id=s["customer_id"], fields=["_id", "appendix_a_date"]
-            )
-            cycles = cycle_manager.all(params={"subscription_id": s["_id"]})
-            cycle = sorted(cycles, key=lambda d: d["start_date"])[0] if cycles else {}
-            s.update(
-                {
-                    "cycle_start_date": cycle.get("start_date", ""),
-                    "cycle_end_date": cycle.get("end_date", ""),
-                    "appendix_a_date": customer["appendix_a_date"],
+        pipeline = [
+            {"$match": {"archived": {"$in": [False, None]}}},
+            {
+                "$lookup": {
+                    "from": "cycle",
+                    "localField": "_id",
+                    "foreignField": "subscription_oid",
+                    "as": "cycle",
                 }
-            )
+            },
+            {
+                "$lookup": {
+                    "from": "customer",
+                    "localField": "customer_oid",
+                    "foreignField": "_id",
+                    "as": "customer",
+                }
+            },
+            {
+                "$project": {
+                    "_id": "$_id",
+                    "appendix_a_date": {"$max": "$customer.appendix_a_date"},
+                    "cycle_start_date": {"$max": "$cycle.start_date"},
+                    "cycle_end_date": {"$max": "$cycle.end_date"},
+                    "active": {"$anyElementTrue": "$cycle.active"},
+                    "created": "$created",
+                    "target_domain": "$target_domain",
+                    "customer_id": "$customer_id",
+                    "name": "$name",
+                    "status": "$status",
+                    "start_date": "$start_date",
+                    "cycle_length_minutes": "$cycle_length_minutes",
+                    "cooldown_minutes": "$cooldown_minutes",
+                    "buffer_time_minutes": "$buffer_time_minutes",
+                    "archived": "$archived",
+                    "primary_contact": "$primary_contact",
+                    "admin_email": "$admin_email",
+                    "target_email_list": "$target_email_list",
+                    "continuous_subscription": "$continuous_subscription",
+                    "created_by": "$created_by",
+                    "updated": "$updated",
+                    "updated_by": "$updated_by",
+                }
+            },
+        ]
+        subscriptions = subscription_manager.aggregate(pipeline)
+        for subscription in subscriptions:
+            subscription["_id"] = str(subscription["_id"])
 
         return jsonify(subscriptions)
 
