@@ -51,6 +51,10 @@ class TemplatesView(MethodView):
                 "text",
                 "html",
                 "indicators",
+                "created",
+                "created_by",
+                "updated",
+                "updated_by",
             ],
         ):
             sending_profile_id = template.get("sending_profile_id")
@@ -90,6 +94,10 @@ class TemplateView(MethodView):
                     "text",
                     "html",
                     "indicators",
+                    "created",
+                    "created_by",
+                    "updated",
+                    "updated_by",
                 ],
             )
         )

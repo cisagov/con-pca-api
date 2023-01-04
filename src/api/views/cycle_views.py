@@ -30,6 +30,10 @@ class CyclesView(MethodView):
                     "target_count",
                     "phish_header",
                     "manual_reports",
+                    "created",
+                    "created_by",
+                    "updated",
+                    "updated_by",
                 ],
             )
         )
@@ -57,6 +61,10 @@ class CycleView(MethodView):
                 "nonhuman_stats",
                 "phish_header",
                 "manual_reports",
+                "created",
+                "created_by",
+                "updated",
+                "updated_by",
             ],
         )
 

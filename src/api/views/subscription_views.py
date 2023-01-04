@@ -479,6 +479,10 @@ class SubscriptionView(MethodView):
                     "landing_page_id",
                     "landing_domain",
                     "landing_page_url",
+                    "created",
+                    "created_by",
+                    "updated",
+                    "updated_by",
                 ],
             )
         )
