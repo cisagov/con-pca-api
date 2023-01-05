@@ -115,6 +115,7 @@ class SubscriptionsView(MethodView):
                     "created_by": "$created_by",
                     "updated": "$updated",
                     "updated_by": "$updated_by",
+                    "processing": "$processing",
                 }
             },
         ]
@@ -821,3 +822,60 @@ class SubscriptionNextTemplatesView(MethodView):
             fields=["subject"],
         )
         return jsonify([t["subject"] for t in templates if "subject" in t])
+
+
+class SubscriptionResetProcessingStateView(MethodView):
+    """Manually set the subscriptions processing back to false if it gets stuck."""
+
+    def delete(self, subscription_id):
+        """Return subscription to the false processing state."""
+        subscription_manager.update(
+            document_id=subscription_id,
+            data={
+                "processing": False,
+            },
+        )
+        return jsonify(
+            subscription_manager.get(
+                document_id=subscription_id,
+                fields=[
+                    "name",
+                    "customer_id",
+                    "sending_profile_id",
+                    "target_domain",
+                    "customer",
+                    "start_date",
+                    "primary_contact",
+                    "admin_email",
+                    "operator_email",
+                    "status",
+                    "cycle_start_date",
+                    "target_email_list",
+                    "templates_selected",
+                    "next_templates",
+                    "continuous_subscription",
+                    "buffer_time_minutes",
+                    "cycle_length_minutes",
+                    "cooldown_minutes",
+                    "report_frequency_minutes",
+                    "tasks",
+                    "processing",
+                    "archived",
+                    "page",
+                    "page_count",
+                    "sortby",
+                    "sortorder",
+                    "notification_history",
+                    "phish_header",
+                    "reporting_password",
+                    "test_results",
+                    "landing_page_id",
+                    "landing_domain",
+                    "landing_page_url",
+                    "created",
+                    "created_by",
+                    "updated",
+                    "updated_by",
+                ],
+            )
+        )
