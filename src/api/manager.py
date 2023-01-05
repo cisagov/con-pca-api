@@ -341,7 +341,7 @@ class Manager:
 
     def aggregate(self, pipeline=[]):
         """Aggregate the quantity according to the aggregation pipeline."""
-        return list(self.db.aggregate(pipeline))
+        return list(self.db.aggregate(pipeline, allowDiskUse=True))
 
     def exists(self, parameters=None):
         """Check if record exists."""
