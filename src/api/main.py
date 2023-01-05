@@ -234,7 +234,7 @@ sched.add_job(
     executor="processpool",
 )
 sched.add_job(
-    failed_emails_job, "interval", minutes=FAILED_EMAIL_MINUTES, max_instances=3
+    failed_emails_job, "interval", minutes=FAILED_EMAIL_MINUTES, max_instances=1
 )
 
 # Run initialization tasks
