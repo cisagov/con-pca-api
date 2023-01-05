@@ -64,9 +64,6 @@ def setLogger(name):
     sh.setFormatter(formatter)
     dh.setFormatter(formatter)
     logger = logging.getLogger(name)
-    # Clear any existing handlers
-    if logger.hasHandlers():
-        logger.handlers.clear()
-    logger.addHandler(sh)
+    # logger.addHandler(sh)
     logger.addHandler(dh)
     return logger
