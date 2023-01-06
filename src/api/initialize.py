@@ -370,5 +370,5 @@ def initialization_tasks():
         _initialize_nonhumans()
         _reset_dirty_stats()
         _populate_stakeholder_shortname()
-        _reset_processing()
+        # _reset_processing()
         _duplicate_oid_fields()
