@@ -187,45 +187,78 @@ def get_initial_tasks(subscription, cycle):
     cycle_minutes = (
         subscription["cycle_length_minutes"] + subscription["cooldown_minutes"]
     )
+    cycle_days = cycle_minutes / 60 / 24
     # yearly_minutes = get_yearly_minutes()
-    task_types = {
-        "start_subscription_email": start_date,
-        "status_report": start_date + timedelta(minutes=report_minutes),
-        "cycle_report": start_date + timedelta(minutes=cycle_minutes),
-        # "yearly_report": start_date + timedelta(minutes=yearly_minutes),
-    }
+    initial_tasks = []
 
+    # start_subscription_email
+    initial_tasks.append(get_new_task("start_subscription_email", start_date))
+
+    # status_reports
+    n_status_reports = subscription["cycle_length_minutes"] // report_minutes
+    last_date = cycle["start_date"]
+    for i in range(1, n_status_reports):
+        initial_tasks.append(
+            get_new_task("status_report", last_date + timedelta(minutes=report_minutes))
+        )
+        last_date += timedelta(minutes=report_minutes)
+
+    # cycle_report
+    initial_tasks.append(
+        get_new_task("cycle_report", start_date + timedelta(minutes=cycle_minutes))
+    )
+
+    # safelisting_reminder
     if subscription.get("continuous_subscription"):
-        task_types["start_next_cycle"] = start_date + timedelta(
-            minutes=(cycle_minutes + subscription.get("buffer_time_minutes", 0))
+        initial_tasks.append(
+            get_new_task(
+                "safelisting_reminder", start_date + timedelta(minutes=cycle_minutes)
+            )
+        )
+
+    # n_day_reminders
+    if cycle_days >= 5:
+        initial_tasks.append(
+            get_new_task("five_day_reminder", end_date - timedelta(days=5))
+        )
+    if cycle_days >= 15:
+        initial_tasks.append(
+            get_new_task("fifteen_day_reminder", end_date - timedelta(days=15))
+        )
+    if cycle_days >= 30:
+        initial_tasks.append(
+            get_new_task("thirty_day_reminder", end_date - timedelta(days=30))
+        )
+
+    # end_cycle or start_next_cycle
+    if subscription.get("continuous_subscription"):
+        initial_tasks.append(
+            get_new_task(
+                "start_next_cycle",
+                start_date
+                + timedelta(
+                    minutes=(cycle_minutes + subscription.get("buffer_time_minutes", 0))
+                ),
+            )
         )
     else:
-        task_types["end_cycle"] = start_date + timedelta(minutes=(cycle_minutes + 15))
-
-    if subscription.get("continuous_subscription"):
-        task_types["safelisting_reminder"] = start_date + timedelta(
-            minutes=cycle_minutes
+        initial_tasks.append(
+            get_new_task(
+                "end_cycle", start_date + timedelta(minutes=(cycle_minutes + 15))
+            )
         )
 
-    cycle_days = cycle_minutes / 60 / 24
-    if cycle_days >= 30:
-        task_types["thirty_day_reminder"] = end_date - timedelta(days=30)
-    if cycle_days >= 15:
-        task_types["fifteen_day_reminder"] = end_date - timedelta(days=15)
-    if cycle_days >= 5:
-        task_types["five_day_reminder"] = end_date - timedelta(days=5)
+    return initial_tasks
 
-    tasks = []
-    for task_type, scheduled_date in task_types.items():
-        tasks.append(
-            {
-                "task_uuid": str(uuid4()),
-                "task_type": task_type,
-                "scheduled_date": scheduled_date,
-                "executed": False,
-            }
-        )
-    return tasks
+
+def get_new_task(task_type, scheduled_date):
+    """Generate a task."""
+    return {
+        "task_uuid": str(uuid4()),
+        "task_type": task_type,
+        "scheduled_date": scheduled_date,
+        "executed": False,
+    }
 
 
 def get_random_phish_header():
