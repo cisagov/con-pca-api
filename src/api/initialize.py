@@ -242,34 +242,34 @@ def _duplicate_oid_fields():
                 )
 
     # Templates
-    # templates = template_manager.all(
-    #     fields=[
-    #         "_id",
-    #         "name",
-    #         "sending_profile_id",
-    #         "sending_profile_oid",
-    #         "landing_page_id",
-    #         "landing_page_oid",
-    #     ]
-    # )
-    # if not templates:
-    #     logger.info("No templates found for oid field duplication.")
-    #     return
-    # for template in templates:
-    #     for id_name in ["sending_profile_id", "landing_page_id"]:
-    #         if id_name in template and ObjectId.is_valid(template.get(id_name, "")):
-    #             oid_name = id_name.replace("_id", "_oid")
-    #             update_data = {"name": template.get("name")}
-    #             if oid_name not in template or template.get(id_name, "") != str(
-    #                 template.get(oid_name, "")
-    #             ):
-    #                 logger.info(
-    #                     f"Updating {oid_name} for template {template.get('name', '')} to match {template.get(id_name, '')}."
-    #                 )
-    #                 update_data[oid_name] = ObjectId(template.get(id_name, None))
-    #                 template_manager.update(
-    #                     document_id=template["_id"], data=update_data
-    #                 )
+    templates = template_manager.all(
+        fields=[
+            "_id",
+            "name",
+            "sending_profile_id",
+            "sending_profile_oid",
+            "landing_page_id",
+            "landing_page_oid",
+        ]
+    )
+    if not templates:
+        logger.info("No templates found for oid field duplication.")
+        return
+    for template in templates:
+        for id_name in ["sending_profile_id", "landing_page_id"]:
+            if id_name in template and ObjectId.is_valid(template.get(id_name, "")):
+                oid_name = id_name.replace("_id", "_oid")
+                update_data = {"name": template.get("name")}
+                if oid_name not in template or template.get(id_name, "") != str(
+                    template.get(oid_name, "")
+                ):
+                    logger.info(
+                        f"Updating {oid_name} for template {template.get('name', '')} to match {template.get(id_name, '')}."
+                    )
+                    update_data[oid_name] = ObjectId(template.get(id_name, None))
+                    template_manager.update(
+                        document_id=template["_id"], data=update_data
+                    )
 
 
 def _restart_logging_ttl_index(ttl_in_seconds=345600):
@@ -370,5 +370,5 @@ def initialization_tasks():
         _initialize_nonhumans()
         _reset_dirty_stats()
         _populate_stakeholder_shortname()
-        _reset_processing()
-        _duplicate_oid_fields()
+        # _reset_processing()
+        # _duplicate_oid_fields()
