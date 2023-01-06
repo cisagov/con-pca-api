@@ -105,7 +105,7 @@ def process_subscription(subscription):
         if not end_cycle_task:
             update_task(subscription["_id"], task)
             add_new_task(subscription, cycle, task)
-        logger.info(f"Executed task {task['task_type']}")
+        logger.info(f"Executed task {task['task_type']} with id {task['task_uuid']}")
 
     subscription_manager.update(
         document_id=subscription["_id"], data={"processing": False}, update=False
