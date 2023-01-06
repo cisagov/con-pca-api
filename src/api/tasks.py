@@ -56,7 +56,10 @@ def get_subscription():
         params={
             "tasks": {
                 "$elemMatch": {
-                    "scheduled_date": {"$lt": datetime.utcnow()},
+                    "scheduled_date": {
+                        "$lte": datetime.utcnow(),
+                        "$gte": datetime.utcnow() - timedelta(days=1),
+                    },
                     "executed": {"$in": [False, None]},
                 }
             },
