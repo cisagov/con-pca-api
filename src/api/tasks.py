@@ -4,9 +4,6 @@ from datetime import datetime, timedelta
 import os
 from uuid import uuid4
 
-# Third-Party Libraries
-import pytz  # type: ignore
-
 # cisagov Libraries
 from api.app import app
 from api.manager import (
@@ -56,7 +53,10 @@ def get_subscription():
         params={
             "tasks": {
                 "$elemMatch": {
-                    "scheduled_date": {"$lt": datetime.utcnow()},
+                    "scheduled_date": {
+                        "$lte": datetime.utcnow(),
+                        "$gte": datetime.utcnow() - timedelta(days=1),
+                    },
                     "executed": {"$in": [False, None]},
                 }
             },
@@ -87,9 +87,7 @@ def process_subscription(subscription):
         task["executed"] = True
         task["executed_date"] = datetime.utcnow()
         try:
-            process_task(task, subscription, cycle) if task["scheduled_date"] > (
-                datetime.now(pytz.utc) - timedelta(days=1)
-            ) else None
+            process_task(task, subscription, cycle)
         except Exception as e:
             logger.exception(
                 f"An exception occurred performing {task['task_type']} task for {subscription['name']} subscription: {e}",
@@ -105,7 +103,9 @@ def process_subscription(subscription):
         if not end_cycle_task:
             update_task(subscription["_id"], task)
             add_new_task(subscription, cycle, task)
-        logger.info(f"Executed task {task['task_type']}")
+        logger.info(
+            f"Executed task {task['task_type']} with subscription: {subscription['name']}"
+        )
 
     subscription_manager.update(
         document_id=subscription["_id"], data={"processing": False}, update=False
@@ -117,12 +117,13 @@ def process_subscription(subscription):
             "active": True,
         }
     )
-    cycle_manager.update(
-        document_id=cycle["_id"],
-        data={
-            "tasks": subscription.get("tasks"),
-        },
-    )
+    if cycle:
+        cycle_manager.update(
+            document_id=cycle["_id"],
+            data={
+                "tasks": subscription.get("tasks"),
+            },
+        )
 
 
 def update_task(subscription_id, task):

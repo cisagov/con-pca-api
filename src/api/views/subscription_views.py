@@ -118,6 +118,7 @@ class SubscriptionsView(MethodView):
                     "processing": "$processing",
                 }
             },
+            {"$sort": {"subscription.name": 1}},
         ]
         subscriptions = subscription_manager.aggregate(pipeline)
         for subscription in subscriptions:
