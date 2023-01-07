@@ -370,6 +370,7 @@ def _initialize_db_indexes():
         ("recommendations", recommendation_manager),
         ("sending profiles", sending_profile_manager),
         ("subscriptions", subscription_manager),
+        ("targets", target_manager),
         ("templates", template_manager),
         ("users", user_manager),
     )
