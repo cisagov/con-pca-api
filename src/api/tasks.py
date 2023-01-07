@@ -122,12 +122,13 @@ def process_subscription(subscription):
             "active": True,
         }
     )
-    cycle_manager.update(
-        document_id=cycle["_id"],
-        data={
-            "tasks": subscription.get("tasks"),
-        },
-    )
+    if cycle:
+        cycle_manager.update(
+            document_id=cycle["_id"],
+            data={
+                "tasks": subscription.get("tasks"),
+            },
+        )
 
 
 def update_task(subscription_id, task):
