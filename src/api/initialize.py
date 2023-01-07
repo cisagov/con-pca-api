@@ -6,6 +6,7 @@ import os
 
 # Third-Party Libraries
 from bson.objectid import ObjectId
+from pymongo import errors as pymongo_errors
 import pytz  # type: ignore
 import redis  # type: ignore
 
@@ -15,8 +16,11 @@ from api.config.environment import DB, REDIS_HOST, REDIS_PORT, TESTING
 from api.manager import (
     CustomerManager,
     CycleManager,
+    LandingPageManager,
+    LoggingManager,
     NonHumanManager,
     RecommendationManager,
+    SendingProfileManager,
     SubscriptionManager,
     TargetManager,
     TemplateManager,
@@ -29,7 +33,10 @@ logger = setLogger(__name__)
 
 customer_manager = CustomerManager()
 cycle_manager = CycleManager()
+landing_page_manager = LandingPageManager()
+logging_manager = LoggingManager()
 recommendation_manager = RecommendationManager()
+sending_profile_manager = SendingProfileManager()
 subscription_manager = SubscriptionManager()
 template_manager = TemplateManager()
 target_manager = TargetManager()
@@ -351,6 +358,28 @@ def _restart_subscriptions():
             )
 
 
+def _initialize_db_indexes():
+    """Create Mongo DB indexes if missing."""
+    managers = (
+        ("customers", customer_manager),
+        ("cycles", cycle_manager),
+        ("landing pages", landing_page_manager),
+        ("logging", logging_manager),
+        ("recommendations", recommendation_manager),
+        ("sending profile", sending_profile_manager),
+        ("subscriptions", subscription_manager),
+    )
+    for name, manager in managers:
+        try:
+            manager.create_indexes()
+            logger.info(f"Creating db index for {name}")
+        except pymongo_errors.DuplicateKeyError:
+            logger.error(
+                f"Creating db index for {name} failed due to duplicate key error."
+            )
+            continue
+
+
 def _flush_redis_db():
     """Flush the redis database."""
     if TESTING:
@@ -365,10 +394,7 @@ def initialization_tasks():
     """Run all initialization tasks."""
     with app.app_context():
         _flush_redis_db()
-        _initialize_recommendations()
-        _initialize_templates()
+        _initialize_db_indexes()
         _initialize_nonhumans()
         _reset_dirty_stats()
         _populate_stakeholder_shortname()
-        # _reset_processing()
-        # _duplicate_oid_fields()
