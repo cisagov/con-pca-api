@@ -400,6 +400,8 @@ def initialization_tasks():
     with app.app_context():
         _flush_redis_db()
         _initialize_db_indexes()
+        _initialize_templates()
+        _initialize_recommendations()
         _initialize_nonhumans()
         _reset_dirty_stats()
         _populate_stakeholder_shortname()
