@@ -24,6 +24,7 @@ from api.manager import (
     SubscriptionManager,
     TargetManager,
     TemplateManager,
+    UserManager,
 )
 from utils.logging import setLogger
 from utils.subscriptions import start_subscription, stop_subscription
@@ -41,6 +42,7 @@ subscription_manager = SubscriptionManager()
 template_manager = TemplateManager()
 target_manager = TargetManager()
 nonhuman_manager = NonHumanManager()
+user_manager = UserManager()
 
 
 def _initialize_templates():
@@ -366,8 +368,10 @@ def _initialize_db_indexes():
         ("landing pages", landing_page_manager),
         ("logging", logging_manager),
         ("recommendations", recommendation_manager),
-        ("sending profile", sending_profile_manager),
+        ("sending profiles", sending_profile_manager),
         ("subscriptions", subscription_manager),
+        ("templates", template_manager),
+        ("users", user_manager),
     )
     for name, manager in managers:
         try:
