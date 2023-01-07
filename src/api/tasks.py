@@ -4,9 +4,6 @@ from datetime import datetime, timedelta
 import os
 from uuid import uuid4
 
-# Third-Party Libraries
-import pytz  # type: ignore
-
 # cisagov Libraries
 from api.app import app
 from api.manager import (
@@ -90,9 +87,7 @@ def process_subscription(subscription):
         task["executed"] = True
         task["executed_date"] = datetime.utcnow()
         try:
-            process_task(task, subscription, cycle) if task["scheduled_date"] > (
-                datetime.now(pytz.utc) - timedelta(days=1)
-            ) else None
+            process_task(task, subscription, cycle)
         except Exception as e:
             logger.exception(
                 f"An exception occurred performing {task['task_type']} task for {subscription['name']} subscription: {e}",

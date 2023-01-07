@@ -117,6 +117,7 @@ class SubscriptionsView(MethodView):
                     "updated_by": "$updated_by",
                 }
             },
+            {"$sort": {"subscription.name": 1}},
         ]
         subscriptions = subscription_manager.aggregate(pipeline)
         for subscription in subscriptions:
