@@ -70,6 +70,7 @@ from api.views.subscription_views import (
     SubscriptionHeaderView,
     SubscriptionLaunchView,
     SubscriptionNextTemplatesView,
+    SubscriptionResetProcessingStateView,
     SubscriptionSafelistExportView,
     SubscriptionSafelistSendView,
     SubscriptionsPagedView,
@@ -162,6 +163,10 @@ rules = [
     (
         "/subscription/<subscription_id>/templates/next/",
         SubscriptionNextTemplatesView,
+    ),
+    (
+        "/subscription/<subscription_id>/resetprocessing/",
+        SubscriptionResetProcessingStateView,
     ),
     # Tag Views
     ("/tags/", TagsView),
