@@ -30,11 +30,6 @@
     "type": "sophisticated"
   },
   {
-    "description": "Professional formatting and proper spelling and grammar to imitate reputable institutions that have dedicated personnel that produce, verify, and proofread correspondence. ",
-    "title": "Spelling and layout",
-    "type": "sophisticated"
-  },
-  {
     "description": "Using an unknown external sending address to send an internal message that should have come from the <<ORG DOMAIN>> or another known and trusted domain. Trusted organizations send from known domains or provide advance notice that a new domain will provide important communications to set expectations.",
     "title": "Unfamiliar sender",
     "type": "red_flag"
