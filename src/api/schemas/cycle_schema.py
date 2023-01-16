@@ -36,7 +36,7 @@ class CycleTasksSchema(Schema):
         )
     )
     scheduled_date = DateTimeField()
-    executed = fields.Bool(missing=False)
+    executed = fields.Bool(load_default=False)
     executed_date = DateTimeField(required=False)
     error = fields.Str(required=False, allow_none=True)
 

@@ -66,12 +66,15 @@ from api.views.report_views import (
 )
 from api.views.sending_profile_views import SendingProfilesView, SendingProfileView
 from api.views.subscription_views import (
+    SubscriptionCountView,
     SubscriptionCurrentTemplatesView,
     SubscriptionHeaderView,
     SubscriptionLaunchView,
     SubscriptionNextTemplatesView,
+    SubscriptionResetProcessingStateView,
     SubscriptionSafelistExportView,
     SubscriptionSafelistSendView,
+    SubscriptionsPagedView,
     SubscriptionsStatusView,
     SubscriptionsView,
     SubscriptionTestView,
@@ -135,6 +138,12 @@ rules = [
     ("/sendingprofile/<sending_profile_id>/", SendingProfileView),
     # Subscription Views
     ("/subscriptions/", SubscriptionsView),
+    ("/subscriptions/count/", SubscriptionCountView),
+    ("/subscriptionsPaged/", SubscriptionsPagedView),
+    (
+        "/subscriptionspaged/<page>/<pagesize>/<sortby>/<sortorder>/",
+        SubscriptionsPagedView,
+    ),
     ("/subscriptions/status/", SubscriptionsStatusView),
     ("/subscriptions/valid/", SubscriptionValidView),
     ("/subscription/<subscription_id>/", SubscriptionView),
@@ -156,6 +165,10 @@ rules = [
     (
         "/subscription/<subscription_id>/templates/next/",
         SubscriptionNextTemplatesView,
+    ),
+    (
+        "/subscription/<subscription_id>/resetprocessing/",
+        SubscriptionResetProcessingStateView,
     ),
     # Tag Views
     ("/tags/", TagsView),
@@ -219,10 +232,16 @@ sched = BackgroundScheduler(
 )
 
 # Add scheduled jobs
-sched.add_job(emails_job, "interval", minutes=EMAIL_MINUTES, max_instances=10)
-sched.add_job(tasks_job, "interval", minutes=TASK_MINUTES, max_instances=10)
+sched.add_job(emails_job, "interval", minutes=EMAIL_MINUTES, max_instances=3)
 sched.add_job(
-    failed_emails_job, "interval", minutes=FAILED_EMAIL_MINUTES, max_instances=3
+    tasks_job,
+    "interval",
+    minutes=TASK_MINUTES,
+    max_instances=3,
+    executor="processpool",
+)
+sched.add_job(
+    failed_emails_job, "interval", minutes=FAILED_EMAIL_MINUTES, max_instances=1
 )
 
 # Run initialization tasks

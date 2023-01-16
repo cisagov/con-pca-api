@@ -2,11 +2,10 @@
 # Standard Python Libraries
 from datetime import datetime
 import logging
-import re
 
 # Third-Party Libraries
 from bson.objectid import ObjectId
-from flask import abort, g, jsonify, make_response
+from flask import g
 import pymongo
 
 # cisagov Libraries
@@ -101,6 +100,8 @@ class Manager:
 
     def create_indexes(self, ttl_in_seconds=345600):
         """Create indexes for collection."""
+        for index in self.unique_indexes:
+            self.db.create_index(index, unique=True)
         for index in self.other_indexes:
             self.db.create_index(index, unique=False)
         for index in self.ttl_indexes:
@@ -188,6 +189,20 @@ class Manager:
             query.limit(limit)
         return self.read_data(query, many=True)
 
+    def page(
+        self,
+        params=None,
+        fields=None,
+        sortBy="_id:",
+        sortOrder="1",
+        pagesize=10,
+        page=0,
+        searchfilter="",
+    ):
+        """Get subscribtptions in paginated format."""
+        customers = self.db.aggregate(params)
+        return self.read_data(customers, many=True)
+
     def delete(self, document_id=None, params=None):
         """Delete item by object id."""
         if document_id:
@@ -202,32 +217,6 @@ class Manager:
 
     def update(self, document_id, data, update=True):
         """Update item by id."""
-        exists = []
-        for unique_field in self.unique_indexes:
-            if (
-                self.exists(
-                    {
-                        unique_field: {
-                            "$regex": f"^{re.escape(data[unique_field].strip())}$",
-                            "$options": "i",
-                        }
-                    }
-                )
-                and self.get(document_id=document_id)[unique_field]
-                != data[unique_field]
-            ):
-                exists.append(
-                    f"A {self.collection} with {unique_field} '{data[unique_field]}' already exists."
-                )
-
-        if exists:
-            abort(
-                make_response(
-                    jsonify({"error": ". ".join(exists)}),
-                    400,
-                )
-            )
-
         data = self.clean_data(data)
         if update:
             data = self.add_updated(data)
@@ -245,31 +234,8 @@ class Manager:
             {"$set": self.load_data(data, partial=True)},
         )
 
-    def save(self, data, ttl_in_seconds=345600):
+    def save(self, data):
         """Save new item to collection."""
-        exists = []
-        for unique_field in self.unique_indexes:
-            if self.exists(
-                {
-                    unique_field: {
-                        "$regex": f"^{re.escape(data[unique_field].strip())}$",
-                        "$options": "i",
-                    }
-                }
-            ):
-                exists.append(
-                    f"A {self.collection} with {unique_field} '{data[unique_field]}' already exists."
-                )
-
-        if exists:
-            abort(
-                make_response(
-                    jsonify({"error": ". ".join(exists)}),
-                    400,
-                )
-            )
-
-        self.create_indexes(ttl_in_seconds)
         data = self.clean_data(data)
         data = self.add_created(data)
         data = self.add_updated(data)
@@ -278,7 +244,6 @@ class Manager:
 
     def save_many(self, data):
         """Save list to collection."""
-        self.create_indexes()
         data = self.clean_data(data)
         data = self.add_created(data)
         result = self.db.insert_many(self.load_data(data, many=True))
@@ -327,7 +292,7 @@ class Manager:
 
     def aggregate(self, pipeline=[]):
         """Aggregate the quantity according to the aggregation pipeline."""
-        return list(self.db.aggregate(pipeline))
+        return list(self.db.aggregate(pipeline, allowDiskUse=True))
 
     def exists(self, parameters=None):
         """Check if record exists."""
@@ -445,6 +410,7 @@ class SubscriptionManager(Manager):
         return super().__init__(
             collection="subscription",
             schema=SubscriptionSchema,
+            unique_indexes=["name"],
         )
 
 

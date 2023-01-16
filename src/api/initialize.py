@@ -5,7 +5,8 @@ import json
 import os
 
 # Third-Party Libraries
-import bson
+from bson.objectid import ObjectId
+from pymongo import errors as pymongo_errors
 import pytz  # type: ignore
 import redis  # type: ignore
 
@@ -15,11 +16,15 @@ from api.config.environment import DB, REDIS_HOST, REDIS_PORT, TESTING
 from api.manager import (
     CustomerManager,
     CycleManager,
+    LandingPageManager,
+    LoggingManager,
     NonHumanManager,
     RecommendationManager,
+    SendingProfileManager,
     SubscriptionManager,
     TargetManager,
     TemplateManager,
+    UserManager,
 )
 from utils.logging import setLogger
 from utils.subscriptions import start_subscription, stop_subscription
@@ -29,11 +34,15 @@ logger = setLogger(__name__)
 
 customer_manager = CustomerManager()
 cycle_manager = CycleManager()
+landing_page_manager = LandingPageManager()
+logging_manager = LoggingManager()
 recommendation_manager = RecommendationManager()
+sending_profile_manager = SendingProfileManager()
 subscription_manager = SubscriptionManager()
 template_manager = TemplateManager()
 target_manager = TargetManager()
 nonhuman_manager = NonHumanManager()
+user_manager = UserManager()
 
 
 def _initialize_templates():
@@ -173,18 +182,18 @@ def _duplicate_oid_fields():
         return
     for subscription in subscriptions:
         for id_name in ["customer_id", "sending_profile_id", "landing_page_id"]:
-            if id_name in subscription:
+            if id_name in subscription and ObjectId.is_valid(
+                subscription.get(id_name, "")
+            ):
                 oid_name = id_name.replace("_id", "_oid")
                 update_data = {}
-                if oid_name not in subscription or subscription.get(
-                    id_name, ""
-                ) != subscription.get(oid_name, ""):
+                if oid_name not in subscription or subscription.get(id_name, "") != str(
+                    subscription.get(oid_name, "")
+                ):
                     logger.info(
-                        f"Updating {oid_name} for subscription {subscription.get('name')} to match {subscription.get(id_name)}."
+                        f"Updating {oid_name} for subscription {subscription.get('name', '')} to match {subscription.get(id_name, '')}."
                     )
-                    update_data[oid_name] = bson.objectid.ObjectId(
-                        subscription.get(id_name, None)
-                    )
+                    update_data[oid_name] = ObjectId(subscription.get(id_name, None))
                 subscription_manager.update(
                     document_id=subscription["_id"], data=update_data
                 )
@@ -204,35 +213,42 @@ def _duplicate_oid_fields():
         logger.info("No cycles found for oid field duplication.")
         return
     for cycle in cycles:
-        if "subscription_oid" not in cycle or cycle.get(
-            "subscription_id", ""
-        ) != cycle.get("subscription_oid", ""):
-            logger.info(
-                f"Updating subscription_oid for cycle {cycle.get('_id')} to match {cycle.get('subscription_id')}."
-            )
-            cycle_manager.update(
-                document_id=subscription["_id"],
-                data={
-                    "subscription_oid": bson.objectid.ObjectId(
-                        cycle.get("subscription_id", None)
-                    ),
-                },
-            )
-        if "template_oids" not in cycle or cycle.get("template_ids", "") != cycle.get(
-            "template_oids", ""
+        if "subscription_id" in cycle and ObjectId.is_valid(
+            cycle.get("subscription_id", "")
         ):
-            logger.info(
-                f"Updating template_oids for cycle {cycle.get('_id')} to match {cycle.get('template_ids')}."
-            )
-            template_oids = []
-            for id in cycle.get("template_ids", []):
-                template_oids.append(bson.objectid.ObjectId(id))
-            cycle_manager.update(
-                document_id=cycle["_id"],
-                data={
-                    "template_oids": template_oids,
-                },
-            )
+            if "subscription_oid" not in cycle or cycle.get(
+                "subscription_id", ""
+            ) != str(cycle.get("subscription_oid", "")):
+                logger.info(
+                    f"Updating subscription_oid for cycle {cycle.get('_id', '')} to match {cycle.get('subscription_id', '')}."
+                )
+                cycle_manager.update(
+                    document_id=cycle.get("_id", ""),
+                    data={
+                        "subscription_oid": ObjectId(
+                            cycle.get("subscription_id", None)
+                        ),
+                    },
+                )
+        if "template_ids" in cycle and all(
+            ObjectId.is_valid(template_id)
+            for template_id in cycle.get("template_ids", [])
+        ):
+            if "template_oids" not in cycle or cycle.get("template_ids", "") != [
+                str(each) for each in cycle.get("template_oids", "")
+            ]:
+                logger.info(
+                    f"Updating template_oids for cycle {cycle.get('_id', '')} to match {cycle.get('template_ids', [])}."
+                )
+                template_oids = []
+                for id in cycle.get("template_ids", []):
+                    template_oids.append(ObjectId(id))
+                cycle_manager.update(
+                    document_id=cycle["_id"],
+                    data={
+                        "template_oids": template_oids,
+                    },
+                )
 
     # Templates
     templates = template_manager.all(
@@ -250,50 +266,19 @@ def _duplicate_oid_fields():
         return
     for template in templates:
         for id_name in ["sending_profile_id", "landing_page_id"]:
-            if id_name in template:
+            if id_name in template and ObjectId.is_valid(template.get(id_name, "")):
                 oid_name = id_name.replace("_id", "_oid")
-                update_data = {}
-                if oid_name not in template or template.get(
-                    id_name, ""
-                ) != template.get(oid_name, ""):
-                    logger.info(
-                        f"Updating {oid_name} for template {template.get('name')} to match {template.get(id_name)}."
-                    )
-                    update_data[oid_name] = bson.objectid.ObjectId(
-                        template.get(id_name, None)
-                    )
-                template_manager.update(document_id=template["_id"], data=update_data)
-
-    # Targets
-    targets = target_manager.all(
-        fields=[
-            "_id",
-            "cycle_id",
-            "cycle_oid",
-            "subscription_id",
-            "subscription_oid",
-            "template_id",
-            "template_oid",
-        ]
-    )
-    if not targets:
-        logger.info("No targets found for oid field duplication.")
-        return
-    for target in targets:
-        for id_name in ["cycle_id", "subscription_id", "template_id"]:
-            if id_name in target:
-                oid_name = id_name.replace("_id", "_oid")
-                update_data = {}
-                if oid_name not in target or target.get(id_name, "") != target.get(
-                    oid_name, ""
+                update_data = {"name": template.get("name")}
+                if oid_name not in template or template.get(id_name, "") != str(
+                    template.get(oid_name, "")
                 ):
                     logger.info(
-                        f"Updating {oid_name} for target {target.get('last_name')} to match {target.get(id_name)}."
+                        f"Updating {oid_name} for template {template.get('name', '')} to match {template.get(id_name, '')}."
                     )
-                    update_data[oid_name] = bson.objectid.ObjectId(
-                        target.get(id_name, None)
+                    update_data[oid_name] = ObjectId(template.get(id_name, None))
+                    template_manager.update(
+                        document_id=template["_id"], data=update_data
                     )
-                target_manager.update(document_id=target["_id"], data=update_data)
 
 
 def _restart_logging_ttl_index(ttl_in_seconds=345600):
@@ -375,6 +360,31 @@ def _restart_subscriptions():
             )
 
 
+def _initialize_db_indexes():
+    """Create Mongo DB indexes if missing."""
+    managers = (
+        ("customers", customer_manager),
+        ("cycles", cycle_manager),
+        ("landing pages", landing_page_manager),
+        ("logging", logging_manager),
+        ("recommendations", recommendation_manager),
+        ("sending profiles", sending_profile_manager),
+        ("subscriptions", subscription_manager),
+        ("targets", target_manager),
+        ("templates", template_manager),
+        ("users", user_manager),
+    )
+    for name, manager in managers:
+        try:
+            manager.create_indexes()
+            logger.info(f"Creating db index for {name}")
+        except pymongo_errors.DuplicateKeyError:
+            logger.error(
+                f"Creating db index for {name} failed due to duplicate key error."
+            )
+            continue
+
+
 def _flush_redis_db():
     """Flush the redis database."""
     if TESTING:
@@ -389,10 +399,9 @@ def initialization_tasks():
     """Run all initialization tasks."""
     with app.app_context():
         _flush_redis_db()
-        _initialize_recommendations()
+        _initialize_db_indexes()
         _initialize_templates()
+        _initialize_recommendations()
         _initialize_nonhumans()
         _reset_dirty_stats()
         _populate_stakeholder_shortname()
-        _reset_processing()
-        _duplicate_oid_fields()
