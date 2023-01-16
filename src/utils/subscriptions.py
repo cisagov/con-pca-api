@@ -42,7 +42,8 @@ def start_subscription(subscription_id, templates_selected=[]):
     cycle = {}
     cycle.update(calculate_cycle_dates(subscription))
     cycle["subscription_id"] = subscription_id
-    cycle["subscription_oid"] = ObjectId(subscription_id)
+    if ObjectId.is_valid(subscription_id):
+        cycle["subscription_oid"] = ObjectId(subscription_id)
     cycle["phish_header"] = subscription["phish_header"]
     cycle["active"] = True
     targets = []
@@ -89,7 +90,8 @@ def start_subscription(subscription_id, templates_selected=[]):
 
     template_oids = []
     for id in cycle.get("template_ids", []):
-        template_oids.append(ObjectId(id))
+        if ObjectId.is_valid(id):
+            template_oids.append(ObjectId(id))
     cycle["template_oids"] = template_oids
 
     tasks = get_initial_tasks(subscription, cycle)
