@@ -195,7 +195,7 @@ def get_initial_tasks(subscription, cycle):
     initial_tasks.append(get_new_task("start_subscription_email", start_date))
 
     # status_reports
-    n_status_reports = (subscription["cycle_length_minutes"] + 5) // report_minutes
+    n_status_reports = 1 + (cycle_minutes // report_minutes)
     last_date = cycle["start_date"]
     for i in range(1, n_status_reports):
         initial_tasks.append(
