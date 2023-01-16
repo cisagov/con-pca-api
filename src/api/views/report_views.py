@@ -106,7 +106,7 @@ class AggregateReportView(MethodView):
                 "$group": {
                     "_id": None,
                     "customers_active": {
-                        "$addToSet": {
+                        "$sum": {
                             "$cond": [
                                 {
                                     "$and": [
@@ -114,8 +114,8 @@ class AggregateReportView(MethodView):
                                         {"$ne": ["$archived", True]},
                                     ]
                                 },
-                                "$customer_id",
-                                "$$REMOVE",
+                                1,
+                                0,
                             ]
                         }
                     },
@@ -165,7 +165,7 @@ class AggregateReportView(MethodView):
             },
             {
                 "$project": {
-                    "customers_active": {"$size": "$customers_active"},
+                    "customers_active": "$customers_active",
                     "new_subscriptions": "$new_subscriptions",
                     "ongoing_subscriptions": "$ongoing_subscriptions",
                     "stopped_subscriptions": "$stopped_subscriptions",
