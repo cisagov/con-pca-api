@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 import os
 
 # Third-Party Libraries
+from bson.objectid import ObjectId
 from flask import jsonify, request, send_file
 from flask.views import MethodView
 
@@ -133,6 +134,24 @@ class SubscriptionsView(MethodView):
         subscription["name"] = create_subscription_name(customer)
         subscription["status"] = "created"
         subscription["phish_header"] = get_random_phish_header()
+        if "customer_id" in subscription and ObjectId.is_valid(
+            subscription.get("customer_id", "")
+        ):
+            subscription["customer_oid"] = ObjectId(
+                subscription.get("customer_id", None)
+            )
+        if "sending_profile_id" in subscription and ObjectId.is_valid(
+            subscription.get("sending_profile_id", "")
+        ):
+            subscription["sending_profile_oid"] = ObjectId(
+                subscription.get("sending_profile_id", None)
+            )
+        if "landing_page_id" in subscription and ObjectId.is_valid(
+            subscription.get("landing_page_id", "")
+        ):
+            subscription["landing_page_oid"] = ObjectId(
+                subscription.get("landing_page_id", None)
+            )
         response = subscription_manager.save(subscription)
         response["name"] = subscription["name"]
         return jsonify(response)
@@ -501,7 +520,6 @@ class SubscriptionView(MethodView):
         """Put."""
         subscription = subscription_manager.get(
             document_id=subscription_id,
-            fields=["status", "continuous_subscription"],
         )
         if subscription["status"] in ["queued", "running"]:
             if "continuous_subscription" in request.json:
@@ -547,6 +565,24 @@ class SubscriptionView(MethodView):
                         ),
                         400,
                     )
+        if "customer_id" in subscription and ObjectId.is_valid(
+            subscription.get("customer_id", "")
+        ):
+            request.json["customer_oid"] = ObjectId(
+                subscription.get("customer_id", None)
+            )
+        if "sending_profile_id" in subscription and ObjectId.is_valid(
+            subscription.get("sending_profile_id", "")
+        ):
+            request.json["sending_profile_oid"] = ObjectId(
+                subscription.get("sending_profile_id", None)
+            )
+        if "landing_page_id" in subscription and ObjectId.is_valid(
+            subscription.get("landing_page_id", "")
+        ):
+            request.json["landing_page_oid"] = ObjectId(
+                subscription.get("landing_page_id", None)
+            )
         subscription_manager.update(document_id=subscription_id, data=request.json)
         return jsonify({"success": True})
 
