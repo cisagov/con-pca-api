@@ -471,50 +471,82 @@ class SubscriptionView(MethodView):
 
     def get(self, subscription_id):
         """Get."""
-        return jsonify(
-            subscription_manager.get(
-                document_id=subscription_id,
-                fields=[
-                    "name",
-                    "customer_id",
-                    "sending_profile_id",
-                    "target_domain",
-                    "customer",
-                    "start_date",
-                    "primary_contact",
-                    "admin_email",
-                    "operator_email",
-                    "status",
-                    "cycle_start_date",
-                    "target_email_list",
-                    "templates_selected",
-                    "next_templates",
-                    "continuous_subscription",
-                    "buffer_time_minutes",
-                    "cycle_length_minutes",
-                    "cooldown_minutes",
-                    "report_frequency_minutes",
-                    "tasks",
-                    "processing",
-                    "archived",
-                    "page",
-                    "page_count",
-                    "sortby",
-                    "sortorder",
-                    "notification_history",
-                    "phish_header",
-                    "reporting_password",
-                    "test_results",
-                    "landing_page_id",
-                    "landing_domain",
-                    "landing_page_url",
-                    "created",
-                    "created_by",
-                    "updated",
-                    "updated_by",
-                ],
+        pipeline = [
+            {"$match": {"_id": ObjectId(subscription_id)}},
+            {
+                "$lookup": {
+                    "from": "cycle",
+                    "localField": "_id",
+                    "foreignField": "subscription_oid",
+                    "as": "cycle",
+                }
+            },
+            {
+                "$lookup": {
+                    "from": "customer",
+                    "localField": "customer_oid",
+                    "foreignField": "_id",
+                    "as": "customer",
+                }
+            },
+            {
+                "$project": {
+                    "_id": "$_id",
+                    "name": "$name",
+                    "customer_id": "$customer_id",
+                    "sending_profile_id": "$sending_profile_id",
+                    "target_domain": "$target_domain",
+                    "start_date": "$start_date",
+                    "cycle_start_date": {"$max": "$cycle.start_date"},
+                    "cycle_end_date": {"$max": "$cycle.end_date"},
+                    "cycle_send_by_date": {"$max": "$cycle.send_by_date"},
+                    "appendix_a_date": {"$max": "$customer.appendix_a_date"},
+                    "primary_contact": "$primary_contact",
+                    "admin_email": "$admin_email",
+                    "operator_email": "$operator_email",
+                    "status": "$status",
+                    "target_email_list": "$target_email_list",
+                    "templates_selected": "$templates_selected",
+                    "next_templates": "$next_templates",
+                    # "active": {"$anyElementTrue": "$cycle.active"},
+                    "continuous_subscription": "$continuous_subscription",
+                    "cycle_length_minutes": "$cycle_length_minutes",
+                    "cooldown_minutes": "$cooldown_minutes",
+                    "buffer_time_minutes": "$buffer_time_minutes",
+                    "report_frequency_minutes": "$report_frequency_minutes",
+                    "archived": "$archived",
+                    "tasks": "$tasks",
+                    "notification_history": "$notification_history",
+                    "phish_header": "$phish_header",
+                    "reporting_password": "$reporting_password",
+                    "test_results": "$test_results",
+                    "landing_page_id": "$landing_page_id",
+                    "landing_page_url": "$landing_page_url",
+                    "landing_domain": "$landing_domain",
+                    "created": "$created",
+                    "created_by": "$created_by",
+                    "updated": "$updated",
+                    "updated_by": "$updated_by",
+                    "processing": "$processing",
+                }
+            },
+        ]
+        subscription = subscription_manager.aggregate(pipeline)
+        subscription = subscription[0] if len(subscription) > 0 else {}
+        subscription["_id"] = str(subscription["_id"])
+        subscription["next_cycle_start_date"] = (
+            subscription.get("cycle_start_date")
+            + timedelta(
+                minutes=(
+                    subscription.get("cycle_length_minutes", 0)
+                    + subscription.get("cooldown_minutes", 0)
+                    + subscription.get("buffer_time_minutes", 0)
+                )
             )
+            if subscription.get("cycle_start_date", None)
+            else None
         )
+        return jsonify(subscription)
 
     def put(self, subscription_id):
         """Put."""
