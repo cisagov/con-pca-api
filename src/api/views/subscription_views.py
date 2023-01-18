@@ -532,6 +532,7 @@ class SubscriptionView(MethodView):
         ]
         subscription = subscription_manager.aggregate(pipeline)
         subscription = subscription[0] if len(subscription) > 0 else {}
+        subscription["_id"] = str(subscription["_id"])
         subscription["cycle_end_date"] = (
             subscription.get("cycle_start_date")
             + timedelta(
