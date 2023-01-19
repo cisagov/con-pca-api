@@ -71,12 +71,31 @@ class SubscriptionsView(MethodView):
         if request.args.get("archived", "").lower() == "true":
             parameters["archived"] = True
 
-        pipeline = [
-            {
+        if request.args.get("customer_id", None):
+            match = {
+                "$match": {
+                    "$and": [
+                        {"archived": {"$in": [False, None]}},
+                        {"customer_id": request.args.get("customer_id")},
+                    ]
+                }
+                if not parameters["archived"]
+                else {
+                    "$and": [
+                        {"archived": {"$nin": [False, None]}},
+                        {"customer_id": request.args.get("customer_id")},
+                    ]
+                }
+            }
+        else:
+            match = {
                 "$match": {"archived": {"$in": [False, None]}}
                 if not parameters["archived"]
                 else {"archived": {"$nin": [False, None]}}
-            },
+            }
+
+        pipeline = [
+            match,
             {
                 "$lookup": {
                     "from": "cycle",
