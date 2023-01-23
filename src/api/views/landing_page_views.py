@@ -83,5 +83,22 @@ class LandingPageTemplatesView(MethodView):
     def get(self, landing_page_id):
         """Get."""
         return jsonify(
-            template_manager.all(params={"landing_page_id": landing_page_id})
+            template_manager.all(
+                params={"landing_page_id": landing_page_id},
+                fields=[
+                    "name",
+                    "landing_page_id",
+                    "sending_profile_id",
+                    "deception_score",
+                    "from_address",
+                    "retired",
+                    "retired_description",
+                    "sophisticated",
+                    "red_flag",
+                    "subject",
+                    "text",
+                    "html",
+                    "indicators",
+                ],
+            )
         )
