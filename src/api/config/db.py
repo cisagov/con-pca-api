@@ -18,7 +18,7 @@ def get_connection_string(db_user, db_pw, db_host, db_port):
 def get_db():
     """Get database client."""
     if os.environ.get("MONGO_TYPE") == "ATLAS" and os.environ.get("MONGO_CLUSTER_URI"):
-        return MongoClient(os.environ.get("MONGO_CLUSTER_URI"), tz_aware=True).pca
+        return MongoClient(os.environ["MONGO_CLUSTER_URI"], tz_aware=True).pca
 
     conn_str = get_connection_string(
         os.environ.get("DB_USER"),
