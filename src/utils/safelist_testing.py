@@ -39,7 +39,8 @@ def test_subscription(subscription_id, contacts):
             "sending_profile_id",
             "customer_id",
             "templates_selected",
-            "next templates" "phish_header",
+            "next templates",
+            "phish_header",
         ],
     )
 
