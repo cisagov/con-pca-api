@@ -45,6 +45,29 @@ class TestReportsAggregate:
                         ):
                             pytest.fail("expected a dict")
 
+                        if (
+                            reportsaggregate["all_customer_stats"]["all"]["clicked"][
+                                "ratio"
+                            ]
+                            > 1
+                        ):
+                            pytest.fail("A ratio should <= 1")
+
+                        if (
+                            reportsaggregate["all_customer_stats"]["all"]["opened"][
+                                "ratio"
+                            ]
+                            > 1
+                        ):
+                            pytest.fail("A ratio should <= 1")
+
+                        if (
+                            reportsaggregate["all_customer_stats"]["all"]["reported"][
+                                "ratio"
+                            ]
+                            > 1
+                        ):
+                            pytest.fail("A ratio should <= 1")
             try:
                 if not isinstance(
                     reportsaggregate["all_customer_stats"]["all"]["reported"]["count"],
