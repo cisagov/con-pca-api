@@ -710,14 +710,9 @@ class SubscriptionLaunchView(MethodView):
         subscription = subscription_manager.get(
             document_id=subscription_id, fields=["next_templates"]
         )
-        if subscription.get("next_templates"):
-            next_templates = template_manager.all(
-                params={"_id": {"$in": subscription["next_templates"]}},
-                fields=["subject", "deception_score"],
-            )
-            resp, status_code = start_subscription(subscription_id, next_templates)
-        else:
-            resp, status_code = start_subscription(subscription_id)
+        resp, status_code = start_subscription(
+            subscription_id, subscription.get("next_templates", [])
+        )
         return jsonify(resp), status_code
 
     def delete(self, subscription_id):
