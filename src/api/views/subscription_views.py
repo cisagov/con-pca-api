@@ -709,7 +709,12 @@ class SubscriptionLaunchView(MethodView):
 
     def get(self, subscription_id):
         """Launch a subscription."""
-        resp, status_code = start_subscription(subscription_id)
+        subscription = subscription_manager.get(
+            document_id=subscription_id, fields=["next_templates"]
+        )
+        resp, status_code = start_subscription(
+            subscription_id, subscription.get("next_templates", [])
+        )
         return jsonify(resp), status_code
 
     def delete(self, subscription_id):
@@ -842,8 +847,7 @@ class SubscriptionSafelistSendView(MethodView):
         if not subscription.get("next_templates"):
             update_data = {}
             next_templates_selected = get_random_templates(subscription)
-            if next_templates_selected:
-                update_data["next_templates"] = next_templates_selected
+            update_data["next_templates"] = next_templates_selected
             subscription_manager.update(document_id=subscription_id, data=update_data)
         else:
             next_templates_selected = subscription.get("next_templates", [])

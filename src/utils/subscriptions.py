@@ -105,6 +105,8 @@ def start_subscription(subscription_id, templates_selected=[]):
 
     if templates_selected:
         update_data["templates_selected"] = templates_selected
+    else:
+        update_data["templates_selected"] = get_random_templates(subscription)
 
     next_templates_selected = get_random_templates(subscription)
     if next_templates_selected:
