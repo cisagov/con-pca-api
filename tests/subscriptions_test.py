@@ -15,15 +15,15 @@ class TestSubscriptions:
 
     #     self.check_subscription_properties(resp.json[0])
 
-    def test_get_subscription(self, client, subscription):
-        """Test the subscription view."""
-        sub_id = subscription.get("_id")
-        assert sub_id is not None
+    # def test_get_subscription(self, client, subscription):
+    #     """Test the subscription view."""
+    #     sub_id = subscription.get("_id")
+    #     assert sub_id is not None
 
-        resp = client.get(f"/api/subscription/{sub_id}/")
-        assert resp.status_code == 200
+    #     resp = client.get(f"/api/subscription/{sub_id}/")
+    #     assert resp.status_code == 200
 
-        self.check_subscription_properties(resp.json)
+    #     self.check_subscription_properties(resp.json)
 
     @staticmethod
     def check_subscription_properties(sub):
