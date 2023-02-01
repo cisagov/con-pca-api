@@ -1,6 +1,5 @@
 """Template Views."""
 # Third-Party Libraries
-from bson.objectid import ObjectId
 from flask import jsonify, request
 from flask.views import MethodView
 
@@ -70,16 +69,7 @@ class TemplatesView(MethodView):
 
     def post(self):
         """Post."""
-        data = request.json
-        if "sending_profile_id" in data and ObjectId.is_valid(
-            data.get("sending_profile_id", "")
-        ):
-            data["sending_profile_oid"] = ObjectId(data.get("sending_profile_id", None))
-        if "landing_page_id" in data and ObjectId.is_valid(
-            data.get("landing_page_id", "")
-        ):
-            data["landing_page_oid"] = ObjectId(data.get("landing_page_id", None))
-        return jsonify(template_manager.save(data))
+        return jsonify(template_manager.save(request.json))
 
 
 class TemplateView(MethodView):
@@ -117,15 +107,6 @@ class TemplateView(MethodView):
         data = request.json
         if data.get("landing_page_id") in ["0", None]:
             data["landing_page_id"] = None
-
-        if "sending_profile_id" in data and ObjectId.is_valid(
-            data.get("sending_profile_id", "")
-        ):
-            data["sending_profile_oid"] = ObjectId(data.get("sending_profile_id", None))
-        if "landing_page_id" in data and ObjectId.is_valid(
-            data.get("landing_page_id", "")
-        ):
-            data["landing_page_oid"] = ObjectId(data.get("landing_page_id", None))
 
         template = template_manager.get(document_id=template_id)
         template.update(data)
