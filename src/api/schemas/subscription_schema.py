@@ -119,3 +119,4 @@ class SubscriptionSchema(BaseSchema):
     landing_page_oid = fields.Raw(required=False, allow_none=True)
     landing_domain = fields.Str()  # The landing domain for simulated phishing URLs.
     landing_page_url = fields.Str()  # The URL to redirect to after landing domain.
+    targets_updated_username = fields.Str()
