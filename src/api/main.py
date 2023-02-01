@@ -249,7 +249,7 @@ sched.add_job(
 initialization_tasks()
 
 # Launch the task scheduler
-sched.start()
+# sched.start() # Temporarily paused
 
 
 class CustomJSONEncoder(JSONEncoder):
