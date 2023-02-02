@@ -61,6 +61,21 @@ def test_subscription(subscription_id, contacts):
             "subject",
         ],
     )
+    # Get next templates for subscription
+    next_templates = template_manager.all(
+        params={"_id": {"$in": subscription["next_templates"]}},
+        fields=[
+            "_id",
+            "deception_score",
+            "from_address",
+            "html",
+            "landing_page_id",
+            "name",
+            "sending_profile_id",
+            "subject",
+        ],
+    )
+    templates += next_templates
 
     # Get sending profile to send emails
     sending_profile = sending_profile_manager.get(
