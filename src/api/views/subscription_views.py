@@ -97,17 +97,23 @@ class SubscriptionsView(MethodView):
         pipeline = [
             match,
             {
+                "$addFields": {
+                    "subscription_id": {"$toString": "$_id"},
+                    "customer_object_id": {"$toObjectId": "$customer_id"},
+                }
+            },
+            {
                 "$lookup": {
                     "from": "cycle",
-                    "localField": "_id",
-                    "foreignField": "subscription_oid",
+                    "localField": "subscription_id",
+                    "foreignField": "subscription_id",
                     "as": "cycle",
                 }
             },
             {
                 "$lookup": {
                     "from": "customer",
-                    "localField": "customer_oid",
+                    "localField": "customer_object_id",
                     "foreignField": "_id",
                     "as": "customer",
                 }
@@ -132,6 +138,8 @@ class SubscriptionsView(MethodView):
                     "admin_email": "$admin_email",
                     "target_email_list": "$target_email_list",
                     "continuous_subscription": "$continuous_subscription",
+                    "targets_updated_username": "$targets_updated_username",
+                    "targets_updated_time": "$targets_updated_time",
                     "created_by": "$created_by",
                     "updated": "$updated",
                     "updated_by": "$updated_by",
@@ -153,24 +161,6 @@ class SubscriptionsView(MethodView):
         subscription["name"] = create_subscription_name(customer)
         subscription["status"] = "created"
         subscription["phish_header"] = get_random_phish_header()
-        if "customer_id" in subscription and ObjectId.is_valid(
-            subscription.get("customer_id", "")
-        ):
-            subscription["customer_oid"] = ObjectId(
-                subscription.get("customer_id", None)
-            )
-        if "sending_profile_id" in subscription and ObjectId.is_valid(
-            subscription.get("sending_profile_id", "")
-        ):
-            subscription["sending_profile_oid"] = ObjectId(
-                subscription.get("sending_profile_id", None)
-            )
-        if "landing_page_id" in subscription and ObjectId.is_valid(
-            subscription.get("landing_page_id", "")
-        ):
-            subscription["landing_page_oid"] = ObjectId(
-                subscription.get("landing_page_id", None)
-            )
         response = subscription_manager.save(subscription)
         response["name"] = subscription["name"]
         return jsonify(response)
@@ -225,6 +215,8 @@ class SubscriptionsPagedView(MethodView):
         pipeline = [
             {
                 "$addFields": {
+                    "subscription_id": {"$toString": "$_id"},
+                    "customer_object_id": {"$toObjectId": "$customer_id"},
                     "contact_full_name": {
                         "$concat": [
                             "$primary_contact.first_name",
@@ -240,7 +232,7 @@ class SubscriptionsPagedView(MethodView):
             {
                 "$lookup": {
                     "from": "customer",
-                    "localField": "customer_oid",
+                    "localField": "customer_object_id",
                     "foreignField": "_id",
                     "as": "customer",
                 }
@@ -248,7 +240,7 @@ class SubscriptionsPagedView(MethodView):
             {
                 "$lookup": {
                     "from": "cycle",
-                    "let": {"subscription_id": "$_id"},
+                    "let": {"subscription_id": "$subscription_id"},
                     "pipeline": [
                         {
                             "$match": {
@@ -399,6 +391,8 @@ class SubscriptionCountView(MethodView):
         pipeline = [
             {
                 "$addFields": {
+                    "subscription_id": {"$toString": "$_id"},
+                    "customer_object_id": {"$toObjectId": "$customer_id"},
                     "contact_full_name": {
                         "$concat": [
                             "$primary_contact.first_name",
@@ -414,7 +408,7 @@ class SubscriptionCountView(MethodView):
             {
                 "$lookup": {
                     "from": "customer",
-                    "localField": "customer_oid",
+                    "localField": "customer_object_id",
                     "foreignField": "_id",
                     "as": "customer",
                 }
@@ -493,17 +487,23 @@ class SubscriptionView(MethodView):
         pipeline = [
             {"$match": {"_id": ObjectId(subscription_id)}},
             {
+                "$addFields": {
+                    "subscription_id": {"$toString": "$_id"},
+                    "customer_object_id": {"$toObjectId": "$customer_id"},
+                }
+            },
+            {
                 "$lookup": {
                     "from": "cycle",
-                    "localField": "_id",
-                    "foreignField": "subscription_oid",
+                    "localField": "subscription_id",
+                    "foreignField": "subscription_id",
                     "as": "cycle",
                 }
             },
             {
                 "$lookup": {
                     "from": "customer",
-                    "localField": "customer_oid",
+                    "localField": "customer_object_id",
                     "foreignField": "_id",
                     "as": "customer",
                 }
@@ -542,6 +542,8 @@ class SubscriptionView(MethodView):
                     "landing_page_id": "$landing_page_id",
                     "landing_page_url": "$landing_page_url",
                     "landing_domain": "$landing_domain",
+                    "targets_updated_username": "$targets_updated_username",
+                    "targets_updated_time": "$targets_updated_time",
                     "created": "$created",
                     "created_by": "$created_by",
                     "updated": "$updated",
@@ -616,24 +618,6 @@ class SubscriptionView(MethodView):
                         ),
                         400,
                     )
-        if "customer_id" in subscription and ObjectId.is_valid(
-            subscription.get("customer_id", "")
-        ):
-            request.json["customer_oid"] = ObjectId(
-                subscription.get("customer_id", None)
-            )
-        if "sending_profile_id" in subscription and ObjectId.is_valid(
-            subscription.get("sending_profile_id", "")
-        ):
-            request.json["sending_profile_oid"] = ObjectId(
-                subscription.get("sending_profile_id", None)
-            )
-        if "landing_page_id" in subscription and ObjectId.is_valid(
-            subscription.get("landing_page_id", "")
-        ):
-            request.json["landing_page_oid"] = ObjectId(
-                subscription.get("landing_page_id", None)
-            )
         subscription_manager.update(document_id=subscription_id, data=request.json)
         return jsonify({"success": True})
 
@@ -653,17 +637,23 @@ class SubscriptionsStatusView(MethodView):
         pipeline = [
             {"$match": {"archived": {"$in": [False, None]}}},
             {
+                "$addFields": {
+                    "subscription_id": {"$toString": "$_id"},
+                    "customer_object_id": {"$toObjectId": "$customer_id"},
+                }
+            },
+            {
                 "$lookup": {
                     "from": "cycle",
-                    "localField": "_id",
-                    "foreignField": "subscription_oid",
+                    "localField": "subscription_id",
+                    "foreignField": "subscription_id",
                     "as": "cycle",
                 }
             },
             {
                 "$lookup": {
                     "from": "customer",
-                    "localField": "customer_oid",
+                    "localField": "customer_object_id",
                     "foreignField": "_id",
                     "as": "customer",
                 }
