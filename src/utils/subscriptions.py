@@ -6,7 +6,6 @@ import string
 from uuid import uuid4
 
 # Third-Party Libraries
-from bson.objectid import ObjectId
 import dateutil.parser  # type: ignore
 
 # cisagov Libraries
@@ -42,8 +41,6 @@ def start_subscription(subscription_id, templates_selected=[]):
     cycle = {}
     cycle.update(calculate_cycle_dates(subscription))
     cycle["subscription_id"] = subscription_id
-    if ObjectId.is_valid(subscription_id):
-        cycle["subscription_oid"] = ObjectId(subscription_id)
     cycle["phish_header"] = subscription["phish_header"]
     cycle["active"] = True
     targets = []
@@ -87,12 +84,6 @@ def start_subscription(subscription_id, templates_selected=[]):
 
         targets.append(target)
         cycle["template_ids"].add(target["template_id"])
-
-    template_oids = []
-    for id in cycle.get("template_ids", []):
-        if ObjectId.is_valid(id):
-            template_oids.append(ObjectId(id))
-    cycle["template_oids"] = template_oids
 
     tasks = get_initial_tasks(subscription, cycle)
 
