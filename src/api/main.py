@@ -26,6 +26,7 @@ from api.config.environment import (
 from api.initialize import initialization_tasks
 from api.phish import emails_job
 from api.tasks import failed_emails_job, tasks_job
+from api.views.about_views import AboutView
 from api.views.auth_views import (
     LoginView,
     RefreshTokenView,
@@ -98,6 +99,8 @@ from utils.logging import setLogger
 url_prefix = "/api"
 
 rules = [
+    # About Views
+    ("/about/", AboutView),
     # Config Views
     ("/config/", ConfigView),
     # Customer Views

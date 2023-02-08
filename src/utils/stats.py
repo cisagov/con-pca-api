@@ -245,38 +245,86 @@ def generate_cycle_stats(cycle, targets, nonhuman=False):
 
 def get_rolling_emails(n_days):
     """Get total number of emails sent/clicked by the system over the last x days."""
-    sent = target_manager.count(
+    pipeline = [
         {
-            "sent_date": {
-                "$gte": datetime.now() - timedelta(days=n_days),
-                "$lte": datetime.now(),
+            "$group": {
+                "_id": None,
+                "sent": {
+                    "$sum": {
+                        "$cond": [
+                            {
+                                "$and": [
+                                    {
+                                        "$gte": [
+                                            "$sent_date",
+                                            datetime.now() - timedelta(days=n_days),
+                                        ]
+                                    },
+                                    {"$lte": ["$sent_date", datetime.now()]},
+                                ]
+                            },
+                            1,
+                            0,
+                        ]
+                    }
+                },
+                "scheduled": {
+                    "$sum": {
+                        "$cond": [
+                            {
+                                "$and": [
+                                    {
+                                        "$gte": [
+                                            "$send_date",
+                                            datetime.now() - timedelta(days=n_days),
+                                        ]
+                                    },
+                                    {"$lte": ["$send_date", datetime.now()]},
+                                ]
+                            },
+                            1,
+                            0,
+                        ]
+                    }
+                },
+                "clicked": {
+                    "$sum": {
+                        "$cond": [
+                            {
+                                "$and": [
+                                    {
+                                        "$gte": [
+                                            "$send_date",
+                                            datetime.now() - timedelta(days=n_days),
+                                        ]
+                                    },
+                                    {"$lte": ["$send_date", datetime.now()]},
+                                    {"$eq": ["$timeline.message", "clicked"]},
+                                ]
+                            },
+                            1,
+                            0,
+                        ]
+                    }
+                },
             }
         }
-    )
-    scheduled = target_manager.count(
-        {
-            "send_date": {
-                "$gte": datetime.now() - timedelta(days=n_days),
-                "$lte": datetime.now(),
-            }
-        }
-    )
+    ]
+    aggregate = target_manager.aggregate(pipeline)
+    aggregate = aggregate[0] if len(aggregate) > 0 else {}
+
     try:
-        ratio = sent / scheduled
+        ratio = aggregate.get("sent", 0) / aggregate.get("scheduled", 0)
     except ZeroDivisionError:
         ratio = 1
     ratio = round(ratio, 4)
-    clicked = target_manager.count(
-        {
-            "sent_date": {
-                "$gte": datetime.now() - timedelta(days=n_days),
-                "$lte": datetime.now(),
-            },
-            "timeline": {"$elemMatch": {"message": "clicked"}},
-        }
-    )
 
-    return sent, scheduled, ratio, clicked
+    return (
+        aggregate.get("sent", 0),
+        aggregate.get("scheduled", 0),
+        ratio,
+        aggregate.get("clicked", 0),
+    )
 
 
 def get_rolling_tasks(n_days):

@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 import os
 
 # Third-Party Libraries
+from bson.objectid import ObjectId
 from flask import jsonify, request, send_file
 from flask.views import MethodView
 
@@ -70,24 +71,49 @@ class SubscriptionsView(MethodView):
         if request.args.get("archived", "").lower() == "true":
             parameters["archived"] = True
 
-        pipeline = [
-            {
+        if request.args.get("customer_id", None):
+            match = {
+                "$match": {
+                    "$and": [
+                        {"archived": {"$in": [False, None]}},
+                        {"customer_id": request.args.get("customer_id")},
+                    ]
+                }
+                if not parameters["archived"]
+                else {
+                    "$and": [
+                        {"archived": {"$nin": [False, None]}},
+                        {"customer_id": request.args.get("customer_id")},
+                    ]
+                }
+            }
+        else:
+            match = {
                 "$match": {"archived": {"$in": [False, None]}}
                 if not parameters["archived"]
                 else {"archived": {"$nin": [False, None]}}
+            }
+
+        pipeline = [
+            match,
+            {
+                "$addFields": {
+                    "subscription_id": {"$toString": "$_id"},
+                    "customer_object_id": {"$toObjectId": "$customer_id"},
+                }
             },
             {
                 "$lookup": {
                     "from": "cycle",
-                    "localField": "_id",
-                    "foreignField": "subscription_oid",
+                    "localField": "subscription_id",
+                    "foreignField": "subscription_id",
                     "as": "cycle",
                 }
             },
             {
                 "$lookup": {
                     "from": "customer",
-                    "localField": "customer_oid",
+                    "localField": "customer_object_id",
                     "foreignField": "_id",
                     "as": "customer",
                 }
@@ -106,12 +132,14 @@ class SubscriptionsView(MethodView):
                     "cycle_length_minutes": "$cycle_length_minutes",
                     "cooldown_minutes": "$cooldown_minutes",
                     "buffer_time_minutes": "$buffer_time_minutes",
-                    # "active": {"$anyElementTrue": "$cycle.active"},
+                    "active": {"$anyElementTrue": "$cycle.active"},
                     "archived": "$archived",
                     "primary_contact": "$primary_contact",
                     "admin_email": "$admin_email",
                     "target_email_list": "$target_email_list",
                     "continuous_subscription": "$continuous_subscription",
+                    "targets_updated_username": "$targets_updated_username",
+                    "targets_updated_time": "$targets_updated_time",
                     "created_by": "$created_by",
                     "updated": "$updated",
                     "updated_by": "$updated_by",
@@ -187,6 +215,8 @@ class SubscriptionsPagedView(MethodView):
         pipeline = [
             {
                 "$addFields": {
+                    "subscription_id": {"$toString": "$_id"},
+                    "customer_object_id": {"$toObjectId": "$customer_id"},
                     "contact_full_name": {
                         "$concat": [
                             "$primary_contact.first_name",
@@ -202,7 +232,7 @@ class SubscriptionsPagedView(MethodView):
             {
                 "$lookup": {
                     "from": "customer",
-                    "localField": "customer_oid",
+                    "localField": "customer_object_id",
                     "foreignField": "_id",
                     "as": "customer",
                 }
@@ -210,7 +240,7 @@ class SubscriptionsPagedView(MethodView):
             {
                 "$lookup": {
                     "from": "cycle",
-                    "let": {"subscription_id": "$_id"},
+                    "let": {"subscription_id": "$subscription_id"},
                     "pipeline": [
                         {
                             "$match": {
@@ -250,7 +280,7 @@ class SubscriptionsPagedView(MethodView):
                     "cycle_length_minutes": "$cycle_length_minutes",
                     "cooldown_minutes": "$cooldown_minutes",
                     "buffer_time_minutes": "$buffer_time_minutes",
-                    # "active": {"$anyElementTrue": "$cycle.active"},
+                    "active": {"$anyElementTrue": "$cycle.active"},
                     "archived": "$archived",
                     "primary_contact": "$primary_contact",
                     "admin_email": "$admin_email",
@@ -361,6 +391,8 @@ class SubscriptionCountView(MethodView):
         pipeline = [
             {
                 "$addFields": {
+                    "subscription_id": {"$toString": "$_id"},
+                    "customer_object_id": {"$toObjectId": "$customer_id"},
                     "contact_full_name": {
                         "$concat": [
                             "$primary_contact.first_name",
@@ -376,7 +408,7 @@ class SubscriptionCountView(MethodView):
             {
                 "$lookup": {
                     "from": "customer",
-                    "localField": "customer_oid",
+                    "localField": "customer_object_id",
                     "foreignField": "_id",
                     "as": "customer",
                 }
@@ -452,56 +484,95 @@ class SubscriptionView(MethodView):
 
     def get(self, subscription_id):
         """Get."""
-        return jsonify(
-            subscription_manager.get(
-                document_id=subscription_id,
-                fields=[
-                    "name",
-                    "customer_id",
-                    "sending_profile_id",
-                    "target_domain",
-                    "customer",
-                    "start_date",
-                    "primary_contact",
-                    "admin_email",
-                    "operator_email",
-                    "status",
-                    "cycle_start_date",
-                    "target_email_list",
-                    "templates_selected",
-                    "next_templates",
-                    "continuous_subscription",
-                    "buffer_time_minutes",
-                    "cycle_length_minutes",
-                    "cooldown_minutes",
-                    "report_frequency_minutes",
-                    "tasks",
-                    "processing",
-                    "archived",
-                    "page",
-                    "page_count",
-                    "sortby",
-                    "sortorder",
-                    "notification_history",
-                    "phish_header",
-                    "reporting_password",
-                    "test_results",
-                    "landing_page_id",
-                    "landing_domain",
-                    "landing_page_url",
-                    "created",
-                    "created_by",
-                    "updated",
-                    "updated_by",
-                ],
+        pipeline = [
+            {"$match": {"_id": ObjectId(subscription_id)}},
+            {
+                "$addFields": {
+                    "subscription_id": {"$toString": "$_id"},
+                    "customer_object_id": {"$toObjectId": "$customer_id"},
+                }
+            },
+            {
+                "$lookup": {
+                    "from": "cycle",
+                    "localField": "subscription_id",
+                    "foreignField": "subscription_id",
+                    "as": "cycle",
+                }
+            },
+            {
+                "$lookup": {
+                    "from": "customer",
+                    "localField": "customer_object_id",
+                    "foreignField": "_id",
+                    "as": "customer",
+                }
+            },
+            {
+                "$project": {
+                    "_id": "$_id",
+                    "name": "$name",
+                    "customer_id": "$customer_id",
+                    "sending_profile_id": "$sending_profile_id",
+                    "target_domain": "$target_domain",
+                    "start_date": "$start_date",
+                    "cycle_start_date": {"$max": "$cycle.start_date"},
+                    "cycle_end_date": {"$max": "$cycle.end_date"},
+                    "cycle_send_by_date": {"$max": "$cycle.send_by_date"},
+                    "appendix_a_date": {"$max": "$customer.appendix_a_date"},
+                    "primary_contact": "$primary_contact",
+                    "admin_email": "$admin_email",
+                    "operator_email": "$operator_email",
+                    "status": "$status",
+                    "target_email_list": "$target_email_list",
+                    "templates_selected": "$templates_selected",
+                    "next_templates": "$next_templates",
+                    "active": {"$anyElementTrue": "$cycle.active"},
+                    "continuous_subscription": "$continuous_subscription",
+                    "cycle_length_minutes": "$cycle_length_minutes",
+                    "cooldown_minutes": "$cooldown_minutes",
+                    "buffer_time_minutes": "$buffer_time_minutes",
+                    "report_frequency_minutes": "$report_frequency_minutes",
+                    "archived": "$archived",
+                    "tasks": "$tasks",
+                    "notification_history": "$notification_history",
+                    "phish_header": "$phish_header",
+                    "reporting_password": "$reporting_password",
+                    "test_results": "$test_results",
+                    "landing_page_id": "$landing_page_id",
+                    "landing_page_url": "$landing_page_url",
+                    "landing_domain": "$landing_domain",
+                    "targets_updated_username": "$targets_updated_username",
+                    "targets_updated_time": "$targets_updated_time",
+                    "created": "$created",
+                    "created_by": "$created_by",
+                    "updated": "$updated",
+                    "updated_by": "$updated_by",
+                    "processing": "$processing",
+                }
+            },
+        ]
+        subscription = subscription_manager.aggregate(pipeline)
+        subscription = subscription[0] if len(subscription) > 0 else {}
+        subscription["_id"] = str(subscription["_id"])
+        subscription["next_cycle_start_date"] = (
+            subscription.get("cycle_start_date")
+            + timedelta(
+                minutes=(
+                    subscription.get("cycle_length_minutes", 0)
+                    + subscription.get("cooldown_minutes", 0)
+                    + subscription.get("buffer_time_minutes", 0)
+                )
             )
+            if subscription.get("cycle_start_date", None)
+            else None
         )
+        return jsonify(subscription)
 
     def put(self, subscription_id):
         """Put."""
         subscription = subscription_manager.get(
             document_id=subscription_id,
-            fields=["status", "continuous_subscription"],
         )
         if subscription["status"] in ["queued", "running"]:
             if "continuous_subscription" in request.json:
@@ -566,17 +637,23 @@ class SubscriptionsStatusView(MethodView):
         pipeline = [
             {"$match": {"archived": {"$in": [False, None]}}},
             {
+                "$addFields": {
+                    "subscription_id": {"$toString": "$_id"},
+                    "customer_object_id": {"$toObjectId": "$customer_id"},
+                }
+            },
+            {
                 "$lookup": {
                     "from": "cycle",
-                    "localField": "_id",
-                    "foreignField": "subscription_oid",
+                    "localField": "subscription_id",
+                    "foreignField": "subscription_id",
                     "as": "cycle",
                 }
             },
             {
                 "$lookup": {
                     "from": "customer",
-                    "localField": "customer_oid",
+                    "localField": "customer_object_id",
                     "foreignField": "_id",
                     "as": "customer",
                 }
@@ -587,7 +664,7 @@ class SubscriptionsStatusView(MethodView):
                     "appendix_a_date": {"$max": "$customer.appendix_a_date"},
                     "cycle_start_date": {"$max": "$cycle.start_date"},
                     "cycle_end_date": {"$max": "$cycle.end_date"},
-                    # "active": {"$anyElementTrue": "$cycle.active"},
+                    "active": {"$anyElementTrue": "$cycle.active"},
                     "created": "$created",
                     "target_domain": "$target_domain",
                     "customer_id": "$customer_id",
@@ -620,7 +697,12 @@ class SubscriptionLaunchView(MethodView):
 
     def get(self, subscription_id):
         """Launch a subscription."""
-        resp, status_code = start_subscription(subscription_id)
+        subscription = subscription_manager.get(
+            document_id=subscription_id, fields=["next_templates"]
+        )
+        resp, status_code = start_subscription(
+            subscription_id, subscription.get("next_templates", [])
+        )
         return jsonify(resp), status_code
 
     def delete(self, subscription_id):
@@ -753,8 +835,7 @@ class SubscriptionSafelistSendView(MethodView):
         if not subscription.get("next_templates"):
             update_data = {}
             next_templates_selected = get_random_templates(subscription)
-            if next_templates_selected:
-                update_data["next_templates"] = next_templates_selected
+            update_data["next_templates"] = next_templates_selected
             subscription_manager.update(document_id=subscription_id, data=update_data)
         else:
             next_templates_selected = subscription.get("next_templates", [])

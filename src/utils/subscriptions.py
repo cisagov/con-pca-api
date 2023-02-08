@@ -96,6 +96,8 @@ def start_subscription(subscription_id, templates_selected=[]):
 
     if templates_selected:
         update_data["templates_selected"] = templates_selected
+    else:
+        update_data["templates_selected"] = get_random_templates(subscription)
 
     next_templates_selected = get_random_templates(subscription)
     if next_templates_selected:
@@ -195,7 +197,7 @@ def get_initial_tasks(subscription, cycle):
     initial_tasks.append(get_new_task("start_subscription_email", start_date))
 
     # status_reports
-    n_status_reports = subscription["cycle_length_minutes"] // report_minutes
+    n_status_reports = 1 + (cycle_minutes // report_minutes)
     last_date = cycle["start_date"]
     for i in range(1, n_status_reports):
         initial_tasks.append(
