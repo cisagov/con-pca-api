@@ -36,7 +36,7 @@ class CycleTasksSchema(Schema):
         )
     )
     scheduled_date = DateTimeField()
-    executed = fields.Bool(missing=False)
+    executed = fields.Bool(load_default=False)
     executed_date = DateTimeField(required=False)
     error = fields.Str(required=False, allow_none=True)
 
@@ -45,7 +45,9 @@ class CycleSchema(BaseSchema):
     """CycleSchema."""
 
     subscription_id = fields.Str()
+    subscription_oid = fields.Raw()
     template_ids = fields.List(fields.Str())
+    template_oids = fields.List(fields.Raw())
     start_date = DateTimeField()
     end_date = DateTimeField()
     send_by_date = DateTimeField()

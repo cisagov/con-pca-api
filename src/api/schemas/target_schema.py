@@ -29,8 +29,11 @@ class TargetSchema(BaseSchema):
     """CycleTargetSchema."""
 
     cycle_id = fields.Str()
+    cycle_oid = fields.Raw()
     subscription_id = fields.Str()
+    subscription_oid = fields.Raw()
     template_id = fields.Str()
+    template_oid = fields.Raw()
     email = fields.Email(required=True)
     first_name = fields.Str(required=False, allow_none=True)
     last_name = fields.Str(required=False, allow_none=True)
@@ -38,7 +41,7 @@ class TargetSchema(BaseSchema):
     deception_level = fields.Str(validate=validate.OneOf(["low", "moderate", "high"]))
     deception_level_int = fields.Integer()
     send_date = DateTimeField()
-    sent = fields.Bool(missing=False)
+    sent = fields.Bool(load_default=False)
     sent_date = DateTimeField()
     error = fields.Str(required=False, allow_none=True)
     timeline = fields.List(fields.Nested(TargetTimelineSchema))

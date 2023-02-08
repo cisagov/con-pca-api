@@ -7,7 +7,7 @@
   "cycle_length_minutes": 129600,
   "landing_domain": "https://external.example.org",
   "landing_page_url": "https://internal.example.org/phish-training",
-  "name": "test_subscription",
+  "name": "testSub_1",
   "operator_email": "martha.jones@inl.gov",
   "phish_header": "Y4th0R1tOL8tE2jsfJZIl9umbALitIEI",
   "primary_contact": {

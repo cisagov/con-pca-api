@@ -51,3 +51,16 @@ class TestTemplates:
             assert len(template["indicators"]) == 4
         except KeyError:
             pytest.fail("indicators property does not exist")
+
+        if template["indicators"]:
+            if not isinstance(template["indicators"]["appearance"], dict):
+                pytest.fail("expected a dict")
+
+            if not isinstance(template["indicators"]["behavior"], dict):
+                pytest.fail("expected a dict")
+
+            if not isinstance(template["indicators"]["relevancy"], dict):
+                pytest.fail("expected a dict")
+
+            if not isinstance(template["indicators"]["sender"], dict):
+                pytest.fail("expected a dict")

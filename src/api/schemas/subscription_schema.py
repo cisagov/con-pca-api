@@ -57,7 +57,7 @@ class SubscriptionTasksSchema(Schema):
         )
     )
     scheduled_date = DateTimeField()
-    executed = fields.Bool(missing=False)
+    executed = fields.Bool(load_default=False)
     executed_date = DateTimeField(required=False)
     error = fields.Str(required=False, allow_none=True)
 
@@ -83,7 +83,9 @@ class SubscriptionSchema(BaseSchema):
 
     name = fields.Str()
     customer_id = fields.Str()
+    customer_oid = fields.Raw()
     sending_profile_id = fields.Str()
+    sending_profile_oid = fields.Raw()
     target_domain = fields.Str()
     customer = fields.Nested(CustomerSchema)
     start_date = DateTimeField()
@@ -114,5 +116,8 @@ class SubscriptionSchema(BaseSchema):
     reporting_password = fields.Str()
     test_results = fields.List(fields.Nested(SubscriptionTestSchema))
     landing_page_id = fields.Str(required=False, allow_none=True)
+    landing_page_oid = fields.Raw(required=False, allow_none=True)
     landing_domain = fields.Str()  # The landing domain for simulated phishing URLs.
     landing_page_url = fields.Str()  # The URL to redirect to after landing domain.
+    targets_updated_username = fields.Str(required=False, allow_none=True)
+    targets_updated_time = DateTimeField(allow_none=True)

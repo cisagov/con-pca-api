@@ -1,5 +1,6 @@
 """Report views."""
 # Standard Python Libraries
+from datetime import datetime, timedelta
 import os
 
 # Third-Party Libraries
@@ -100,27 +101,86 @@ class AggregateReportView(MethodView):
 
     def get(self):
         """Get."""
-        context = {
-            "customers_enrolled": customer_manager.count({"archived": {"$ne": True}}),
-        }
-        context["customers_active"] = subscription_manager.distinct_count(
-            "customer_id",
-            {"status": {"$in": ["queued", "running"]}, "archived": {"$ne": True}},
+        pipeline = [
+            {
+                "$group": {
+                    "_id": None,
+                    "customers_active": {
+                        "$sum": {
+                            "$cond": [
+                                {
+                                    "$and": [
+                                        {"$in": ["$status", ["queued", "running"]]},
+                                        {"$ne": ["$archived", True]},
+                                    ]
+                                },
+                                1,
+                                0,
+                            ]
+                        }
+                    },
+                    "new_subscriptions": {
+                        "$sum": {
+                            "$cond": [
+                                {
+                                    "$and": [
+                                        {"$in": ["$status", ["created"]]},
+                                        {"$ne": ["$archived", True]},
+                                    ]
+                                },
+                                1,
+                                0,
+                            ]
+                        }
+                    },
+                    "ongoing_subscriptions": {
+                        "$sum": {
+                            "$cond": [
+                                {
+                                    "$and": [
+                                        {"$in": ["$status", ["queued", "running"]]},
+                                        {"$ne": ["$archived", True]},
+                                    ]
+                                },
+                                1,
+                                0,
+                            ]
+                        }
+                    },
+                    "stopped_subscriptions": {
+                        "$sum": {
+                            "$cond": [
+                                {
+                                    "$and": [
+                                        {"$in": ["$status", ["stopped"]]},
+                                        {"$ne": ["$archived", True]},
+                                    ]
+                                },
+                                1,
+                                0,
+                            ]
+                        }
+                    },
+                }
+            },
+            {
+                "$project": {
+                    "customers_active": "$customers_active",
+                    "new_subscriptions": "$new_subscriptions",
+                    "ongoing_subscriptions": "$ongoing_subscriptions",
+                    "stopped_subscriptions": "$stopped_subscriptions",
+                }
+            },
+        ]
+        aggregate_stats = subscription_manager.aggregate(pipeline)
+        aggregate_stats = aggregate_stats[0] if len(aggregate_stats) > 0 else {}
+        aggregate_stats["customers_enrolled"] = customer_manager.count(
+            {"archived": {"$ne": True}}
         )
 
-        context["new_subscriptions"] = subscription_manager.count(
-            {"status": "created", "archived": {"$ne": True}}
-        )
-        context["ongoing_subscriptions"] = subscription_manager.count(
-            {"status": {"$in": ["queued", "running"]}, "archived": {"$ne": True}}
-        )
-        context["stopped_subscriptions"] = subscription_manager.count(
-            {"status": "stopped", "archived": {"$ne": True}}
-        )
+        aggregate_stats.update(get_reports_sent())
 
-        context.update(get_reports_sent())
-
-        context.update(get_sector_industry_report())
+        aggregate_stats.update(get_sector_industry_report())
 
         email_sending_stats = {}
         (
@@ -141,7 +201,7 @@ class AggregateReportView(MethodView):
             email_sending_stats["emails_sent_on_time_30_days_ratio"],
             email_sending_stats["emails_clicked_30_days"],
         ) = get_rolling_emails(30)
-        context["email_sending_stats"] = email_sending_stats
+        aggregate_stats["email_sending_stats"] = email_sending_stats
 
         task_stats = {}
         (
@@ -159,8 +219,58 @@ class AggregateReportView(MethodView):
             task_stats["tasks_scheduled_30_days"],
             task_stats["tasks_succeeded_30_days_ratio"],
         ) = get_rolling_tasks(30)
-        context["task_stats"] = task_stats
+        aggregate_stats["task_stats"] = task_stats
 
-        context["all_customer_stats"] = get_all_customer_stats()
+        aggregate_stats["all_customer_stats"] = get_all_customer_stats()
 
-        return AggregateReportsSchema().dump(context)
+        return AggregateReportsSchema().dump(aggregate_stats)
+
+
+class OverdueTasksReportView(MethodView):
+    """OverdueTasksReportView."""
+
+    def get(self):
+        """Get."""
+        parameters = dict(request.args)
+        parameters = subscription_manager.get_query(parameters)
+
+        parameters["overdue_subscriptions"] = False
+        if request.args.get("overdue_subscriptions", "").lower() == "true":
+            parameters["overdue_subscriptions"] = True
+
+        pipeline = [
+            {"$unwind": {"path": "$tasks"}},
+            {
+                "$match": {
+                    "status": {"$eq": "running"},
+                    "continuous_subscription": {"$eq": True},
+                    "tasks.task_type": {"$in": ["start_next_cycle", "end_cycle"]},
+                    "tasks.executed": {"$eq": False},
+                    "tasks.scheduled_date": {
+                        "$lte": datetime.now() - timedelta(minutes=5),
+                    },
+                }
+                if parameters["overdue_subscriptions"]
+                else {
+                    "status": {"$eq": "running"},
+                    "tasks.executed": {"$eq": False},
+                    "tasks.scheduled_date": {
+                        "$lte": datetime.now() - timedelta(minutes=5),
+                    },
+                }
+            },
+            {
+                "$project": {
+                    "_id": 0,
+                    "scheduled_date": "$tasks.scheduled_date",
+                    "executed": "$tasks.executed",
+                    "task_type": "$tasks.task_type",
+                    "subscription_status": "$status",
+                    "subscription_name": "$name",
+                    "subscription_continuous": "$continuous_subscription",
+                }
+            },
+        ]
+        overdue_tasks = subscription_manager.aggregate(pipeline)
+
+        return overdue_tasks

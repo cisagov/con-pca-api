@@ -17,7 +17,7 @@ class CustomerContactSchema(BaseSchema):
     mobile_phone = fields.Str(required=False, allow_none=True)
     email = fields.Email(required=True)
     notes = fields.Str(required=False, allow_none=True)
-    active = fields.Bool(missing=True)
+    active = fields.Bool(load_default=True)
 
 
 class CustomerSchema(BaseSchema):
@@ -41,5 +41,5 @@ class CustomerSchema(BaseSchema):
     sector = fields.Str(required=False, allow_none=True)
     domain = fields.Str(required=False, allow_none=True)
     appendix_a_date = DateTimeField()
-    archived = fields.Bool(missing=False)
+    archived = fields.Bool(load_default=False)
     archived_description = fields.Str(dump_default="", allow_none=True)

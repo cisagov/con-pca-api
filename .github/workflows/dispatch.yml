@@ -20,5 +20,5 @@ jobs:
         with:
           token: ${{ secrets.CON_PCA_ACCESS_TOKEN }}
           repository: cisagov/con-pca-cicd
-          event-type: deploy
+          event-type: deploy-sandbox
           client-payload: '{"trigger": "con-pca-api"}'

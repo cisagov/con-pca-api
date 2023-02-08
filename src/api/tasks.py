@@ -4,9 +4,6 @@ from datetime import datetime, timedelta
 import os
 from uuid import uuid4
 
-# Third-Party Libraries
-import pytz  # type: ignore
-
 # cisagov Libraries
 from api.app import app
 from api.manager import (
@@ -20,7 +17,7 @@ from utils.mailgun import get_failed_email_events
 from utils.notifications import Notification
 from utils.safelist import generate_safelist_file
 from utils.subscriptions import start_subscription, stop_subscription
-from utils.templates import select_templates
+from utils.templates import get_random_templates
 
 # from utils.time import get_yearly_minutes
 
@@ -56,7 +53,10 @@ def get_subscription():
         params={
             "tasks": {
                 "$elemMatch": {
-                    "scheduled_date": {"$lt": datetime.utcnow()},
+                    "scheduled_date": {
+                        "$lte": datetime.utcnow(),
+                        "$gte": datetime.utcnow() - timedelta(days=1),
+                    },
                     "executed": {"$in": [False, None]},
                 }
             },
@@ -86,21 +86,26 @@ def process_subscription(subscription):
     for task in tasks:
         task["executed"] = True
         task["executed_date"] = datetime.utcnow()
-        logger.info(f"Processing task {task}")
         try:
-            process_task(task, subscription, cycle) if task["scheduled_date"] > (
-                datetime.now(pytz.utc) - timedelta(days=2)
-            ) else None
+            process_task(task, subscription, cycle)
         except Exception as e:
             logger.exception(
                 f"An exception occurred performing {task['task_type']} task for {subscription['name']} subscription: {e}",
                 extra={"source_type": "subscription", "source": subscription["_id"]},
             )
             task["error"] = str(e)
+            subscription_manager.update(
+                document_id=subscription["_id"],
+                data={"processing": False},
+                update=False,
+            )
+
         if not end_cycle_task:
             update_task(subscription["_id"], task)
             add_new_task(subscription, cycle, task)
-        logger.info(f"Executed task {task}")
+        logger.info(
+            f"Executed task {task['task_type']} with subscription: {subscription['name']}"
+        )
 
     subscription_manager.update(
         document_id=subscription["_id"], data={"processing": False}, update=False
@@ -112,12 +117,13 @@ def process_subscription(subscription):
             "active": True,
         }
     )
-    cycle_manager.update(
-        document_id=cycle["_id"],
-        data={
-            "tasks": subscription.get("tasks"),
-        },
-    )
+    if cycle:
+        cycle_manager.update(
+            document_id=cycle["_id"],
+            data={
+                "tasks": subscription.get("tasks"),
+            },
+        )
 
 
 def update_task(subscription_id, task):
@@ -133,16 +139,16 @@ def update_task(subscription_id, task):
 def add_new_task(subscription, cycle, task):
     """Add new subscription task."""
     scheduled = task["scheduled_date"]
-    report_minutes = subscription["report_frequency_minutes"]
+    # report_minutes = subscription["report_frequency_minutes"]
     cycle_minutes = (
         subscription["cycle_length_minutes"] + subscription["cooldown_minutes"]
     )
     # yearly_minutes = get_yearly_minutes()
     new_date = {
-        "status_report": scheduled + timedelta(minutes=report_minutes),
-        "cycle_report": scheduled + timedelta(minutes=cycle_minutes),
+        # "status_report": scheduled + timedelta(minutes=report_minutes),
         # "yearly_report": scheduled + timedelta(minutes=yearly_minutes),
-        "end_cycle": scheduled + timedelta(minutes=cycle_minutes),
+        "end_cycle": scheduled
+        + timedelta(minutes=cycle_minutes),
     }.get(task["task_type"])
     if new_date:
         task = {
@@ -229,14 +235,9 @@ def end_cycle(subscription, cycle):
             )
 
         else:
-            templates = [
-                t
-                for t in template_manager.all({"retired": False})
-                if t not in subscription["templates_selected"]
-            ]
-            templates_selected = sum(select_templates(templates), [])
             start_subscription(
-                str(subscription["_id"]), templates_selected=templates_selected
+                str(subscription["_id"]),
+                templates_selected=get_random_templates(subscription),
             )
     else:
         stop_subscription(str(subscription["_id"]))
@@ -251,6 +252,9 @@ def safelisting_reminder(subscription, cycle):
         params={"_id": {"$in": subscription["templates_selected"]}},
         fields=["subject", "deception_score"],
     )
+
+    if not subscription.get("next_templates"):
+        subscription["next_templates"] = get_random_templates(subscription)
 
     next_templates = template_manager.all(
         params={"_id": {"$in": subscription["next_templates"]}},

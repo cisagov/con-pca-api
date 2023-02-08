@@ -5,16 +5,25 @@ import json
 import os
 
 # Third-Party Libraries
+from pymongo import errors as pymongo_errors
 import pytz  # type: ignore
+import redis  # type: ignore
 
 # cisagov Libraries
+from api.app import app
+from api.config.environment import DB, REDIS_HOST, REDIS_PORT, TESTING
 from api.manager import (
     CustomerManager,
     CycleManager,
+    LandingPageManager,
+    LoggingManager,
     NonHumanManager,
     RecommendationManager,
+    SendingProfileManager,
     SubscriptionManager,
+    TargetManager,
     TemplateManager,
+    UserManager,
 )
 from utils.logging import setLogger
 from utils.subscriptions import start_subscription, stop_subscription
@@ -24,13 +33,18 @@ logger = setLogger(__name__)
 
 customer_manager = CustomerManager()
 cycle_manager = CycleManager()
+landing_page_manager = LandingPageManager()
+logging_manager = LoggingManager()
 recommendation_manager = RecommendationManager()
+sending_profile_manager = SendingProfileManager()
 subscription_manager = SubscriptionManager()
 template_manager = TemplateManager()
+target_manager = TargetManager()
 nonhuman_manager = NonHumanManager()
+user_manager = UserManager()
 
 
-def initialize_templates():
+def _initialize_templates():
     """Create initial templates."""
     current_templates = template_manager.all()
     names = [t["name"] for t in current_templates]
@@ -55,7 +69,7 @@ def initialize_templates():
     logger.info("Templates initialized")
 
 
-def initialize_nonhumans():
+def _initialize_nonhumans():
     """Create initial set of non-human ASN orgs."""
     initial_orgs = [
         "MICROSOFT-CORP-MSN-AS-BLOCK",
@@ -89,7 +103,7 @@ def initialize_nonhumans():
     logger.info("ASN Orgs Initialized.")
 
 
-def initialize_recommendations():
+def _initialize_recommendations():
     """Create an initial set of recommendations."""
     current_names = [f"{r['title']}-{r['type']}" for r in recommendation_manager.all()]
     if len(current_names) > len(set(current_names)):
@@ -110,7 +124,7 @@ def initialize_recommendations():
     logger.info("Recommendations initialized")
 
 
-def populate_stakeholder_shortname():
+def _populate_stakeholder_shortname():
     """Populate the stakeholder_shortname field with the same name as customer_identifier if empty."""
     customers = customer_manager.all(
         fields=["_id", "name", "identifier", "stakeholder_shortname"]
@@ -126,7 +140,40 @@ def populate_stakeholder_shortname():
             )
 
 
-def reset_dirty_stats():
+def _reset_processing():
+    """Set processing to false for all subscriptions."""
+    subscriptions = subscription_manager.all(
+        params={"processing": True}, fields=["name", "processing"]
+    )
+    if not subscriptions:
+        logger.info("No subscriptions stuck in the processing state found.")
+        return
+
+    for subscription in subscriptions:
+        logger.info(
+            f"Resetting processing for subscription {subscription.get('name')} to False."
+        )
+        subscription_manager.update(
+            document_id=subscription["_id"],
+            data={
+                "processing": False,
+            },
+        )
+
+
+def _restart_logging_ttl_index(ttl_in_seconds=345600):
+    """Create the ttl index."""
+    try:
+        DB.logging.drop_indexes()
+    except Exception as e:
+        logger.exception(e)
+    try:
+        DB.logging.create_index("created", expireAfterSeconds=ttl_in_seconds)
+    except Exception as e:
+        logger.exception(e)
+
+
+def _reset_dirty_stats():
     """Reset the dirty_stats field to true whenever the app is initialized."""
     cycles = cycle_manager.all(
         fields=["_id", "name", "identifier", "stakeholder_shortname"]
@@ -140,7 +187,7 @@ def reset_dirty_stats():
         )
 
 
-def restart_subscriptions():
+def _restart_subscriptions():
     """
     Restart all overdue continuous Subscriptions.
 
@@ -191,3 +238,50 @@ def restart_subscriptions():
             start_subscription(
                 str(subscription["_id"]), templates_selected=templates_selected
             )
+
+
+def _initialize_db_indexes():
+    """Create Mongo DB indexes if missing."""
+    managers = (
+        ("customers", customer_manager),
+        ("cycles", cycle_manager),
+        ("landing pages", landing_page_manager),
+        ("logging", logging_manager),
+        ("recommendations", recommendation_manager),
+        ("sending profiles", sending_profile_manager),
+        ("subscriptions", subscription_manager),
+        ("targets", target_manager),
+        ("templates", template_manager),
+        ("users", user_manager),
+    )
+    for name, manager in managers:
+        try:
+            manager.create_indexes()
+            logger.info(f"Creating db index for {name}")
+        except pymongo_errors.DuplicateKeyError:
+            logger.error(
+                f"Creating db index for {name} failed due to duplicate key error."
+            )
+            continue
+
+
+def _flush_redis_db():
+    """Flush the redis database."""
+    if TESTING:
+        logger.info("Skipping redis flush in test mode.")
+        return
+    r = redis.Redis(host=REDIS_HOST, port=REDIS_PORT)
+    logger.info("Flushing redis database.")
+    r.flushdb()
+
+
+def initialization_tasks():
+    """Run all initialization tasks."""
+    with app.app_context():
+        _flush_redis_db()
+        _initialize_db_indexes()
+        _initialize_templates()
+        _initialize_recommendations()
+        _initialize_nonhumans()
+        _reset_dirty_stats()
+        _populate_stakeholder_shortname()
