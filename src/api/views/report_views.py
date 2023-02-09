@@ -273,4 +273,18 @@ class OverdueTasksReportView(MethodView):
         ]
         overdue_tasks = subscription_manager.aggregate(pipeline)
 
+        if not overdue_tasks:
+            overdue_tasks = [
+                {
+                    "executed": "There are no overdue tasks"
+                    if not parameters["overdue_subscriptions"]
+                    else "There are no overdue subscriptions",
+                    "scheduled_date": "",
+                    "task_type": "",
+                    "subscription_status": "",
+                    "subscription_name": "",
+                    "subscription_continuous": "",
+                }
+            ]
+
         return overdue_tasks
