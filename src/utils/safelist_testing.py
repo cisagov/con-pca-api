@@ -39,7 +39,7 @@ def test_subscription(subscription_id, contacts):
             "sending_profile_id",
             "customer_id",
             "templates_selected",
-            "next templates",
+            "next_templates",
             "phish_header",
         ],
     )
@@ -63,7 +63,7 @@ def test_subscription(subscription_id, contacts):
     )
     # Get next templates for subscription
     next_templates = template_manager.all(
-        params={"_id": {"$in": subscription["next_templates"]}},
+        params={"_id": {"$in": subscription.get("next_templates", [])}},
         fields=[
             "_id",
             "deception_score",
