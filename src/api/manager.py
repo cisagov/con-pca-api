@@ -234,6 +234,11 @@ class Manager:
             {"$set": self.load_data(data, partial=True)},
         )
 
+    def delete_fields(self, field_names=[]):
+        """Delete all fields in the list entirely from a collection."""
+        for field_name in field_names:
+            self.db.update_many({}, {"$unset": {field_name: 1}})
+
     def save(self, data):
         """Save new item to collection."""
         data = self.clean_data(data)
