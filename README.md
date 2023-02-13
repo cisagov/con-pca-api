@@ -185,12 +185,9 @@ There are no required environment variables.
 | `FLASK_APP`  | Flask app to use.  | `api.main:app` |
 | `FLASK_ENV`  | Flask environment. | `development`  |
 | `FLASK_DEBUG`| Flask Debug        | `1`            |
-| `DB_HOST`    | Mongo host.        | `mongodb`      |
-| `DB_PORT`    | Mongo port.        | `27017`        |
+| `MONGO_CLUSTER_URI` | Mongo connection string  | `mongodb` |
 | `REDIS_HOST` | Mongo host.        | `redis`        |
 | `REDIS_PORT` | Mongo port.        | `6379`         |
-| `DB_PW`      | Mongo password.    | `changeme`     |
-| `DB_USER`    | Mongo user.        | `changeme`     |
 | `WORKERS`    | # of Gunicorn workers, if 0 if Debug set. | `4` |
 | `AWS_ACCESS_KEY_ID` | The AWS access key to access AWS services. | `changeme` |
 | `AWS_SECRET_ACCESS_KEY` | AWS secret access key for AWS services. | `changeme` |
