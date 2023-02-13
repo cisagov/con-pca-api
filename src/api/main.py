@@ -278,7 +278,7 @@ class CustomJSONEncoder(JSONEncoder):
             raise e
 
 
-app.json_encoder = CustomJSONEncoder
+app.json_provider_class = CustomJSONEncoder
 
 
 @app.errorhandler(ValidationError)
