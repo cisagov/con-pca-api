@@ -265,6 +265,20 @@ def _initialize_db_indexes():
             continue
 
 
+def _remove_oid_fields():
+    """Remove unnecessary oid fields from the database."""
+    subscription_manager.delete_fields(
+        field_names=["customer_oid", "sending_profile_oid", "landing_page_oid"]
+    )
+    cycle_manager.delete_fields(field_names=["subscription_oid", "template_oids"])
+    template_manager.delete_fields(
+        field_names=["landing_page_oid", "sending_profile_oid"]
+    )
+    target_manager.delete_fields(
+        field_names=["cycle_oid", "subscription_oid", "template_oid"]
+    )
+
+
 def _flush_redis_db():
     """Flush the redis database."""
     if TESTING:
@@ -283,5 +297,6 @@ def initialization_tasks():
         _initialize_templates()
         _initialize_recommendations()
         _initialize_nonhumans()
+        _remove_oid_fields()
         _reset_dirty_stats()
         _populate_stakeholder_shortname()
