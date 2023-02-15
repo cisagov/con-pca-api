@@ -346,43 +346,108 @@ def mongo_get_deception_level_stats(cycle_id, nonhuman, nonhuman_orgs):
                 "user_reports": "$user_reports",
                 "click_percentage_over_time.one_minutes.count": "$one_minutes",
                 "click_percentage_over_time.one_minutes.ratio": {
-                    "$round": [{"$divide": ["$one_minutes", "$total_clicks"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$total_clicks", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$one_minutes", "$total_clicks"]}, 4]},
+                    ]
                 },
                 "click_percentage_over_time.three_minutes.count": "$three_minutes",
                 "click_percentage_over_time.three_minutes.ratio": {
-                    "$round": [{"$divide": ["$three_minutes", "$total_clicks"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$total_clicks", 0]},
+                        0,
+                        {
+                            "$round": [
+                                {"$divide": ["$three_minutes", "$total_clicks"]},
+                                4,
+                            ]
+                        },
+                    ]
                 },
                 "click_percentage_over_time.five_minutes.count": "$five_minutes",
                 "click_percentage_over_time.five_minutes.ratio": {
-                    "$round": [{"$divide": ["$five_minutes", "$total_clicks"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$total_clicks", 0]},
+                        0,
+                        {
+                            "$round": [
+                                {"$divide": ["$five_minutes", "$total_clicks"]},
+                                4,
+                            ]
+                        },
+                    ]
                 },
                 "click_percentage_over_time.fifteen_minutes.count": "$fifteen_minutes",
                 "click_percentage_over_time.fifteen_minutes.ratio": {
-                    "$round": [{"$divide": ["$fifteen_minutes", "$total_clicks"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$total_clicks", 0]},
+                        0,
+                        {
+                            "$round": [
+                                {"$divide": ["$fifteen_minutes", "$total_clicks"]},
+                                4,
+                            ]
+                        },
+                    ]
                 },
                 "click_percentage_over_time.thirty_minutes.count": "$thirty_minutes",
                 "click_percentage_over_time.thirty_minutes.ratio": {
-                    "$round": [{"$divide": ["$thirty_minutes", "$total_clicks"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$total_clicks", 0]},
+                        0,
+                        {
+                            "$round": [
+                                {"$divide": ["$thirty_minutes", "$total_clicks"]},
+                                4,
+                            ]
+                        },
+                    ]
                 },
                 "click_percentage_over_time.sixty_minutes.count": "$sixty_minutes",
                 "click_percentage_over_time.sixty_minutes.ratio": {
-                    "$round": [{"$divide": ["$sixty_minutes", "$total_clicks"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$total_clicks", 0]},
+                        0,
+                        {
+                            "$round": [
+                                {"$divide": ["$sixty_minutes", "$total_clicks"]},
+                                4,
+                            ]
+                        },
+                    ]
                 },
                 "click_percentage_over_time.two_hours.count": "$two_hours",
                 "click_percentage_over_time.two_hours.ratio": {
-                    "$round": [{"$divide": ["$two_hours", "$total_clicks"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$total_clicks", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$two_hours", "$total_clicks"]}, 4]},
+                    ]
                 },
                 "click_percentage_over_time.three_hours.count": "$three_hours",
                 "click_percentage_over_time.three_hours.ratio": {
-                    "$round": [{"$divide": ["$three_hours", "$total_clicks"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$total_clicks", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$three_hours", "$total_clicks"]}, 4]},
+                    ]
                 },
                 "click_percentage_over_time.four_hours.count": "$four_hours",
                 "click_percentage_over_time.four_hours.ratio": {
-                    "$round": [{"$divide": ["$four_hours", "$total_clicks"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$total_clicks", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$four_hours", "$total_clicks"]}, 4]},
+                    ]
                 },
                 "click_percentage_over_time.one_day.count": "$one_day",
                 "click_percentage_over_time.one_day.ratio": {
-                    "$round": [{"$divide": ["$one_day", "$total_clicks"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$total_clicks", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$one_day", "$total_clicks"]}, 4]},
+                    ]
                 },
             }
         },
@@ -742,43 +807,108 @@ def mongo_get_all_deception_level_stats(cycle_id, nonhuman, nonhuman_orgs):
                 "user_reports": "$user_reports",
                 "click_percentage_over_time.one_minutes.count": "$one_minutes",
                 "click_percentage_over_time.one_minutes.ratio": {
-                    "$round": [{"$divide": ["$one_minutes", "$total_clicks"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$total_clicks", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$one_minutes", "$total_clicks"]}, 4]},
+                    ]
                 },
                 "click_percentage_over_time.three_minutes.count": "$three_minutes",
                 "click_percentage_over_time.three_minutes.ratio": {
-                    "$round": [{"$divide": ["$three_minutes", "$total_clicks"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$total_clicks", 0]},
+                        0,
+                        {
+                            "$round": [
+                                {"$divide": ["$three_minutes", "$total_clicks"]},
+                                4,
+                            ]
+                        },
+                    ]
                 },
                 "click_percentage_over_time.five_minutes.count": "$five_minutes",
                 "click_percentage_over_time.five_minutes.ratio": {
-                    "$round": [{"$divide": ["$five_minutes", "$total_clicks"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$total_clicks", 0]},
+                        0,
+                        {
+                            "$round": [
+                                {"$divide": ["$five_minutes", "$total_clicks"]},
+                                4,
+                            ]
+                        },
+                    ]
                 },
                 "click_percentage_over_time.fifteen_minutes.count": "$fifteen_minutes",
                 "click_percentage_over_time.fifteen_minutes.ratio": {
-                    "$round": [{"$divide": ["$fifteen_minutes", "$total_clicks"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$total_clicks", 0]},
+                        0,
+                        {
+                            "$round": [
+                                {"$divide": ["$fifteen_minutes", "$total_clicks"]},
+                                4,
+                            ]
+                        },
+                    ]
                 },
                 "click_percentage_over_time.thirty_minutes.count": "$thirty_minutes",
                 "click_percentage_over_time.thirty_minutes.ratio": {
-                    "$round": [{"$divide": ["$thirty_minutes", "$total_clicks"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$total_clicks", 0]},
+                        0,
+                        {
+                            "$round": [
+                                {"$divide": ["$thirty_minutes", "$total_clicks"]},
+                                4,
+                            ]
+                        },
+                    ]
                 },
                 "click_percentage_over_time.sixty_minutes.count": "$sixty_minutes",
                 "click_percentage_over_time.sixty_minutes.ratio": {
-                    "$round": [{"$divide": ["$sixty_minutes", "$total_clicks"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$total_clicks", 0]},
+                        0,
+                        {
+                            "$round": [
+                                {"$divide": ["$sixty_minutes", "$total_clicks"]},
+                                4,
+                            ]
+                        },
+                    ]
                 },
                 "click_percentage_over_time.two_hours.count": "$two_hours",
                 "click_percentage_over_time.two_hours.ratio": {
-                    "$round": [{"$divide": ["$two_hours", "$total_clicks"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$total_clicks", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$two_hours", "$total_clicks"]}, 4]},
+                    ]
                 },
                 "click_percentage_over_time.three_hours.count": "$three_hours",
                 "click_percentage_over_time.three_hours.ratio": {
-                    "$round": [{"$divide": ["$three_hours", "$total_clicks"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$total_clicks", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$three_hours", "$total_clicks"]}, 4]},
+                    ]
                 },
                 "click_percentage_over_time.four_hours.count": "$four_hours",
                 "click_percentage_over_time.four_hours.ratio": {
-                    "$round": [{"$divide": ["$four_hours", "$total_clicks"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$total_clicks", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$four_hours", "$total_clicks"]}, 4]},
+                    ]
                 },
                 "click_percentage_over_time.one_day.count": "$one_day",
                 "click_percentage_over_time.one_day.ratio": {
-                    "$round": [{"$divide": ["$one_day", "$total_clicks"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$total_clicks", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$one_day", "$total_clicks"]}, 4]},
+                    ]
                 },
             }
         },
@@ -1391,15 +1521,27 @@ def mongo_get_recommendation_stats(cycle_id, nonhuman, nonhuman_orgs):
                 "sent.count": "$sent_count",
                 "clicked.count": "$clicked",
                 "clicked.ratio": {
-                    "$round": [{"$divide": ["$clicked", "$sent_count"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$sent_count", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$clicked", "$sent_count"]}, 4]},
+                    ]
                 },
                 "opened.count": "$opened",
                 "opened.ratio": {
-                    "$round": [{"$divide": ["$opened", "$sent_count"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$sent_count", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$opened", "$sent_count"]}, 4]},
+                    ]
                 },
                 "reported.count": "$reported",
                 "reported.ratio": {
-                    "$round": [{"$divide": ["$reported", "$sent_count"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$sent_count", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$reported", "$sent_count"]}, 4]},
+                    ]
                 },
             }
         },
@@ -1487,7 +1629,11 @@ def mongo_get_stats(cycle_id, nonhuman, nonhuman_orgs):
                 "sent.count": "$sent_count",
                 "clicked.count": "$clicked",
                 "clicked.ratio": {
-                    "$round": [{"$divide": ["$clicked", "$sent_count"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$sent_count", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$clicked", "$sent_count"]}, 4]},
+                    ]
                 },
                 "clicked.average": {"$sum": [{"$avg": "$click_times"}, 0]},
                 "clicked.maximum": {"$sum": [{"$max": "$click_times"}, 0]},
@@ -1495,7 +1641,11 @@ def mongo_get_stats(cycle_id, nonhuman, nonhuman_orgs):
                 "clicked.median": "$click_times",
                 "opened.count": "$opened",
                 "opened.ratio": {
-                    "$round": [{"$divide": ["$opened", "$sent_count"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$sent_count", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$opened", "$sent_count"]}, 4]},
+                    ]
                 },
                 "opened.average": {"$sum": [{"$avg": "$open_times"}, 0]},
                 "opened.maximum": {"$sum": [{"$max": "$open_times"}, 0]},
@@ -1503,7 +1653,11 @@ def mongo_get_stats(cycle_id, nonhuman, nonhuman_orgs):
                 "opened.median": "$open_times",
                 "reported.count": "$reported",
                 "reported.ratio": {
-                    "$round": [{"$divide": ["$reported", "$sent_count"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$sent_count", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$reported", "$sent_count"]}, 4]},
+                    ]
                 },
                 "reported.average": {"$sum": [{"$avg": "$report_times"}, 0]},
                 "reported.maximum": {"$sum": [{"$max": "$report_times"}, 0]},
@@ -1592,7 +1746,11 @@ def mongo_get_stats(cycle_id, nonhuman, nonhuman_orgs):
                 "sent.count": "$sent_count",
                 "clicked.count": "$clicked",
                 "clicked.ratio": {
-                    "$round": [{"$divide": ["$clicked", "$sent_count"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$sent_count", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$clicked", "$sent_count"]}, 4]},
+                    ]
                 },
                 "clicked.average": {"$sum": [{"$avg": "$click_times"}, 0]},
                 "clicked.maximum": {"$sum": [{"$max": "$click_times"}, 0]},
@@ -1600,7 +1758,11 @@ def mongo_get_stats(cycle_id, nonhuman, nonhuman_orgs):
                 "clicked.median": "$click_times",
                 "opened.count": "$opened",
                 "opened.ratio": {
-                    "$round": [{"$divide": ["$opened", "$sent_count"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$sent_count", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$opened", "$sent_count"]}, 4]},
+                    ]
                 },
                 "opened.average": {"$sum": [{"$avg": "$open_times"}, 0]},
                 "opened.maximum": {"$sum": [{"$max": "$open_times"}, 0]},
@@ -1608,7 +1770,11 @@ def mongo_get_stats(cycle_id, nonhuman, nonhuman_orgs):
                 "opened.median": "$open_times",
                 "reported.count": "$reported",
                 "reported.ratio": {
-                    "$round": [{"$divide": ["$reported", "$sent_count"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$sent_count", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$reported", "$sent_count"]}, 4]},
+                    ]
                 },
                 "reported.average": {"$sum": [{"$avg": "$report_times"}, 0]},
                 "reported.maximum": {"$sum": [{"$max": "$report_times"}, 0]},
@@ -1807,15 +1973,27 @@ def mongo_get_template_stats(cycle_id, nonhuman, nonhuman_orgs):
                 "sent.count": "$sent_count",
                 "clicked.count": "$clicked",
                 "clicked.ratio": {
-                    "$round": [{"$divide": ["$clicked", "$sent_count"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$sent_count", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$clicked", "$sent_count"]}, 4]},
+                    ]
                 },
                 "opened.count": "$opened",
                 "opened.ratio": {
-                    "$round": [{"$divide": ["$opened", "$sent_count"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$sent_count", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$opened", "$sent_count"]}, 4]},
+                    ]
                 },
                 "reported.count": "$reported",
                 "reported.ratio": {
-                    "$round": [{"$divide": ["$reported", "$sent_count"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$sent_count", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$reported", "$sent_count"]}, 4]},
+                    ]
                 },
             }
         },
@@ -2067,42 +2245,84 @@ def mongo_get_time_stats(cycle_id, nonhuman, nonhuman_orgs):
             "$project": {
                 "one_minutes.count": "$one_minutes",
                 "one_minutes.ratio": {
-                    "$round": [{"$divide": ["$one_minutes", "$events"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$events", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$one_minutes", "$events"]}, 4]},
+                    ]
                 },
                 "three_minutes.count": "$three_minutes",
                 "three_minutes.ratio": {
-                    "$round": [{"$divide": ["$three_minutes", "$events"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$events", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$three_minutes", "$events"]}, 4]},
+                    ]
                 },
                 "five_minutes.count": "$five_minutes",
                 "five_minutes.ratio": {
-                    "$round": [{"$divide": ["$five_minutes", "$events"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$events", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$five_minutes", "$events"]}, 4]},
+                    ]
                 },
                 "fifteen_minutes.count": "$fifteen_minutes",
                 "fifteen_minutes.ratio": {
-                    "$round": [{"$divide": ["$fifteen_minutes", "$events"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$events", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$fifteen_minutes", "$events"]}, 4]},
+                    ]
                 },
                 "thirty_minutes.count": "$thirty_minutes",
                 "thirty_minutes.ratio": {
-                    "$round": [{"$divide": ["$thirty_minutes", "$events"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$events", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$thirty_minutes", "$events"]}, 4]},
+                    ]
                 },
                 "sixty_minutes.count": "$sixty_minutes",
                 "sixty_minutes.ratio": {
-                    "$round": [{"$divide": ["$sixty_minutes", "$events"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$events", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$sixty_minutes", "$events"]}, 4]},
+                    ]
                 },
                 "two_hours.count": "$two_hours",
                 "two_hours.ratio": {
-                    "$round": [{"$divide": ["$two_hours", "$events"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$events", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$two_hours", "$events"]}, 4]},
+                    ]
                 },
                 "three_hours.count": "$three_hours",
                 "three_hours.ratio": {
-                    "$round": [{"$divide": ["$three_hours", "$events"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$events", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$three_hours", "$events"]}, 4]},
+                    ]
                 },
                 "four_hours.count": "$four_hours",
                 "four_hours.ratio": {
-                    "$round": [{"$divide": ["$four_hours", "$events"]}, 4]
+                    "$cond": [
+                        {"$eq": ["$events", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$four_hours", "$events"]}, 4]},
+                    ]
                 },
                 "one_day.count": "$one_day",
-                "one_day.ratio": {"$round": [{"$divide": ["$one_day", "$events"]}, 4]},
+                "one_day.ratio": {
+                    "$cond": [
+                        {"$eq": ["$events", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$one_day", "$events"]}, 4]},
+                    ]
+                },
             }
         },
     ]
