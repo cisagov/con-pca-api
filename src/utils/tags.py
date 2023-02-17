@@ -88,6 +88,6 @@ TAGS = [
 for faker_func in FAKER_FUNCS:
     tag = {
         "description": f"Faker generated {faker_func}",
-        "tag": f"{{{{fake.{faker_func}}}}}",
+        "tag": f"{{{{fake.{faker_func}}}}}.",
     }
     TAGS.append(tag)
