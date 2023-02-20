@@ -39,6 +39,8 @@ from api.views.customer_views import (
     CustomersPOCView,
     CustomersView,
     CustomerView,
+    CustomerCountView,
+    CustomersPagedView,
     SectorIndustryView,
 )
 from api.views.cycle_views import (
@@ -107,6 +109,12 @@ rules = [
     ("/customers/", CustomersView),
     ("/customers/contacts/", CustomersPOCView),
     ("/customer/<customer_id>/", CustomerView),
+    ("/customer/count/", CustomerCountView),
+    ("/customerPaged/", CustomersPagedView),
+    (
+        "/customerPaged/<page>/<pagesize>/<sortby>/<sortorder>/",
+        CustomersPagedView,
+    ),
     ("/archivecustomer/<customer_id>/", ArchiveCustomerView),
     # Cycle Views
     ("/cycles/", CyclesView),
