@@ -1,6 +1,8 @@
 """Customer views."""
-# Third-Party Libraries
+# Standard Python Libraries
 from collections import OrderedDict
+
+# Third-Party Libraries
 from flask import jsonify, request
 from flask.views import MethodView
 
@@ -109,12 +111,9 @@ class CustomerCountView(MethodView):
         if request.args.get("archived", "").lower() == "true":
             parameters["archived"] = True
 
-
         pipeline = [
             {
-                "$addFields": {
-                    "customer_id": {"$toString": "$_id"}
-                },
+                "$addFields": {"customer_id": {"$toString": "$_id"}},
             }
         ]
 
@@ -129,13 +128,38 @@ class CustomerCountView(MethodView):
                             {
                                 "$or": [
                                     {"name": {"$regex": filter_val, "$options": "i"}},
-                                    {"identifier": {"$regex": filter_val, "$options": "i"}},
-                                    {"stakeholder_shortname": {"$regex": filter_val, "$options": "i"}},
-                                    {"address_1": {"$regex": filter_val, "$options": "i"}},
-                                    {"address_2": {"$regex": filter_val, "$options": "i"}},
+                                    {
+                                        "identifier": {
+                                            "$regex": filter_val,
+                                            "$options": "i",
+                                        }
+                                    },
+                                    {
+                                        "stakeholder_shortname": {
+                                            "$regex": filter_val,
+                                            "$options": "i",
+                                        }
+                                    },
+                                    {
+                                        "address_1": {
+                                            "$regex": filter_val,
+                                            "$options": "i",
+                                        }
+                                    },
+                                    {
+                                        "address_2": {
+                                            "$regex": filter_val,
+                                            "$options": "i",
+                                        }
+                                    },
                                     {"city": {"$regex": filter_val, "$options": "i"}},
                                     {"state": {"$regex": filter_val, "$options": "i"}},
-                                    {"zip_code": {"$regex": filter_val, "$options": "i"}},
+                                    {
+                                        "zip_code": {
+                                            "$regex": filter_val,
+                                            "$options": "i",
+                                        }
+                                    },
                                 ]
                             },
                             {"$or": archived},
@@ -156,7 +180,8 @@ class CustomerCountView(MethodView):
         )
 
         return str(customerCount)
-    
+
+
 class CustomersPagedView(MethodView):
     """Subscriptions Paged View."""
 
@@ -187,14 +212,15 @@ class CustomersPagedView(MethodView):
         if request.args.get("archived", "").lower() == "true":
             parameters["archived"] = True
 
-
         pipeline = [
             {
                 "$addFields": {
                     "customer_id": {"$toString": "$_id"},
                     "name_lower": {"$toLower": "$name"},
                     "identifier_lower": {"$toLower": "$identifier"},
-                    "stakeholder_shortname_lower": {"$toLower": "$stakeholder_shortname"},
+                    "stakeholder_shortname_lower": {
+                        "$toLower": "$stakeholder_shortname"
+                    },
                     "address_1_lower": {"$toLower": "$address_1"},
                     "address_2_lower": {"$toLower": "$address_2"},
                     "city_lower": {"$toLower": "$city_lower"},
@@ -228,14 +254,44 @@ class CustomersPagedView(MethodView):
                         "$and": [
                             {
                                 "$or": [
-                                    {"name_lower": {"$regex": filter_val, "$options": "i"}},
-                                    {"identifier": {"$regex": filter_val, "$options": "i"}},
-                                    {"stakeholder_shortname": {"$regex": filter_val, "$options": "i"}},
-                                    {"address_1": {"$regex": filter_val, "$options": "i"}},
-                                    {"address_2": {"$regex": filter_val, "$options": "i"}},
+                                    {
+                                        "name_lower": {
+                                            "$regex": filter_val,
+                                            "$options": "i",
+                                        }
+                                    },
+                                    {
+                                        "identifier": {
+                                            "$regex": filter_val,
+                                            "$options": "i",
+                                        }
+                                    },
+                                    {
+                                        "stakeholder_shortname": {
+                                            "$regex": filter_val,
+                                            "$options": "i",
+                                        }
+                                    },
+                                    {
+                                        "address_1": {
+                                            "$regex": filter_val,
+                                            "$options": "i",
+                                        }
+                                    },
+                                    {
+                                        "address_2": {
+                                            "$regex": filter_val,
+                                            "$options": "i",
+                                        }
+                                    },
                                     {"city": {"$regex": filter_val, "$options": "i"}},
                                     {"state": {"$regex": filter_val, "$options": "i"}},
-                                    {"zip_code": {"$regex": filter_val, "$options": "i"}},
+                                    {
+                                        "zip_code": {
+                                            "$regex": filter_val,
+                                            "$options": "i",
+                                        }
+                                    },
                                 ]
                             },
                             {"$or": archived},
@@ -254,6 +310,7 @@ class CustomersPagedView(MethodView):
         )
 
         return jsonify(customers)
+
 
 class CustomersPOCView(MethodView):
     """CustomersPOCView."""

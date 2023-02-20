@@ -36,11 +36,11 @@ from api.views.auth_views import (
 from api.views.config_views import ConfigView
 from api.views.customer_views import (
     ArchiveCustomerView,
+    CustomerCountView,
+    CustomersPagedView,
     CustomersPOCView,
     CustomersView,
     CustomerView,
-    CustomerCountView,
-    CustomersPagedView,
     SectorIndustryView,
 )
 from api.views.cycle_views import (
