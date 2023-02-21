@@ -181,9 +181,8 @@ class Notification:
             )
             logger.info(f"Attaching {filepath} to notification.")
 
-            if not os.path.exists(filepath):
-                if filepath:
-                    logger.error("Attachment file does not exist: " + filepath)
+            if filepath and not os.path.exists(filepath):
+                logger.error("Attachment file does not exist: " + filepath)
             elif filepath not in attachments:
                 attachments.append(filepath)
 
