@@ -185,7 +185,7 @@ There are no required environment variables.
 | `FLASK_APP`  | Flask app to use.  | `api.main:app` |
 | `FLASK_ENV`  | Flask environment. | `development`  |
 | `FLASK_DEBUG`| Flask Debug        | `1`            |
-| `MONGO_CLUSTER_URI` | Mongo connection string  | `mongodb` |
+| `MONGO_URI` | Mongo connection string  | `mongodb` |
 | `REDIS_HOST` | Mongo host.        | `redis`        |
 | `REDIS_PORT` | Mongo port.        | `6379`         |
 | `WORKERS`    | # of Gunicorn workers, if 0 if Debug set. | `4` |

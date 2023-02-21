@@ -8,4 +8,4 @@ from pymongo import MongoClient
 
 def get_db():
     """Get database client."""
-    return MongoClient(os.environ["MONGO_CLUSTER_URI"], tz_aware=True).pca
+    return MongoClient(os.environ["MONGO_URI"], tz_aware=True).pca
