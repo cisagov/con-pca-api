@@ -21,7 +21,7 @@ def test_container_count(dockerc):
 def test_wait_for_ready(main_container):
     """Wait for container to be ready."""
     TIMEOUT = 10
-    for i in range(TIMEOUT):
+    for _ in range(TIMEOUT):
         if READY_MESSAGE in main_container.logs().decode("utf-8"):
             break
         time.sleep(1)
@@ -38,15 +38,17 @@ def test_wait_for_ready(main_container):
     assert main_container.is_restarting is False
     assert main_container.exit_code == 0
 
-    # Make a request against landing app
-    # resp = requests.get("http://localhost:8000")
-    # assert resp.status_code == 404
-
-    # Make a request against api
-    resp = requests.get("http://localhost:5000")
-    assert resp.status_code == 200
-
-    assert "Con-PCA" in resp.text
+    for url in {"http://localhost:8000", "http://localhost:5000"}:
+        for i in range(TIMEOUT):
+            try:
+                resp = requests.get(url)
+                assert resp.status_code == 200
+                assert "Con-PCA" in resp.text
+                break
+            except requests.exceptions.ConnectionError as e:
+                time.sleep(0.5)
+                if i == TIMEOUT - 1:
+                    raise Exception(f"Container port {url.split(':')[2]} error: {e}")
 
     # Make a request against templates to see if they were initialized properly
     resp = requests.get("http://localhost:5000/api/templates/")
