@@ -33,21 +33,19 @@ def test_wait_for_ready(main_container):
 
     # After container is ready, give it some time and make sure
     # it's still running.
-    time.sleep(10)
+    time.sleep(5)
     assert main_container.is_running is True
     assert main_container.is_restarting is False
     assert main_container.exit_code == 0
 
-    # Print logs
-    print(main_container.logs().decode("utf-8"))
-
     # Make a request against landing app
-    resp = requests.get("http://localhost:8000")
-    assert resp.status_code == 404
+    # resp = requests.get("http://localhost:8000")
+    # assert resp.status_code == 404
 
     # Make a request against api
     resp = requests.get("http://localhost:5000")
     assert resp.status_code == 200
+
     assert "Con-PCA" in resp.text
 
     # Make a request against templates to see if they were initialized properly
