@@ -36,6 +36,8 @@ from api.views.auth_views import (
 from api.views.config_views import ConfigView
 from api.views.customer_views import (
     ArchiveCustomerView,
+    CustomerCountView,
+    CustomersPagedView,
     CustomersPOCView,
     CustomersView,
     CustomerView,
@@ -107,6 +109,12 @@ rules = [
     ("/customers/", CustomersView),
     ("/customers/contacts/", CustomersPOCView),
     ("/customer/<customer_id>/", CustomerView),
+    ("/customer/count/", CustomerCountView),
+    ("/customerPaged/", CustomersPagedView),
+    (
+        "/customerPaged/<page>/<pagesize>/<sortby>/<sortorder>/",
+        CustomersPagedView,
+    ),
     ("/archivecustomer/<customer_id>/", ArchiveCustomerView),
     # Cycle Views
     ("/cycles/", CyclesView),
