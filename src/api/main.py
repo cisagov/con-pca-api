@@ -259,7 +259,7 @@ sched.add_job(
 initialization_tasks()
 
 # Launch the task scheduler
-sched.start()
+sched.start() if not TESTING else None
 
 
 class CustomJSONEncoder(JSONEncoder):
