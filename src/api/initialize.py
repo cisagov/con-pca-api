@@ -298,5 +298,4 @@ def initialization_tasks():
         _initialize_recommendations()
         _initialize_nonhumans()
         _remove_oid_fields()
-        _reset_dirty_stats()
         _populate_stakeholder_shortname()
