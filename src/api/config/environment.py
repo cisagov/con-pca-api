@@ -36,6 +36,10 @@ API_PORT = int(os.environ.get("API_PORT", 5000))
 REDIS_HOST = os.environ.get("REDIS_HOST", "redis")
 REDIS_PORT = int(os.environ.get("REDIS_PORT", 6379))
 
+# Tasks API
+TASKS_API_URL = os.environ.get("TASKS_API_URL")
+TASKS_API_KEY = os.environ.get("TASKS_API_KEY", "")
+
 # About
 DEPLOYED_DATE = os.environ.get("DEPLOYED_DATE")
 API_COMMIT_ID = os.environ.get("API_COMMIT_ID")
