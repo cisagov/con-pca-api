@@ -60,10 +60,10 @@ from api.views.landing_page_views import (
 from api.views.logging_views import LoggingView
 from api.views.nonhuman_views import NonHumansView
 from api.views.notification_views import (
+    NotificationDuplicateView,
+    NotificationImportView,
     NotificationsView,
     NotificationView,
-    NotificationImportView,
-    NotificationDuplicateView,
 )
 from api.views.recommendation_views import RecommendationsView, RecommendationView
 from api.views.report_views import (

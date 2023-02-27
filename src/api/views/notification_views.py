@@ -6,9 +6,9 @@ from flask.views import MethodView
 # cisagov Libraries
 from api.manager import (
     CycleManager,
+    NotificationManager,
     SendingProfileManager,
     SubscriptionManager,
-    NotificationManager,
 )
 from utils.emails import parse_email
 
@@ -126,7 +126,6 @@ class NotificationImportView(MethodView):
         convert_links = request.json["convert_link"]
         subject, html, text = parse_email(payload, convert_links)
         return jsonify({"subject": subject, "html": html, "text": text})
-
 
 
 class NotificationDuplicateView(MethodView):
