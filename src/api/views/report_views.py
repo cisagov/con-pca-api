@@ -6,8 +6,10 @@ import os
 # Third-Party Libraries
 from flask import jsonify, request, send_file
 from flask.views import MethodView
+import requests  # type: ignore
 
 # cisagov Libraries
+from api.config.environment import TASKS_API_KEY, TASKS_API_URL
 from api.manager import CustomerManager, CycleManager, SubscriptionManager
 from api.schemas.reports_schema import AggregateReportsSchema
 from utils.logging import setLogger
@@ -21,6 +23,8 @@ from utils.reports import (
 from utils.stats import get_all_customer_stats, get_rolling_emails, get_rolling_tasks
 
 logger = setLogger(__name__)
+
+tasks_api_header = {"api_key": TASKS_API_KEY}
 
 subscription_manager = SubscriptionManager()
 cycle_manager = CycleManager()
@@ -94,6 +98,40 @@ class ReportEmailView(MethodView):
         subscription = subscription_manager.get(document_id=cycle["subscription_id"])
         Notification(f"{report_type}_report", subscription, cycle).send(nonhuman)
         return jsonify({"success": True}), 200
+
+
+class ReportGoPdfView(MethodView):
+    """Report PDF View. Not yet actively used."""
+
+    def get(self, cycle_id, report_type):
+        """Get."""
+        nonhuman = False
+        if request.args.get("nonhuman", "") == "true":
+            nonhuman = True
+
+        resp = requests.get(
+            f"{TASKS_API_URL}/tasks/{cycle_id}/reports/{report_type}/pdf?nonhuman={nonhuman}",
+            headers=tasks_api_header,
+        )
+
+        return jsonify(resp.text), resp.status_code
+
+
+class ReportGoEmailView(MethodView):
+    """Report Email View. Not yet actively used."""
+
+    def get(self, cycle_id, report_type):
+        """Get."""
+        nonhuman = False
+        if request.args.get("nonhuman", "") == "true":
+            nonhuman = True
+
+        resp = requests.get(
+            f"{TASKS_API_URL}/tasks/{cycle_id}/reports/{report_type}/email?nonhuman={nonhuman}",
+            headers=tasks_api_header,
+        )
+
+        return jsonify(resp.text), resp.status_code
 
 
 class AggregateReportView(MethodView):

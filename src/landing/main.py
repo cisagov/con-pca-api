@@ -1,6 +1,6 @@
 """Domain manager."""
 # Third-Party Libraries
-from flask.templating import render_template_string
+from flask import jsonify
 
 # cisagov Libraries
 from landing.app import app
@@ -14,7 +14,7 @@ logger = setLogger(__name__)
 def api_map():
     """List endpoints for api."""
     logger.info("Landing page is running.")
-    return render_template_string("404 Not Found"), 404
+    return jsonify("Con-PCA landing page is running.")
 
 
 rules = [

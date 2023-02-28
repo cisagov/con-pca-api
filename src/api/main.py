@@ -36,6 +36,8 @@ from api.views.auth_views import (
 from api.views.config_views import ConfigView
 from api.views.customer_views import (
     ArchiveCustomerView,
+    CustomerCountView,
+    CustomersPagedView,
     CustomersPOCView,
     CustomersView,
     CustomerView,
@@ -61,6 +63,8 @@ from api.views.report_views import (
     AggregateReportView,
     OverdueTasksReportView,
     ReportEmailView,
+    ReportGoEmailView,
+    ReportGoPdfView,
     ReportHtmlView,
     ReportPdfView,
 )
@@ -106,6 +110,12 @@ rules = [
     ("/customers/", CustomersView),
     ("/customers/contacts/", CustomersPOCView),
     ("/customer/<customer_id>/", CustomerView),
+    ("/customer/count/", CustomerCountView),
+    ("/customerPaged/", CustomersPagedView),
+    (
+        "/customerPaged/<page>/<pagesize>/<sortby>/<sortorder>/",
+        CustomersPagedView,
+    ),
     ("/archivecustomer/<customer_id>/", ArchiveCustomerView),
     # Cycle Views
     ("/cycles/", CyclesView),
@@ -115,6 +125,8 @@ rules = [
     ("/cycle/<cycle_id>/reports/<report_type>/", ReportHtmlView),
     ("/cycle/<cycle_id>/reports/<report_type>/pdf/", ReportPdfView),
     ("/cycle/<cycle_id>/reports/<report_type>/email/", ReportEmailView),
+    ("/cycle/<cycle_id>/reports/<report_type>/gopdf/", ReportGoPdfView),
+    ("/cycle/<cycle_id>/reports/<report_type>/goemail/", ReportGoEmailView),
     # Failed Email Views
     ("/failedemails/", FailedEmailsView),
     ("/failedemail/<failed_email_id>/", FailedEmailView),
@@ -249,7 +261,7 @@ sched.add_job(
 initialization_tasks()
 
 # Launch the task scheduler
-sched.start()
+sched.start() if not TESTING else None
 
 
 class CustomJSONEncoder(JSONEncoder):
