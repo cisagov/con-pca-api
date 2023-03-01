@@ -27,51 +27,6 @@ target_manager = TargetManager()
 sending_profile_manager = SendingProfileManager()
 
 
-def get_all_customer_stats():
-    """Get all customer stats."""
-    levels = ["all", "low", "moderate", "high"]
-    actions = ["sent", "opened", "clicked", "reported"]
-    all_stats = {}
-    for level in levels:
-        all_stats[level] = {}
-        for action in actions:
-            all_stats[level][action] = {"count": 0, "ratios": []}
-
-    cycles = cycle_manager.all(fields=["_id", "dirty_stats", "stats"])
-    for cycle in cycles:
-        if cycle.get("dirty_stats", True):
-            cycle = cycle_manager.get(cycle["_id"])
-            get_cycle_stats(cycle)
-
-        for level in levels:
-            for action in actions:
-                all_stats[level][action]["count"] += cycle["stats"]["stats"][level][
-                    action
-                ]["count"]
-                if action != "sent":
-                    all_stats[level][action]["ratios"].append(
-                        cycle["stats"]["stats"][level][action]["ratio"]
-                    )
-
-    # Process average of ratios
-    for level in levels:
-        for action in actions:
-            if action != "sent":
-                ratios = all_stats[level][action]["ratios"]
-                length = len(ratios)
-                all_stats[level][action]["average"] = (
-                    sum(ratios) / length if length != 0 else 0
-                )
-                all_stats[level][action]["minimum"] = min(ratios) if ratios else 0
-                all_stats[level][action]["maximum"] = max(ratios) if ratios else 0
-                all_stats[level][action]["median"] = (
-                    statistics.median(ratios) if ratios else 0
-                )
-
-    process_ratios(all_stats)
-    return all_stats
-
-
 def process_ratios(stats: dict):
     """Get event to sent ratios."""
     for v in stats.values():
