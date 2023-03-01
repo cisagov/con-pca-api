@@ -3,7 +3,7 @@ FROM python:3.10
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-RUN curl -L https://deb.nodesource.com/setup_14.x | bash \
+RUN curl -L https://deb.nodesource.com/setup_16.x | bash \
     && apt-get update -y \
     && apt-get install -y python3-pip python-dev
 

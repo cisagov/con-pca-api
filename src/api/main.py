@@ -48,7 +48,6 @@ from api.views.cycle_views import (
     CycleStatsView,
     CyclesView,
     CycleView,
-    MongoCycleStatsView,
 )
 from api.views.db_views import DatabaseManagementView
 from api.views.failed_email_views import FailedEmailsView, FailedEmailView
@@ -64,6 +63,8 @@ from api.views.report_views import (
     AggregateReportView,
     OverdueTasksReportView,
     ReportEmailView,
+    ReportGoEmailView,
+    ReportGoPdfView,
     ReportHtmlView,
     ReportPdfView,
 )
@@ -121,10 +122,11 @@ rules = [
     ("/cycle/<cycle_id>/", CycleView),
     ("/cycle/<cycle_id>/manual_reports/", CycleManualReportsView),
     ("/cycle/<cycle_id>/stats/", CycleStatsView),
-    ("/cycle/<cycle_id>/mongostats/", MongoCycleStatsView),
     ("/cycle/<cycle_id>/reports/<report_type>/", ReportHtmlView),
     ("/cycle/<cycle_id>/reports/<report_type>/pdf/", ReportPdfView),
     ("/cycle/<cycle_id>/reports/<report_type>/email/", ReportEmailView),
+    ("/cycle/<cycle_id>/reports/<report_type>/gopdf/", ReportGoPdfView),
+    ("/cycle/<cycle_id>/reports/<report_type>/goemail/", ReportGoEmailView),
     # Failed Email Views
     ("/failedemails/", FailedEmailsView),
     ("/failedemail/<failed_email_id>/", FailedEmailView),
