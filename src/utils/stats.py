@@ -881,49 +881,283 @@ def get_recommendation_stats(template_stats):
     return recommendation_stats
 
 
-def get_all_customer_stats():
+def get_all_customer_stats(nonhuman=False, nonhuman_orgs=[]):
     """Get all customer stats."""
-    levels = ["all", "low", "moderate", "high"]
-    actions = ["sent", "opened", "clicked", "reported"]
-    all_stats = {}
-    for level in levels:
-        all_stats[level] = {}
-        for action in actions:
-            all_stats[level][action] = {"count": 0, "ratios": []}
+    stats_pipeline = [
+        {"$unwind": {"path": "$timeline", "preserveNullAndEmptyArrays": True}},
+        {
+            "$match": {
+                "timeline.details.asn_org": {"$nin": nonhuman_orgs}
+                if not nonhuman
+                else {"$nin": []},
+            }
+        },
+        {
+            "$group": {
+                "_id": "$deception_level",
+                "sent_count": {
+                    "$sum": {"$cond": [{"$ne": ["$timeline.message", "clicked"]}, 1, 0]}
+                },
+                "clicked": {
+                    "$sum": {"$cond": [{"$eq": ["$timeline.message", "clicked"]}, 1, 0]}
+                },
+                "click_times": {
+                    "$push": {
+                        "$cond": [
+                            {"$eq": ["$timeline.message", "clicked"]},
+                            {
+                                "$divide": [
+                                    {"$subtract": ["$timeline.time", "$sent_date"]},
+                                    1000,
+                                ]
+                            },
+                            "$$REMOVE",
+                        ]
+                    }
+                },
+                "opened": {
+                    "$sum": {"$cond": [{"$eq": ["$timeline.message", "opened"]}, 1, 0]}
+                },
+                "open_times": {
+                    "$push": {
+                        "$cond": [
+                            {"$eq": ["$timeline.message", "opened"]},
+                            {
+                                "$divide": [
+                                    {"$subtract": ["$timeline.time", "$sent_date"]},
+                                    1000,
+                                ]
+                            },
+                            "$$REMOVE",
+                        ]
+                    }
+                },
+                "reported": {
+                    "$sum": {
+                        "$cond": [{"$eq": ["$timeline.message", "reported"]}, 1, 0]
+                    }
+                },
+                "report_times": {
+                    "$push": {
+                        "$cond": [
+                            {"$eq": ["$timeline.message", "reported"]},
+                            {
+                                "$divide": [
+                                    {"$subtract": ["$timeline.time", "$sent_date"]},
+                                    1000,
+                                ]
+                            },
+                            "$$REMOVE",
+                        ]
+                    }
+                },
+            }
+        },
+        {
+            "$project": {
+                "sent.count": "$sent_count",
+                "clicked.count": "$clicked",
+                "clicked.ratio": {
+                    "$cond": [
+                        {"$eq": ["$sent_count", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$clicked", "$sent_count"]}, 4]},
+                    ]
+                },
+                "clicked.average": {"$sum": [{"$avg": "$click_times"}, 0]},
+                "clicked.maximum": {"$sum": [{"$max": "$click_times"}, 0]},
+                "clicked.minimum": {"$sum": [{"$min": "$click_times"}, 0]},
+                "clicked.median": "$click_times",
+                "opened.count": "$opened",
+                "opened.ratio": {
+                    "$cond": [
+                        {"$eq": ["$sent_count", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$opened", "$sent_count"]}, 4]},
+                    ]
+                },
+                "opened.average": {"$sum": [{"$avg": "$open_times"}, 0]},
+                "opened.maximum": {"$sum": [{"$max": "$open_times"}, 0]},
+                "opened.minimum": {"$sum": [{"$min": "$open_times"}, 0]},
+                "opened.median": "$open_times",
+                "reported.count": "$reported",
+                "reported.ratio": {
+                    "$cond": [
+                        {"$eq": ["$sent_count", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$reported", "$sent_count"]}, 4]},
+                    ]
+                },
+                "reported.average": {"$sum": [{"$avg": "$report_times"}, 0]},
+                "reported.maximum": {"$sum": [{"$max": "$report_times"}, 0]},
+                "reported.minimum": {"$sum": [{"$min": "$report_times"}, 0]},
+                "reported.median": "$report_times",
+            }
+        },
+    ]
+    stats = target_manager.aggregate(stats_pipeline)
+    # format from list into dictionary
+    stats = {item["_id"]: item for item in stats}
+    all_stats_pipeline = [
+        {"$unwind": {"path": "$timeline", "preserveNullAndEmptyArrays": True}},
+        {
+            "$match": {
+                "timeline.details.asn_org": {"$nin": nonhuman_orgs}
+                if not nonhuman
+                else {"$nin": []},
+            }
+        },
+        {
+            "$group": {
+                "_id": None,
+                "sent_count": {
+                    "$sum": {"$cond": [{"$ne": ["$timeline.message", "clicked"]}, 1, 0]}
+                },
+                "clicked": {
+                    "$sum": {"$cond": [{"$eq": ["$timeline.message", "clicked"]}, 1, 0]}
+                },
+                "click_times": {
+                    "$push": {
+                        "$cond": [
+                            {"$eq": ["$timeline.message", "clicked"]},
+                            {
+                                "$divide": [
+                                    {"$subtract": ["$timeline.time", "$sent_date"]},
+                                    1000,
+                                ]
+                            },
+                            "$$REMOVE",
+                        ]
+                    }
+                },
+                "opened": {
+                    "$sum": {"$cond": [{"$eq": ["$timeline.message", "opened"]}, 1, 0]}
+                },
+                "open_times": {
+                    "$push": {
+                        "$cond": [
+                            {"$eq": ["$timeline.message", "opened"]},
+                            {
+                                "$divide": [
+                                    {"$subtract": ["$timeline.time", "$sent_date"]},
+                                    1000,
+                                ]
+                            },
+                            "$$REMOVE",
+                        ]
+                    }
+                },
+                "reported": {
+                    "$sum": {
+                        "$cond": [{"$eq": ["$timeline.message", "reported"]}, 1, 0]
+                    }
+                },
+                "report_times": {
+                    "$push": {
+                        "$cond": [
+                            {"$eq": ["$timeline.message", "reported"]},
+                            {
+                                "$divide": [
+                                    {"$subtract": ["$timeline.time", "$sent_date"]},
+                                    1000,
+                                ]
+                            },
+                            "$$REMOVE",
+                        ]
+                    }
+                },
+            }
+        },
+        {
+            "$project": {
+                "sent.count": "$sent_count",
+                "clicked.count": "$clicked",
+                "clicked.ratio": {
+                    "$cond": [
+                        {"$eq": ["$sent_count", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$clicked", "$sent_count"]}, 4]},
+                    ]
+                },
+                "clicked.average": {"$sum": [{"$avg": "$click_times"}, 0]},
+                "clicked.maximum": {"$sum": [{"$max": "$click_times"}, 0]},
+                "clicked.minimum": {"$sum": [{"$min": "$click_times"}, 0]},
+                "clicked.median": "$click_times",
+                "opened.count": "$opened",
+                "opened.ratio": {
+                    "$cond": [
+                        {"$eq": ["$sent_count", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$opened", "$sent_count"]}, 4]},
+                    ]
+                },
+                "opened.average": {"$sum": [{"$avg": "$open_times"}, 0]},
+                "opened.maximum": {"$sum": [{"$max": "$open_times"}, 0]},
+                "opened.minimum": {"$sum": [{"$min": "$open_times"}, 0]},
+                "opened.median": "$open_times",
+                "reported.count": "$reported",
+                "reported.ratio": {
+                    "$cond": [
+                        {"$eq": ["$sent_count", 0]},
+                        0,
+                        {"$round": [{"$divide": ["$reported", "$sent_count"]}, 4]},
+                    ]
+                },
+                "reported.average": {"$sum": [{"$avg": "$report_times"}, 0]},
+                "reported.maximum": {"$sum": [{"$max": "$report_times"}, 0]},
+                "reported.minimum": {"$sum": [{"$min": "$report_times"}, 0]},
+                "reported.median": "$report_times",
+            }
+        },
+    ]
+    all_stats = target_manager.aggregate(all_stats_pipeline)
+    empty_stat = {
+        "clicked": {
+            "average": 0,
+            "count": 0,
+            "maximum": 0,
+            "median": 0,
+            "minimum": 0,
+            "ratio": 0,
+        },
+        "opened": {
+            "average": 0,
+            "count": 0,
+            "maximum": 0,
+            "median": 0,
+            "minimum": 0,
+            "ratio": 0,
+        },
+        "reported": {
+            "average": 0,
+            "count": 0,
+            "maximum": 0,
+            "median": 0,
+            "minimum": 0,
+            "ratio": 0,
+        },
+        "sent": {"count": 0},
+    }
 
-    cycles = cycle_manager.all(fields=["_id", "dirty_stats", "stats"])
-    for cycle in cycles:
-        if cycle.get("dirty_stats", True):
-            cycle = cycle_manager.get(cycle["_id"])
-            get_cycle_stats(cycle)
+    stats["all"] = all_stats[0] if len(all_stats) > 0 else empty_stat
+    stats["low"] = stats["low"] if "low" in stats.keys() else empty_stat
+    stats["moderate"] = stats["moderate"] if "moderate" in stats.keys() else empty_stat
+    stats["high"] = stats["high"] if "high" in stats.keys() else empty_stat
 
-        for level in levels:
-            for action in actions:
-                all_stats[level][action]["count"] += cycle["stats"]["stats"][level][
-                    action
-                ]["count"]
-                if action != "sent":
-                    all_stats[level][action]["ratios"].append(
-                        cycle["stats"]["stats"][level][action]["ratio"]
-                    )
-
-    # Process average of ratios
-    for level in levels:
-        for action in actions:
-            if action != "sent":
-                ratios = all_stats[level][action]["ratios"]
-                length = len(ratios)
-                all_stats[level][action]["average"] = (
-                    sum(ratios) / length if length != 0 else 0
+    # calculate medians on the python side
+    for level in ["all", "low", "moderate", "high"]:
+        del stats[level]["_id"]
+        for event in ["clicked", "opened", "reported"]:
+            if stats[level][event]["median"] == 0:
+                pass
+            elif len(stats[level][event]["median"]) > 0:
+                stats[level][event]["median"] = statistics.median(
+                    stats[level][event]["median"]
                 )
-                all_stats[level][action]["minimum"] = min(ratios) if ratios else 0
-                all_stats[level][action]["maximum"] = max(ratios) if ratios else 0
-                all_stats[level][action]["median"] = (
-                    statistics.median(ratios) if ratios else 0
-                )
+            else:
+                stats[level][event]["median"] = 0
 
-    process_ratios(all_stats)
-    return all_stats
+    return stats
 
 
 def get_sending_profile_metrics(subscriptions, sending_profiles):
