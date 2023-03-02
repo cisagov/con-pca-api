@@ -715,15 +715,37 @@ class SubscriptionTestView(MethodView):
 
     def get(self, subscription_id):
         """Get test results for a subscription."""
-        return jsonify(
-            subscription_manager.get(
-                document_id=subscription_id, fields=["test_results"]
-            ).get("test_results", [])
-        )
+        parameters = dict(request.args)
+        parameters["next"] = False
+        if request.args.get("next", "").lower() == "true":
+            parameters["next"] = True
+        if parameters["next"]:
+            return jsonify(
+                subscription_manager.get(
+                    document_id=subscription_id, fields=["next_test_results"]
+                ).get("next_test_results", [])
+            )
+        else:
+            return jsonify(
+                subscription_manager.get(
+                    document_id=subscription_id, fields=["test_results"]
+                ).get("test_results", [])
+            )
 
     def post(self, subscription_id):
         """Launch a test for the subscription."""
-        resp, status_code = test_subscription(subscription_id, request.json["contacts"])
+        parameters = dict(request.args)
+        parameters["next"] = False
+        if request.args.get("next", "").lower() == "true":
+            parameters["next"] = True
+        if parameters["next"]:
+            resp, status_code = test_subscription(
+                subscription_id, request.json["contacts"], next=True
+            )
+        else:
+            resp, status_code = test_subscription(
+                subscription_id, request.json["contacts"]
+            )
         return jsonify(resp), status_code
 
 
