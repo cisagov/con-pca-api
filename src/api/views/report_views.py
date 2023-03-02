@@ -277,8 +277,23 @@ class AggregateReportView(MethodView):
                             "$cond": [
                                 {
                                     "$and": [
-                                        {"$in": ["created", "$subscriptions.status"]},
                                         {"$eq": ["$archived", True]},
+                                        {
+                                            "$or": [
+                                                {
+                                                    "$eq": [
+                                                        {"$size": "$subscriptions"},
+                                                        0,
+                                                    ]
+                                                },
+                                                {
+                                                    "$in": [
+                                                        "created",
+                                                        "$subscriptions.status",
+                                                    ]
+                                                },
+                                            ]
+                                        },
                                     ]
                                 },
                                 1,
