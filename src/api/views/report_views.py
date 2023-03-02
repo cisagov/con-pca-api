@@ -139,25 +139,22 @@ class AggregateReportView(MethodView):
 
     def get(self):
         """Get."""
+        aggregate_stats = {}
         pipeline = [
             {
                 "$group": {
                     "_id": None,
-                    "customers_active": {
+                    "subscriptions_total": {"$sum": 1},
+                    "subscriptions_archived": {
                         "$sum": {
                             "$cond": [
-                                {
-                                    "$and": [
-                                        {"$in": ["$status", ["queued", "running"]]},
-                                        {"$ne": ["$archived", True]},
-                                    ]
-                                },
+                                {"$eq": ["$archived", True]},
                                 1,
                                 0,
                             ]
                         }
                     },
-                    "new_subscriptions": {
+                    "subscriptions_new": {
                         "$sum": {
                             "$cond": [
                                 {
@@ -171,7 +168,7 @@ class AggregateReportView(MethodView):
                             ]
                         }
                     },
-                    "ongoing_subscriptions": {
+                    "subscriptions_ongoing": {
                         "$sum": {
                             "$cond": [
                                 {
@@ -185,7 +182,7 @@ class AggregateReportView(MethodView):
                             ]
                         }
                     },
-                    "stopped_subscriptions": {
+                    "subscriptions_stopped": {
                         "$sum": {
                             "$cond": [
                                 {
@@ -201,20 +198,104 @@ class AggregateReportView(MethodView):
                     },
                 }
             },
+        ]
+        subscription_stats = subscription_manager.aggregate(pipeline)
+        subscription_stats = (
+            subscription_stats[0] if len(subscription_stats) > 0 else {}
+        )
+        aggregate_stats["subscription_stats"] = subscription_stats
+
+        pipeline = [
+            {"$addFields": {"customer_id": {"$toString": "$_id"}}},
             {
-                "$project": {
-                    "customers_active": "$customers_active",
-                    "new_subscriptions": "$new_subscriptions",
-                    "ongoing_subscriptions": "$ongoing_subscriptions",
-                    "stopped_subscriptions": "$stopped_subscriptions",
+                "$lookup": {
+                    "from": "subscription",
+                    "localField": "customer_id",
+                    "foreignField": "customer_id",
+                    "as": "subscriptions",
+                }
+            },
+            {
+                "$group": {
+                    "_id": None,
+                    "customers_active": {
+                        "$sum": {
+                            "$cond": [
+                                {
+                                    "$and": [
+                                        {"$in": ["running", "$subscriptions.status"]},
+                                        {"$ne": ["$archived", True]},
+                                    ]
+                                },
+                                1,
+                                0,
+                            ]
+                        }
+                    },
+                    "customers_inactive": {
+                        "$sum": {
+                            "$cond": [
+                                {
+                                    "$and": [
+                                        {
+                                            "$not": [
+                                                {
+                                                    "$in": [
+                                                        "running",
+                                                        "$subscriptions.status",
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {"$ne": ["$archived", True]},
+                                    ]
+                                },
+                                1,
+                                0,
+                            ]
+                        }
+                    },
+                    "customers_enrolled": {
+                        "$sum": {"$cond": [{"$ne": ["$archived", True]}, 1, 0]}
+                    },
+                    "customers_archived_active": {
+                        "$sum": {
+                            "$cond": [
+                                {
+                                    "$and": [
+                                        {"$in": ["stopped", "$subscriptions.status"]},
+                                        {"$eq": ["$archived", True]},
+                                    ]
+                                },
+                                1,
+                                0,
+                            ]
+                        }
+                    },
+                    "customers_archived_never_active": {
+                        "$sum": {
+                            "$cond": [
+                                {
+                                    "$and": [
+                                        {"$in": ["created", "$subscriptions.status"]},
+                                        {"$eq": ["$archived", True]},
+                                    ]
+                                },
+                                1,
+                                0,
+                            ]
+                        }
+                    },
+                    "customers_archived": {
+                        "$sum": {"$cond": [{"$eq": ["$archived", True]}, 1, 0]}
+                    },
+                    "customers_total": {"$sum": 1},
                 }
             },
         ]
-        aggregate_stats = subscription_manager.aggregate(pipeline)
-        aggregate_stats = aggregate_stats[0] if len(aggregate_stats) > 0 else {}
-        aggregate_stats["customers_enrolled"] = customer_manager.count(
-            {"archived": {"$ne": True}}
-        )
+        customer_stats = customer_manager.aggregate(pipeline)
+        customer_stats = customer_stats[0] if len(customer_stats) > 0 else {}
+        aggregate_stats["customer_stats"] = customer_stats
 
         aggregate_stats.update(get_reports_sent())
 

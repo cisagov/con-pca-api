@@ -16,6 +16,28 @@ class SectorIndustryReportSchema(Schema):
     emails_clicked_ratio = fields.Float()
 
 
+class CustomersReportSchema(Schema):
+    """CustomersReportSchema."""
+
+    customers_active = fields.Integer()
+    customers_inactive = fields.Integer()
+    customers_enrolled = fields.Integer()
+    customers_archived_active = fields.Integer()
+    customers_archived_never_active = fields.Integer()
+    customers_archived = fields.Integer()
+    customers_total = fields.Integer()
+
+
+class SubscriptionsReportSchema(Schema):
+    """SubscriptionsReportSchema."""
+
+    subscriptions_new = fields.Integer()
+    subscriptions_ongoing = fields.Integer()
+    subscriptions_stopped = fields.Integer()
+    subscriptions_archived = fields.Integer()
+    subscriptions_total = fields.Integer()
+
+
 class EmailSendingReportSchema(Schema):
     """EmailSendingReportSchema."""
 
@@ -50,16 +72,13 @@ class TaskReportSchema(Schema):
 class AggregateReportsSchema(Schema):
     """AggregateStatsSchema."""
 
-    customers_enrolled = fields.Integer()
-    customers_active = fields.Integer()
+    customer_stats = fields.Nested(CustomersReportSchema())
+    subscription_stats = fields.Nested(SubscriptionsReportSchema())
     status_reports_sent = fields.Integer()
     cycle_reports_sent = fields.Integer()
     yearly_reports_sent = fields.Integer()
     email_sending_stats = fields.Nested(EmailSendingReportSchema())
     task_stats = fields.Nested(TaskReportSchema())
-    new_subscriptions = fields.Integer()
-    ongoing_subscriptions = fields.Integer()
-    stopped_subscriptions = fields.Integer()
     federal_stats = fields.Nested(SectorIndustryReportSchema())
     state_stats = fields.Nested(SectorIndustryReportSchema())
     local_stats = fields.Nested(SectorIndustryReportSchema())
