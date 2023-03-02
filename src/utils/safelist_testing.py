@@ -29,7 +29,7 @@ subscription_manager = SubscriptionManager()
 template_manager = TemplateManager()
 
 
-def test_subscription(subscription_id, contacts):
+def test_subscription(subscription_id, contacts, next=False):
     """Test a subscription for safelisting."""
     # Get subscription for sending profile, customer and templates
     subscription = subscription_manager.get(
@@ -47,35 +47,36 @@ def test_subscription(subscription_id, contacts):
     # Get subscription customer for emails
     customer = customer_manager.get(document_id=subscription["customer_id"])
 
-    # Get templates for subscription
-    templates = template_manager.all(
-        params={"_id": {"$in": subscription["templates_selected"]}},
-        fields=[
-            "_id",
-            "deception_score",
-            "from_address",
-            "html",
-            "landing_page_id",
-            "name",
-            "sending_profile_id",
-            "subject",
-        ],
-    )
-    # Get next templates for subscription
-    next_templates = template_manager.all(
-        params={"_id": {"$in": subscription.get("next_templates", [])}},
-        fields=[
-            "_id",
-            "deception_score",
-            "from_address",
-            "html",
-            "landing_page_id",
-            "name",
-            "sending_profile_id",
-            "subject",
-        ],
-    )
-    templates += next_templates
+    if not next:
+        # Get templates for subscription
+        templates = template_manager.all(
+            params={"_id": {"$in": subscription["templates_selected"]}},
+            fields=[
+                "_id",
+                "deception_score",
+                "from_address",
+                "html",
+                "landing_page_id",
+                "name",
+                "sending_profile_id",
+                "subject",
+            ],
+        )
+    else:
+        # Get next templates for subscription
+        templates = template_manager.all(
+            params={"_id": {"$in": subscription.get("next_templates", [])}},
+            fields=[
+                "_id",
+                "deception_score",
+                "from_address",
+                "html",
+                "landing_page_id",
+                "name",
+                "sending_profile_id",
+                "subject",
+            ],
+        )
 
     # Get sending profile to send emails
     sending_profile = sending_profile_manager.get(
@@ -146,12 +147,21 @@ def test_subscription(subscription_id, contacts):
             finally:
                 test_results.append(result)
 
-    subscription_manager.update(
-        document_id=subscription["_id"],
-        data={
-            "test_results": test_results,
-        },
-    )
+    if not next:
+        subscription_manager.update(
+            document_id=subscription["_id"],
+            data={
+                "test_results": test_results,
+            },
+        )
+    else:
+        subscription_manager.update(
+            document_id=subscription["_id"],
+            data={
+                "next_test_results": test_results,
+            },
+        )
+
     return test_results, status_code
 
 
