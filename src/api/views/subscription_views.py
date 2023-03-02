@@ -713,7 +713,7 @@ class SubscriptionLaunchView(MethodView):
 class SubscriptionTestView(MethodView):
     """SubscriptionTestView."""
 
-    def get(self, subscription_id, next=False):
+    def get(self, subscription_id):
         """Get test results for a subscription."""
         parameters = dict(request.args)
         parameters["next"] = False
