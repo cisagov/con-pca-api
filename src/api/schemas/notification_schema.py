@@ -11,8 +11,7 @@ class NotificationSchema(BaseSchema):
 
     name = fields.Str(required=True)
     task_name = fields.Str(required=True)
-    retired = fields.Bool(load_default=False)
-    retired_description = fields.Str(dump_default="", allow_none=True)
+    has_attachment = fields.Bool(load_default=False)
     subject = fields.Str()
     text = fields.Str()
     html = fields.Str()

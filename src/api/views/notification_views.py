@@ -39,10 +39,9 @@ class NotificationsView(MethodView):
             fields=[
                 "name",
                 "task_name",
-                "retired",
-                "retired_description",
                 "subject",
                 "text",
+                "has_attachment",
                 "html",
                 "created",
                 "created_by",
@@ -69,10 +68,9 @@ class NotificationView(MethodView):
                 fields=[
                     "name",
                     "task_name",
-                    "retired",
-                    "retired_description",
                     "subject",
                     "text",
+                    "has_attachment",
                     "html",
                     "created",
                     "created_by",

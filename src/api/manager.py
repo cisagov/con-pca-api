@@ -452,7 +452,7 @@ class NotificationManager(Manager):
         return super().__init__(
             collection="notification",
             schema=NotificationSchema,
-            unique_indexes=["name"],
+            unique_indexes=["name", "task_name"],
         )
 
 
