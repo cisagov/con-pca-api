@@ -517,8 +517,6 @@ class SubscriptionView(MethodView):
                     "target_domain": "$target_domain",
                     "start_date": "$start_date",
                     "cycle_start_date": {"$max": "$cycle.start_date"},
-                    "cycle_end_date": {"$max": "$cycle.end_date"},
-                    "cycle_send_by_date": {"$max": "$cycle.send_by_date"},
                     "appendix_a_date": {"$max": "$customer.appendix_a_date"},
                     "primary_contact": "$primary_contact",
                     "admin_email": "$admin_email",
@@ -555,6 +553,23 @@ class SubscriptionView(MethodView):
         subscription = subscription_manager.aggregate(pipeline)
         subscription = subscription[0] if len(subscription) > 0 else {}
         subscription["_id"] = str(subscription["_id"])
+        subscription["cycle_send_by_date"] = (
+            subscription.get("cycle_start_date")
+            + timedelta(minutes=(subscription.get("cycle_length_minutes", 0)))
+            if subscription.get("cycle_start_date", None)
+            else None
+        )
+        subscription["cycle_end_date"] = (
+            subscription.get("cycle_start_date")
+            + timedelta(
+                minutes=(
+                    subscription.get("cycle_length_minutes", 0)
+                    + subscription.get("cooldown_minutes", 0)
+                )
+            )
+            if subscription.get("cycle_start_date", None)
+            else None
+        )
         subscription["next_cycle_start_date"] = (
             subscription.get("cycle_start_date")
             + timedelta(
