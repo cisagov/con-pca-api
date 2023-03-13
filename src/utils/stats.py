@@ -1425,6 +1425,15 @@ def get_maxmind_stats(cycle_id, nonhuman, nonhuman_orgs):
                 },
             }
         },
+        {
+            "$project": {
+                "asn_org": "$asn_org",
+                "ips": {"$setDifference": ["$ips", [None]]},
+                "cities": {"$setDifference": ["$cities", [None]]},
+                "clicks": "$clicks",
+                "opens": "$opens",
+            }
+        },
     ]
     maxmind_stats = target_manager.aggregate(pipeline)
 
