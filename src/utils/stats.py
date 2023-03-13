@@ -1427,7 +1427,7 @@ def get_maxmind_stats(cycle_id, nonhuman, nonhuman_orgs):
         },
         {
             "$project": {
-                "asn_org": "$asn_org",
+                "asn_org": {"$ifNull": ["$asn_org", "None"]},
                 "ips": {"$setDifference": ["$ips", [None]]},
                 "cities": {"$setDifference": ["$cities", [None]]},
                 "clicks": "$clicks",
