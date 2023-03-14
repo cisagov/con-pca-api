@@ -79,6 +79,9 @@ from api.views.subscription_views import (
     SubscriptionSafelistSendView,
     SubscriptionsPagedView,
     SubscriptionsStatusView,
+    SubscriptionsStatusEndingSoonView,
+    SubscriptionsStatusInProgressView,
+    SubscriptionsStatusStoppedView,
     SubscriptionsView,
     SubscriptionTestView,
     SubscriptionValidView,
@@ -156,6 +159,18 @@ rules = [
         SubscriptionsPagedView,
     ),
     ("/subscriptions/status/", SubscriptionsStatusView),
+    (
+        "/subscriptions/status/ending_soon/<page>/<pagesize>/<sortby>/<sortorder>/", 
+        SubscriptionsStatusEndingSoonView
+    ),
+    (
+        "/subscriptions/status/in_progress/<page>/<pagesize>/<sortby>/<sortorder>/", 
+        SubscriptionsStatusInProgressView
+    ),
+    (
+        "/subscriptions/status/stopped/<page>/<pagesize>/<sortby>/<sortorder>/", 
+        SubscriptionsStatusStoppedView
+    ),
     ("/subscriptions/valid/", SubscriptionValidView),
     ("/subscription/<subscription_id>/", SubscriptionView),
     ("/subscription/<subscription_id>/launch/", SubscriptionLaunchView),
