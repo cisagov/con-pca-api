@@ -58,6 +58,12 @@ from api.views.landing_page_views import (
 )
 from api.views.logging_views import LoggingView
 from api.views.nonhuman_views import NonHumansView
+from api.views.notification_views import (
+    NotificationDuplicateView,
+    NotificationImportView,
+    NotificationsView,
+    NotificationView,
+)
 from api.views.recommendation_views import RecommendationsView, RecommendationView
 from api.views.report_views import (
     AggregateReportView,
@@ -138,6 +144,11 @@ rules = [
     ("/logging/", LoggingView),
     # Non Human Views
     ("/nonhumans/", NonHumansView),
+    # Notification Views
+    ("/notifications/", NotificationsView),
+    ("/notifications/import/", NotificationImportView),
+    ("/notification/<notification_id>/", NotificationView),
+    ("/notification/<notification_id>/duplicate/", NotificationDuplicateView),
     # Recommendation Views
     ("/recommendations/", RecommendationsView),
     ("/recommendation/<recommendation_id>/", RecommendationView),
