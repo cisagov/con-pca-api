@@ -705,7 +705,238 @@ class SubscriptionsStatusView(MethodView):
             subscription["_id"] = str(subscription["_id"])
 
         return jsonify(subscriptions)
+class StatusDefaults():
+    """StatusDefaults Helper Class."""
 
+    def generateDefaultSortValues(sortby, sortorder):
+        """
+        Generate the default values for the subscription 
+        status page paged aggregate queries.
+        """
+        defaults = {}
+        sortdirection = 1
+        if sortorder == "desc":
+            sortdirection = -1
+        
+        defaults['sortdirection'] = sortdirection
+
+        sort_dict = OrderedDict()
+        if sortby != "name":
+            sort_dict = OrderedDict([(sortby,sortdirection)])
+        else:
+            sort_dict["name_no_inc"] = sortdirection
+            sort_dict["created"] = sortdirection
+
+        defaults['sort_dict'] = sort_dict
+        
+        # Defaults to not show archived items in the subscription status 
+        archived = [{"archived": {"$exists": False}}, {"archived": False}]
+
+        defaults['archived'] = archived
+
+        return defaults 
+    
+    def generateDefaultpPipeline(page, pagesize, sortby, sortorder):
+        """Generate the default pipeline used by subscription status aggregations."""
+
+        sortdirection = 1
+        if sortorder == "desc":
+            sortdirection = -1
+
+        sort_dict = OrderedDict()
+        if sortby != "name":
+            sort_dict[sortby] = sortdirection
+        else:
+            sort_dict["name_no_inc"] = sortdirection
+            sort_dict["created"] = sortdirection
+
+        pipeline = [
+            {
+                "$addFields": {
+                    "subscription_id": {"$toString": "$_id"},
+                    "customer_object_id": {"$toObjectId": "$customer_id"},
+                }
+            },
+            {
+                "$lookup": {
+                    "from": "cycle",
+                    "let": {"subscription_id": "$subscription_id"},
+                    "pipeline": [
+                        {
+                            "$match": {
+                                "$expr": {
+                                     "$eq": ["$subscription_id","$$subscription_id"] 
+                                }
+                            }
+                        }
+                    ],
+                    "as": "cycle",
+                },
+            },
+            {
+                "$lookup": {
+                    "from": "customer",
+                    "localField": "customer_object_id",
+                    "foreignField": "_id",
+                    "as": "customer",
+                }
+            },
+            {
+                "$addFields": {
+                    "cycle_end_date": {"$max": "$cycle.end_date"},
+                    "cycle_start_date": {"$max": "$cycle.start_date"},
+                }
+            },
+            {
+                "$sort": sort_dict
+            },
+            {"$skip": int(page) * int(pagesize)},
+            {"$limit": int(pagesize)},
+            {
+                "$project":{
+                    "name": "$name",
+                    "endDate": "$cycle_end_date",
+                    "startDate": "$cycle_start_date",
+                    "appendixDate": {"$max": "$customer.appendix_a_date"},
+                    "isContinuous": "$continuous_subscription",
+                    "lastUpdated": "$updated",
+                }
+            }
+        ]
+
+        return pipeline
+    
+class SubscriptionsStatusEndingSoonView(MethodView):
+    """SubscriptionStatusEndingSoonView."""
+
+    def get(self, page, pagesize, sortby, sortorder):
+        """
+        Get data for the Overview Subscription Status Page.
+        For the 'Ending Soon' table. 
+        Ending Soon defined as ending within 20 days from current time.
+        """     
+
+        pipeline = StatusDefaults.generateDefaultpPipeline(page,pagesize,sortby,sortorder)
+
+        endingSoonDayRange = 45
+
+        now = datetime.now()
+        compareDate = datetime.now()
+        compareDate += timedelta(days=endingSoonDayRange)
+
+        archived = [{"archived": {"$exists": False}}, {"archived": False}]
+
+        pipeline.insert(
+        4,
+            {
+                "$match": {
+                    "$and":[            
+                        {"$expr": {
+                                "$lt": ["$cycle_end_date",compareDate] 
+                        }},
+                        {"$expr": {
+                                "$gte": ["$cycle_end_date",now] 
+                        }},
+                        {
+                            "$expr": {
+                                "$eq": [
+                                    "$status",
+                                    "running",
+                                ]
+                            }
+                        },
+                        {"$or": archived},
+                    ]
+                }
+            },
+        )
+        
+
+        subscriptions = subscription_manager.aggregate(pipeline)
+        for subscription in subscriptions:
+            subscription["_id"] = str(subscription["_id"])
+
+        return subscriptions
+        # return pipeline
+    
+class SubscriptionsStatusInProgressView(MethodView):
+    """SubscriptionStatusInProgressView."""
+
+    def get(self, page, pagesize, sortby, sortorder):
+        """
+        Get data for the Overview Subscription Status Page.
+        For the 'In Progress' table. 
+        In Progress defined as any with 'status' value of 'running'.
+        """
+
+        pipeline = StatusDefaults.generateDefaultpPipeline(page,pagesize,sortby,sortorder)
+
+        archived = [{"archived": {"$exists": False}}, {"archived": False}]
+        
+        pipeline.insert(
+        4,
+            {
+                "$match": {
+                    "$and":[     
+                        {
+                            "$expr": {
+                                "$eq": [
+                                    "$status",
+                                    "running",
+                                ]
+                            }
+                        },
+                        {"$or": archived},
+                    ]
+                }
+            },
+        )
+        
+
+        subscriptions = subscription_manager.aggregate(pipeline)
+        for subscription in subscriptions:
+            subscription["_id"] = str(subscription["_id"])
+
+        return subscriptions
+    
+class SubscriptionsStatusStoppedView(MethodView):
+    """SubscriptionStatusStoppedView."""
+
+    def get(self, page, pagesize, sortby, sortorder):
+        """
+        Get data for the Overview Subscription Status Page.
+        For the 'Stopped' table. 
+        Stopped defined as any with 'status' value of 'stopped'.
+        """
+
+        pipeline = StatusDefaults.generateDefaultpPipeline(page,pagesize,sortby,sortorder)
+
+        archived = [{"archived": {"$exists": False}}, {"archived": False}]
+        
+        pipeline.insert(
+        4,
+            {
+                "$match": {
+                    "$and":[     
+                        {
+                            "$expr": {
+                                "$eq": [
+                                    "$status",
+                                    "stopped",
+                                ]
+                            }
+                        },
+                        {"$or": archived},
+                    ]
+                }
+            },
+        )        
+
+        subscriptions = subscription_manager.aggregate(pipeline)
+        for subscription in subscriptions:
+            subscription["_id"] = str(subscription["_id"])
+
+        return subscriptions
 
 class SubscriptionLaunchView(MethodView):
     """SubscriptionLaunchView."""
