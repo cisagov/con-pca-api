@@ -36,11 +36,11 @@ from api.views.auth_views import (
 from api.views.config_views import ConfigView
 from api.views.customer_views import (
     ArchiveCustomerView,
+    CustomerCountView,
+    CustomersPagedView,
     CustomersPOCView,
     CustomersView,
     CustomerView,
-    CustomerCountView,
-    CustomersPagedView,
     SectorIndustryView,
 )
 from api.views.cycle_views import (
@@ -48,7 +48,6 @@ from api.views.cycle_views import (
     CycleStatsView,
     CyclesView,
     CycleView,
-    MongoCycleStatsView,
 )
 from api.views.db_views import DatabaseManagementView
 from api.views.failed_email_views import FailedEmailsView, FailedEmailView
@@ -59,11 +58,19 @@ from api.views.landing_page_views import (
 )
 from api.views.logging_views import LoggingView
 from api.views.nonhuman_views import NonHumansView
+from api.views.notification_views import (
+    NotificationDuplicateView,
+    NotificationImportView,
+    NotificationsView,
+    NotificationView,
+)
 from api.views.recommendation_views import RecommendationsView, RecommendationView
 from api.views.report_views import (
     AggregateReportView,
     OverdueTasksReportView,
     ReportEmailView,
+    ReportGoEmailView,
+    ReportGoPdfView,
     ReportHtmlView,
     ReportPdfView,
 )
@@ -124,10 +131,11 @@ rules = [
     ("/cycle/<cycle_id>/", CycleView),
     ("/cycle/<cycle_id>/manual_reports/", CycleManualReportsView),
     ("/cycle/<cycle_id>/stats/", CycleStatsView),
-    ("/cycle/<cycle_id>/mongostats/", MongoCycleStatsView),
     ("/cycle/<cycle_id>/reports/<report_type>/", ReportHtmlView),
     ("/cycle/<cycle_id>/reports/<report_type>/pdf/", ReportPdfView),
     ("/cycle/<cycle_id>/reports/<report_type>/email/", ReportEmailView),
+    ("/cycle/<cycle_id>/reports/<report_type>/gopdf/", ReportGoPdfView),
+    ("/cycle/<cycle_id>/reports/<report_type>/goemail/", ReportGoEmailView),
     # Failed Email Views
     ("/failedemails/", FailedEmailsView),
     ("/failedemail/<failed_email_id>/", FailedEmailView),
@@ -139,6 +147,11 @@ rules = [
     ("/logging/", LoggingView),
     # Non Human Views
     ("/nonhumans/", NonHumansView),
+    # Notification Views
+    ("/notifications/", NotificationsView),
+    ("/notifications/import/", NotificationImportView),
+    ("/notification/<notification_id>/", NotificationView),
+    ("/notification/<notification_id>/duplicate/", NotificationDuplicateView),
     # Recommendation Views
     ("/recommendations/", RecommendationsView),
     ("/recommendation/<recommendation_id>/", RecommendationView),
@@ -274,7 +287,7 @@ sched.add_job(
 initialization_tasks()
 
 # Launch the task scheduler
-sched.start()
+sched.start() if not TESTING else None
 
 
 class CustomJSONEncoder(JSONEncoder):

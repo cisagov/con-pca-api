@@ -18,6 +18,7 @@ from api.manager import (
     LandingPageManager,
     LoggingManager,
     NonHumanManager,
+    NotificationManager,
     RecommendationManager,
     SendingProfileManager,
     SubscriptionManager,
@@ -39,6 +40,7 @@ recommendation_manager = RecommendationManager()
 sending_profile_manager = SendingProfileManager()
 subscription_manager = SubscriptionManager()
 template_manager = TemplateManager()
+notification_manager = NotificationManager()
 target_manager = TargetManager()
 nonhuman_manager = NonHumanManager()
 user_manager = UserManager()
@@ -67,6 +69,33 @@ def _initialize_templates():
             logger.info(f"Creating template {template['name']}.")
             template_manager.save(template)
     logger.info("Templates initialized")
+
+
+def _initialize_notifications():
+    """Create initial notifications."""
+    current_notifications = notification_manager.all()
+    names = [t["name"] for t in current_notifications]
+
+    if len(names) > len(set(names)):
+        logger.error("Duplicate notifications found, check database.")
+        return
+
+    if len(current_notifications) > 0:
+        logger.info("Notifications already initialized.")
+        return
+
+    logger.info("Initializing notifications.")
+
+    notifications_path = os.environ.get(
+        "NOTIFICATIONS_PATH", "static/notifications.json"
+    )
+    with open(notifications_path) as f:
+        notifications = json.load(f)
+        logger.info(f"Found {len(notifications)} to create.")
+        for notification in notifications:
+            logger.info(f"Creating notification {notification['name']}.")
+            notification_manager.save(notification)
+    logger.info("Notifications initialized")
 
 
 def _initialize_nonhumans():
@@ -295,8 +324,8 @@ def initialization_tasks():
         _flush_redis_db()
         _initialize_db_indexes()
         _initialize_templates()
+        _initialize_notifications()
         _initialize_recommendations()
         _initialize_nonhumans()
         _remove_oid_fields()
-        _reset_dirty_stats()
         _populate_stakeholder_shortname()

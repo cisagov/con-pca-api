@@ -145,7 +145,7 @@ class Notification:
             addresses["bcc"] = [
                 get_email(report["bcc"]),
             ]
-            if ARCHIVAL_EMAIL_ADDRESS:
+            if ARCHIVAL_EMAIL_ADDRESS and ARCHIVAL_EMAIL_ADDRESS != "None":
                 addresses["bcc"].append(ARCHIVAL_EMAIL_ADDRESS)
         if report.get("cc"):
             addresses["cc"] = [get_email(report["cc"])]
@@ -181,7 +181,7 @@ class Notification:
             )
             logger.info(f"Attaching {filepath} to notification.")
 
-            if not os.path.exists(filepath):
+            if filepath and not os.path.exists(filepath):
                 logger.error("Attachment file does not exist: " + filepath)
             elif filepath not in attachments:
                 attachments.append(filepath)

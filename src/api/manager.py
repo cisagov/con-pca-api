@@ -17,6 +17,7 @@ from api.schemas.failed_email_schema import FailedEmailSchema
 from api.schemas.landing_page_schema import LandingPageSchema
 from api.schemas.logging_schema import LoggingSchema
 from api.schemas.nonhuman_schema import NonHumanSchema
+from api.schemas.notification_schema import NotificationSchema
 from api.schemas.recommendation_schema import RecommendationsSchema
 from api.schemas.sending_profile_schema import SendingProfileSchema
 from api.schemas.subscription_schema import SubscriptionSchema
@@ -440,6 +441,18 @@ class TemplateManager(Manager):
             collection="template",
             schema=TemplateSchema,
             unique_indexes=["name"],
+        )
+
+
+class NotificationManager(Manager):
+    """Notification Manager."""
+
+    def __init__(self):
+        """Super."""
+        return super().__init__(
+            collection="notification",
+            schema=NotificationSchema,
+            unique_indexes=["name", "task_name"],
         )
 
 
